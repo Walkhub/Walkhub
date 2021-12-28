@@ -1,5 +1,4 @@
 generate:
-	tuist dependencies fetch
 	tuist generate
 
 install_needs:
