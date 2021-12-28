@@ -22,6 +22,7 @@ extension Project {
                     bundleId: "\(xquareOrganizationName).\(name)",
                     infoPlist: infoPlist,
                     sources: ["Sources/**"],
+                    scripts: [.swiftlint],
                     dependencies: dependencies
                 )
             ]
