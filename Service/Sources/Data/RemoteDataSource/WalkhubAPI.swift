@@ -32,7 +32,7 @@ extension WalkhubAPI: TargetType {
     }
 
     var validationType: ValidationType {
-        return .successCodesㅇ
+        return .successCodes
     }
 
     var headers: [String: String]? {
