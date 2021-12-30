@@ -10,7 +10,8 @@ let project = Project.dynamicFramework(
         .Then,
         .Swinject,
         .PinLayout,
-        .FlexLayout
+        .FlexLayout,
+        .Firebase
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -20,6 +21,7 @@ let project = Project.dynamicFramework(
         .SPM.Then,
         .SPM.Swinject,
         .SPM.PinLayout,
-        .SPM.FlexLayout
+        .SPM.FlexLayout,
+        .SPM.FCM
     ]
 )
