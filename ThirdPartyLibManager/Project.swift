@@ -15,6 +15,7 @@ let project = Project.dynamicFramework(
     dependencies: [
         .SPM.RxSwift,
         .SPM.Realm,
+        .SPM.RealmSwift,
         .SPM.RxCocoa,
         .SPM.RxMoya,
         .SPM.Then,
