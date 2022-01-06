@@ -1,8 +1,18 @@
-//
-//  TokenUtil.swift
-//  Service
-//
-//  Created by 김수완 on 2022/01/06.
-//
-
 import Foundation
+
+// MARK: - Token Type
+enum TokenType {
+    case accessToken
+    case refreshToken
+}
+
+extension TokenType {
+    var keychainAccount: String {
+        switch self {
+        case .accessToken:
+            return "ACCESS-TOKEN"
+        case .refreshToken:
+            return "REFRESH-TOKEN"
+        }
+    }
+}
