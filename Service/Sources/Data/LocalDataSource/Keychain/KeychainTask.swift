@@ -12,7 +12,7 @@ class KeychainTask {
     private init() { }
 
     // MARK: Register
-    public func register(accontType: AccountType, value: String) {
+    public func register(accontType: KeychainAccountType, value: String) {
         let keychainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -24,7 +24,7 @@ class KeychainTask {
     }
 
     // MARK: Fetch
-    public func fetch(accountType: AccountType) -> String? {
+    public func fetch(accountType: KeychainAccountType) -> String? {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -42,7 +42,7 @@ class KeychainTask {
     }
 
     // MARK: Delete
-    public func delete(accountType: AccountType) {
+    public func delete(accountType: KeychainAccountType) {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -53,7 +53,7 @@ class KeychainTask {
 
     // MARK: Delete All
     public func deleteAll() {
-        AccountType.allCases.forEach { accountType in
+        KeychainAccountType.allCases.forEach { accountType in
             self.delete(accountType: accountType)
         }
     }
@@ -61,7 +61,7 @@ class KeychainTask {
 }
 
 // MARK: - AccountType
-enum AccountType: String, CaseIterable {
+enum KeychainAccountType: String, CaseIterable {
     case accessToken = "ACCESS-TOKEN"
     case refreshToken = "REFRESH-TOKEN"
 }
