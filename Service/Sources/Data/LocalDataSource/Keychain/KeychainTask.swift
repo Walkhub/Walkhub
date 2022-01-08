@@ -2,6 +2,13 @@ import Foundation
 
 import Security
 
+// MARK: - KeychainAccountType
+enum KeychainAccountType: String {
+    case accessToken = "ACCESS-TOKEN"
+    case refreshToken = "REFRESH-TOKEN"
+    case expiredAt = "EXPIRED-AT"
+}
+
 // MARK: - KeychainTask
 class KeychainTask {
 
@@ -12,11 +19,11 @@ class KeychainTask {
     private init() { }
 
     // MARK: Register
-    public func register(accont: String, value: String) {
+    public func register(accountType: KeychainAccountType, value: String) {
         let keychainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
-            kSecAttrAccount: accont,
+            kSecAttrAccount: accountType.rawValue,
             kSecValueData: value.data(using: .utf8, allowLossyConversion: false)!
         ]
         SecItemDelete(keychainQuery)
@@ -24,11 +31,11 @@ class KeychainTask {
     }
 
     // MARK: Fetch
-    public func fetch(account: String) -> String? {
+    public func fetch(accountType: KeychainAccountType) -> String? {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
-            kSecAttrAccount: account,
+            kSecAttrAccount: accountType.rawValue,
             kSecReturnData: kCFBooleanTrue!,
             kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -42,11 +49,11 @@ class KeychainTask {
     }
 
     // MARK: Delete
-    public func delete(account: String) {
+    public func delete(accountType: KeychainAccountType) {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
-            kSecAttrAccount: account
+            kSecAttrAccount: accountType.rawValue
         ]
         SecItemDelete(keyChainQuery)
     }
