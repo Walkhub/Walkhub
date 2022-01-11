@@ -9,6 +9,11 @@ enum KeychainAccountType: String {
     case expiredAt = "EXPIRED-AT"
 }
 
+// MARK: - KeychainError
+enum KeychainError: Error {
+    case noData
+}
+
 // MARK: - KeychainTask
 class KeychainTask {
 
@@ -31,7 +36,7 @@ class KeychainTask {
     }
 
     // MARK: Fetch
-    public func fetch(accountType: KeychainAccountType) -> String? {
+    public func fetch(accountType: KeychainAccountType) throws -> String {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -42,10 +47,10 @@ class KeychainTask {
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(keyChainQuery, &dataTypeRef)
         if status == errSecSuccess {
-            guard let retrievedData = dataTypeRef as? Data else { return nil }
+            guard let retrievedData = dataTypeRef as? Data else { throw KeychainError.noData }
             let value = String(data: retrievedData, encoding: String.Encoding.utf8)
-            return value
-        } else { return nil }
+            return value!
+        } else { throw KeychainError.noData }
     }
 
     // MARK: Delete
