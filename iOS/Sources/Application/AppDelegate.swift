@@ -1,9 +1,16 @@
 import UIKit
 
 import Firebase
+import Swinject
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    static var continer: Container {
+        let continer = Container()
+        continer.registerServiceDependencies()
+        return continer
+    }
 
     func application(
         _ application: UIApplication,
