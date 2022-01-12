@@ -26,9 +26,6 @@ extension Project {
                         .project(target: "ThirdPartyLibManager", path: "../ThirdPartyLibManager")
                     ] + dependencies
                 )
-            ],
-            additionalFiles: [
-                "SupportingFiles/**",
             ]
         )
     }
