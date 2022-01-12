@@ -17,7 +17,7 @@ extension Project {
                     platform: platform,
                     product: product,
                     bundleId: "\(xquareOrganizationName).\(name)",
-                    infoPlist: .file(path: Path("Info.plist")),
+                    infoPlist: .file(path: Path("SupportingFiles/Info.plist")),
                     sources: ["Sources/**"],
                     resources: ["Resources/**"],
                     entitlements: Path("SupportingFiles/\(name).entitlements"),
