@@ -10,10 +10,14 @@ enum AuthAPI {
 
 extension AuthAPI: WalkhubAPI {
 
-    var path: String {
+    var domain: ApiDomain {
+        return .users
+    }
+
+    var urlPath: String {
         switch self {
         case .renewalToken:
-            return "/users/reissue"
+            return "/reissue"
         }
     }
 
