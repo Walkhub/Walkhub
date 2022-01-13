@@ -3,9 +3,9 @@ import Foundation
 import Moya
 
 enum AuthAPI {
-
+    case signin
+    case signup
     case renewalToken
-
 }
 
 extension AuthAPI: WalkhubAPI {
@@ -16,6 +16,10 @@ extension AuthAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
+        case .signin:
+            return "/token"
+        case .signup:
+            return "/"
         case .renewalToken:
             return "/reissue"
         }
@@ -23,6 +27,8 @@ extension AuthAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
+        case .signin, .signup:
+            return .post
         case .renewalToken:
             return .put
         }
@@ -39,6 +45,8 @@ extension AuthAPI: WalkhubAPI {
         switch self {
         case .renewalToken:
             return .refreshToken
+        default:
+            return JWTTokenType.none
         }
     }
 
