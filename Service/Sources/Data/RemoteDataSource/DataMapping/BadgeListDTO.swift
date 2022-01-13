@@ -12,10 +12,10 @@ extension BadgeListDTO {
         private enum CodingKeys: String, CodingKey {
             case id
             case name
-            case imageString = "image_url"
+            case imageUrlString = "image_url"
         }
         let id: Int
         let name: String
-        let imageString: String
+        let imageUrlString: String
     }
 }
