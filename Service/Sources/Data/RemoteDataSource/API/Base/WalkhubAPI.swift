@@ -2,11 +2,19 @@ import Foundation
 
 import Moya
 
-protocol WalkhubAPI: TargetType, JWTTokenAuthorizable { }
+// MARK: - WalkhubAPI
+protocol WalkhubAPI: TargetType, JWTTokenAuthorizable {
+    var domain: ApiDomain { get }
+    var urlPath: String { get }
+}
 
 extension WalkhubAPI {
 
     var baseURL: URL { URL(string: "https://api.walkhub.co.kr")! }
+
+    var path: String {
+        return domain.uri+urlPath
+    }
 
     var task: Task { .requestPlain }
 
