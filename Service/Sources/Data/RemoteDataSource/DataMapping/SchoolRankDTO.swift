@@ -5,7 +5,6 @@ struct SchoolRankDTO: Decodable {
         case mySchoolRank = "my_school_rank"
         case schoolList = "school_list"
     }
-    
     let mySchoolRank: MySchoolRank
     let schoolList: [SchoolList]
 }
