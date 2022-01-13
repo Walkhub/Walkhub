@@ -11,6 +11,7 @@ extension Project {
         return Project(
             name: name,
             organizationName: xquareOrganizationName,
+            settings: .settings(base: .codeSign),
             targets: [
                 Target(
                     name: name,
