@@ -17,7 +17,7 @@ final class AuthService: BaseService<AuthAPI> {
         return request(.signin(
             id: id,
             password: password,
-            deviceToken: ""
+            deviceToken: deviceToken
         ))
     }
 
