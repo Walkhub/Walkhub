@@ -6,7 +6,7 @@ struct SchoolRankDTO: Decodable {
         case schoolList = "school_list"
     }
     let mySchoolRank: SchoolRank
-    let schoolList: [SchoolList]
+    let schoolList: [School]
 }
 
 extension SchoolRankDTO {
@@ -24,7 +24,7 @@ extension SchoolRankDTO {
         let logoImageUrlString: String
         let walkCount: Int
     }
-    struct SchoolList: Decodable {
+    struct School: Decodable {
         private enum CodingKeys: String, CodingKey {
             case agencyCode = "agency_code"
             case name

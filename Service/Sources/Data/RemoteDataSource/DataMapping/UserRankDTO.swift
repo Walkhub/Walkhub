@@ -6,7 +6,7 @@ struct UserRankDTO: Decodable {
         case rankList = "rank_list"
     }
     let myRank: MyRank
-    let rankList: [RankList]
+    let rankList: [Rank]
 }
 
 extension UserRankDTO {
@@ -24,7 +24,7 @@ extension UserRankDTO {
         let profileImageUrlString: String
         let walkCount: Int
     }
-    struct RankList: Decodable {
+    struct Rank: Decodable {
         private enum CodingKeys: String, CodingKey {
             case userID = "user_id"
             case name
