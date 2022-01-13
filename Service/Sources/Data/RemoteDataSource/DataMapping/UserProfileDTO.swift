@@ -22,10 +22,10 @@ extension UserProfileDTO {
         private enum CodingKeys: String, CodingKey {
             case id
             case name
-            case image = "image_url"
+            case imageString = "image_url"
         }
         let id: Int
         let name: String
-        let image: String
+        let imageString: String
     }
 }
