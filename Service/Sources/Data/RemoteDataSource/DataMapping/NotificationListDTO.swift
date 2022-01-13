@@ -2,12 +2,13 @@ import Foundation
 
 struct NotificationListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case notificationList: "notification_list"
+        case notificationList = "notification_list"
     }
+    let notificationList: [NotificationInformation]
 }
 
 extension NotificationListDTO {
-    struct Notification: Decodable {
+    struct NotificationInformation: Decodable {
         private enum CodingKeys: String, CodingKey {
             case id
             case title
