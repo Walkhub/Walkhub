@@ -62,5 +62,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>건강 데이터를 받아오는데 필요해요.</string>
 </dict>
 </plist>
