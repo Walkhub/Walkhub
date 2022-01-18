@@ -33,13 +33,13 @@ final class ExercisesService: BaseService<ExercisesAPI> {
         ))
     }
     
-    func getLocations(
+    func saveLocations(
         exercisesID: Int,
         order: Int,
         latitude: String,
         longitude: String
     ) -> Single<Response> {
-        return request(.getLocations(
+        return request(.saveLocations(
             exercisesID: exercisesID,
             order: order,
             latitude: latitude,

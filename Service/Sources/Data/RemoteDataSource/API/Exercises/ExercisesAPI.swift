@@ -5,7 +5,7 @@ import Moya
 enum ExercisesAPI {
     case startRecord(goal: Int, goalType: String)
     case endRecord(exercisesID: Int, walkCount: Int, distance: Int, imageUrlString: String)
-    case getLocations(exercisesID: Int, order: Int, latitude: String, longitude: String)
+    case saveLocations(exercisesID: Int, order: Int, latitude: String, longitude: String)
     case setExsercises(date: String, distance: Int, walkCount: Int)
 }
 
@@ -18,7 +18,7 @@ extension ExercisesAPI: WalkhubAPI {
         switch self {
         case .endRecord(let exercisesID):
             return "/\(exercisesID)"
-        case .getLocations(let exercisesID):
+        case .saveLocations(let exercisesID):
             return "/locations/\(exercisesID)"
         case .setExsercises(let date):
             return "?date=\(date)"
@@ -29,7 +29,7 @@ extension ExercisesAPI: WalkhubAPI {
     
     var method: Moya.Method {
         switch self {
-        case .startRecord, .getLocations:
+        case .startRecord, .saveLocations:
             return .post
         case .endRecord:
             return .patch
@@ -57,7 +57,7 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .getLocations(let exercisesID, let order, let latitude, let longitude):
+        case .saveLocations(let exercisesID, let order, let latitude, let longitude):
             return .requestParameters(
                 parameters: [
                     "order": order,
