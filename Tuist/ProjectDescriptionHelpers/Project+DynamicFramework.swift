@@ -21,6 +21,10 @@ extension Project {
                     platform: platform,
                     product: .framework,
                     bundleId: "\(xquareOrganizationName).\(name)",
+                    deploymentTarget: .iOS(
+                        targetVersion: "13.0",
+                        devices: [.iphone, .ipad]
+                    ),
                     infoPlist: infoPlist,
                     sources: ["Sources/**"],
                     scripts: [.swiftlint],
