@@ -4,9 +4,9 @@ import Moya
 
 enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
-    case profileInquiry(userID: Int)
-    case myPageInquiry
-    case badgeInquiry(userID: Int)
+    case fetchProfile(userID: Int)
+    case fetchMypage
+    case fetchBadge(userID: Int)
     case mainBadgeSet(badgeID: Int)
     case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: String)
     case findID(phoneNumber: String)
@@ -25,9 +25,9 @@ extension UserAPI: WalkhubAPI {
         switch self {
         case .changePassword:
             return "/password"
-        case .profileInquiry(let userID):
+        case .fetchProfile(let userID):
             return "/\(userID)"
-        case .badgeInquiry(let userID):
+        case .fetchBadge(let userID):
             return "/\(userID)/badges"
         case .mainBadgeSet(let badgeID):
             return "/badges/\(badgeID)"
@@ -89,7 +89,7 @@ extension UserAPI: WalkhubAPI {
         switch self {
         case .changeProfile, .changeProfile, .changeSchoolInformation, .writeHealth:
             return .patch
-        case .badgeInquiry:
+        case .fetchBadge:
             return .put
         case .joinClass:
             return .post

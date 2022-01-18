@@ -23,16 +23,16 @@ final class UserService: BaseService<UserAPI> {
         ))
     }
     
-    func profileInquiry(userID: Int) -> Single<Response> {
-        return request(.profileInquiry(userID: userID))
+    func fetchProfile(userID: Int) -> Single<Response> {
+        return request(.fetchProfile(userID: userID))
     }
     
-    func myPageInquiry() -> Single<Response> {
-        return request(.myPageInquiry)
+    func fetchMypage() -> Single<Response> {
+        return request(.fetchMypage)
     }
     
-    func badgeInquiry(userID: Int) -> Single<Response> {
-        return request(.badgeInquiry(userID: userID))
+    func fetchBadge(userID: Int) -> Single<Response> {
+        return request(.fetchBadge(userID: userID))
     }
     
     func mainBadgeSet(badgeID: Int) -> Single<Response> {
