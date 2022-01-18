@@ -11,7 +11,6 @@ public enum WalkhubError: Error {
     case invalidAuthCode
     case duplicateId
     case faildSignin
-
 }
 
 extension WalkhubError: LocalizedError {
