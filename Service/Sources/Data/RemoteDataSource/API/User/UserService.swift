@@ -31,6 +31,10 @@ final class UserService: BaseService<UserAPI> {
         return request(.myPageInquiry)
     }
     
+    func badgeInquiry(userID: Int) -> Single<Response> {
+        return request(.badgeInquiry(userID: userID))
+    }
+    
     func mainBadgeSet(badgeID: Int) -> Single<Response> {
         return request(.mainBadgeSet(badgeID: badgeID))
     }
@@ -71,7 +75,11 @@ final class UserService: BaseService<UserAPI> {
         return request(.joinClass(
             agencyCode: agencyCode,
             grade: grade,
-            class: classNum
+            classNum: classNum
         ))
+    }
+    
+    func changeSchoolInformation(agencyCode: String) -> Single<Response> {
+        return request(.changeSchoolInformation(agencyCode: agencyCode))
     }
 }
