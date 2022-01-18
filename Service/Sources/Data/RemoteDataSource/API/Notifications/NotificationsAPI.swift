@@ -1,10 +1,3 @@
-//
-//  NotificationsAPI.swift
-//  Service
-//
-//  Created by kimsian on 2022/01/18.
-//
-
 import Foundation
 
 import Moya
@@ -32,7 +25,7 @@ extension NotificationsAPI: WalkhubAPI {
         switch self {
         case .viewNotificationsList:
             return .get
-        case .editReadWhether(notificationID: _):
+        case .editReadWhether:
             return .patch
         }
     }

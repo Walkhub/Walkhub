@@ -1,10 +1,3 @@
-//
-//  NotificationsService.swift
-//  Service
-//
-//  Created by kimsian on 2022/01/18.
-//
-
 import Foundation
 
 import Moya
