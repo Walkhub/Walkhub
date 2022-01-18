@@ -1,7 +1,6 @@
 import Foundation
 
 import Moya
-import SystemConfiguration
 
 enum RankAPI {
     case schoolRankInquriy(dateType: String)
