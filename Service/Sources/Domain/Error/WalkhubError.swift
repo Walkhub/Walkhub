@@ -11,10 +11,6 @@ public enum WalkhubError: Error {
     case invalidAuthCode
     case duplicateId
     case faildSignin
-    
-    //User
-    case faildFound
-    case duplicate
 }
 
 extension WalkhubError: LocalizedError {
@@ -32,10 +28,6 @@ extension WalkhubError: LocalizedError {
             return "The Id Is Duplicate"
         case .faildSignin:
             return "ID Or Password Is Incorrect"
-        case .faildFound:
-            return "The request target cannot be found"
-        case .duplicate:
-            return "An object with that id already exists"
         }
     }
 }
