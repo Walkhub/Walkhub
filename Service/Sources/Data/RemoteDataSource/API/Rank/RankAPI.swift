@@ -3,9 +3,9 @@ import Foundation
 import Moya
 
 enum RankAPI {
-    case schoolRankInquriy(dateType: String)
+    case fetchSchoolRank(dateType: String)
     case searchSchool(name: String)
-    case userRankInquriy(scope: String, dateType: String, sort: String, agencyCode: String)
+    case fetchUserRank(scope: String, dateType: String, sort: String, agencyCode: String)
     case searchUser(name: String, scope: String, agencyCode: String, grade: Int, classNum: Int)
 }
 
@@ -16,9 +16,9 @@ extension RankAPI: WalkhubAPI {
     
     var urlPath: String {
         switch self {
-        case .schoolRankInquriy, .searchSchool:
+        case .fetchSchoolRank, .searchSchool:
             return "/schools"
-        case .userRankInquriy, .searchUser:
+        case .fetchUserRank, .searchUser:
             return "/users"
         }
     }
@@ -29,7 +29,7 @@ extension RankAPI: WalkhubAPI {
     
     var task: Task {
         switch self {
-        case .schoolRankInquriy(let dateType):
+        case .fetchSchoolRank(let dateType):
             return .requestParameters(
                 parameters: [
                     "dateType": dateType
@@ -42,7 +42,7 @@ extension RankAPI: WalkhubAPI {
                     "name": name
                 ], encoding: URLEncoding.queryString
             )
-        case .userRankInquriy(let scope, let dateType, let sort, let agencyCode):
+        case .fetchUserRank(let scope, let dateType, let sort, let agencyCode):
             return .requestParameters(
                 parameters: [
                     "scope": scope,

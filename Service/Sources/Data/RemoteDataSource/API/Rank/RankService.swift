@@ -4,19 +4,19 @@ import Moya
 import RxSwift
 
 final class RankService: BaseService<RankAPI> {
-    func schoolRankInquriy(dateType: String) -> Single<Response> {
-        return request(.schoolRankInquriy(dateType: dateType))
+    func fetchSchoolRank(dateType: String) -> Single<Response> {
+        return request(.fetchSchoolRank(dateType: dateType))
     }
     func searchSchool(name: String) -> Single<Response> {
         return request(.searchSchool(name: name))
     }
-    func userRankInquriy(
+    func fetchUserRanky(
         scope: String,
         dateTypa: String,
         sort: String,
         agencyCode: String
     ) -> Single<Response> {
-        return request(.userRankInquriy(
+        return request(.fetchUserRank(
             scope: scope,
             dateType: dateTypa,
             sort: sort,
