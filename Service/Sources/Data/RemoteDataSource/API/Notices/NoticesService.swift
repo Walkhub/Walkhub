@@ -9,8 +9,8 @@ final class NoticesService: BaseService<NoticesAPI> {
     
     private override init() {}
     
-    func seeNotice() -> Single<Response> {
-        return request(.seeNotice)
+    func fetchNotice() -> Single<Response> {
+        return request(.fetchNotice)
     }
     
     func writeNotice(

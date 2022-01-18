@@ -3,7 +3,7 @@ import Foundation
 import Moya
 
 enum NoticesAPI {
-    case seeNotice
+    case fetchNotice
     case writeNotice(title: String, content: String, scope: String)
     case deleteNotice(noticeID: Int)
 }
@@ -15,7 +15,7 @@ extension NoticesAPI: WalkhubAPI {
     
     var urlPath: String {
         switch self {
-        case .seeNotice:
+        case .fetchNotice:
             return "/list"
         case .deleteNotice(let noticeID):
             return "/\(noticeID)"
@@ -42,7 +42,7 @@ extension NoticesAPI: WalkhubAPI {
     
     var method: Moya.Method {
         switch self {
-        case .seeNotice:
+        case .fetchNotice:
             return .get
         case .deleteNotice:
             return .delete
