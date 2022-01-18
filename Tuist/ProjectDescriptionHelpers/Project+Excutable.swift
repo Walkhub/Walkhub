@@ -6,6 +6,7 @@ extension Project {
         name: String,
         platform: Platform,
         product: Product = .app,
+        deploymentDevice: DeploymentDevice = [.iphone, .ipad],
         dependencies: [TargetDependency]
     ) -> Project {
         return Project(
@@ -18,6 +19,10 @@ extension Project {
                     platform: platform,
                     product: product,
                     bundleId: "\(xquareOrganizationName).\(name)",
+                    deploymentTarget: .iOS(
+                        targetVersion: "13.0",
+                        devices: deploymentDevice
+                    ),
                     infoPlist: .file(path: Path("SupportingFiles/Info.plist")),
                     sources: ["Sources/**"],
                     resources: ["Resources/**"],
