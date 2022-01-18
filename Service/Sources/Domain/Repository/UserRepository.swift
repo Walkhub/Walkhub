@@ -11,5 +11,6 @@ protocol UserRepository {
     func changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: String) -> Single<Void>
     func findID(phoneNumber: String) -> Single<FindUserIdDTO>
     func writeHealth(height: Float, weight: Int) -> Single<Void>
-    func joinClass(agencyCode: String, grade: Int, class: Int) -> Single<Void>
+    func joinClass(agencyCode: String, grade: Int, classNum: Int) -> Single<Void>
+    func changeSchoolInformation(agencyCode: String) -> Single<Void>
 }
