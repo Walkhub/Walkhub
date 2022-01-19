@@ -5,9 +5,9 @@ import RxSwift
 
 final class NotificationsService: BaseService<NotificationsAPI> {
     func viewNotificationsList() -> Single<Response> {
-        return request(.viewNotificationsList)
+        return request(.fetchNotificationsList)
     }
     func editReadWhether(notificationID: Int) -> Single<Response> {
-        return request(.editReadWhether(notificationID: notificationID))
+        return request(.toggleIsRead(notificationID: notificationID))
     }
 }

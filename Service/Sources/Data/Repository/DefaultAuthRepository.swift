@@ -17,16 +17,7 @@ class DefaultAuthRepository: AuthRepository {
                     password: password,
                     deviceToken: deviceToken
                 )
-            }.map { _ in
-                return ()
-            }.catch { error in
-                if let moyaError = error as? MoyaError {
-                    switch moyaError.errorCode {
-                    case 404: return Single.error(WalkhubError.faildSignin)
-                    default: return Single.error(error)
-                    }
-                } else {  return Single.error(error) }
-            }
+            }.map { _ in return () }
     }
 
     func signup(
@@ -42,17 +33,7 @@ class DefaultAuthRepository: AuthRepository {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode
-        ).map { _ in
-            return ()
-        }.catch { error in
-            if let moyaError = error as? MoyaError {
-                switch moyaError.errorCode {
-                case 404: return Single.error(WalkhubError.invalidAuthCode)
-                case 409: return Single.error(WalkhubError.duplicateId)
-                default: return Single.error(error)
-                }
-            } else {  return Single.error(error) }
-        }
+        ).map { _ in return () }
     }
 
     func verificationPhone(phoneNumber: String) -> Single<Void> {

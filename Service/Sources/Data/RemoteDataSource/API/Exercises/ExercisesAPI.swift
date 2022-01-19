@@ -10,20 +10,21 @@ enum ExercisesAPI {
 }
 
 extension ExercisesAPI: WalkhubAPI {
+
     var domain: ApiDomain {
         .exercies
     }
-    
+
     var urlPath: String {
         switch self {
-        case .endRecord(let exercisesID):
-            return "/\(exercisesID)"
-        case .saveLocations(let exercisesID):
-            return "/locations/\(exercisesID)"
-        case .setExsercises(let date):
-            return "?date=\(date)"
-        default:
+        case .startRecord:
             return "/"
+        case .endRecord(let exercisesID, _, _, _):
+            return "/\(exercisesID)"
+        case .saveLocations(let exercisesID, _, _, _):
+            return "/locations/\(exercisesID)"
+        case .setExsercises(let date, _, _):
+            return "?date=\(date)"
         }
     }
     
@@ -48,7 +49,7 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .endRecord(let exercisesID, let walkCount, let distance, let imageUrlString):
+        case .endRecord(_, let walkCount, let distance, let imageUrlString):
             return .requestParameters(
                 parameters: [
                     "walk_count": walkCount,
@@ -57,7 +58,7 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .saveLocations(let exercisesID, let order, let latitude, let longitude):
+        case .saveLocations(_, let order, let latitude, let longitude):
             return .requestParameters(
                 parameters: [
                     "order": order,
@@ -66,7 +67,7 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setExsercises(let date, let distance, let walkCount):
+        case .setExsercises(_, let distance, let walkCount):
             return .requestParameters(
                 parameters: [
                     "distance": distance,
@@ -79,5 +80,14 @@ extension ExercisesAPI: WalkhubAPI {
     var jwtTokenType: JWTTokenType? {
         return .accessToken
     }
-    
+
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        default:
+            return [
+                401: .unauthorization
+            ]
+        }
+    }
+
 }

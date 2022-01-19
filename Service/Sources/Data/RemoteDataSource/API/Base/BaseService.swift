@@ -5,7 +5,7 @@ import RxCocoa
 import RxMoya
 import RxSwift
 
-class BaseService<API: TargetType & JWTTokenAuthorizable> {
+class BaseService<API: WalkhubAPI> {
 
     private let provider = MoyaProvider<API>(plugins: [JWTPlugin()])
 
@@ -37,6 +37,12 @@ private extension BaseService {
     private func defaultRequest(_ api: API) -> Single<Response> {
         return provider.rx.request(api)
             .timeout(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .catch { error in
+                guard let moyaError = error as? MoyaError else {
+                    return Single.error(error)
+                }
+                return Single.error(api.errorMapper?[moyaError.errorCode] ?? error)
+            }
     }
 
     private func authorizableRequest(_ api: API) -> Single<Response> {
