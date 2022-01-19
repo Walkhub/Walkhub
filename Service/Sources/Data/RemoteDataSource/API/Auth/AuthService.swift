@@ -45,4 +45,8 @@ final class AuthService: BaseService<AuthAPI> {
         return request(.renewalToken)
     }
 
+    func findID(phoneNumber: String) -> Single<Response> {
+        return request(.findID(phoneNumber: phoneNumber))
+    }
+
 }
