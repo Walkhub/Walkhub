@@ -5,45 +5,42 @@ import Moya
 enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
-    case fetchMypage
-    case fetchBadge(userID: Int)
-    case mainBadgeSet(badgeID: Int)
+    case fetchMyInformation
+    case fetchBadges(userID: Int)
+    case setMainBadge(badgeID: Int)
     case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: String)
-    case findID(phoneNumber: String)
-    case writeHealth(height: Float, weight: Int)
+    case setHealthInformation(height: Float, weight: Int)
     case joinClass(agencyCode: String, grade: Int, classNum: Int)
-    case changeSchoolInformation(agencyCode: String)
+    case setSchoolInformation(agencyCode: String)
 }
 
 extension UserAPI: WalkhubAPI {
-    
+
     var domain: ApiDomain {
         .users
     }
-    
+
     var urlPath: String {
         switch self {
         case .changePassword:
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
-        case .fetchBadge(let userID):
+        case .fetchBadges(let userID):
             return "/\(userID)/badges"
-        case .mainBadgeSet(let badgeID):
+        case .setMainBadge(let badgeID):
             return "/badges/\(badgeID)"
-        case .findID(let phoneNum):
-            return "/accounts/\(phoneNum)"
-        case .writeHealth:
+        case .setHealthInformation:
             return "/healths"
         case .joinClass(let code, let grade, let classNum):
             return "/classes/\(code)/\(grade)/\(classNum)"
-        case .changeSchoolInformation:
+        case .setSchoolInformation:
             return "/school"
         default:
             return "/"
         }
     }
-    
+
     var task: Task {
         switch self {
         case .changePassword(let accountID, let phoneNumber, let authCode, let newPassword):
@@ -66,7 +63,7 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .writeHealth(let height, let weight):
+        case .setHealthInformation(let height, let weight):
             return .requestParameters(
                 parameters: [
                     "height": height,
@@ -74,7 +71,7 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeSchoolInformation(let agencyCode):
+        case .setSchoolInformation(let agencyCode):
             return .requestParameters(
                 parameters: [
                     "agency_code": agencyCode
@@ -84,12 +81,12 @@ extension UserAPI: WalkhubAPI {
         default: return .requestPlain
         }
     }
-    
+
     var method: Moya.Method {
         switch self {
-        case .changeProfile, .changeProfile, .changeSchoolInformation, .writeHealth:
+        case .changeProfile, .changePassword, .setSchoolInformation, .setHealthInformation:
             return .patch
-        case .fetchBadge:
+        case .fetchBadges:
             return .put
         case .joinClass:
             return .post
@@ -97,13 +94,32 @@ extension UserAPI: WalkhubAPI {
             return .get
         }
     }
-    
+
     var jwtTokenType: JWTTokenType? {
         switch self {
-        case .changeProfile, .findID:
-            return .none
         default:
             return .accessToken
+        }
+    }
+
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        case .joinClass:
+            return [
+                401: .unauthorization,
+                403: .inaccessibleClass,
+                404: .undefinededClass,
+                409: .alreadyJoinedClass
+            ]
+        case .setSchoolInformation:
+            return [
+                401: .unauthorization,
+                404: .undefinededSchool
+            ]
+        default:
+            return [
+                401: .unauthorization
+            ]
         }
     }
 }
