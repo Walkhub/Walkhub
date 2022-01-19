@@ -10,7 +10,7 @@ final class RankService: BaseService<RankAPI> {
     func searchSchool(name: String) -> Single<Response> {
         return request(.searchSchool(name: name))
     }
-    func fetchUserRanky(
+    func fetchUserRank(
         scope: String,
         dateTypa: String,
         sort: String,
