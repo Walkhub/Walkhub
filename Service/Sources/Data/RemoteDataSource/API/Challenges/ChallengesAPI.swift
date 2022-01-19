@@ -3,10 +3,10 @@ import Foundation
 import Moya
 
 enum ChallengesAPI {
-    case viewChallengesList
-    case viewDetailChallenges(challengeID: Int)
-    case participationChallenges(challengeID: Int)
-    case viewParticipantsChallengesList(challengeID: Int)
+    case fetchChallengesList
+    case fetchDetailChallenges(challengeID: Int)
+    case joinChallenges(challengeID: Int)
+    case fetchParticipantsChallengesList(challengeID: Int)
 }
 
 extension ChallengesAPI: WalkhubAPI {
@@ -16,20 +16,20 @@ extension ChallengesAPI: WalkhubAPI {
     
     var urlPath: String {
         switch self {
-        case .viewDetailChallenges(let challengeID), .participationChallenges(let challengeID):
+        case .fetchDetailChallenges(let challengeID), .joinChallenges(let challengeID):
             return "/\(challengeID)"
-        case .viewChallengesList:
+        case .fetchChallengesList:
             return "/lists"
-        case .viewParticipantsChallengesList(let challengeID):
+        case .fetchParticipantsChallengesList(let challengeID):
             return "/\(challengeID)/participants"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .participationChallenges:
+        case .joinChallenges:
             return .post
-        case .viewChallengesList, .viewDetailChallenges, .viewParticipantsChallengesList:
+        case .fetchChallengesList, .fetchDetailChallenges, .fetchParticipantsChallengesList:
             return .get
         }
     }

@@ -4,16 +4,16 @@ import Moya
 import RxSwift
 
 final class ChallengesService: BaseService<ChallengesAPI> {
-    func viewChallengesList() -> Single<Response> {
-        return request(.viewChallengesList)
+    func fetchChallengesList() -> Single<Response> {
+        return request(.fetchChallengesList)
     }
-    func viewDetailChallenges(challengeID: Int) -> Single<Response> {
-        return request(.viewDetailChallenges(challengeID: challengeID))
+    func fetchDetailChallenges(challengeID: Int) -> Single<Response> {
+        return request(.fetchDetailChallenges(challengeID: challengeID))
     }
-    func participationChallenges(challengeID: Int) -> Single<Response> {
-        return request(.participationChallenges(challengeID: challengeID))
+    func joinChallenges(challengeID: Int) -> Single<Response> {
+        return request(.joinChallenges(challengeID: challengeID))
     }
-    func viewParticipantsChallengesList(challengeID: Int) -> Single<Response> {
-        return request(.viewParticipantsChallengesList(challengeID: challengeID))
+    func fetchParticipantsChallengesList(challengeID: Int) -> Single<Response> {
+        return request(.fetchParticipantsChallengesList(challengeID: challengeID))
     }
 }
