@@ -10,7 +10,8 @@ public enum WalkhubError: Error {
     // Auth
     case invalidAuthCode
     case duplicateId
-    case faildSignin
+    case wrongId
+    case wrongPassword
 }
 
 extension WalkhubError: LocalizedError {
@@ -26,8 +27,10 @@ extension WalkhubError: LocalizedError {
             return "Auth Code Is Invalid"
         case .duplicateId:
             return "The Id Is Duplicate"
-        case .faildSignin:
-            return "ID Or Password Is Incorrect"
+        case .wrongId:
+            return "The Id Is Wrong"
+        case .wrongPassword:
+            return "The Password Is Wrong"
         }
     }
 }
