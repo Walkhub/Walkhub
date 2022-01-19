@@ -79,4 +79,21 @@ extension AuthAPI: WalkhubAPI {
         }
     }
 
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        case .signin:
+            return [
+                401: .wrongPassword,
+                404: .wrongId
+            ]
+        case .signup:
+            return [
+                404: .invalidAuthCode,
+                409: .duplicateId
+            ]
+        default:
+            return nil
+        }
+    }
+
 }
