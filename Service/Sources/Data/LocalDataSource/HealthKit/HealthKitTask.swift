@@ -3,18 +3,32 @@ import Foundation
 import HealthKit
 import RxSwift
 
-class HealthKitTask {
-    static let shared = HealthKitTask()
+@available(iOS 14.5, *)
+final public class HealthKitTask {
+
+    public static let shared = HealthKitTask()
+
     let healthStore = HKHealthStore()
-    func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier, unit: HKUnit) -> Single<Double> {
+    let healthKitTypes: Set = [
+        HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!,
+        HKObjectType.quantityType(forIdentifier: .stepCount)!,
+        HKObjectType.quantityType(forIdentifier: .appleMoveTime)!
+    ]
+
+    private init() { }
+
+    public func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier, unit: HKUnit) -> Single<Double> {
         return Single<Double>.create { single in
+            self.requestPermission()
             guard let sampleData = HKSampleType.quantityType(forIdentifier: dataType) else { fatalError() }
             let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
-            let query = HKStatisticsQuery(quantityType: sampleData, quantitySamplePredicate: predicate,
-                                          options: [.cumulativeSum]) { _, result, error in
+            let query = HKStatisticsQuery(
+                quantityType: sampleData,
+                quantitySamplePredicate: predicate,
+                options: [.cumulativeSum]
+            ) { _, result, error in
                 guard let quantity = result?.sumQuantity() else {
-                    print(error?.localizedDescription ?? "")
-                    single(.success(0.0))
+                    single(.failure(error!))
                     return
                 }
                 single(.success(quantity.doubleValue(for: unit)))
@@ -23,4 +37,15 @@ class HealthKitTask {
             return Disposables.create()
         }
     }
+
+    private func requestPermission() {
+        healthStore.requestAuthorization(toShare: nil, read: healthKitTypes) { success, error in
+            print(success)
+            if success { return }
+            else {
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+
 }
