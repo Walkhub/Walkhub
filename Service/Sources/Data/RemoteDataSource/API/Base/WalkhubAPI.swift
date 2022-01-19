@@ -6,6 +6,7 @@ import Moya
 protocol WalkhubAPI: TargetType, JWTTokenAuthorizable {
     var domain: ApiDomain { get }
     var urlPath: String { get }
+    var errorMapper: [Int: WalkhubError]? { get }
 }
 
 extension WalkhubAPI {
