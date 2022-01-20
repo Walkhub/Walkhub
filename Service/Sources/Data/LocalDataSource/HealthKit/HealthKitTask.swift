@@ -3,7 +3,6 @@ import Foundation
 import HealthKit
 import RxSwift
 
-@available(iOS 14.5, *)
 final public class HealthKitTask {
 
     public static let shared = HealthKitTask()
