@@ -11,15 +11,13 @@ final public class HealthKitTask {
     let healthStore = HKHealthStore()
     let healthKitTypes: Set = [
         HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!,
-        HKObjectType.quantityType(forIdentifier: .stepCount)!,
-        HKObjectType.quantityType(forIdentifier: .appleMoveTime)!
+        HKObjectType.quantityType(forIdentifier: .stepCount)!
     ]
 
     private init() { }
 
     public func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier, unit: HKUnit) -> Single<Double> {
         return Single<Double>.create { single in
-            self.requestPermission()
             guard let sampleData = HKSampleType.quantityType(forIdentifier: dataType) else { fatalError() }
             let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
             let query = HKStatisticsQuery(
@@ -38,14 +36,7 @@ final public class HealthKitTask {
         }
     }
 
-    private func requestPermission() {
-        healthStore.requestAuthorization(toShare: nil, read: healthKitTypes) { success, error in
-            print(success)
-            if success { return }
-            else {
-                print(error?.localizedDescription as Any)
-            }
-        }
+    public func setHealthKit() {
+        healthStore.requestAuthorization(toShare: nil, read: healthKitTypes) { _, _ in }
     }
-
 }
