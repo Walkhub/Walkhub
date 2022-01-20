@@ -18,6 +18,11 @@ public enum WalkhubError: Error {
     case undefinededClass
     case alreadyJoinedClass
     case undefinededSchool
+    
+    // Challenges
+    case inaccessibleChallenge
+    case undefinededChallenge
+    case alreadyJoinedChallenge
 }
 
 extension WalkhubError: LocalizedError {
@@ -45,6 +50,12 @@ extension WalkhubError: LocalizedError {
             return "해당 반에 이미 가입 되어있습니다."
         case .undefinededSchool:
             return "해당 학교를 찾을 수 없습니다."
+        case .inaccessibleChallenge:
+            return "해당 챌린지에 접근할 수 없습니다."
+        case .undefinededChallenge:
+            return "해당 챌린지를 찾을 수 없습니다."
+        case .alreadyJoinedChallenge:
+            return "해당 챌린지에 이미 참여 되어있습니다."
         }
     }
 }
