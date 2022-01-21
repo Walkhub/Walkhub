@@ -27,7 +27,7 @@ extension ExercisesAPI: WalkhubAPI {
             return "?date=\(date)"
         }
     }
-    
+
     var method: Moya.Method {
         switch self {
         case .startRecord, .saveLocations:
@@ -38,7 +38,7 @@ extension ExercisesAPI: WalkhubAPI {
             return .put
         }
     }
-    
+
     var task: Task {
         switch self {
         case .startRecord(let goal, let goalType):

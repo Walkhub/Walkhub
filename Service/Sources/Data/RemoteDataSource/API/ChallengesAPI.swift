@@ -38,7 +38,7 @@ extension ChallengesAPI: WalkhubAPI {
         return .accessToken
     }
 
-    var errorMapper: [Int : WalkhubError]? {
+    var errorMapper: [Int: WalkhubError]? {
         switch self {
         case .fetchChallengesList:
             return [
