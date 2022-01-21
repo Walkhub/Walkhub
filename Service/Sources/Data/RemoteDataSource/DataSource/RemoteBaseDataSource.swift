@@ -65,7 +65,7 @@ private extension RemoteBaseDataSource {
         }.retry(when: { (errorObservable: Observable<TokenError>) in
             errorObservable.flatMap { error -> Single<Response> in
                 if error == .tokenExpired {
-                    return AuthService.shared.renewalToken()
+                    return RemoteAuthDataSource.shared.renewalToken()
                 } else {
                     throw TokenError.noToken
                 }
