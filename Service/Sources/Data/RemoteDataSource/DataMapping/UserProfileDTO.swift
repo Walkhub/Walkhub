@@ -14,18 +14,5 @@ struct UserProfileDTO: Decodable {
     let school: String
     let grade: Int
     let classNum: Int
-    let titleBadge: TitleBadge
-}
-
-extension UserProfileDTO {
-    struct TitleBadge: Decodable {
-        private enum CodingKeys: String, CodingKey {
-            case id
-            case name
-            case imageUrlString = "image_url"
-        }
-        let id: Int
-        let name: String
-        let imageUrlString: String
-    }
+    let titleBadge: BadgeDTO
 }
