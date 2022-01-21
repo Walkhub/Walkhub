@@ -1,3 +1,5 @@
+// swiftlint:disable nesting
+
 import Foundation
 
 struct ChallengeListDTO: Decodable {
