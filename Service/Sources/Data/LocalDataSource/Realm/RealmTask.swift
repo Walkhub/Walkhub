@@ -1,6 +1,7 @@
 import Foundation
 
 import RealmSwift
+import RxSwift
 
 public protocol ObjectPropertyUpdatable { }
 extension ObjectPropertyUpdatable where Self: Object {
@@ -19,7 +20,7 @@ public protocol RealmTaskType: AnyObject {
         filter: QueryFilter?,
         sortProperty: String?,
         ordering: OrderingType
-    ) -> [T]
+    ) -> Single<[T]>
 
     func add(_ object: Object?)
     func set(_ object: Object?)
@@ -58,8 +59,17 @@ public final class RealmTask: RealmTaskType {
         filter: QueryFilter? = nil,
         sortProperty: String? = nil,
         ordering: OrderingType = .ascending
-    ) -> [T] {
-        fetchObjectsResults(for: T.self, filter: filter, sortProperty: sortProperty, ordering: ordering).toArray()
+    ) -> Single<[T]> {
+        return Single<[T]>.create { single in
+            let resultArr = self.fetchObjectsResults(
+                for: T.self,
+                filter: filter,
+                sortProperty: sortProperty,
+                ordering: ordering
+            ).toArray()
+            single(.success(resultArr))
+            return Disposables.create()
+        }
     }
 
     public func fetchObjectsResults<T: Object>(
@@ -82,8 +92,6 @@ public final class RealmTask: RealmTaskType {
         }
         return results
     }
-
-    // MARK: CRUD
 
     public func add(_ object: Object?) {
         guard let object = object else { return }
