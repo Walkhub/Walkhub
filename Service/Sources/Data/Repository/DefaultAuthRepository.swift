@@ -12,7 +12,7 @@ class DefaultAuthRepository: AuthRepository {
     ) -> Single<Void> {
         return fetchDeviceToken()
             .flatMap { deviceToken in
-                return AuthService.shared.signin(
+                return RemoteAuthDataSource.shared.signin(
                     id: id,
                     password: password,
                     deviceToken: deviceToken
@@ -27,7 +27,7 @@ class DefaultAuthRepository: AuthRepository {
         phoneNumber: String,
         authCode: String
     ) -> Single<Void> {
-        return AuthService.shared.signup(
+        return RemoteAuthDataSource.shared.signup(
             id: id,
             password: password,
             name: name,
@@ -37,7 +37,7 @@ class DefaultAuthRepository: AuthRepository {
     }
 
     func verificationPhone(phoneNumber: String) -> Single<Void> {
-        return AuthService.shared.verificationPhone(
+        return RemoteAuthDataSource.shared.verificationPhone(
             phoneNumber: phoneNumber
         ).map { _ in return () }
     }

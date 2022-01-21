@@ -5,7 +5,7 @@ import RxCocoa
 import RxMoya
 import RxSwift
 
-class BaseService<API: WalkhubAPI> {
+class RemoteBaseDataSource<API: WalkhubAPI> {
 
     private let provider = MoyaProvider<API>(plugins: [JWTPlugin()])
 
@@ -32,7 +32,7 @@ class BaseService<API: WalkhubAPI> {
 
 }
 
-private extension BaseService {
+private extension RemoteBaseDataSource {
 
     private func defaultRequest(_ api: API) -> Single<Response> {
         return provider.rx.request(api)
@@ -75,7 +75,7 @@ private extension BaseService {
 
 }
 
-extension BaseService {
+extension RemoteBaseDataSource {
 
     private func checkApiIsAuthorizable(_ api: API) -> Bool {
         return !(api.jwtTokenType == JWTTokenType.none)
