@@ -27,7 +27,7 @@ extension RankAPI: WalkhubAPI {
     var method: Moya.Method {
         return .get
     }
-    
+
     var task: Task {
         switch self {
         case .fetchSchoolRank(let dateType):

@@ -18,7 +18,7 @@ public enum WalkhubError: Error {
     case undefinededClass
     case alreadyJoinedClass
     case undefinededSchool
-    
+
     // Challenges
     case inaccessibleChallenge
     case undefinededChallenge
