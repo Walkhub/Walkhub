@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - Data Transfer Object
 struct UserProfileDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case name

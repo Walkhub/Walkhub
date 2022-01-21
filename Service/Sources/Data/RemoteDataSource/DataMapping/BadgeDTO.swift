@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - Data Transfer Object
 struct BadgeDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case id
