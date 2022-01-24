@@ -19,3 +19,18 @@ struct UserDTO: Decodable {
     let profileImageUrlString: String
     let walkCount: Int
 }
+
+// MARK: - Mappings to Domain
+extension UserDTO {
+    func toDomain() -> User {
+        return .init(
+            userID: userID,
+            name: name,
+            rank: rank,
+            grade: grade,
+            classNum: classNum,
+            profileImageUrl: URL(string: profileImageUrlString)!,
+            walkCount: walkCount
+        )
+    }
+}
