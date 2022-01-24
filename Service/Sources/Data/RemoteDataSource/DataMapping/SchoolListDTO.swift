@@ -7,3 +7,10 @@ struct SchoolListDTO: Decodable {
     }
     let list: [SchoolDTO]
 }
+
+// MARK: - Mappings to Domain
+extension SchoolListDTO {
+    func toDomain() -> [School] {
+        return list.map { $0.toDomain() }
+    }
+}
