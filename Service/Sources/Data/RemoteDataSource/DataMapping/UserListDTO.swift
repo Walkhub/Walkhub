@@ -5,12 +5,12 @@ struct UserListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case list = "user_list"
     }
-    let userList: [UserDTO]
+    let list: [UserDTO]
 }
 
 // MARK: - Mappings to Domain
 extension UserListDTO {
     func toDomain() -> [User] {
-        return userList.map { $0.toDomain() }
+        return list.map { $0.toDomain() }
     }
 }
