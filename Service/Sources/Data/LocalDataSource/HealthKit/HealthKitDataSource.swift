@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 
 public class HealthKitDataSource {
-    
+
     public func stepCount(
         start: Date,
         end: Date
@@ -14,7 +14,7 @@ public class HealthKitDataSource {
             unit: .count()
         )
     }
-    
+
     public func walkDistance(
         start: Date,
         end: Date
@@ -26,4 +26,5 @@ public class HealthKitDataSource {
             unit: .meter()
         )
     }
+
 }
