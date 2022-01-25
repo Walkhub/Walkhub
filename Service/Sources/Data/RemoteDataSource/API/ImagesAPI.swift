@@ -7,18 +7,19 @@ enum ImagesAPI {
 }
 
 extension ImagesAPI: WalkhubAPI {
+
     var domain: ApiDomain {
         return .images
     }
-    
+
     var urlPath: String {
         return "/"
     }
-    
+
     var method: Moya.Method {
         return .post
     }
-    
+
     var task: Task {
         switch self {
         case .postImages(let images):
@@ -34,8 +35,15 @@ extension ImagesAPI: WalkhubAPI {
             return .uploadMultipart(multiformData)
         }
     }
-    
+
     var jwtTokenType: JWTTokenType? {
         return .accessToken
     }
+
+    var errorMapper: [Int: WalkhubError]? {
+        return [
+            401: .unauthorization
+        ]
+    }
+
 }

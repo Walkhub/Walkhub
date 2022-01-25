@@ -3,11 +3,11 @@ import Foundation
 import Moya
 import RxSwift
 
-final class AuthService: BaseService<AuthAPI> {
+final class RemoteAuthDataSource: RemoteBaseDataSource<AuthAPI> {
 
-    static let shared = AuthService()
+    static let shared = RemoteAuthDataSource()
 
-    private override init() {}
+    private override init() { }
 
     func signin(
         id: String,
@@ -43,6 +43,10 @@ final class AuthService: BaseService<AuthAPI> {
 
     func renewalToken() -> Single<Response> {
         return request(.renewalToken)
+    }
+
+    func findID(phoneNumber: String) -> Single<Response> {
+        return request(.findID(phoneNumber: phoneNumber))
     }
 
 }

@@ -3,12 +3,12 @@ import Foundation
 import Moya
 import RxSwift
 
-final class UserService: BaseService<UserAPI> {
-    
-    static let shared = UserService()
-    
-    private override init() {}
-    
+final class RemoteUserDataSource: RemoteBaseDataSource<UserAPI> {
+
+    static let shared = RemoteUserDataSource()
+
+    private override init() { }
+
     func changePassword(
         accountID: String,
         phoneNumber: String,
@@ -22,23 +22,23 @@ final class UserService: BaseService<UserAPI> {
             newPassword: newPassword
         ))
     }
-    
+
     func fetchProfile(userID: Int) -> Single<Response> {
         return request(.fetchProfile(userID: userID))
     }
-    
-    func fetchMypage() -> Single<Response> {
-        return request(.fetchMypage)
+
+    func fetchMyInformation() -> Single<Response> {
+        return request(.fetchMyInformation)
     }
-    
-    func fetchBadge(userID: Int) -> Single<Response> {
-        return request(.fetchBadge(userID: userID))
+
+    func fetchBadges(userID: Int) -> Single<Response> {
+        return request(.fetchBadges(userID: userID))
     }
-    
+
     func mainBadgeSet(badgeID: Int) -> Single<Response> {
-        return request(.mainBadgeSet(badgeID: badgeID))
+        return request(.setMainBadge(badgeID: badgeID))
     }
-    
+
     func changeProfile(
         name: String,
         profileImageUrlString: String,
@@ -52,21 +52,17 @@ final class UserService: BaseService<UserAPI> {
             sex: sex
         ))
     }
-    
-    func findID(phoneNumber: String) -> Single<Response> {
-        return request(.findID(phoneNumber: phoneNumber))
-    }
-    
+
     func writeHealth(
         height: Float,
         weight: Int
     ) -> Single<Response> {
-        return request(.writeHealth(
+        return request(.setHealthInformation(
             height: height,
             weight: weight
         ))
     }
-    
+
     func joinClass(
         agencyCode: String,
         grade: Int,
@@ -78,8 +74,9 @@ final class UserService: BaseService<UserAPI> {
             classNum: classNum
         ))
     }
-    
-    func changeSchoolInformation(agencyCode: String) -> Single<Response> {
-        return request(.changeSchoolInformation(agencyCode: agencyCode))
+
+    func setSchoolInformation(agencyCode: String) -> Single<Response> {
+        return request(.setSchoolInformation(agencyCode: agencyCode))
     }
+
 }

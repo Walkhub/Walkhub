@@ -12,21 +12,12 @@ class DefaultAuthRepository: AuthRepository {
     ) -> Single<Void> {
         return fetchDeviceToken()
             .flatMap { deviceToken in
-                return AuthService.shared.signin(
+                return RemoteAuthDataSource.shared.signin(
                     id: id,
                     password: password,
                     deviceToken: deviceToken
                 )
-            }.map { _ in
-                return ()
-            }.catch { error in
-                if let moyaError = error as? MoyaError {
-                    switch moyaError.errorCode {
-                    case 404: return Single.error(WalkhubError.faildSignin)
-                    default: return Single.error(error)
-                    }
-                } else {  return Single.error(error) }
-            }
+            }.map { _ in return () }
     }
 
     func signup(
@@ -36,27 +27,17 @@ class DefaultAuthRepository: AuthRepository {
         phoneNumber: String,
         authCode: String
     ) -> Single<Void> {
-        return AuthService.shared.signup(
+        return RemoteAuthDataSource.shared.signup(
             id: id,
             password: password,
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode
-        ).map { _ in
-            return ()
-        }.catch { error in
-            if let moyaError = error as? MoyaError {
-                switch moyaError.errorCode {
-                case 404: return Single.error(WalkhubError.invalidAuthCode)
-                case 409: return Single.error(WalkhubError.duplicateId)
-                default: return Single.error(error)
-                }
-            } else {  return Single.error(error) }
-        }
+        ).map { _ in return () }
     }
 
     func verificationPhone(phoneNumber: String) -> Single<Void> {
-        return AuthService.shared.verificationPhone(
+        return RemoteAuthDataSource.shared.verificationPhone(
             phoneNumber: phoneNumber
         ).map { _ in return () }
     }

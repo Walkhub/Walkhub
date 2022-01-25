@@ -1,5 +1,8 @@
+// swiftlint:disable nesting
+
 import Foundation
 
+// MARK: - Data Transfer Object
 struct ParticipantsListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case list = "challenge_participants_list"

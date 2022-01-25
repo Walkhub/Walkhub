@@ -3,14 +3,21 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RankService: BaseService<RankAPI> {
+final class RemoteRankDataSource: RemoteBaseDataSource<RankAPI> {
+
+    static let shared = RemoteRankDataSource()
+
+    private override init() { }
+
     func fetchSchoolRank(dateType: String) -> Single<Response> {
         return request(.fetchSchoolRank(dateType: dateType))
     }
+
     func searchSchool(name: String) -> Single<Response> {
         return request(.searchSchool(name: name))
     }
-    func fetchUserRanky(
+
+    func fetchUserRank(
         scope: String,
         dateTypa: String,
         sort: String,
@@ -23,6 +30,7 @@ final class RankService: BaseService<RankAPI> {
             agencyCode: agencyCode
         ))
     }
+
     func searchUser(
         name: String,
         scope: String,
@@ -38,4 +46,5 @@ final class RankService: BaseService<RankAPI> {
             classNum: classNum
         ))
     }
+
 }

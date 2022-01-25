@@ -3,34 +3,44 @@ import Foundation
 import Moya
 
 enum NotificationsAPI {
-    case viewNotificationsList
-    case editReadWhether(notificationID: Int)
+    case fetchNotificationsList
+    case toggleIsRead(notificationID: Int)
 }
 
 extension NotificationsAPI: WalkhubAPI {
+
     var domain: ApiDomain {
         .notification
     }
-    
+
     var urlPath: String {
         switch self {
-        case .viewNotificationsList:
+        case .fetchNotificationsList:
             return "/"
-        case .editReadWhether(let notificationID):
+        case .toggleIsRead(let notificationID):
             return "/\(notificationID)"
         }
     }
-    
+
     var method: Moya.Method {
         switch self {
-        case .viewNotificationsList:
+        case .fetchNotificationsList:
             return .get
-        case .editReadWhether:
+        case .toggleIsRead:
             return .patch
         }
     }
-    
+
     var jwtTokenType: JWTTokenType? {
         return .accessToken
+    }
+
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        default:
+            return [
+                401: .unauthorization
+            ]
+        }
     }
 }
