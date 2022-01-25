@@ -3,10 +3,10 @@ import Foundation
 import RxSwift
 
 final class HealthKitDataSource {
-    
+
     public static let shared = HealthKitDataSource()
-    
-    private init()
+
+    private init() { }
 
     public func stepCount(
         start: Date,
