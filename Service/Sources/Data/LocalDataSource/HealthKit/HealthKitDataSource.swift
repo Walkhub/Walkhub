@@ -5,6 +5,8 @@ import RxSwift
 class HealthKitDataSource {
     
     public static let shared = HealthKitDataSource()
+    
+    private init()
 
     public func stepCount(
         start: Date,
