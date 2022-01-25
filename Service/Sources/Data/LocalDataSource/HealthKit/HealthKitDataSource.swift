@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-class HealthKitDataSource {
+final class HealthKitDataSource {
     
     public static let shared = HealthKitDataSource()
     
