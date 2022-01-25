@@ -7,6 +7,7 @@ enum AuthAPI {
     case signup(id: String, password: String, name: String, phoneNumber: String, authCode: String, height: Float, weight: Int, birthday: String, sex: String, agencyCode: String)
     case verificationPhone(phoneNumber: String)
     case renewalToken
+    case findID(phoneNumber: String)
 }
 
 extension AuthAPI: WalkhubAPI {
@@ -25,6 +26,8 @@ extension AuthAPI: WalkhubAPI {
             return "verification-codes"
         case .renewalToken:
             return "/reissue"
+        case .findID(let phoneNum):
+            return "/accounts/\(phoneNum)"
         }
     }
 
@@ -34,6 +37,8 @@ extension AuthAPI: WalkhubAPI {
             return .post
         case .renewalToken:
             return .put
+        case .findID:
+            return .get
         }
     }
 
@@ -81,6 +86,27 @@ extension AuthAPI: WalkhubAPI {
             return .refreshToken
         default:
             return JWTTokenType.none
+        }
+    }
+
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        case .signin:
+            return [
+                401: .wrongPassword,
+                404: .wrongId
+            ]
+        case .signup:
+            return [
+                404: .invalidAuthCode,
+                409: .duplicateId
+            ]
+        case .findID:
+            return [
+                404: .wrongPhoneNumber
+            ]
+        default:
+            return nil
         }
     }
 

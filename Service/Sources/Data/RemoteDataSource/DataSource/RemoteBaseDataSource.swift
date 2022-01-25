@@ -5,7 +5,7 @@ import RxCocoa
 import RxMoya
 import RxSwift
 
-class BaseService<API: TargetType & JWTTokenAuthorizable> {
+class RemoteBaseDataSource<API: WalkhubAPI> {
 
     private let provider = MoyaProvider<API>(plugins: [JWTPlugin()])
 
@@ -32,11 +32,17 @@ class BaseService<API: TargetType & JWTTokenAuthorizable> {
 
 }
 
-private extension BaseService {
+private extension RemoteBaseDataSource {
 
     private func defaultRequest(_ api: API) -> Single<Response> {
         return provider.rx.request(api)
             .timeout(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .catch { error in
+                guard let moyaError = error as? MoyaError else {
+                    return Single.error(error)
+                }
+                return Single.error(api.errorMapper?[moyaError.errorCode] ?? error)
+            }
     }
 
     private func authorizableRequest(_ api: API) -> Single<Response> {
@@ -59,7 +65,7 @@ private extension BaseService {
         }.retry(when: { (errorObservable: Observable<TokenError>) in
             errorObservable.flatMap { error -> Single<Response> in
                 if error == .tokenExpired {
-                    return AuthService.shared.renewalToken()
+                    return RemoteAuthDataSource.shared.renewalToken()
                 } else {
                     throw TokenError.noToken
                 }
@@ -69,7 +75,7 @@ private extension BaseService {
 
 }
 
-extension BaseService {
+extension RemoteBaseDataSource {
 
     private func checkApiIsAuthorizable(_ api: API) -> Bool {
         return !(api.jwtTokenType == JWTTokenType.none)

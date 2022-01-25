@@ -10,10 +10,11 @@ enum RankAPI {
 }
 
 extension RankAPI: WalkhubAPI {
+
     var domain: ApiDomain {
         .ranks
     }
-    
+
     var urlPath: String {
         switch self {
         case .fetchSchoolRank, .searchSchool:
@@ -22,11 +23,11 @@ extension RankAPI: WalkhubAPI {
             return "/users"
         }
     }
-    
+
     var method: Moya.Method {
         return .get
     }
-    
+
     var task: Task {
         switch self {
         case .fetchSchoolRank(let dateType):
@@ -63,10 +64,17 @@ extension RankAPI: WalkhubAPI {
             )
         }
     }
-    
+
     var jwtTokenType: JWTTokenType? {
         return .accessToken
     }
-    
-    
+
+    var errorMapper: [Int: WalkhubError]? {
+        switch self {
+        default:
+            return [
+                401: .unauthorization
+            ]
+        }
+    }
 }
