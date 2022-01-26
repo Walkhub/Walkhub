@@ -15,3 +15,16 @@ struct SchoolDTO: Decodable {
     let logoImageUrlString: String
     let walkCount: Int
 }
+
+// MARK: - Mappings to Domain
+extension SchoolDTO {
+    func toDomain() -> School {
+        return .init(
+            agencyCode: agencyCode,
+            name: name,
+            rank: rank,
+            logoImageUrl: URL(string: logoImageUrlString)!,
+            walkCount: walkCount
+        )
+    }
+}

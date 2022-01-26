@@ -9,3 +9,13 @@ struct SchoolRankDTO: Decodable {
     let mySchoolRank: SchoolDTO
     let schoolList: [SchoolDTO]
 }
+
+// MARK: - Mappings to Domain
+extension SchoolRankDTO {
+    func toDomain() -> SchoolRank {
+        return .init(
+            mySchoolRank: mySchoolRank.toDomain(),
+            schoolList: schoolList.map { $0.toDomain() }
+        )
+    }
+}
