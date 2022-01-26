@@ -35,7 +35,7 @@ class OfflineCacheUtil<T: Equatable> {
         let remote = fetchRemoteData().asObservable()
         return Observable<T>.create { observer in
             let localDisposable = local
-                .catch{ _ in .never() }
+                .catch { _ in .never() }
                 .bind(to: observer)
             let remoteDisposable = local
                 .map { Optional($0) }
