@@ -3,10 +3,11 @@ import Foundation
 import Moya
 
 enum RankAPI {
-    case fetchSchoolRank(dateType: String)
+    case fetchSchoolRank(dateType: DateType)
     case searchSchool(name: String)
-    case fetchUserRank(scope: String, dateType: String, sort: String, agencyCode: String)
-    case searchUser(name: String, scope: String, agencyCode: String, grade: Int, classNum: Int)
+    case fetchUserSchoolRank(scope: Scope, dateType: DateType)
+    case fetchUserRank(scope: Scope, dateType: DateType, agencyCode: String)
+    case searchUser(name: String, scope: Scope, agencyCode: String, grade: Int, classNum: Int)
 }
 
 extension RankAPI: WalkhubAPI {
@@ -17,10 +18,16 @@ extension RankAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .fetchSchoolRank, .searchSchool:
+        case .fetchSchoolRank:
             return "/schools"
-        case .fetchUserRank, .searchUser:
+        case .searchSchool:
+            return "/"
+        case .fetchUserSchoolRank:
+            return "/users/my-school"
+        case .fetchUserRank:
             return "/users"
+        case .searchUser:
+            return "/search"
         }
     }
 
@@ -33,7 +40,7 @@ extension RankAPI: WalkhubAPI {
         case .fetchSchoolRank(let dateType):
             return .requestParameters(
                 parameters: [
-                    "dateType": dateType
+                    "dateType": dateType.rawValue
                 ],
                 encoding: URLEncoding.queryString
             )
@@ -43,20 +50,27 @@ extension RankAPI: WalkhubAPI {
                     "name": name
                 ], encoding: URLEncoding.queryString
             )
-        case .fetchUserRank(let scope, let dateType, let sort, let agencyCode):
+        case .fetchUserSchoolRank(let scope, let dateType):
             return .requestParameters(
                 parameters: [
-                    "scope": scope,
-                    "dateType": dateType,
-                    "sort": sort,
-                    "agencyCode": agencyCode
+                    "scope": scope.rawValue,
+                    "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
+            )
+        case .fetchUserRank(let scope, let dateType, let agencyCode):
+            return .requestParameters(
+                parameters: [
+                    "scope": scope.rawValue,
+                    "dateType": dateType.rawValue,
+                    "agencyCode": agencyCode
+                ],
+                encoding: URLEncoding.queryString
             )
         case .searchUser(let name, let scope, let agencyCode, let grade, let classNum):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "scope": scope,
+                    "scope": scope.rawValue,
                     "agencyCode": agencyCode,
                     "grade": grade,
                     "classNum": classNum
@@ -77,4 +91,5 @@ extension RankAPI: WalkhubAPI {
             ]
         }
     }
+
 }
