@@ -3,12 +3,12 @@ import Foundation
 import RxSwift
 import Moya
 
-final class ExercisesService: BaseService<ExercisesAPI> {
-    
-    static let shared = ExercisesService()
-    
-    private override init() {}
-    
+final class RemoteExercisesDataSource: RemoteBaseDataSource<ExercisesAPI> {
+
+    static let shared = RemoteExercisesDataSource()
+
+    private override init() { }
+
     func startRecord(
         goal: Int,
         goalType: String
@@ -18,7 +18,7 @@ final class ExercisesService: BaseService<ExercisesAPI> {
             goalType: goalType
         ))
     }
-    
+
     func endRecord(
         exercisesID: Int,
         walkCount: Int,
@@ -32,7 +32,7 @@ final class ExercisesService: BaseService<ExercisesAPI> {
             imageUrlString: imageUrlString
         ))
     }
-    
+
     func saveLocations(
         exercisesID: Int,
         order: Int,
@@ -46,7 +46,7 @@ final class ExercisesService: BaseService<ExercisesAPI> {
             longitude: longitude
         ))
     }
-    
+
     func setExsercises(
         date: String,
         distance: Int,
@@ -58,4 +58,5 @@ final class ExercisesService: BaseService<ExercisesAPI> {
             walkCount: walkCount
         ))
     }
+
 }

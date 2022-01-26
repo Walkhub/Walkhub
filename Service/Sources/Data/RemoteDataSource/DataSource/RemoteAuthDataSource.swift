@@ -3,11 +3,11 @@ import Foundation
 import Moya
 import RxSwift
 
-final class AuthService: BaseService<AuthAPI> {
+final class RemoteAuthDataSource: RemoteBaseDataSource<AuthAPI> {
 
-    static let shared = AuthService()
+    static let shared = RemoteAuthDataSource()
 
-    private override init() {}
+    private override init() { }
 
     func signin(
         id: String,
@@ -26,14 +26,24 @@ final class AuthService: BaseService<AuthAPI> {
         password: String,
         name: String,
         phoneNumber: String,
-        authCode: String
+        authCode: String,
+        height: Float,
+        weight: Int,
+        birthday: String,
+        sex: String,
+        agencyCode: String
     ) -> Single<Response> {
         return request(.signup(
             id: id,
             password: password,
             name: name,
             phoneNumber: phoneNumber,
-            authCode: authCode
+            authCode: authCode,
+            height: height,
+            weight: weight,
+            birthday: birthday,
+            sex: sex,
+            agencyCode: agencyCode
         ))
     }
 

@@ -3,12 +3,12 @@ import Foundation
 import Moya
 import RxSwift
 
-final class UserService: BaseService<UserAPI> {
-    
-    static let shared = UserService()
-    
-    private override init() {}
-    
+final class RemoteUserDataSource: RemoteBaseDataSource<UserAPI> {
+
+    static let shared = RemoteUserDataSource()
+
+    private override init() { }
+
     func changePassword(
         accountID: String,
         phoneNumber: String,

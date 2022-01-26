@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - Data Transfer Object
 struct SchoolDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case agencyCode = "agency_code"
