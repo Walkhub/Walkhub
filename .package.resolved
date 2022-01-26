@@ -38,15 +38,6 @@
         }
       },
       {
-        "package": "FlexLayout",
-        "repositoryURL": "https://github.com/layoutBox/FlexLayout.git",
-        "state": {
-          "branch": null,
-          "revision": "f8227b3bb9bc2cf7676ff836d458a7a184f1da7f",
-          "version": "1.10.1"
-        }
-      },
-      {
         "package": "GoogleAppMeasurement",
         "repositoryURL": "https://github.com/google/GoogleAppMeasurement.git",
         "state": {
@@ -119,15 +110,6 @@
         }
       },
       {
-        "package": "PinLayout",
-        "repositoryURL": "https://github.com/layoutBox/PinLayout.git",
-        "state": {
-          "branch": null,
-          "revision": "93feb9f10c669033b52e6fd9589152036fcbd809",
-          "version": "1.10.0"
-        }
-      },
-      {
         "package": "Promises",
         "repositoryURL": "https://github.com/google/promises.git",
         "state": {
@@ -170,6 +152,15 @@
           "branch": null,
           "revision": "b4307ba0b6425c0ba4178e138799946c3da594f8",
           "version": "6.5.0"
+        }
+      },
+      {
+        "package": "SnapKit",
+        "repositoryURL": "https://github.com/SnapKit/SnapKit.git",
+        "state": {
+          "branch": null,
+          "revision": "d458564516e5676af9c70b4f4b2a9178294f1bc6",
+          "version": "5.0.1"
         }
       },
       {

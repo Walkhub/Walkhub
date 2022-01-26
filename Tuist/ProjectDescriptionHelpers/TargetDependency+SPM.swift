@@ -12,8 +12,7 @@ public extension TargetDependency.SPM {
     static let RxMoya = TargetDependency.package(product: "RxMoya")
     static let Then = TargetDependency.package(product: "Then")
     static let Swinject = TargetDependency.package(product: "Swinject")
-    static let PinLayout = TargetDependency.package(product: "PinLayout")
-    static let FlexLayout = TargetDependency.package(product: "FlexLayout")
+    static let SnapKit = TargetDependency.package(product: "SnapKit")
     static let FCM = TargetDependency.package(product: "FirebaseMessaging")
 }
 
@@ -40,13 +39,9 @@ public extension Package {
         url: "https://github.com/Swinject/Swinject.git",
         requirement: .upToNextMajor(from: "2.8.0")
     )
-    static let PinLayout = Package.remote(
-        url: "https://github.com/layoutBox/PinLayout.git",
-        requirement: .upToNextMajor(from: "1.10.0")
-    )
-    static let FlexLayout = Package.remote(
-        url: "https://github.com/layoutBox/FlexLayout.git",
-        requirement: .upToNextMajor(from: "1.3.23")
+    static let SnapKit = Package.remote(
+        url: "https://github.com/SnapKit/SnapKit.git",
+        requirement: .upToNextMajor(from: "5.0.1")
     )
     static let Firebase = Package.remote(
         url: "https://github.com/firebase/firebase-ios-sdk.git",
