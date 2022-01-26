@@ -1,3 +1,5 @@
+// swiftlint:disable function_parameter_count
+
 import Foundation
 
 import Moya

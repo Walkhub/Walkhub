@@ -1,3 +1,4 @@
+// swiftlint:disable function_parameter_count
 import Foundation
 
 import FirebaseMessaging
@@ -5,7 +6,7 @@ import RxSwift
 import Moya
 
 class DefaultAuthRepository: AuthRepository {
-
+    
     func signin(
         id: String,
         password: String
@@ -25,14 +26,24 @@ class DefaultAuthRepository: AuthRepository {
         password: String,
         name: String,
         phoneNumber: String,
-        authCode: String
+        authCode: String,
+        height: Float,
+        weight: Int,
+        birthday: String,
+        sex: String,
+        agencyCode: String
     ) -> Single<Void> {
         return RemoteAuthDataSource.shared.signup(
             id: id,
             password: password,
             name: name,
             phoneNumber: phoneNumber,
-            authCode: authCode
+            authCode: authCode,
+            height: height,
+            weight: weight,
+            birthday: birthday,
+            sex: sex,
+            agencyCode: agencyCode
         ).map { _ in return () }
     }
 
