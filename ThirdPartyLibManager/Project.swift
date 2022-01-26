@@ -9,8 +9,7 @@ let project = Project.dynamicFramework(
         .Moya,
         .Then,
         .Swinject,
-        .PinLayout,
-        .FlexLayout,
+        .SnapKit,
         .Firebase
     ],
     dependencies: [
@@ -21,8 +20,7 @@ let project = Project.dynamicFramework(
         .SPM.RxMoya,
         .SPM.Then,
         .SPM.Swinject,
-        .SPM.PinLayout,
-        .SPM.FlexLayout,
+        .SPM.SnapKit,
         .SPM.FCM
     ]
 )
