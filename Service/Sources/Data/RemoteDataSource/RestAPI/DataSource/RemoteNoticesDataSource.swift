@@ -3,7 +3,7 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteNoticesDataSource: RemoteBaseDataSource<NoticesAPI> {
+final class RemoteNoticesDataSource: RestApiRemoteDataSource<NoticesAPI> {
 
     static let shared = RemoteNoticesDataSource()
 
