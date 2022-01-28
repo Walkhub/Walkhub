@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScence)
         window?.windowScene = windowScence
 
-        window?.rootViewController = ViewController()
+        window?.rootViewController = RecordMeasurementViewController()
         window?.makeKeyAndVisible()
     }
 
