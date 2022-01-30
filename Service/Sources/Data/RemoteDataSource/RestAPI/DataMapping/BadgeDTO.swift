@@ -11,3 +11,14 @@ struct BadgeDTO: Decodable {
     let name: String
     let imageUrlString: String
 }
+
+// MARK: - Mappings to Domain
+extension BadgeDTO {
+    func toDomain() -> Badge {
+        return .init(
+            id: id,
+            name: name,
+            imageUrl: URL(string: imageUrlString)!
+        )
+    }
+}

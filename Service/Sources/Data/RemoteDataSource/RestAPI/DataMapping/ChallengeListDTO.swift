@@ -1,30 +1,16 @@
-// swiftlint:disable nesting
-
 import Foundation
 
 // MARK: - Data Transfer Object
 struct ChallengeListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case challengeList = "challenge_list"
+        case list = "challenge_list"
     }
-    let challengeList: [Challenge]
+    let list: [ChallengeDTO]
 }
 
+// MARK: - Mappings to Domain
 extension ChallengeListDTO {
-    struct Challenge: Decodable {
-        private enum CodingKeys: String, CodingKey {
-            case id
-            case name
-            case start = "start_at"
-            case end = "end_at"
-            case imageUrlString = "image_url"
-            case scope
-        }
-        let id: Int
-        let name: String
-        let start: String
-        let end: String
-        let imageUrlString: String
-        let scope: String
+    func toDomain() -> [Challenge] {
+        return list.map { $0.toDomain() }
     }
 }
