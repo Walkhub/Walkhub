@@ -7,3 +7,10 @@ struct UserIdDTO: Decodable {
     }
     let userID: String
 }
+
+// MARK: - Mappings to Domain
+extension UserIdDTO {
+    func toDomain() -> String {
+        return userID
+    }
+}
