@@ -7,3 +7,10 @@ struct BadgeListDTO: Decodable {
     }
     let badgeList: [BadgeDTO]
 }
+
+// MARK: - Mappings to Domain
+extension BadgeListDTO {
+    func toDomain() -> [Badge] {
+        return badgeList.map { $0.toDomain() }
+    }
+}
