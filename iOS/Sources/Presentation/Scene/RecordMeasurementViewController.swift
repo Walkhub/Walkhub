@@ -24,9 +24,13 @@ class RecordMeasurementViewController: UIViewController {
             $0.minimumInteritemSpacing = 12
             $0.scrollDirection = .horizontal
             $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        })
+        }).then {
+            $0.backgroundColor = .init(named: "FAFAFA")
+        }
 
-    private let recordTableView = UITableView()
+    private let recordTableView = UITableView().then {
+        $0.backgroundColor = .init(named: "FAFAFA")
+    }
 
     private let whiteView = UIView().then {
         $0.backgroundColor = .white
