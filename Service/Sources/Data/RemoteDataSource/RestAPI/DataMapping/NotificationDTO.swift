@@ -8,12 +8,26 @@ struct NotificationDTO: Decodable {
         case content
         case type
         case value
-        case read = "is_read"
+        case isRead = "is_read"
     }
     let id: Int
     let title: String
     let content: String
     let type: String
     let value: Int
-    let read: Bool
+    let isRead: Bool
+}
+
+// MARK: - Mappings to Domain
+extension NotificationDTO {
+    func toDomain() -> Notification {
+        return .init(
+            id: id,
+            title: title,
+            content: content,
+            type: NotificationType(rawValue: type)!,
+            value: value,
+            isRead: isRead
+        )
+    }
 }
