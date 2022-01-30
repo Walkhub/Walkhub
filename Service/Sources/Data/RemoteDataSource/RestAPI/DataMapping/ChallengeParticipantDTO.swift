@@ -13,3 +13,15 @@ struct ChallengeParticipantDTO: Codable {
     let gcn: String
     let profileImageUrlString: String
 }
+
+// MARK: - Mappings to Domain
+extension ChallengeParticipantDTO {
+    func toDomain() -> ChallengeParticipant {
+        return .init(
+            id: id,
+            name: name,
+            gcn: gcn,
+            profileImageUrlString: URL(string: profileImageUrlString)!
+        )
+    }
+}
