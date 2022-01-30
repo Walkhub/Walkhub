@@ -14,6 +14,7 @@ public extension TargetDependency.SPM {
     static let Swinject = TargetDependency.package(product: "Swinject")
     static let SnapKit = TargetDependency.package(product: "SnapKit")
     static let FCM = TargetDependency.package(product: "FirebaseMessaging")
+    static let SocketIO = TargetDependency.package(product: "SocketIO")
 }
 
 public extension Package {
@@ -46,6 +47,10 @@ public extension Package {
     static let Firebase = Package.remote(
         url: "https://github.com/firebase/firebase-ios-sdk.git",
         requirement: .upToNextMajor(from: "8.10.0")
+    )
+    static let SocketIO = Package.remote(
+        url: "https://github.com/socketio/socket.io-client-swift.git",
+        requirement: .exact("15.2.0")
     )
 
 }

@@ -5,7 +5,7 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteAuthDataSource: RemoteBaseDataSource<AuthAPI> {
+final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
 
     static let shared = RemoteAuthDataSource()
 

@@ -3,7 +3,7 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteChallengesDataSource: RemoteBaseDataSource<ChallengesAPI> {
+final class RemoteChallengesDataSource: RestApiRemoteDataSource<ChallengesAPI> {
 
     static let shared = RemoteChallengesDataSource()
 

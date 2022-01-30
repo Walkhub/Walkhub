@@ -3,7 +3,7 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteRankDataSource: RemoteBaseDataSource<RankAPI> {
+final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
 
     static let shared = RemoteRankDataSource()
 

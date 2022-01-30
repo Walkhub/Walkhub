@@ -3,7 +3,7 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteImagesDataSource: RemoteBaseDataSource<ImagesAPI> {
+final class RemoteImagesDataSource: RestApiRemoteDataSource<ImagesAPI> {
 
     static let shared = RemoteImagesDataSource()
 
