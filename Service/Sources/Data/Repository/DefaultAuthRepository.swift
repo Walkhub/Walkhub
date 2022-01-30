@@ -6,7 +6,7 @@ import RxSwift
 import Moya
 
 class DefaultAuthRepository: AuthRepository {
-    
+
     func signin(
         id: String,
         password: String
