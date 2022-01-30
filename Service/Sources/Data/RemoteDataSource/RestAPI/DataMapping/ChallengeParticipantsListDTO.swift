@@ -1,8 +1,8 @@
 import Foundation
 
-struct ChallengeParticipantsListDTO: Decodable {
+struct ChallengeParticipantListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case list = "challenge_participants_list"
     }
-    let list: [ChallengeParticipantsDTO]
+    let list: [ChallengeParticipantDTO]
 }

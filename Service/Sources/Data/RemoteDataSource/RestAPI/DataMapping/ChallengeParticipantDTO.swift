@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - Data Transfer Object
-struct ChallengeParticipantsDTO: Codable {
+struct ChallengeParticipantDTO: Codable {
     private enum CodingKeys: String, CodingKey {
         case id
         case name
