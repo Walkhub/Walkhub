@@ -24,8 +24,8 @@ extension ChallengeDTO {
         return .init(
             id: id,
             name: name,
-            start: start,
-            end: end,
+            start: start.toDate(),
+            end: end.toDate(),
             imageUrl: URL(string: imageUrlString)!,
             scope: scope
         )
