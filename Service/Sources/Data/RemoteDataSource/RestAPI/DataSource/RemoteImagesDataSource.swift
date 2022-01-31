@@ -9,8 +9,9 @@ final class RemoteImagesDataSource: RestApiRemoteDataSource<ImagesAPI> {
 
     private override init() { }
 
-    func postImages(images: [Data]) -> Single<Response> {
+    func postImages(images: [Data]) -> Single<Void> {
         return request(.postImages(images: images))
+            .map { _ in () }
     }
 
 }
