@@ -11,9 +11,9 @@ struct UserProfileDTO: Decodable {
         case titleBadge = "title_badge"
     }
     let name: String
-    let profileImageUrlString: String
-    let school: String
-    let grade: Int
-    let classNum: Int
+    let profileImageUrlString: String?
+    let school: String?
+    let grade: Int?
+    let classNum: Int?
     let titleBadge: BadgeDTO
 }
