@@ -71,6 +71,10 @@
 		<string>NotoSansCJKkr-Bold.otf</string>
 		<string>NotoSansCJKkr-Regular.otf</string>
 		<string>NotoSansCJKkr-Medium.otf</string>
+		<string>NotoSansCJKkr-Thin.otf</string>
+		<string>NotoSansCJKkr-Black.otf</string>
+		<string>NotoSansCJKkr-Light.otf</string>
+		<string>NotoSansCJKkr-DemiLight.otf</string>
 	</array>
 </dict>
 </plist>

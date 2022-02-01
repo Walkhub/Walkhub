@@ -7,6 +7,10 @@ extension UIFont {
         case regular = "Regular"
         case medium = "Medium"
         case bold = "Bold"
+        case demiLight = "DemiLight"
+        case light = "Light"
+        case black = "Black"
+        case thin = "Thin"
     }
 
     static func setFont(size: CGFloat, family: Family) -> UIFont {
