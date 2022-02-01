@@ -14,29 +14,36 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         phoneNumber: String,
         authCode: String,
         newPassword: String
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.changePassword(
             accountID: accountID,
             phoneNumber: phoneNumber,
             authCode: authCode,
             newPassword: newPassword
-        ))
+        )).map { _ in () }
     }
 
-    func fetchProfile(userID: Int) -> Single<Response> {
+    func fetchProfile(userID: Int) -> Single<UserProfile> {
         return request(.fetchProfile(userID: userID))
+            .map(UserProfileDTO.self)
+            .map { $0.toDomain() }
     }
 
-    func fetchMyInformation() -> Single<Response> {
+    func fetchMyInformation() -> Single<UserProfile> {
         return request(.fetchMyInformation)
+            .map(UserProfileDTO.self)
+            .map { $0.toDomain() }
     }
 
-    func fetchBadges(userID: Int) -> Single<Response> {
+    func fetchBadges(userID: Int) -> Single<[Badge]> {
         return request(.fetchBadges(userID: userID))
+            .map(BadgeListDTO.self)
+            .map { $0.toDomain() }
     }
 
-    func mainBadgeSet(badgeID: Int) -> Single<Response> {
+    func setMainBadge(badgeID: Int) -> Single<Void> {
         return request(.setMainBadge(badgeID: badgeID))
+            .map { _ in () }
     }
 
     func changeProfile(
@@ -44,39 +51,40 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         profileImageUrlString: String,
         birthday: String,
         sex: Sex
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
             birthday: birthday,
             sex: sex
-        ))
+        )).map { _ in () }
     }
 
     func writeHealth(
         height: Float,
         weight: Int
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.setHealthInformation(
             height: height,
             weight: weight
-        ))
+        )).map { _ in () }
     }
 
     func joinClass(
         agencyCode: String,
         grade: Int,
         classNum: Int
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.joinClass(
             agencyCode: agencyCode,
             grade: grade,
             classNum: classNum
-        ))
+        )).map { _ in () }
     }
 
-    func setSchoolInformation(agencyCode: String) -> Single<Response> {
+    func setSchoolInformation(agencyCode: String) -> Single<Void> {
         return request(.setSchoolInformation(agencyCode: agencyCode))
+            .map { _ in () }
     }
 
 }
