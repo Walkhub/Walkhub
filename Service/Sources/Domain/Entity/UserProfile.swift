@@ -1,6 +1,7 @@
 import Foundation
 
 struct UserProfile {
+    let userID: Int
     let name: String
     let profileImageUrl: URL?
     let school: String?
