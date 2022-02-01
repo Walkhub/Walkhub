@@ -43,7 +43,7 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         name: String,
         profileImageUrlString: String,
         birthday: String,
-        sex: String
+        sex: Sex
     ) -> Single<Response> {
         return request(.changeProfile(
             name: name,

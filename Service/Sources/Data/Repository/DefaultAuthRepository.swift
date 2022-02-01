@@ -30,7 +30,7 @@ class DefaultAuthRepository: AuthRepository {
         height: Float,
         weight: Int,
         birthday: String,
-        sex: String,
+        sex: Sex,
         agencyCode: String
     ) -> Single<Void> {
         return RemoteAuthDataSource.shared.signup(

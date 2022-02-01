@@ -32,7 +32,7 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         height: Float,
         weight: Int,
         birthday: String,
-        sex: String,
+        sex: Sex,
         agencyCode: String
     ) -> Single<Void> {
         return request(.signup(
