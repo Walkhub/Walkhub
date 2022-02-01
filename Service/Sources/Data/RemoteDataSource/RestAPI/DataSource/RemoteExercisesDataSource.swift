@@ -12,11 +12,13 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
     func startRecord(
         goal: Int,
         goalType: String
-    ) -> Single<Response> {
+    ) -> Single<String> {
         return request(.startRecord(
             goal: goal,
             goalType: goalType
         ))
+            .map(ExerciseIdDTO.self)
+            .map { $0.toDomain() }
     }
 
     func endRecord(
@@ -24,13 +26,13 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         walkCount: Int,
         distance: Int,
         imageUrlString: String
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.endRecord(
             exercisesID: exercisesID,
             walkCount: walkCount,
             distance: distance,
             imageUrlString: imageUrlString
-        ))
+        )).map { _ in () }
     }
 
     func saveLocations(
@@ -38,25 +40,25 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         order: Int,
         latitude: String,
         longitude: String
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.saveLocations(
             exercisesID: exercisesID,
             order: order,
             latitude: latitude,
             longitude: longitude
-        ))
+        )).map { _ in () }
     }
 
     func setExsercises(
         date: String,
         distance: Int,
         walkCount: Int
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.setExsercises(
             date: date,
             distance: distance,
             walkCount: walkCount
-        ))
+        )).map { _ in () }
     }
 
 }
