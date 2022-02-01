@@ -56,7 +56,8 @@ class RecordMeasurementViewController: UIViewController {
     }
 
     private let playBtn = UIButton(type: .system).then {
-        $0.setImage(.init(systemName: "play.circle"), for: .normal)
+        $0.setImage(.init(systemName: "play.circle.fill"), for: .normal)
+        $0.setPreferredSymbolConfiguration(.init(pointSize: 55), forImageIn: .normal)
         $0.tintColor = .init(named: "57B4F1")
     }
 
@@ -64,6 +65,7 @@ class RecordMeasurementViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .init(named: "FAFAFA")
         self.navigationItem.title = "기록 측정"
+        self.recordTableView.register(RecordTableViewCell.self, forCellReuseIdentifier: "cell")
     }
 
     override func viewDidLayoutSubviews() {
@@ -89,8 +91,8 @@ class RecordMeasurementViewController: UIViewController {
         triangle.snp.makeConstraints {
             $0.leading.equalTo(recordLabel.snp.trailing).offset(6.5)
             $0.centerY.equalTo(recordLabel)
-            $0.width.equalTo(16)
-            $0.height.equalTo(13)
+            $0.width.equalTo(13)
+            $0.height.equalTo(16)
         }
 
         recordListCollecionView.snp.makeConstraints {
@@ -126,7 +128,7 @@ class RecordMeasurementViewController: UIViewController {
 
         distanceLabel.snp.makeConstraints {
             $0.centerY.equalTo(distancePickerView)
-            $0.trailing.equalToSuperview().inset(115)
+            $0.trailing.equalToSuperview().inset(112)
         }
 
         stepCountPickerView.snp.makeConstraints {
@@ -139,7 +141,7 @@ class RecordMeasurementViewController: UIViewController {
 
         stepCountLabel.snp.makeConstraints {
             $0.centerY.equalTo(stepCountPickerView)
-            $0.trailing.equalToSuperview().inset(115)
+            $0.trailing.equalToSuperview().inset(112)
         }
 
         playBtn.snp.makeConstraints {
