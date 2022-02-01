@@ -5,6 +5,7 @@ let project = Project.dynamicFramework(
     name: "ThirdPartyLibManager",
     packages: [
         .RxSwift,
+        .RxFlow,
         .Realm,
         .Moya,
         .Then,
@@ -18,6 +19,7 @@ let project = Project.dynamicFramework(
         .SPM.Realm,
         .SPM.RealmSwift,
         .SPM.RxCocoa,
+        .SPM.RxFlow,
         .SPM.RxMoya,
         .SPM.Then,
         .SPM.Swinject,
