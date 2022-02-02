@@ -1,6 +1,6 @@
 import Foundation
+
 import UIKit
-import SwiftUI
 
 extension UIFont {
     enum Family: String {
@@ -13,7 +13,7 @@ extension UIFont {
         case thin = "Thin"
     }
 
-    static func setFont(size: CGFloat, family: Family) -> UIFont {
-        return UIFont(name: "NotoSansCJKkr-\(family.rawValue)", size: size)!
+    static func notoSansFont(ofSize: CGFloat, family: Family) -> UIFont {
+        return UIFont(name: "NotoSansCJKkr-\(family.rawValue)", size: ofSize)!
     }
 }
