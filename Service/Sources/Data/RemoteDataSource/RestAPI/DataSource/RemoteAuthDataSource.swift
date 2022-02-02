@@ -15,12 +15,12 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         id: String,
         password: String,
         deviceToken: String
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.signin(
             id: id,
             password: password,
             deviceToken: deviceToken
-        ))
+        )).map { _ in () }
     }
 
     func signup(
@@ -32,9 +32,9 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         height: Float,
         weight: Int,
         birthday: String,
-        sex: String,
+        sex: Sex,
         agencyCode: String
-    ) -> Single<Response> {
+    ) -> Single<Void> {
         return request(.signup(
             id: id,
             password: password,
@@ -46,19 +46,23 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             birthday: birthday,
             sex: sex,
             agencyCode: agencyCode
-        ))
+        )).map { _ in () }
     }
 
-    func verificationPhone(phoneNumber: String) -> Single<Response> {
+    func verificationPhone(phoneNumber: String) -> Single<Void> {
         return request(.verificationPhone(phoneNumber: phoneNumber))
+            .map { _ in () }
     }
 
-    func renewalToken() -> Single<Response> {
+    func renewalToken() -> Single<Void> {
         return request(.renewalToken)
+            .map { _ in () }
     }
 
-    func findID(phoneNumber: String) -> Single<Response> {
+    func findID(phoneNumber: String) -> Single<String> {
         return request(.findID(phoneNumber: phoneNumber))
+            .map(UserIdDTO.self)
+            .map { $0.toDomain() }
     }
 
 }

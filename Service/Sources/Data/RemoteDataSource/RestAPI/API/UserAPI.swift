@@ -8,7 +8,7 @@ enum UserAPI {
     case fetchMyInformation
     case fetchBadges(userID: Int)
     case setMainBadge(badgeID: Int)
-    case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: String)
+    case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex)
     case setHealthInformation(height: Float, weight: Int)
     case joinClass(agencyCode: String, grade: Int, classNum: Int)
     case setSchoolInformation(agencyCode: String)
@@ -59,7 +59,7 @@ extension UserAPI: WalkhubAPI {
                     "name": name,
                     "profile_image_url": profileImageUrlString,
                     "birthday": birthday,
-                    "sex": sex
+                    "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
