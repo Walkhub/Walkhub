@@ -15,6 +15,7 @@ public extension TargetDependency.SPM {
     static let SnapKit = TargetDependency.package(product: "SnapKit")
     static let FCM = TargetDependency.package(product: "FirebaseMessaging")
     static let SocketIO = TargetDependency.package(product: "SocketIO")
+    static let KDCircularProgress = TargetDependency.package(product: "KDCircularProgress")
 }
 
 public extension Package {
@@ -51,6 +52,10 @@ public extension Package {
     static let SocketIO = Package.remote(
         url: "https://github.com/socketio/socket.io-client-swift.git",
         requirement: .exact("15.2.0")
+    )
+    static let KDCircularProgress = Package.remote(
+        url: "https://github.com/kaandedeoglu/KDCircularProgress",
+        requirement: .upToNextMajor(from: "1.5.0")
     )
 
 }
