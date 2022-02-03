@@ -1,3 +1,4 @@
+// swiftlint:disable line_length
 import UIKit
 
 import SnapKit
@@ -7,10 +8,9 @@ class RecordMeasurementViewController: UIViewController {
 
     private let distanceList = ["1km", "2km", "3km", "4km"]
     private let stepCountList = ["5000", "10000", "15000", "20000"]
-
     private let recordLabel = UILabel().then {
         $0.text = "전체 기록"
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
     private let triangle = UIImageView().then {
@@ -30,6 +30,7 @@ class RecordMeasurementViewController: UIViewController {
 
     private let recordTableView = UITableView().then {
         $0.backgroundColor = .init(named: "FAFAFA")
+        $0.separatorStyle = .none
     }
 
     private let whiteView = UIView().then {
@@ -38,21 +39,21 @@ class RecordMeasurementViewController: UIViewController {
 
     private let goalLabel = UILabel().then {
         $0.text = "목표"
-        $0.font = .systemFont(ofSize: 14, weight: .regular)
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
     private let distancePickerView = UIPickerView()
 
     private let distanceLabel = UILabel().then {
         $0.text = "거리"
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
     private let stepCountPickerView = UIPickerView()
 
     private let stepCountLabel = UILabel().then {
         $0.text = "걸음"
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
     private let playBtn = UIButton(type: .system).then {
@@ -66,6 +67,7 @@ class RecordMeasurementViewController: UIViewController {
         view.backgroundColor = .init(named: "FAFAFA")
         self.navigationItem.title = "기록 측정"
         self.recordTableView.register(RecordTableViewCell.self, forCellReuseIdentifier: "cell")
+        recordListCollecionView.delegate = self
     }
 
     override func viewDidLayoutSubviews() {
@@ -105,7 +107,7 @@ class RecordMeasurementViewController: UIViewController {
         recordTableView.snp.makeConstraints {
             $0.top.equalTo(recordListCollecionView.snp.bottom).offset(15)
             $0.leading.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(66)
+            $0.height.equalTo(70)
         }
 
         whiteView.snp.makeConstraints {
@@ -202,4 +204,15 @@ extension RecordMeasurementViewController: UIPickerViewDelegate, UIPickerViewDat
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 
     }
+}
+
+extension RecordMeasurementViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 12
+    }
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            return CGSize(width: 123, height: 195)
+        }
+
 }
