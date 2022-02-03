@@ -11,7 +11,8 @@ let project = Project.dynamicFramework(
         .Swinject,
         .SnapKit,
         .Firebase,
-        .SocketIO
+        .SocketIO,
+        .KDCircularProgress
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -23,6 +24,7 @@ let project = Project.dynamicFramework(
         .SPM.Swinject,
         .SPM.SnapKit,
         .SPM.FCM,
-        .SPM.SocketIO
+        .SPM.SocketIO,
+        .SPM.KDCircularProgress
     ]
 )

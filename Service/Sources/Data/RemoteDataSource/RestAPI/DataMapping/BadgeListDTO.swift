@@ -3,7 +3,14 @@ import Foundation
 // MARK: - Data Transfer Object
 struct BadgeListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case badgeList = "badge_list"
+        case list = "badge_list"
     }
-    let badgeList: [BadgeDTO]
+    let list: [BadgeDTO]
+}
+
+// MARK: - Mappings to Domain
+extension BadgeListDTO {
+    func toDomain() -> [Badge] {
+        return list.map { $0.toDomain() }
+    }
 }

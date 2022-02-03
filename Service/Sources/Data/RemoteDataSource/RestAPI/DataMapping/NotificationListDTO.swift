@@ -1,30 +1,16 @@
-// swiftlint:disable nesting
-
 import Foundation
 
 // MARK: - Data Transfer Object
 struct NotificationListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case notificationList = "notification_list"
+        case list = "notification_list"
     }
-    let notificationList: [NotificationInformation]
+    let list: [NotificationDTO]
 }
 
+// MARK: - Mappings to Domain
 extension NotificationListDTO {
-    struct NotificationInformation: Decodable {
-        private enum CodingKeys: String, CodingKey {
-            case id
-            case title
-            case content
-            case type
-            case value
-            case read = "is_read"
-        }
-        let id: Int
-        let title: String
-        let content: String
-        let type: String
-        let value: Int
-        let read: Bool
+    func toDomain() -> [Notification] {
+        return list.map { $0.toDomain() }
     }
 }

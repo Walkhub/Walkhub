@@ -6,7 +6,7 @@ import RxSwift
 import Moya
 
 class DefaultAuthRepository: AuthRepository {
-    
+
     func signin(
         id: String,
         password: String
@@ -30,7 +30,7 @@ class DefaultAuthRepository: AuthRepository {
         height: Float,
         weight: Int,
         birthday: String,
-        sex: String,
+        sex: Sex,
         agencyCode: String
     ) -> Single<Void> {
         return RemoteAuthDataSource.shared.signup(

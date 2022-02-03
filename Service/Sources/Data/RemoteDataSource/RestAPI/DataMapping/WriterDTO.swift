@@ -11,3 +11,14 @@ struct WriterDTO: Decodable {
     let name: String
     let profileImageUrlString: String
 }
+
+// MARK: - Mappings to Domain
+extension WriterDTO {
+    func toDomain() -> Writer {
+        return .init(
+            id: id,
+            name: name,
+            profileImageUrl: URL(string: profileImageUrlString)!
+        )
+    }
+}
