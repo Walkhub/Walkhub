@@ -5,18 +5,19 @@ import Then
 
 class RecordCollectionViewCell: UICollectionViewCell {
 
-    private let imgView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
+    let imgView = UIImageView().then {
+        $0.contentMode = .scaleToFill
+        $0.clipsToBounds = true
         $0.layer.cornerRadius = 16
     }
 
-    private let dateLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 12, weight: .regular)
+    let dateLabel = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .white
     }
 
-    private let locationLabel = UILabel().then {
-        $0.font = .systemFont(ofSize: 12, weight: .regular)
+    let locationLabel = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .white
     }
 

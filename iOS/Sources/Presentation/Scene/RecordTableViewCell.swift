@@ -5,44 +5,45 @@ import Then
 
 class RecordTableViewCell: UITableViewCell {
 
-    private let view = UIView().then {
+    let view = UIView().then {
         $0.layer.cornerRadius = 13
         $0.backgroundColor = .init(named: "57B4F1")
     }
 
-    private let nameLabel = UILabel().then {
+    let nameLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .systemFont(ofSize: 14, weight: .medium)
     }
 
-    private let distanceTimeLabel = UILabel().then {
+    let distanceTimeLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .systemFont(ofSize: 14, weight: .medium)
     }
 
-    private let cheerUpLabel = UILabel().then {
+    let cheerUpLabel = UILabel().then {
         $0.textColor = .white
         $0.font = .systemFont(ofSize: 14, weight: .medium)
     }
 
-    private let cheerUpBtn = UIButton(type: .system).then {
+    let cheerUpBtn = UIButton(type: .system).then {
         $0.setImage(.init(systemName: "square"), for: .normal)
+        $0.backgroundColor = .white
         $0.tintColor = .black
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setup()
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .clear
         setup()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 
     private func setup() {
@@ -50,7 +51,8 @@ class RecordTableViewCell: UITableViewCell {
         [nameLabel, distanceTimeLabel, cheerUpLabel, cheerUpBtn].forEach { view.addSubview($0) }
 
         view.snp.makeConstraints {
-            $0.leading.trailing.top.bottom.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(5)
+            $0.leading.trailing.equalToSuperview().inset(2)
             $0.height.equalTo(66)
         }
 
@@ -62,6 +64,7 @@ class RecordTableViewCell: UITableViewCell {
         distanceTimeLabel.snp.makeConstraints {
             $0.top.equalTo(nameLabel.snp.bottom)
             $0.leading.equalTo(nameLabel.snp.leading)
+            $0.bottom.equalToSuperview().inset(12)
         }
 
         cheerUpLabel.snp.makeConstraints {
