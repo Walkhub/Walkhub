@@ -15,7 +15,7 @@ class ChartView: UIView {
     public func setCharts(
         days: [String],
         stepCounts: [Int],
-        chartColor: UIColor?
+        chartColor: [UIColor]
     ) {
         var dataEntries: [BarChartDataEntry] = []
         for data in 0..<days.count {
@@ -24,7 +24,7 @@ class ChartView: UIView {
         }
 
         let chartDataSet = BarChartDataSet(entries: dataEntries, label: "걸음 수")
-        chartDataSet.colors = [chartColor ?? .systemBlue]
+        chartDataSet.colors = chartColor
 
         let chartData = BarChartData(dataSet: chartDataSet)
         chartData.setDrawValues(false)
