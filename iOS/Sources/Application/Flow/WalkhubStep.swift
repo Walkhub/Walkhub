@@ -3,5 +3,5 @@ import Foundation
 import RxFlow
 import UIKit
 
-enum AppStep: Step {
+enum WalkhubStep: Step {
 }
