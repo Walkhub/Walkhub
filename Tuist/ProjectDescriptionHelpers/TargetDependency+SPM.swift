@@ -59,7 +59,7 @@ public extension Package {
         requirement: .upToNextMajor(from: "1.5.0")
     )
     static let Charts = Package.remote(
-        url: "https://github.com/danielgindi/Charts.git",
-        requirement: .upToNextMajor(from: "4.0.0")
+        url: "https://github.com/Walkhub/Charts",
+        requirement: .exact("10.0.0")
     )
 }

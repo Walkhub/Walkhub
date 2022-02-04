@@ -30,11 +30,11 @@
       },
       {
         "package": "Charts",
-        "repositoryURL": "https://github.com/danielgindi/Charts.git",
+        "repositoryURL": "https://github.com/Walkhub/Charts",
         "state": {
           "branch": null,
-          "revision": "8d134a78bb2cb9e7a0f05ecbd5880bb05cd02863",
-          "version": "4.0.1"
+          "revision": "a34eaecfa66d9aa0d30fbca1f391530025416eec",
+          "version": "10.0.0"
         }
       },
       {
