@@ -45,6 +45,8 @@ class ChartView: UIView {
 
         barChartView.rightAxis.enabled = false
         barChartView.rightAxis.setLabelCount(days.count, force: false)
+
+        barChartView.legend.enabled = false
     }
 }
 
