@@ -1,4 +1,3 @@
-// swiftlint:disable line_length
 // swiftlint:disable function_body_length
 import UIKit
 
@@ -13,167 +12,219 @@ class ActivityAnalysisViewController: UIViewController {
 
     private let blueView = UIView().then {
         $0.backgroundColor = .init(named: "57B4F1")
+        $0.layer.cornerRadius = 12
+        $0.clipsToBounds = true
+//        $0.roundCorners(cornerRadius: 64, byRoundingCorners: .topRight)
     }
 
     private let imgView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = $0.bounds.width
+        $0.image = .init(systemName: "clock.fill")
+        $0.layer.cornerRadius = $0.frame.width
+        $0.layer.shadowOffset = CGSize(width: -3, height: 3)
+        $0.layer.shadowRadius = 5
+        $0.layer.shadowOpacity = 0.4
+        $0.tintColor = .white
     }
 
-    private let foodLabel = UILabel().then {
+    private let foodName = UILabel().then {
         $0.text = "카페 라떼"
+        $0.font = .notoSansFont(ofSize: 16, family: .medium)
         $0.textColor = .white
-        $0.font = .systemFont(ofSize: 16, weight: .medium)
+    }
+
+    private let foodKcalLabel = UILabel().then {
+        $0.text = "180"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
+        $0.textColor = .white
     }
 
     private let kcalLabel = UILabel().then {
-        $0.text = "180kcal"
+        $0.text = "kcal"
+        $0.font = .notoSansFont(ofSize: 16, family: .medium)
         $0.textColor = .white
-        $0.font = .systemFont(ofSize: 20, weight: .medium)
     }
 
     private let criteriaLabel = UILabel().then {
         $0.text = "(355ml 기준)"
         $0.textColor = .white
-        $0.font = .systemFont(ofSize: 12, weight: .regular)
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
-    private let contentLabel = UILabel().then {
-        $0.text = "\"커피 한잔 할래요~?\""
+    private let commentLabel = UILabel().then {
+        $0.text = "\"커피 한 잔 할래요~?\""
         $0.textColor = .white
-        $0.font = .systemFont(ofSize: 12, weight: .regular)
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
     private let levelLabel = UILabel().then {
         $0.backgroundColor = .white
+        $0.clipsToBounds = true
         $0.text = "Lv.7"
         $0.textColor = .init(named: "57B4F1")
-        $0.font = .systemFont(ofSize: 12, weight: .regular)
+        $0.textAlignment = .center
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
+        $0.layer.cornerRadius = 10
     }
 
     private let levelProgressBarBackView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 8
+        $0.layer.cornerRadius = 7
+        $0.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
     }
 
     private let levelProgressBar = UIProgressView().then {
-        $0.trackTintColor = .white
+        $0.progressViewStyle = .default
         $0.progressTintColor = .init(named: "57B4F1")
-        $0.progress = 0.0
+        $0.trackTintColor = .white
+        $0.progress = 0.7
     }
 
     private let whiteView = UIView().then {
         $0.backgroundColor = .white
+        $0.layer.cornerRadius = 37
+        $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
 
     private let dateLabel = UILabel().then {
-        $0.text = "1월 14일 (금)"
+        $0.text = "1월 14일(금)"
         $0.textColor = .init(named: "8E8E8E")
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
     private let stepCountLabel = UILabel().then {
         $0.text = "걸음수"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
-    private let currentStepCountLabel = UILabel().then {
-        $0.text = "6473/7000 걸음"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 20, weight: .medium)
+    private let currentStepCountsLabel = UILabel().then {
+        $0.text = "6700"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
+    }
+
+    private let goalStepCountLabel = UILabel().then {
+        $0.text = "/7000 걸음"
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.textColor = .init(named: "424242")
     }
 
     private let stepCountProgressBackView = UIView().then {
-        $0.layer.cornerRadius = 8
         $0.backgroundColor = .init(named: "E5E5E5")
+        $0.layer.cornerRadius = 7
     }
 
     private let stepCountProgressBar = UIProgressView().then {
-        $0.trackTintColor = .init(named: "E5E5E5")
+        $0.progressViewStyle = .default
         $0.progressTintColor = .init(named: "57B4F1")
-        $0.progress = 0.0
+        $0.trackTintColor = .init(named: "E5E5E5")
+        $0.progress = 0.7
     }
 
-    private let burnKcalLabel = UILabel().then {
+    private let burnKcalLaebel = UILabel().then {
         $0.text = "칼로리 소모"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
-    private let kcalContentLabel = UILabel().then {
-        $0.text = "건강정보 기준으로 측정했어요"
+    private let kcalCommentLabel = UILabel().then {
+        $0.text = "건강정보를 기준으로 측정했어요"
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
-    private let kcalNumLabel2 = UILabel().then {
-        $0.text = "203 Kcal"
-        $0.font = .systemFont(ofSize: 20, weight: .medium)
+    private let burnKcalNumLabel = UILabel().then {
+        $0.text = "203"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
+    }
+
+    private let kcalLabel2 = UILabel().then {
+        $0.text = "kcal"
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
     private let distanceLabel = UILabel().then {
         $0.text = "거리"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .regular)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
+    }
+
+    private let distanceNumLabel = UILabel().then {
+        $0.text = "5.24"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
+    }
+
+    private let kmLabel = UILabel().then {
+        $0.text = "km"
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
     private let timeLabel = UILabel().then {
         $0.text = "시간"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .regular)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
-    private let distanceNumLabel = UILabel().then {
-        $0.text = "5.24km"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 20, weight: .medium)
+    private let hourLabel = UILabel().then {
+        $0.text = "1"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
-    private let timeNumLabel = UILabel().then {
-        $0.text = "1h 10m"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 20, weight: .medium)
+    private let hLabel = UILabel().then {
+        $0.text = "h"
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
-    private let weekBtn = UIButton(type: .system).then {
+    private let minuteLabel = UILabel().then {
+        $0.text = "15"
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
+    }
+
+    private let mLabel = UILabel().then {
+        $0.text = "m"
+        $0.font = .notoSansFont(ofSize: 14, family: .regular)
+    }
+
+    private let line = UIView().then {
+        $0.backgroundColor = .init(named: "E5E5E5")
+    }
+
+    private let weekBtn = UIButton().then {
         $0.backgroundColor = .init(named: "57B4F1")
-        $0.tintColor = .white
         $0.setTitle("주간", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.layer.cornerRadius = 15
     }
 
-    private let monthBtn = UIButton(type: .system).then {
+    private let monthBtn = UIButton().then {
         $0.backgroundColor = .init(named: "57B4F1")
-        $0.tintColor = .white
         $0.setTitle("월간", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.layer.cornerRadius = 15
     }
 
-    private let chart = UIView()
+    private let charts = UIView().then {
+        $0.backgroundColor = .gray
+    }
 
     private let allStepCountLabel = UILabel().then {
-        $0.text = "걸음수 총합"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.text = "걸음 수 총합"
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
     private let allStepCountNumLabel = UILabel().then {
         $0.text = "25382"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
-    private let averageStepCountLabel = UILabel().then {
+    private let averageStepLabel = UILabel().then {
         $0.text = "평균 걸음 수"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
-    private let averageStepCountNumLabel = UILabel().then {
+    private let averageStepNumLabel = UILabel().then {
         $0.text = "3626"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
+        $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "활동분석"
+        view.backgroundColor = .init(named: "FAFAFA")
     }
 
     override func viewDidLayoutSubviews() {
@@ -182,167 +233,215 @@ class ActivityAnalysisViewController: UIViewController {
 
     private func setup() {
         view.addSubview(scrollView)
-
         scrollView.addSubview(backView)
-
         [whiteView, blueView].forEach { backView.addSubview($0) }
 
-        [imgView, foodLabel, kcalLabel, criteriaLabel, contentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
+        [imgView, foodName, foodKcalLabel, kcalLabel, criteriaLabel,
+         commentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
             .forEach { blueView.addSubview($0) }
 
-        [dateLabel, stepCountLabel, currentStepCountLabel, stepCountProgressBackView,
-         stepCountProgressBar, burnKcalLabel, kcalContentLabel, kcalNumLabel2, distanceLabel,
-         timeLabel, distanceNumLabel, timeNumLabel, weekBtn, monthBtn, chart, allStepCountLabel, allStepCountNumLabel, averageStepCountLabel, averageStepCountNumLabel].forEach { whiteView.addSubview($0) }
+        [dateLabel, stepCountLabel, currentStepCountsLabel, goalStepCountLabel, stepCountProgressBackView,
+         stepCountProgressBar, burnKcalLaebel, kcalCommentLabel, burnKcalNumLabel, kcalLabel2, line,
+        distanceLabel, distanceNumLabel, kmLabel, timeLabel, hourLabel, hLabel, minuteLabel, mLabel,
+        weekBtn, monthBtn, charts, allStepCountLabel, allStepCountNumLabel, averageStepLabel, averageStepNumLabel]
+            .forEach { whiteView.addSubview($0) }
 
         scrollView.snp.makeConstraints {
-            $0.edges.equalTo(self.view.safeAreaInsets)
+            $0.top.leading.trailing.bottom.equalTo(view.safeAreaInsets)
         }
 
         backView.snp.makeConstraints {
-            $0.top.leading.trailing.bottom.equalToSuperview()
+            $0.top.leading.bottom.equalToSuperview()
+            $0.width.equalTo(scrollView.snp.width)
+            $0.height.equalTo(975)
         }
 
         blueView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(92)
-            $0.leading.trailing.equalToSuperview().inset(80)
+            $0.top.equalToSuperview().inset(43)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(200)
             $0.height.equalTo(272)
-        }
-
-        whiteView.snp.makeConstraints {
-            $0.top.equalTo(blueView.snp.bottom).inset(100)
-            $0.leading.trailing.bottom.equalToSuperview()
         }
 
         imgView.snp.makeConstraints {
             $0.top.trailing.equalToSuperview().inset(14)
-            $0.height.width.equalTo(112)
+            $0.width.height.equalTo(112)
         }
 
-        foodLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(136)
+        foodName.snp.makeConstraints {
+            $0.top.equalTo(imgView.snp.bottom).offset(9)
+            $0.leading.equalToSuperview().inset(17)
+        }
+
+        foodKcalLabel.snp.makeConstraints {
+            $0.top.equalTo(foodName.snp.bottom)
             $0.leading.equalToSuperview().inset(17)
         }
 
         kcalLabel.snp.makeConstraints {
-            $0.top.equalTo(foodLabel.snp.bottom)
-            $0.leading.equalToSuperview().inset(17)
+            $0.bottom.equalTo(foodKcalLabel.snp.bottom)
+            $0.leading.equalTo(foodKcalLabel.snp.trailing)
+            $0.height.equalTo(foodKcalLabel.snp.height)
         }
 
         criteriaLabel.snp.makeConstraints {
-            $0.top.equalTo(kcalLabel.snp.top).inset(9)
+            $0.top.equalTo(imgView.snp.bottom).offset(43)
             $0.leading.equalTo(kcalLabel.snp.trailing).offset(5)
         }
 
-        contentLabel.snp.makeConstraints {
-            $0.top.equalTo(kcalLabel.snp.bottom).offset(4)
+        commentLabel.snp.makeConstraints {
+            $0.top.equalTo(foodKcalLabel.snp.bottom).offset(4)
             $0.leading.equalToSuperview().inset(17)
         }
 
         levelLabel.snp.makeConstraints {
-            $0.top.equalTo(contentLabel.snp.bottom).offset(28)
+            $0.top.equalTo(commentLabel.snp.bottom).offset(28)
             $0.leading.equalToSuperview().inset(18)
-            $0.width.equalTo(41)
             $0.height.equalTo(21)
+            $0.width.equalTo(41)
         }
 
         levelProgressBarBackView.snp.makeConstraints {
             $0.centerY.equalTo(levelLabel)
-            $0.leading.equalTo(levelLabel.snp.trailing).inset(3)
+            $0.leading.equalTo(levelLabel.snp.trailing).inset(4)
             $0.trailing.equalToSuperview().inset(17)
             $0.height.equalTo(11)
         }
 
         levelProgressBar.snp.makeConstraints {
-            $0.centerY.equalTo(levelProgressBarBackView)
-            $0.leading.equalTo(levelProgressBarBackView.snp.leading).inset(3)
-            $0.trailing.equalTo(levelProgressBarBackView.snp.trailing).inset(3)
+            $0.centerY.equalTo(levelLabel)
+            $0.trailing.equalTo(levelProgressBarBackView).inset(3)
+            $0.leading.equalTo(levelProgressBarBackView.snp.leading)
             $0.height.equalTo(5)
         }
 
+        whiteView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(240)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(695)
+        }
+
         dateLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(121)
+            $0.top.equalToSuperview().inset(123)
             $0.leading.equalToSuperview().inset(39)
         }
 
         stepCountLabel.snp.makeConstraints {
             $0.top.equalTo(dateLabel.snp.bottom).offset(16)
-            $0.leading.equalTo(dateLabel.snp.leading)
+            $0.leading.equalToSuperview().inset(39)
         }
 
-        currentStepCountLabel.snp.makeConstraints {
+        currentStepCountsLabel.snp.makeConstraints {
             $0.top.equalTo(stepCountLabel.snp.bottom)
-            $0.leading.equalTo(stepCountLabel.snp.leading)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        goalStepCountLabel.snp.makeConstraints {
+            $0.bottom.equalTo(currentStepCountsLabel.snp.bottom)
+            $0.leading.equalTo(currentStepCountsLabel.snp.trailing).offset(4)
         }
 
         stepCountProgressBackView.snp.makeConstraints {
-            $0.top.equalTo(currentStepCountLabel.snp.bottom).offset(4)
+            $0.top.equalTo(goalStepCountLabel.snp.bottom).offset(6)
             $0.leading.trailing.equalToSuperview().inset(39)
             $0.height.equalTo(11)
         }
+
         stepCountProgressBar.snp.makeConstraints {
-            $0.top.equalTo(stepCountProgressBackView.snp.top).inset(3)
-            $0.bottom.equalTo(stepCountProgressBackView.snp.bottom).inset(3)
-            $0.leading.equalTo(stepCountProgressBackView.snp.leading).inset(3)
-            $0.trailing.equalTo(stepCountProgressBackView.snp.trailing).inset(3)
+            $0.centerY.equalTo(stepCountProgressBackView)
+            $0.leading.trailing.equalTo(stepCountProgressBackView).inset(3)
+            $0.height.equalTo(5)
         }
 
-        burnKcalLabel.snp.makeConstraints {
-            $0.top.equalTo(stepCountProgressBackView.snp.bottom).offset(13)
+        burnKcalLaebel.snp.makeConstraints {
+            $0.top.equalTo(stepCountProgressBackView.snp.bottom).offset(16)
             $0.leading.equalToSuperview().inset(39)
         }
 
-        kcalContentLabel.snp.makeConstraints {
-            $0.top.equalTo(burnKcalLabel.snp.bottom)
+        kcalCommentLabel.snp.makeConstraints {
+            $0.top.equalTo(burnKcalLaebel.snp.bottom)
             $0.leading.equalToSuperview().inset(39)
         }
 
-        kcalNumLabel2.snp.makeConstraints {
-            $0.top.equalTo(kcalContentLabel.snp.bottom)
+        burnKcalNumLabel.snp.makeConstraints {
+            $0.top.equalTo(kcalCommentLabel.snp.bottom)
             $0.leading.equalToSuperview().inset(39)
+        }
+
+        kcalLabel2.snp.makeConstraints {
+            $0.bottom.equalTo(burnKcalNumLabel.snp.bottom)
+            $0.leading.equalTo(burnKcalNumLabel.snp.trailing).offset(4)
+        }
+
+        line.snp.makeConstraints {
+            $0.top.equalTo(kcalLabel2.snp.bottom).offset(40)
+            $0.width.equalTo(1)
+            $0.height.equalTo(28)
+            $0.centerX.equalToSuperview()
         }
 
         distanceLabel.snp.makeConstraints {
-            $0.top.equalTo(kcalNumLabel2.snp.bottom).offset(24)
-            $0.leading.equalToSuperview().inset(85)
-        }
-
-        timeLabel.snp.makeConstraints {
-            $0.top.equalTo(distanceLabel.snp.top)
-            $0.trailing.equalToSuperview().inset(85)
+            $0.top.equalTo(kcalLabel2.snp.bottom).offset(24)
+            $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-69)
         }
 
         distanceNumLabel.snp.makeConstraints {
             $0.top.equalTo(distanceLabel.snp.bottom).offset(4)
-            $0.centerX.equalTo(distanceLabel)
+            $0.trailing.equalTo(kmLabel.snp.leading).offset(-4)
         }
 
-        timeNumLabel.snp.makeConstraints {
+        kmLabel.snp.makeConstraints {
+            $0.bottom.equalTo(distanceNumLabel.snp.bottom)
+            $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-53)
+        }
+
+        timeLabel.snp.makeConstraints {
+            $0.top.equalTo(distanceLabel.snp.top)
+            $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(68)
+        }
+
+        hourLabel.snp.makeConstraints {
             $0.top.equalTo(timeLabel.snp.bottom).offset(4)
-            $0.centerX.equalTo(timeLabel)
+            $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(51)
         }
 
+        hLabel.snp.makeConstraints {
+            $0.bottom.equalTo(hourLabel.snp.bottom)
+            $0.leading.equalTo(hourLabel.snp.trailing).offset(2)
+        }
+
+        minuteLabel.snp.makeConstraints {
+            $0.top.equalTo(hourLabel.snp.top)
+            $0.leading.equalTo(hLabel.snp.trailing).offset(4)
+        }
+
+        mLabel.snp.makeConstraints {
+            $0.bottom.equalTo(minuteLabel.snp.bottom)
+            $0.leading.equalTo(minuteLabel.snp.trailing).offset(2)
+        }
+//
         weekBtn.snp.makeConstraints {
-            $0.top.equalTo(distanceNumLabel.snp.bottom).offset(28)
-            $0.leading.equalToSuperview().inset(100)
+            $0.top.equalTo(distanceNumLabel.snp.bottom).offset(27)
+            $0.trailing.equalTo(line.snp.leading).offset(-27)
             $0.width.equalTo(81)
             $0.height.equalTo(28)
         }
 
         monthBtn.snp.makeConstraints {
             $0.top.equalTo(weekBtn.snp.top)
-            $0.trailing.equalToSuperview().inset(100)
+            $0.leading.equalTo(line.snp.trailing).offset(27)
             $0.width.equalTo(81)
             $0.height.equalTo(28)
         }
 
-        chart.snp.makeConstraints {
-            $0.top.equalTo(monthBtn.snp.bottom).offset(15)
-            $0.leading.trailing.equalToSuperview().inset(45)
-            $0.height.equalTo(115)
+        charts.snp.makeConstraints {
+            $0.top.equalTo(monthBtn.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(42)
+            $0.height.equalTo(100)
         }
 
         allStepCountLabel.snp.makeConstraints {
-            $0.top.equalTo(chart.snp.bottom).offset(15)
+            $0.top.equalTo(charts.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(41)
         }
 
@@ -351,14 +450,15 @@ class ActivityAnalysisViewController: UIViewController {
             $0.trailing.equalToSuperview().inset(41)
         }
 
-        averageStepCountLabel.snp.makeConstraints {
+        averageStepLabel.snp.makeConstraints {
             $0.top.equalTo(allStepCountLabel.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(41)
         }
 
-        averageStepCountNumLabel.snp.makeConstraints {
-            $0.centerY.equalTo(averageStepCountLabel)
+        averageStepNumLabel.snp.makeConstraints {
+            $0.centerY.equalTo(averageStepLabel)
             $0.trailing.equalToSuperview().inset(41)
+            $0.bottom.equalToSuperview().inset(27)
         }
     }
 }
