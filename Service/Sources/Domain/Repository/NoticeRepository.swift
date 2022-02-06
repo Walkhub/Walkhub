@@ -3,5 +3,5 @@ import Foundation
 import RxSwift
 
 protocol NoticeRepository {
-    func fetchNoticeList() -> Observable<[Notification]>
+    func fetchNoticeList() -> Observable<[Notice]>
 }
