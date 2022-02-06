@@ -2,12 +2,12 @@ import Foundation
 
 import Moya
 
-enum NotificationsAPI {
-    case fetchNotificationsList
+enum NotificationAPI {
+    case fetchNotificationList
     case toggleIsRead(notificationID: Int)
 }
 
-extension NotificationsAPI: WalkhubAPI {
+extension NotificationAPI: WalkhubAPI {
 
     var domain: ApiDomain {
         .notification
@@ -15,7 +15,7 @@ extension NotificationsAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .fetchNotificationsList:
+        case .fetchNotificationList:
             return "/"
         case .toggleIsRead(let notificationID):
             return "/\(notificationID)"
@@ -24,7 +24,7 @@ extension NotificationsAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .fetchNotificationsList:
+        case .fetchNotificationList:
             return .get
         case .toggleIsRead:
             return .patch
