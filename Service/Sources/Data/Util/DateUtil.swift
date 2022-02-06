@@ -9,3 +9,11 @@ extension String {
         return formatter.date(from: self)!
     }
 }
+
+extension Date {
+    func toString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return formatter.string(from: self)
+    }
+}

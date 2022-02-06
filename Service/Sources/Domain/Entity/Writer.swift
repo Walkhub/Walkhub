@@ -1,6 +1,6 @@
 import Foundation
 
-struct Writer {
+struct Writer: Equatable {
     let id: Int
     let name: String
     let profileImageUrl: URL
