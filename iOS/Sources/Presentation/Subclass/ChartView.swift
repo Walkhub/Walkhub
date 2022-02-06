@@ -24,7 +24,7 @@ class ChartView: UIView {
             dataEntries.append(dataEntry)
         }
 
-        let chartDataSet = BarChartDataSet(entries: dataEntries, label: "걸음 수")
+        let chartDataSet = BarChartDataSet(entries: dataEntries)
         chartDataSet.colors = chartColor
 
         let chartData = BarChartData(dataSet: chartDataSet)
@@ -45,15 +45,20 @@ class ChartView: UIView {
         days: [String],
         stepCounts: [Int]
     ) {
-        let color1 = UIColor.random()
-        let color2 = UIColor.random()
-        let color3 = UIColor.random()
-        let color4 = UIColor.random()
+        let today  = Date()
+        var week = Calendar.current.component(.weekday, from: today)
+        var chartColor = [UIColor]()
 
-        let chartColor = [color1, color1, color1, color1, color1, color1, color1,
-                          color2, color2, color2, color2, color2, color2, color2,
-                          color3, color3, color3, color3, color3, color3, color3,
-                          color4, color4, color4, color4, color4, color4, color4]
+        for _ in 0...4 {
+            let color = UIColor.random()
+            while week - 1 > 0 && chartColor.count < 28 {
+                    chartColor.append(color)
+                    week -= 1
+                }
+                week = 8
+        }
+
+        chartColor.reverse()
 
         var dataEntries: [BarChartDataEntry] = []
         for data in 0..<days.count {
@@ -61,7 +66,7 @@ class ChartView: UIView {
             dataEntries.append(dataEntry)
         }
 
-        let chartDataSet = BarChartDataSet(entries: dataEntries, label: "걸음 수")
+        let chartDataSet = BarChartDataSet(entries: dataEntries)
         chartDataSet.colors = chartColor
 
         let chartData = BarChartData(dataSet: chartDataSet)
