@@ -1,11 +1,3 @@
-//
-//  ColorExtension.swift
-//  Walkhub
-//
-//  Created by kimsian on 2022/02/06.
-//  Copyright © 2022 com.walkhub. All rights reserved.
-//
-
 import Foundation
 import SwiftUI
 
@@ -20,5 +12,5 @@ extension Color {
     static let gray700 = Color("Gray700")
     static let gray800 = Color("Gray800")
     static let gray900 = Color("Gray900")
-    static let primary400 = Color("Primary400")
+    static let primary400 = UIColor(named: "Primary400")!
 }
