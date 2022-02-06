@@ -3,14 +3,14 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteNotificationsDataSource: RestApiRemoteDataSource<NotificationsAPI> {
+final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAPI> {
 
-    static let shared = RemoteNotificationsDataSource()
+    static let shared = RemoteNotificationDataSource()
 
     private override init() { }
 
-    func viewNotificationsList() -> Single<[Notification]> {
-        return request(.fetchNotificationsList)
+    func fetchNotificationList() -> Single<[Notification]> {
+        return request(.fetchNotificationList)
             .map(NotificationListDTO.self)
             .map { $0.toDomain() }
     }
