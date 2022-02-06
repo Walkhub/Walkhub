@@ -2,11 +2,11 @@ import Foundation
 
 import Moya
 
-enum NoticesAPI {
+enum NoticeAPI {
     case fetchNotice
 }
 
-extension NoticesAPI: WalkhubAPI {
+extension NoticeAPI: WalkhubAPI {
 
     var domain: ApiDomain {
         .notices
