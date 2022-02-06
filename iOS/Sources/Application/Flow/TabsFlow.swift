@@ -45,7 +45,16 @@ class TabsFlow: Flow {
             self?.rootViewController.setViewControllers([root1, root2, root3, root4], animated: false)
         }
 
-        return .none
+        return .multiple(flowContributors: [
+            .contribute(withNextPresentable: homeFlow,
+                        withNextStepper: OneStepper(withSingleStep: WalkhubStep.homeIsRequired)),
+            .contribute(withNextPresentable: hubFlow,
+                        withNextStepper: OneStepper(withSingleStep: WalkhubStep.hubIsRequired)),
+            .contribute(withNextPresentable: challengeFlow,
+                        withNextStepper: OneStepper(withSingleStep: WalkhubStep.challengeIsRequired)),
+            .contribute(withNextPresentable: profileFlow,
+                        withNextStepper: OneStepper(withSingleStep: WalkhubStep.profileIsRequired))
+        ])
     }
 
 }
