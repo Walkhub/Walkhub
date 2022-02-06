@@ -35,4 +35,39 @@ class SchoolRankTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    private func addSubviews() {
+        [imgView, schoolName, gradeClassLabel, badgeImgView, rankLabel]
+            .forEach { self.addSubview($0) }
+    }
+
+    private func makeSubviewContraints() {
+        imgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(32)
+            $0.height.width.equalTo(40)
+        }
+
+        schoolName.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(11)
+            $0.leading.equalTo(imgView.snp.trailing).offset(16)
+        }
+
+        gradeClassLabel.snp.makeConstraints {
+            $0.top.equalTo(schoolName.snp.bottom)
+            $0.leading.equalTo(imgView.snp.trailing).offset(16)
+            $0.bottom.equalToSuperview().inset(11)
+        }
+
+        badgeImgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalTo(rankLabel.snp.leading).inset(11)
+            $0.height.equalTo(26)
+            $0.width.equalTo(14)
+        }
+
+        rankLabel.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(32)
+        }
+    }
 }
