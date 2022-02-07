@@ -35,7 +35,7 @@ class HubViewController: UIViewController {
 
     private let gradeClassLabel = UILabel().then {
         $0.text = "3학년 3반"
-        $0.textColor = .init(named: "424242")
+        $0.textColor = .gray800
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
@@ -46,11 +46,13 @@ class HubViewController: UIViewController {
 
     private let rankTableView = UITableView().then {
         $0.backgroundColor = .white
-        $0.register(SchoolRankTableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.separatorStyle = .none
+        $0.register(SchoolRankTableViewCell.self, forCellReuseIdentifier: "schoolRankCell")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        rankTableView.dataSource = self
         setNavigation()
     }
 
@@ -102,7 +104,8 @@ class HubViewController: UIViewController {
 
         rankTableView.snp.makeConstraints {
             $0.top.equalTo(top100Label.snp.bottom).offset(16)
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalToSuperview()
         }
     }
 }
@@ -127,5 +130,24 @@ extension HubViewController {
                                             constant: (leftBarItemWidth ?? 0) + 16),
             titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor)
                ])
+    }
+}
+
+extension HubViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "schoolRankCell",
+            for: indexPath
+        ) as? SchoolRankTableViewCell
+        cell?.imgView.image = .init(systemName: "clock.fill")
+        cell?.schoolName.text = "대덕소프트웨어마이스터고등학교"
+        cell?.gradeClassLabel.text = "1학년 4반"
+        cell?.badgeImgView.image = .init(systemName: "bell.badge")
+        cell?.rankLabel.text = "1등"
+        return cell!
     }
 }
