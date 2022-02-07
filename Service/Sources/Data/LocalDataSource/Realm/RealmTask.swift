@@ -30,6 +30,10 @@ public protocol RealmTaskType: AnyObject {
 
 }
 
+public enum RealmError: Error {
+    case noData
+}
+
 public enum QueryFilter {
     case string(query: String)
     case predicate(query: NSPredicate)
