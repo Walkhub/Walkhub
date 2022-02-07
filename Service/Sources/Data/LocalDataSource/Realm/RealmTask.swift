@@ -65,13 +65,20 @@ public final class RealmTask: RealmTaskType {
         ordering: OrderingType = .ascending
     ) -> Single<[T]> {
         return Single<[T]>.create { single in
+
             let resultArr = self.fetchObjectsResults(
                 for: T.self,
                 filter: filter,
                 sortProperty: sortProperty,
                 ordering: ordering
             ).toArray()
-            single(.success(resultArr))
+
+            if resultArr.isEmpty {
+                single(.failure(RealmError.noData))
+            } else {
+                single(.success(resultArr))
+            }
+
             return Disposables.create()
         }
     }
