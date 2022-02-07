@@ -3,8 +3,12 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class ActivityAnalysisViewController: UIViewController {
+
+    private var disposeBag = DisposeBag()
 
     private let scrollView = UIScrollView()
 
@@ -168,17 +172,24 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let weekBtn = UIButton().then {
-        $0.backgroundColor = .primary400
         $0.setTitle("주간", for: .normal)
-        $0.setTitleColor(.white, for: .normal)
+        $0.isSelected = true
+        $0.setBackgroundColor(.primary400, for: .selected)
+        $0.setTitleColor(.white, for: .selected)
+        $0.setTitleColor(.gray400, for: .normal)
+        $0.setBackgroundColor(.white, for: .normal)
         $0.layer.cornerRadius = 15
+        $0.clipsToBounds = true
     }
 
     private let monthBtn = UIButton().then {
-        $0.backgroundColor = .primary400
         $0.setTitle("월간", for: .normal)
-        $0.setTitleColor(.white, for: .normal)
+        $0.setBackgroundColor(.primary400, for: .selected)
+        $0.setBackgroundColor(.white, for: .normal)
+        $0.setTitleColor(.white, for: .selected)
+        $0.setTitleColor(.gray400, for: .normal)
         $0.layer.cornerRadius = 15
+        $0.clipsToBounds = true
     }
 
     private let charts = ChartView()
@@ -206,6 +217,8 @@ class ActivityAnalysisViewController: UIViewController {
         self.navigationItem.title = "활동분석"
         view.backgroundColor = .gray50
         demoData()
+        setBtn()
+        
     }
 
     override func viewDidLayoutSubviews() {
@@ -476,4 +489,14 @@ extension ActivityAnalysisViewController {
         allStepCountNumLabel.text = "25382"
         averageStepNumLabel.text = "3626"
     }
+
+    private func setBtn() {
+        weekBtn.rx.tap.subscribe(onNext: {
+            self.weekBtn.isSelected = true
+            self.monthBtn.isSelected = false
+        }).disposed(by: disposeBag)
+        monthBtn.rx.tap.subscribe(onNext: {
+            self.weekBtn.isSelected = false
+            self.monthBtn.isSelected = true
+        }).disposed(by: disposeBag)}
 }
