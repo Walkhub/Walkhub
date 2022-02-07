@@ -13,8 +13,8 @@ struct UserProfileDTO: Decodable {
     }
     let userID: Int
     let name: String
-    let profileImageUrlString: String?
-    let school: String?
+    let profileImageUrlString: String
+    let school: String
     let grade: Int?
     let classNum: Int?
     let titleBadge: BadgeDTO
@@ -26,7 +26,7 @@ extension UserProfileDTO {
         return .init(
             userID: userID,
             name: name,
-            profileImageUrl: URL(string: profileImageUrlString ?? ""),
+            profileImageUrl: URL(string: profileImageUrlString)!,
             school: school,
             grade: grade,
             classNum: classNum,

@@ -5,7 +5,7 @@ import Moya
 enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
-    case fetchMyInformation
+    case fetchMyProfile
     case fetchBadges(userID: Int)
     case setMainBadge(badgeID: Int)
     case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex)
