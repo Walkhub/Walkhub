@@ -17,6 +17,7 @@ public extension TargetDependency.SPM {
     static let FCM = TargetDependency.package(product: "FirebaseMessaging")
     static let SocketIO = TargetDependency.package(product: "SocketIO")
     static let KDCircularProgress = TargetDependency.package(product: "KDCircularProgress")
+    static let Charts = TargetDependency.package(product: "Charts")
 }
 
 public extension Package {
@@ -62,5 +63,8 @@ public extension Package {
         url: "https://github.com/kaandedeoglu/KDCircularProgress",
         requirement: .upToNextMajor(from: "1.5.0")
     )
-
+    static let Charts = Package.remote(
+        url: "https://github.com/Walkhub/Charts",
+        requirement: .exact("10.0.0")
+    )
 }

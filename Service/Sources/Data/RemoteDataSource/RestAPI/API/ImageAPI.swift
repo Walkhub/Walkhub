@@ -2,11 +2,11 @@ import Foundation
 
 import Moya
 
-enum ImagesAPI {
+enum ImageAPI {
     case postImages(images: [Data])
 }
 
-extension ImagesAPI: WalkhubAPI {
+extension ImageAPI: WalkhubAPI {
 
     var domain: ApiDomain {
         return .images

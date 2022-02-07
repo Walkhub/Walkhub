@@ -3,9 +3,9 @@ import Foundation
 import Moya
 import RxSwift
 
-final class RemoteImagesDataSource: RestApiRemoteDataSource<ImagesAPI> {
+final class RemoteImageDataSource: RestApiRemoteDataSource<ImageAPI> {
 
-    static let shared = RemoteImagesDataSource()
+    static let shared = RemoteImageDataSource()
 
     private override init() { }
 
