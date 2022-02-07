@@ -11,7 +11,7 @@ class ActivityAnalysisViewController: UIViewController {
     private let contentView = UIView()
 
     private let blueView = UIView().then {
-        $0.backgroundColor = .init(named: "57B4F1")
+        $0.backgroundColor = .primary400
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
     }
@@ -51,7 +51,7 @@ class ActivityAnalysisViewController: UIViewController {
     private let levelLabel = UILabel().then {
         $0.backgroundColor = .white
         $0.clipsToBounds = true
-        $0.textColor = .init(named: "57B4F1")
+        $0.textColor = .primary400
         $0.textAlignment = .center
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.layer.cornerRadius = 10
@@ -65,7 +65,7 @@ class ActivityAnalysisViewController: UIViewController {
 
     private let levelProgressBar = UIProgressView().then {
         $0.progressViewStyle = .default
-        $0.progressTintColor = .init(named: "57B4F1")
+        $0.progressTintColor = .primary400
         $0.trackTintColor = .white
         $0.progress = 0.7
     }
@@ -77,7 +77,7 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let dateLabel = UILabel().then {
-        $0.textColor = .init(named: "8E8E8E")
+        $0.textColor = .gray500
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
@@ -92,18 +92,18 @@ class ActivityAnalysisViewController: UIViewController {
 
     private let goalStepCountLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
-        $0.textColor = .init(named: "424242")
+        $0.textColor = .gray800
     }
 
     private let stepCountProgressBackView = UIView().then {
-        $0.backgroundColor = .init(named: "E5E5E5")
+        $0.backgroundColor = .gray100
         $0.layer.cornerRadius = 7
     }
 
     private let stepCountProgressBar = UIProgressView().then {
         $0.progressViewStyle = .default
-        $0.progressTintColor = .init(named: "57B4F1")
-        $0.trackTintColor = .init(named: "E5E5E5")
+        $0.progressTintColor = .primary400
+        $0.trackTintColor = .gray100
         $0.progress = 0.7
     }
 
@@ -164,18 +164,18 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let line = UIView().then {
-        $0.backgroundColor = .init(named: "E5E5E5")
+        $0.backgroundColor = .gray100
     }
 
     private let weekBtn = UIButton().then {
-        $0.backgroundColor = .init(named: "57B4F1")
+        $0.backgroundColor = .primary400
         $0.setTitle("주간", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 15
     }
 
     private let monthBtn = UIButton().then {
-        $0.backgroundColor = .init(named: "57B4F1")
+        $0.backgroundColor = .primary400
         $0.setTitle("월간", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 15
@@ -189,7 +189,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let allStepCountNumLabel = UILabel().then {
-        $0.text = "25382"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
@@ -199,14 +198,13 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let averageStepNumLabel = UILabel().then {
-        $0.text = "3626"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "활동분석"
-        view.backgroundColor = .init(named: "FAFAFA")
+        view.backgroundColor = .gray50
         demoData()
     }
 
@@ -230,8 +228,8 @@ class ActivityAnalysisViewController: UIViewController {
          commentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
             .forEach { blueView.addSubview($0) }
 
-        [dateLabel, stepCountLabel, currentStepCountsLabel, goalStepCountLabel, stepCountProgressBackView,
-         stepCountProgressBar, burnKcalLaebel, kcalCommentLabel, burnKcalNumLabel, kcalLabel2, line,
+        [dateLabel, stepCountLabel, currentStepCountsLabel, goalStepCountLabel, stepCountProgressBackView, stepCountProgressBar, burnKcalLaebel,
+         kcalCommentLabel, burnKcalNumLabel, kcalLabel2, line,
         distanceLabel, distanceNumLabel, kmLabel, timeLabel, hourLabel, hLabel, minuteLabel, mLabel,
         weekBtn, monthBtn, charts, allStepCountLabel, allStepCountNumLabel, averageStepLabel, averageStepNumLabel]
             .forEach { whiteView.addSubview($0) }
@@ -434,7 +432,7 @@ class ActivityAnalysisViewController: UIViewController {
         }
 
         allStepCountLabel.snp.makeConstraints {
-            $0.top.equalTo(charts.snp.bottom).offset(20)
+            $0.top.equalTo(charts.snp.bottom).offset(28)
             $0.leading.equalToSuperview().inset(41)
         }
 
@@ -446,13 +444,11 @@ class ActivityAnalysisViewController: UIViewController {
         averageStepLabel.snp.makeConstraints {
             $0.top.equalTo(allStepCountLabel.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(41)
-            $0.bottom.equalToSuperview().inset(32)
         }
 
         averageStepNumLabel.snp.makeConstraints {
             $0.centerY.equalTo(averageStepLabel)
             $0.trailing.equalToSuperview().inset(41)
-            $0.bottom.equalToSuperview().inset(27)
         }
     }
 }
@@ -473,5 +469,11 @@ extension ActivityAnalysisViewController {
         distanceNumLabel.text = "5.24"
         hourLabel.text = "1"
         minuteLabel.text = "15"
+        charts.setMothCharts(stepCounts: [5000, 3244, 12321, 4400, 9877, 1233, 8888,
+                                          5000, 3244, 12321, 4400, 9877, 1233, 8888,
+                                          5000, 3244, 12321, 4400, 9877, 1233, 8888,
+                                          5000, 3244, 12321, 4400, 9877, 1233, 8888])
+        allStepCountNumLabel.text = "25382"
+        averageStepNumLabel.text = "3626"
     }
 }

@@ -20,7 +20,6 @@ class ChartView: UIView {
         let today = Date()
         var week = Calendar.current.component(.weekday, from: today) + 1
         var days = [String]()
-        let chartColor = [UIColor.random()]
         var dataEntries: [BarChartDataEntry] = []
 
         for _ in 0..<7 {
@@ -40,7 +39,7 @@ class ChartView: UIView {
         }
 
         let chartDataSet = BarChartDataSet(entries: dataEntries)
-        chartDataSet.colors = chartColor
+        chartDataSet.colors = [.primary400]
 
         let chartData = BarChartData(dataSet: chartDataSet)
         chartData.setDrawValues(false)
