@@ -8,32 +8,26 @@ class ActivityAnalysisViewController: UIViewController {
 
     private let scrollView = UIScrollView()
 
-    private let backView = UIView()
+    private let contentView = UIView()
 
     private let blueView = UIView().then {
         $0.backgroundColor = .init(named: "57B4F1")
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
-//        $0.roundCorners(cornerRadius: 64, byRoundingCorners: .topRight)
     }
 
     private let imgView = UIImageView().then {
-        $0.image = .init(systemName: "clock.fill")
-        $0.layer.cornerRadius = $0.frame.width
         $0.layer.shadowOffset = CGSize(width: -3, height: 3)
         $0.layer.shadowRadius = 5
-        $0.layer.shadowOpacity = 0.4
-        $0.tintColor = .white
+        $0.layer.shadowOpacity = 0.3
     }
 
     private let foodName = UILabel().then {
-        $0.text = "카페 라떼"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
         $0.textColor = .white
     }
 
     private let foodKcalLabel = UILabel().then {
-        $0.text = "180"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
         $0.textColor = .white
     }
@@ -45,13 +39,11 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let criteriaLabel = UILabel().then {
-        $0.text = "(355ml 기준)"
         $0.textColor = .white
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
     private let commentLabel = UILabel().then {
-        $0.text = "\"커피 한 잔 할래요~?\""
         $0.textColor = .white
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
@@ -59,7 +51,6 @@ class ActivityAnalysisViewController: UIViewController {
     private let levelLabel = UILabel().then {
         $0.backgroundColor = .white
         $0.clipsToBounds = true
-        $0.text = "Lv.7"
         $0.textColor = .init(named: "57B4F1")
         $0.textAlignment = .center
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
@@ -86,7 +77,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let dateLabel = UILabel().then {
-        $0.text = "1월 14일(금)"
         $0.textColor = .init(named: "8E8E8E")
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
@@ -97,12 +87,10 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let currentStepCountsLabel = UILabel().then {
-        $0.text = "6700"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
     private let goalStepCountLabel = UILabel().then {
-        $0.text = "/7000 걸음"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .init(named: "424242")
     }
@@ -130,7 +118,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let burnKcalNumLabel = UILabel().then {
-        $0.text = "203"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
@@ -145,7 +132,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let distanceNumLabel = UILabel().then {
-        $0.text = "5.24"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
@@ -160,7 +146,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let hourLabel = UILabel().then {
-        $0.text = "1"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
@@ -170,7 +155,6 @@ class ActivityAnalysisViewController: UIViewController {
     }
 
     private let minuteLabel = UILabel().then {
-        $0.text = "15"
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
     }
 
@@ -197,9 +181,7 @@ class ActivityAnalysisViewController: UIViewController {
         $0.layer.cornerRadius = 15
     }
 
-    private let charts = UIView().then {
-        $0.backgroundColor = .gray
-    }
+    private let charts = ChartView()
 
     private let allStepCountLabel = UILabel().then {
         $0.text = "걸음 수 총합"
@@ -225,16 +207,24 @@ class ActivityAnalysisViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.title = "활동분석"
         view.backgroundColor = .init(named: "FAFAFA")
+        demoData()
     }
 
     override func viewDidLayoutSubviews() {
-        setup()
+        addSubviews()
+        makeSubviewConstraints()
+        blueView.roundCorners(cornerRadius: 64, byRoundingCorners: .topRight)
+        imgView.layer.shadowPath = UIBezierPath(
+            roundedRect: imgView.bounds,
+            cornerRadius: imgView.frame.width / 2).cgPath
     }
 
-    private func setup() {
+    private func addSubviews() {
         view.addSubview(scrollView)
-        scrollView.addSubview(backView)
-        [whiteView, blueView].forEach { backView.addSubview($0) }
+
+        scrollView.addSubview(contentView)
+
+        [whiteView, blueView].forEach { contentView.addSubview($0) }
 
         [imgView, foodName, foodKcalLabel, kcalLabel, criteriaLabel,
          commentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
@@ -245,15 +235,17 @@ class ActivityAnalysisViewController: UIViewController {
         distanceLabel, distanceNumLabel, kmLabel, timeLabel, hourLabel, hLabel, minuteLabel, mLabel,
         weekBtn, monthBtn, charts, allStepCountLabel, allStepCountNumLabel, averageStepLabel, averageStepNumLabel]
             .forEach { whiteView.addSubview($0) }
+    }
+
+    private func makeSubviewConstraints() {
 
         scrollView.snp.makeConstraints {
-            $0.top.leading.trailing.bottom.equalTo(view.safeAreaInsets)
+            $0.edges.equalToSuperview()
         }
 
-        backView.snp.makeConstraints {
-            $0.top.leading.bottom.equalToSuperview()
-            $0.width.equalTo(scrollView.snp.width)
-            $0.height.equalTo(975)
+        contentView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(self.view)
         }
 
         blueView.snp.makeConstraints {
@@ -316,9 +308,10 @@ class ActivityAnalysisViewController: UIViewController {
         }
 
         whiteView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(240)
+            $0.top.equalTo(blueView.snp.bottom).inset(72)
             $0.leading.trailing.equalToSuperview()
-            $0.height.equalTo(695)
+            $0.height.equalTo(694)
+            $0.bottom.equalToSuperview()
         }
 
         dateLabel.snp.makeConstraints {
@@ -419,7 +412,7 @@ class ActivityAnalysisViewController: UIViewController {
             $0.bottom.equalTo(minuteLabel.snp.bottom)
             $0.leading.equalTo(minuteLabel.snp.trailing).offset(2)
         }
-//
+
         weekBtn.snp.makeConstraints {
             $0.top.equalTo(distanceNumLabel.snp.bottom).offset(27)
             $0.trailing.equalTo(line.snp.leading).offset(-27)
@@ -437,7 +430,7 @@ class ActivityAnalysisViewController: UIViewController {
         charts.snp.makeConstraints {
             $0.top.equalTo(monthBtn.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview().inset(42)
-            $0.height.equalTo(100)
+            $0.height.equalTo(136)
         }
 
         allStepCountLabel.snp.makeConstraints {
@@ -453,6 +446,7 @@ class ActivityAnalysisViewController: UIViewController {
         averageStepLabel.snp.makeConstraints {
             $0.top.equalTo(allStepCountLabel.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(41)
+            $0.bottom.equalToSuperview().inset(32)
         }
 
         averageStepNumLabel.snp.makeConstraints {
@@ -460,5 +454,24 @@ class ActivityAnalysisViewController: UIViewController {
             $0.trailing.equalToSuperview().inset(41)
             $0.bottom.equalToSuperview().inset(27)
         }
+    }
+}
+
+extension ActivityAnalysisViewController {
+    private func demoData() {
+        imgView.image = .init(systemName: "clock.fill")
+        imgView.tintColor = .white
+        foodName.text = "카페 라떼"
+        foodKcalLabel.text = "180"
+        criteriaLabel.text = "(355ml 기준)"
+        commentLabel.text = "\"커피 한 잔 할래요~?\""
+        levelLabel.text = "Lv.7"
+        dateLabel.text = "1월 14일(금)"
+        currentStepCountsLabel.text = "6700"
+        goalStepCountLabel.text = "/7000 걸음"
+        burnKcalNumLabel.text = "203"
+        distanceNumLabel.text = "5.24"
+        hourLabel.text = "1"
+        minuteLabel.text = "15"
     }
 }
