@@ -29,8 +29,8 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchMyInformation() -> Single<UserProfile> {
-        return request(.fetchMyInformation)
+    func fetchMyProfile() -> Single<UserProfile> {
+        return request(.fetchMyProfile)
             .map(UserProfileDTO.self)
             .map { $0.toDomain() }
     }
