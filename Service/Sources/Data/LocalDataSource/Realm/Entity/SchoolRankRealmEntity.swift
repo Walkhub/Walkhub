@@ -1,5 +1,3 @@
-// swiftlint:disable function_parameter_count
-
 import Foundation
 
 import RealmSwift
@@ -15,21 +13,11 @@ class SchoolRankRealmEntity: SchoolRealmEntity {
 extension SchoolRankRealmEntity {
 
     func setup(
-        agencyCode: String,
-        name: String,
-        rank: Int,
-        logoImageUrlString: String,
-        walkCount: Int,
+        school: School,
         dateType: DateType,
         isMySchoolRank: Bool
     ) {
-        super.setup(
-            agencyCode: agencyCode,
-            name: name,
-            rank: rank,
-            logoImageUrlString: logoImageUrlString,
-            walkCount: walkCount
-        )
+        super.setup(school: school)
         self.dateType = dateType.rawValue
         self.isMySchoolRank = isMySchoolRank
         self.compoundKey = compoundKeyValue()
