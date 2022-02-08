@@ -38,7 +38,7 @@ class MainPageViewController: UIViewController {
         self.view.addSubview(mainTableView)
 
         mainTableView.snp.makeConstraints {
-            $0.top.trailing.leading.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.top.trailing.leading.bottom.equalToSuperview()
         }
     }
 
