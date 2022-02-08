@@ -15,7 +15,7 @@ class SecondMainpageTableViewCell: UITableViewCell {
     let rankImageView = UIImageView().then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 15
-        $0.image = .init(systemName: "circle.fill")
+        $0.image = .init(systemName: "clock.fill")
         $0.tintColor = .init(named: "F9F9F9")!
     }
     
