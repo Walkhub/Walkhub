@@ -1,6 +1,6 @@
 import Foundation
 
-struct SchoolRank: Equatable {
+public struct SchoolRank: Equatable {
     let mySchoolRank: School
     let schoolList: [School]
 }

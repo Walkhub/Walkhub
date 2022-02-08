@@ -1,6 +1,6 @@
 import Foundation
 
-struct UserProfile: Equatable {
+public struct UserProfile: Equatable {
     let userID: Int
     let name: String
     let profileImageUrl: URL

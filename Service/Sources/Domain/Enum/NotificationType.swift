@@ -1,5 +1,5 @@
 import Foundation
 
-enum NotificationType: String {
+public enum NotificationType: String {
     case notification = "NTC"
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-enum Scope: String {
+public enum Scope: String {
     case all = "ALL"
     case school = "SCH"
     case `class` = "CLS"
