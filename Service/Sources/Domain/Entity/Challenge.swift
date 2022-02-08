@@ -1,6 +1,6 @@
 import Foundation
 
-struct Challenge {
+public struct Challenge {
     let id: Int
     let name: String
     let start: Date

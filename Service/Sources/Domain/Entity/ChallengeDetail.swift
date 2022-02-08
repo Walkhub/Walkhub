@@ -1,6 +1,6 @@
 import Foundation
 
-struct ChallengeDetail {
+public struct ChallengeDetail {
     let name: String
     let content: String
     let goal: Int
