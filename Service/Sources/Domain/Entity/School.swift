@@ -1,6 +1,6 @@
 import Foundation
 
-struct School: Equatable {
+public struct School: Equatable {
     let agencyCode: String
     let name: String
     let rank: Int
