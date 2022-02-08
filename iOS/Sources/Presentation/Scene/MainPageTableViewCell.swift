@@ -59,6 +59,7 @@ class MainPageTableViewCell: UITableViewCell {
     let imgView = UIImageView().then {
         $0.clipsToBounds = true
         $0.layer.cornerRadius = $0.frame.width / 2
+        $0.image = .init(systemName: "clock.fill")
     }
 
     required init?(coder: NSCoder) {
@@ -100,10 +101,10 @@ class MainPageTableViewCell: UITableViewCell {
         }
         
         imgView.snp.makeConstraints {
-            $0.top.equalTo(whCircleProgressView.snp.top).offset(20)
-            $0.leading.equalTo(whCircleProgressView.snp.leading).inset(20)
-            $0.trailing.equalTo(whCircleProgressView.snp.trailing).inset(20)
-            $0.height.equalTo(self.snp.width)
+            $0.top.equalTo(whCircleProgressView.snp.top).offset(10)
+            $0.leading.equalTo(whCircleProgressView.snp.leading).inset(30)
+            $0.trailing.equalTo(whCircleProgressView.snp.trailing).inset(30)
+            $0.bottom.equalTo(whCircleProgressView.snp.bottom).inset(10)
         }
 
         label.snp.makeConstraints {
