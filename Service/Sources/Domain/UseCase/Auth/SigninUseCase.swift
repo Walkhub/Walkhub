@@ -13,4 +13,5 @@ public class SinginUseCase {
     public func excute(id: String, password: String) -> Single<Void> {
         authRepository.signin(id: id, password: password)
     }
+
 }

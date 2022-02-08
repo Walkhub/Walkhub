@@ -37,4 +37,5 @@ public class SingupUseCase {
             agencyCode: agencyCode
         )
     }
+
 }
