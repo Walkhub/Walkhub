@@ -43,7 +43,7 @@ class HubViewController: UIViewController {
 
     private let dropDownBtn = DropDownButton().then {
         $0.setTitle(" 어제\t", for: .normal)
-        $0.arr = [" 어제", "이번주", "이번달"]
+        $0.arr = ["어제", "이번주", "이번달"]
         $0.setAction()
     }
 

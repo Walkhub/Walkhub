@@ -33,7 +33,7 @@ class DropDownButton: UIButton {
 
     public func setAction() {
         dropDown.selectionAction = { _, item in
-            self.setTitle("\(item)\t", for: .normal)
+            self.setTitle(" \(item)\t", for: .normal)
             self.dropDown.clearSelection()
         }
     }
