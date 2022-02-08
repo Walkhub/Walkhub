@@ -65,19 +65,19 @@ class DefaultUserRepository: UserRepository {
     }
 
     func joinClass(
-        agencyCode: String,
+        schoolId: String,
         grade: Int,
         classNum: Int
     ) -> Single<Void> {
         return RemoteUserDataSource.shared.joinClass(
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             grade: grade,
             classNum: classNum
         )
     }
 
-    func setSchoolInformation(agencyCode: String) -> Single<Void> {
-        return RemoteUserDataSource.shared.setSchoolInformation(agencyCode: agencyCode)
+    func setSchoolInformation(schoolId: String) -> Single<Void> {
+        return RemoteUserDataSource.shared.setSchoolInformation(schoolId: schoolId)
     }
 
 }

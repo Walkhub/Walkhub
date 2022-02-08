@@ -33,12 +33,12 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
     func fetchUserRank(
         scope: Scope,
         dateTypa: DateType,
-        agencyCode: String
+        schoolId: String
     ) -> Single<[User]> {
         return request(.fetchUserRank(
             scope: scope,
             dateType: dateTypa,
-            agencyCode: agencyCode
+            schoolId: schoolId
         ))
             .map(UserListDTO.self)
             .map { $0.toDomain() }
@@ -47,14 +47,14 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
     func searchUser(
         name: String,
         scope: Scope,
-        agencyCode: String,
+        schoolId: String,
         grade: Int,
         classNum: Int
     ) -> Single<[User]> {
         return request(.searchUser(
             name: name,
             scope: scope,
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             grade: grade,
             classNum: classNum
         ))

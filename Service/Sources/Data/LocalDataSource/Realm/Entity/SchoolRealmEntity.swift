@@ -6,7 +6,7 @@ class SchoolRealmEntity: Object {
 
     @Persisted(primaryKey: true) var compoundKey: String = ""
 
-    @Persisted var agencyCode: String = ""
+    @Persisted var schoolId: String = ""
     @Persisted var name: String = ""
     @Persisted var rank: Int = 0
     @Persisted var logoImageUrlString: String = ""
@@ -18,7 +18,7 @@ class SchoolRealmEntity: Object {
 extension SchoolRealmEntity {
 
     func setup(school: School) {
-        self.agencyCode = school.agencyCode
+        self.schoolId = school.schoolId
         self.name = school.name
         self.rank = school.rank
         self.logoImageUrlString = school.logoImageUrl.absoluteString
@@ -27,7 +27,7 @@ extension SchoolRealmEntity {
     }
 
     private func compoundKeyValue() -> String {
-        return "\(agencyCode)"
+        return "\(schoolId)"
     }
 
 }
@@ -36,7 +36,7 @@ extension SchoolRealmEntity {
 extension SchoolRealmEntity {
     func toDomain() -> School {
         return .init(
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             name: name,
             rank: rank,
             logoImageUrl: URL(string: logoImageUrlString)!,
