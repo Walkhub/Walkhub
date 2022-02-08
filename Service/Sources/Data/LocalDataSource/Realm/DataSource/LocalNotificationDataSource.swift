@@ -14,10 +14,10 @@ final class LocalNotificationDataSource {
     }
 
     func storeNotificationList(notificationList: [Notification]) {
-        let notificationRealmEntityList: [NotificationRealmEntity] = notificationList.map {
-            let notificationRealmEntity = NotificationRealmEntity()
-            notificationRealmEntity.setup(notification: $0)
-            return notificationRealmEntity
+        let notificationRealmEntityList = notificationList.map { notification in
+            return NotificationRealmEntity().then {
+                $0.setup(notification: notification)
+            }
         }
         RealmTask.shared.set(notificationRealmEntityList)
     }
