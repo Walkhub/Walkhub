@@ -22,7 +22,7 @@ public class SingupUseCase {
         weight: Int,
         birthday: String,
         sex: Sex,
-        agencyCode: String
+        schoolId: String
     ) -> Single<Void> {
         authRepository.signup(
             id: id,
@@ -34,7 +34,7 @@ public class SingupUseCase {
             weight: weight,
             birthday: birthday,
             sex: sex,
-            agencyCode: agencyCode
+            schoolId: schoolId
         )
     }
 

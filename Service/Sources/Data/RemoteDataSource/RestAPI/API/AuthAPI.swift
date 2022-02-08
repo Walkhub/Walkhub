@@ -5,7 +5,7 @@ import Moya
 enum AuthAPI {
     case signin(id: String, password: String, deviceToken: String)
     case signup(id: String, password: String, name: String, phoneNumber: String, authCode: String,
-                height: Float, weight: Int, birthday: String, sex: Sex, agencyCode: String)
+                height: Float, weight: Int, birthday: String, sex: Sex, schoolId: String)
     case verificationPhone(phoneNumber: String)
     case renewalToken
     case findID(phoneNumber: String)
@@ -55,7 +55,7 @@ extension AuthAPI: WalkhubAPI {
                 encoding: JSONEncoding.default
             )
         case .signup(let id, let password, let name, let phoneNumber, let authCode,
-                     let height, let weight, let birthday, let sex, let agencyCode):
+                     let height, let weight, let birthday, let sex, let schoolId):
             return .requestParameters(
                 parameters: [
                     "user_id": id,
@@ -67,7 +67,7 @@ extension AuthAPI: WalkhubAPI {
                     "weight": weight,
                     "birthday": birthday,
                     "sex": sex.rawValue,
-                    "agency_code": agencyCode
+                    "school_id": schoolId
                 ],
                 encoding: JSONEncoding.default
             )
