@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-class LocalNoticeDataSource {
+final class LocalNoticeDataSource {
 
     static let shared = LocalNoticeDataSource()
 
@@ -14,10 +14,10 @@ class LocalNoticeDataSource {
     }
 
     func storeNoticeList(noticeList: [Notice]) {
-        let noticeRealmEntityList: [NoticeRealmEntity] = noticeList.map {
-            let noticeRealmEntity = NoticeRealmEntity()
-            noticeRealmEntity.setup(notice: $0)
-            return noticeRealmEntity
+        let noticeRealmEntityList = noticeList.map { notice in
+            return NoticeRealmEntity().then {
+                $0.setup(notice: notice)
+            }
         }
         RealmTask.shared.set(noticeRealmEntityList)
     }

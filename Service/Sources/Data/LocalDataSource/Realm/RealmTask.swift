@@ -3,9 +3,9 @@ import Foundation
 import RealmSwift
 import RxSwift
 
-public protocol ObjectPropertyUpdatable { }
+protocol ObjectPropertyUpdatable { }
 extension ObjectPropertyUpdatable where Self: Object {
-    public func update(_ block: (Self) throws -> Void) rethrows {
+    func update(_ block: (Self) throws -> Void) rethrows {
         try? self.realm?.safeWrite {
             try? block(self)
         }
@@ -13,7 +13,7 @@ extension ObjectPropertyUpdatable where Self: Object {
 }
 extension Object: ObjectPropertyUpdatable { }
 
-public protocol RealmTaskType: AnyObject {
+protocol RealmTaskType: AnyObject {
 
     func fetchObjects<T: Object>(
         for type: T.Type,
@@ -30,23 +30,23 @@ public protocol RealmTaskType: AnyObject {
 
 }
 
-public enum RealmError: Error {
+enum RealmError: Error {
     case noData
 }
 
-public enum QueryFilter {
+enum QueryFilter {
     case string(query: String)
     case predicate(query: NSPredicate)
 }
 
-public enum OrderingType {
+enum OrderingType {
     case ascending
     case descending
 }
 
-public final class RealmTask: RealmTaskType {
+final class RealmTask: RealmTaskType {
 
-    public static let shared = RealmTask()
+    static let shared = RealmTask()
 
     private var realm: Realm {
         guard let realm = try? Realm() else {
@@ -58,7 +58,7 @@ public final class RealmTask: RealmTaskType {
 
     private init() { }
 
-    public func fetchObjects<T: Object>(
+    func fetchObjects<T: Object>(
         for type: T.Type,
         filter: QueryFilter? = nil,
         sortProperty: String? = nil,
@@ -83,7 +83,7 @@ public final class RealmTask: RealmTaskType {
         }
     }
 
-    public func fetchObjectsResults<T: Object>(
+    func fetchObjectsResults<T: Object>(
         for type: T.Type,
         filter: QueryFilter? = nil,
         sortProperty: String? = nil,
@@ -104,42 +104,42 @@ public final class RealmTask: RealmTaskType {
         return results
     }
 
-    public func add(_ object: Object?) {
+    func add(_ object: Object?) {
         guard let object = object else { return }
         try? realm.safeWrite {
             realm.add(object)
         }
     }
 
-    public func set(_ object: Object?) {
+    func set(_ object: Object?) {
         guard let object = object else { return }
         try? realm.safeWrite {
             realm.add(object, update: .all)
         }
     }
 
-    public func set(_ objects: [Object]?) {
+    func set(_ objects: [Object]?) {
         guard let objects = objects else { return }
         try? realm.safeWrite {
             realm.add(objects, update: .all)
         }
     }
 
-    public func delete(_ object: Object?) {
+    func delete(_ object: Object?) {
         guard let object = object else { return }
         try? realm.safeWrite {
             realm.delete(object)
         }
     }
 
-    public func delete(_ objects: [Object]?) {
+    func delete(_ objects: [Object]?) {
         guard let objects = objects else { return }
         try? realm.safeWrite {
             realm.delete(objects)
         }
     }
 
-    public func deleteAll() {
+    func deleteAll() {
         try? realm.safeWrite {
             realm.deleteAll()
         }

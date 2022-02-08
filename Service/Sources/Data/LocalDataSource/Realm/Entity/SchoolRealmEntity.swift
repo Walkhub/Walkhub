@@ -17,18 +17,12 @@ class SchoolRealmEntity: Object {
 // MARK: Setup
 extension SchoolRealmEntity {
 
-    func setup(
-        agencyCode: String,
-        name: String,
-        rank: Int,
-        logoImageUrlString: String,
-        walkCount: Int
-    ) {
-        self.agencyCode = agencyCode
-        self.name = name
-        self.rank = rank
-        self.logoImageUrlString = logoImageUrlString
-        self.walkCount = walkCount
+    func setup(school: School) {
+        self.agencyCode = school.agencyCode
+        self.name = school.name
+        self.rank = school.rank
+        self.logoImageUrlString = school.logoImageUrl.absoluteString
+        self.walkCount = school.walkCount
         self.compoundKey = compoundKeyValue()
     }
 
