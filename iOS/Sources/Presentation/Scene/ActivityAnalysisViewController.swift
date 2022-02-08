@@ -1,4 +1,6 @@
 // swiftlint:disable function_body_length
+// swiftlint:disable file_length
+
 import UIKit
 
 import SnapKit
@@ -265,240 +267,242 @@ extension ActivityAnalysisViewController {
         }).disposed(by: disposeBag)}
 }
 
-// MARK: -Layout
+// MARK: - Layout
 extension ActivityAnalysisViewController {
     private func addSubviews() {
-    view.addSubview(scrollView)
+        view.addSubview(scrollView)
 
-    scrollView.addSubview(contentView)
+        scrollView.addSubview(contentView)
 
-    [whiteView, blueView].forEach { contentView.addSubview($0) }
+        [whiteView, blueView].forEach { contentView.addSubview($0) }
 
-    [imgView, foodName, foodKcalLabel, kcalLabel, criteriaLabel,
-     commentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
-        .forEach { blueView.addSubview($0) }
+        [imgView, foodName, foodKcalLabel, kcalLabel, criteriaLabel,
+         commentLabel, levelProgressBarBackView, levelProgressBar, levelLabel]
+            .forEach { blueView.addSubview($0) }
 
-    [dateLabel, stepCountLabel, currentStepCountsLabel, goalStepCountLabel, stepCountProgressBackView, stepCountProgressBar, burnKcalLaebel,
-     kcalCommentLabel, burnKcalNumLabel, kcalLabel2, line,
-    distanceLabel, distanceNumLabel, kmLabel, timeLabel, hourLabel, hLabel, minuteLabel, mLabel,
-    weekBtn, monthBtn, charts, allStepCountLabel, allStepCountNumLabel, averageStepLabel, averageStepNumLabel]
-        .forEach { whiteView.addSubview($0) }
-}
-
-private func makeSubviewConstraints() {
-
-    scrollView.snp.makeConstraints {
-        $0.edges.equalToSuperview()
+        [dateLabel, stepCountLabel, currentStepCountsLabel, goalStepCountLabel,
+         stepCountProgressBackView, stepCountProgressBar, burnKcalLaebel,
+         kcalCommentLabel, burnKcalNumLabel, kcalLabel2, line,
+         distanceLabel, distanceNumLabel, kmLabel, timeLabel, hourLabel, hLabel, minuteLabel, mLabel,
+         weekBtn, monthBtn, charts, allStepCountLabel, allStepCountNumLabel, averageStepLabel, averageStepNumLabel]
+            .forEach { whiteView.addSubview($0) }
     }
 
-    contentView.snp.makeConstraints {
-        $0.top.bottom.equalToSuperview()
-        $0.leading.trailing.equalTo(self.view)
+    private func makeSubviewConstraints() {
+
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        contentView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview()
+            $0.leading.trailing.equalTo(self.view)
+        }
+
+        blueView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(43)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(200)
+            $0.height.equalTo(272)
+        }
+
+        imgView.snp.makeConstraints {
+            $0.top.trailing.equalToSuperview().inset(14)
+            $0.width.height.equalTo(112)
+        }
+
+        foodName.snp.makeConstraints {
+            $0.top.equalTo(imgView.snp.bottom).offset(9)
+            $0.leading.equalToSuperview().inset(17)
+        }
+
+        foodKcalLabel.snp.makeConstraints {
+            $0.top.equalTo(foodName.snp.bottom)
+            $0.leading.equalToSuperview().inset(17)
+        }
+
+        kcalLabel.snp.makeConstraints {
+            $0.bottom.equalTo(foodKcalLabel.snp.bottom)
+            $0.leading.equalTo(foodKcalLabel.snp.trailing)
+            $0.height.equalTo(foodKcalLabel.snp.height)
+        }
+
+        criteriaLabel.snp.makeConstraints {
+            $0.top.equalTo(imgView.snp.bottom).offset(43)
+            $0.leading.equalTo(kcalLabel.snp.trailing).offset(5)
+        }
+
+        commentLabel.snp.makeConstraints {
+            $0.top.equalTo(foodKcalLabel.snp.bottom).offset(4)
+            $0.leading.equalToSuperview().inset(17)
+        }
+
+        levelLabel.snp.makeConstraints {
+            $0.top.equalTo(commentLabel.snp.bottom).offset(28)
+            $0.leading.equalToSuperview().inset(18)
+            $0.height.equalTo(21)
+            $0.width.equalTo(41)
+        }
+
+        levelProgressBarBackView.snp.makeConstraints {
+            $0.centerY.equalTo(levelLabel)
+            $0.leading.equalTo(levelLabel.snp.trailing).inset(4)
+            $0.trailing.equalToSuperview().inset(17)
+            $0.height.equalTo(11)
+        }
+
+        levelProgressBar.snp.makeConstraints {
+            $0.centerY.equalTo(levelLabel)
+            $0.trailing.equalTo(levelProgressBarBackView).inset(3)
+            $0.leading.equalTo(levelProgressBarBackView.snp.leading)
+            $0.height.equalTo(5)
+        }
+
+        whiteView.snp.makeConstraints {
+            $0.top.equalTo(blueView.snp.bottom).inset(72)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(694)
+            $0.bottom.equalToSuperview()
+        }
+
+        dateLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(123)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        stepCountLabel.snp.makeConstraints {
+            $0.top.equalTo(dateLabel.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        currentStepCountsLabel.snp.makeConstraints {
+            $0.top.equalTo(stepCountLabel.snp.bottom)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        goalStepCountLabel.snp.makeConstraints {
+            $0.bottom.equalTo(currentStepCountsLabel.snp.bottom)
+            $0.leading.equalTo(currentStepCountsLabel.snp.trailing).offset(4)
+        }
+
+        stepCountProgressBackView.snp.makeConstraints {
+            $0.top.equalTo(goalStepCountLabel.snp.bottom).offset(6)
+            $0.leading.trailing.equalToSuperview().inset(39)
+            $0.height.equalTo(11)
+        }
+
+        stepCountProgressBar.snp.makeConstraints {
+            $0.centerY.equalTo(stepCountProgressBackView)
+            $0.leading.trailing.equalTo(stepCountProgressBackView).inset(3)
+            $0.height.equalTo(5)
+        }
+
+        burnKcalLaebel.snp.makeConstraints {
+            $0.top.equalTo(stepCountProgressBackView.snp.bottom).offset(16)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        kcalCommentLabel.snp.makeConstraints {
+            $0.top.equalTo(burnKcalLaebel.snp.bottom)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        burnKcalNumLabel.snp.makeConstraints {
+            $0.top.equalTo(kcalCommentLabel.snp.bottom)
+            $0.leading.equalToSuperview().inset(39)
+        }
+
+        kcalLabel2.snp.makeConstraints {
+            $0.bottom.equalTo(burnKcalNumLabel.snp.bottom)
+            $0.leading.equalTo(burnKcalNumLabel.snp.trailing).offset(4)
+        }
+
+        line.snp.makeConstraints {
+            $0.top.equalTo(kcalLabel2.snp.bottom).offset(40)
+            $0.width.equalTo(1)
+            $0.height.equalTo(28)
+            $0.centerX.equalToSuperview()
+        }
+
+        distanceLabel.snp.makeConstraints {
+            $0.top.equalTo(kcalLabel2.snp.bottom).offset(24)
+            $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-69)
+        }
+
+        distanceNumLabel.snp.makeConstraints {
+            $0.top.equalTo(distanceLabel.snp.bottom).offset(4)
+            $0.trailing.equalTo(kmLabel.snp.leading).offset(-4)
+        }
+
+        kmLabel.snp.makeConstraints {
+            $0.bottom.equalTo(distanceNumLabel.snp.bottom)
+            $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-53)
+        }
+
+        timeLabel.snp.makeConstraints {
+            $0.top.equalTo(distanceLabel.snp.top)
+            $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(68)
+        }
+
+        hourLabel.snp.makeConstraints {
+            $0.top.equalTo(timeLabel.snp.bottom).offset(4)
+            $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(51)
+        }
+
+        hLabel.snp.makeConstraints {
+            $0.bottom.equalTo(hourLabel.snp.bottom)
+            $0.leading.equalTo(hourLabel.snp.trailing).offset(2)
+        }
+
+        minuteLabel.snp.makeConstraints {
+            $0.top.equalTo(hourLabel.snp.top)
+            $0.leading.equalTo(hLabel.snp.trailing).offset(4)
+        }
+
+        mLabel.snp.makeConstraints {
+            $0.bottom.equalTo(minuteLabel.snp.bottom)
+            $0.leading.equalTo(minuteLabel.snp.trailing).offset(2)
+        }
+
+        weekBtn.snp.makeConstraints {
+            $0.top.equalTo(distanceNumLabel.snp.bottom).offset(27)
+            $0.trailing.equalTo(line.snp.leading).offset(-27)
+            $0.width.equalTo(81)
+            $0.height.equalTo(28)
+        }
+
+        monthBtn.snp.makeConstraints {
+            $0.top.equalTo(weekBtn.snp.top)
+            $0.leading.equalTo(line.snp.trailing).offset(27)
+            $0.width.equalTo(81)
+            $0.height.equalTo(28)
+        }
+
+        charts.snp.makeConstraints {
+            $0.top.equalTo(monthBtn.snp.bottom).offset(24)
+            $0.leading.trailing.equalToSuperview().inset(42)
+            $0.height.equalTo(136)
+        }
+
+        allStepCountLabel.snp.makeConstraints {
+            $0.top.equalTo(charts.snp.bottom).offset(28)
+            $0.leading.equalToSuperview().inset(41)
+        }
+
+        allStepCountNumLabel.snp.makeConstraints {
+            $0.centerY.equalTo(allStepCountLabel)
+            $0.trailing.equalToSuperview().inset(41)
+        }
+
+        averageStepLabel.snp.makeConstraints {
+            $0.top.equalTo(allStepCountLabel.snp.bottom).offset(20)
+            $0.leading.equalToSuperview().inset(41)
+        }
+
+        averageStepNumLabel.snp.makeConstraints {
+            $0.centerY.equalTo(averageStepLabel)
+            $0.trailing.equalToSuperview().inset(41)
+        }
     }
 
-    blueView.snp.makeConstraints {
-        $0.top.equalToSuperview().inset(43)
-        $0.centerX.equalToSuperview()
-        $0.width.equalTo(200)
-        $0.height.equalTo(272)
-    }
-
-    imgView.snp.makeConstraints {
-        $0.top.trailing.equalToSuperview().inset(14)
-        $0.width.height.equalTo(112)
-    }
-
-    foodName.snp.makeConstraints {
-        $0.top.equalTo(imgView.snp.bottom).offset(9)
-        $0.leading.equalToSuperview().inset(17)
-    }
-
-    foodKcalLabel.snp.makeConstraints {
-        $0.top.equalTo(foodName.snp.bottom)
-        $0.leading.equalToSuperview().inset(17)
-    }
-
-    kcalLabel.snp.makeConstraints {
-        $0.bottom.equalTo(foodKcalLabel.snp.bottom)
-        $0.leading.equalTo(foodKcalLabel.snp.trailing)
-        $0.height.equalTo(foodKcalLabel.snp.height)
-    }
-
-    criteriaLabel.snp.makeConstraints {
-        $0.top.equalTo(imgView.snp.bottom).offset(43)
-        $0.leading.equalTo(kcalLabel.snp.trailing).offset(5)
-    }
-
-    commentLabel.snp.makeConstraints {
-        $0.top.equalTo(foodKcalLabel.snp.bottom).offset(4)
-        $0.leading.equalToSuperview().inset(17)
-    }
-
-    levelLabel.snp.makeConstraints {
-        $0.top.equalTo(commentLabel.snp.bottom).offset(28)
-        $0.leading.equalToSuperview().inset(18)
-        $0.height.equalTo(21)
-        $0.width.equalTo(41)
-    }
-
-    levelProgressBarBackView.snp.makeConstraints {
-        $0.centerY.equalTo(levelLabel)
-        $0.leading.equalTo(levelLabel.snp.trailing).inset(4)
-        $0.trailing.equalToSuperview().inset(17)
-        $0.height.equalTo(11)
-    }
-
-    levelProgressBar.snp.makeConstraints {
-        $0.centerY.equalTo(levelLabel)
-        $0.trailing.equalTo(levelProgressBarBackView).inset(3)
-        $0.leading.equalTo(levelProgressBarBackView.snp.leading)
-        $0.height.equalTo(5)
-    }
-
-    whiteView.snp.makeConstraints {
-        $0.top.equalTo(blueView.snp.bottom).inset(72)
-        $0.leading.trailing.equalToSuperview()
-        $0.height.equalTo(694)
-        $0.bottom.equalToSuperview()
-    }
-
-    dateLabel.snp.makeConstraints {
-        $0.top.equalToSuperview().inset(123)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    stepCountLabel.snp.makeConstraints {
-        $0.top.equalTo(dateLabel.snp.bottom).offset(16)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    currentStepCountsLabel.snp.makeConstraints {
-        $0.top.equalTo(stepCountLabel.snp.bottom)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    goalStepCountLabel.snp.makeConstraints {
-        $0.bottom.equalTo(currentStepCountsLabel.snp.bottom)
-        $0.leading.equalTo(currentStepCountsLabel.snp.trailing).offset(4)
-    }
-
-    stepCountProgressBackView.snp.makeConstraints {
-        $0.top.equalTo(goalStepCountLabel.snp.bottom).offset(6)
-        $0.leading.trailing.equalToSuperview().inset(39)
-        $0.height.equalTo(11)
-    }
-
-    stepCountProgressBar.snp.makeConstraints {
-        $0.centerY.equalTo(stepCountProgressBackView)
-        $0.leading.trailing.equalTo(stepCountProgressBackView).inset(3)
-        $0.height.equalTo(5)
-    }
-
-    burnKcalLaebel.snp.makeConstraints {
-        $0.top.equalTo(stepCountProgressBackView.snp.bottom).offset(16)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    kcalCommentLabel.snp.makeConstraints {
-        $0.top.equalTo(burnKcalLaebel.snp.bottom)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    burnKcalNumLabel.snp.makeConstraints {
-        $0.top.equalTo(kcalCommentLabel.snp.bottom)
-        $0.leading.equalToSuperview().inset(39)
-    }
-
-    kcalLabel2.snp.makeConstraints {
-        $0.bottom.equalTo(burnKcalNumLabel.snp.bottom)
-        $0.leading.equalTo(burnKcalNumLabel.snp.trailing).offset(4)
-    }
-
-    line.snp.makeConstraints {
-        $0.top.equalTo(kcalLabel2.snp.bottom).offset(40)
-        $0.width.equalTo(1)
-        $0.height.equalTo(28)
-        $0.centerX.equalToSuperview()
-    }
-
-    distanceLabel.snp.makeConstraints {
-        $0.top.equalTo(kcalLabel2.snp.bottom).offset(24)
-        $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-69)
-    }
-
-    distanceNumLabel.snp.makeConstraints {
-        $0.top.equalTo(distanceLabel.snp.bottom).offset(4)
-        $0.trailing.equalTo(kmLabel.snp.leading).offset(-4)
-    }
-
-    kmLabel.snp.makeConstraints {
-        $0.bottom.equalTo(distanceNumLabel.snp.bottom)
-        $0.trailing.greaterThanOrEqualTo(line.snp.leading).offset(-53)
-    }
-
-    timeLabel.snp.makeConstraints {
-        $0.top.equalTo(distanceLabel.snp.top)
-        $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(68)
-    }
-
-    hourLabel.snp.makeConstraints {
-        $0.top.equalTo(timeLabel.snp.bottom).offset(4)
-        $0.leading.lessThanOrEqualTo(line.snp.trailing).offset(51)
-    }
-
-    hLabel.snp.makeConstraints {
-        $0.bottom.equalTo(hourLabel.snp.bottom)
-        $0.leading.equalTo(hourLabel.snp.trailing).offset(2)
-    }
-
-    minuteLabel.snp.makeConstraints {
-        $0.top.equalTo(hourLabel.snp.top)
-        $0.leading.equalTo(hLabel.snp.trailing).offset(4)
-    }
-
-    mLabel.snp.makeConstraints {
-        $0.bottom.equalTo(minuteLabel.snp.bottom)
-        $0.leading.equalTo(minuteLabel.snp.trailing).offset(2)
-    }
-
-    weekBtn.snp.makeConstraints {
-        $0.top.equalTo(distanceNumLabel.snp.bottom).offset(27)
-        $0.trailing.equalTo(line.snp.leading).offset(-27)
-        $0.width.equalTo(81)
-        $0.height.equalTo(28)
-    }
-
-    monthBtn.snp.makeConstraints {
-        $0.top.equalTo(weekBtn.snp.top)
-        $0.leading.equalTo(line.snp.trailing).offset(27)
-        $0.width.equalTo(81)
-        $0.height.equalTo(28)
-    }
-
-    charts.snp.makeConstraints {
-        $0.top.equalTo(monthBtn.snp.bottom).offset(24)
-        $0.leading.trailing.equalToSuperview().inset(42)
-        $0.height.equalTo(136)
-    }
-
-    allStepCountLabel.snp.makeConstraints {
-        $0.top.equalTo(charts.snp.bottom).offset(28)
-        $0.leading.equalToSuperview().inset(41)
-    }
-
-    allStepCountNumLabel.snp.makeConstraints {
-        $0.centerY.equalTo(allStepCountLabel)
-        $0.trailing.equalToSuperview().inset(41)
-    }
-
-    averageStepLabel.snp.makeConstraints {
-        $0.top.equalTo(allStepCountLabel.snp.bottom).offset(20)
-        $0.leading.equalToSuperview().inset(41)
-    }
-
-    averageStepNumLabel.snp.makeConstraints {
-        $0.centerY.equalTo(averageStepLabel)
-        $0.trailing.equalToSuperview().inset(41)
-    }
-}
 }
