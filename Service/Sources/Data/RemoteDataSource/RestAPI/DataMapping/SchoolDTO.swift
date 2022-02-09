@@ -3,13 +3,13 @@ import Foundation
 // MARK: - Data Transfer Object
 struct SchoolDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case agencyCode = "agency_code"
+        case schoolId = "school_id"
         case name
         case rank
         case logoImageUrlString = "logo_image_url"
         case walkCount = "walk_count"
     }
-    let agencyCode: String
+    let schoolId: String
     let name: String
     let rank: Int
     let logoImageUrlString: String
@@ -20,7 +20,7 @@ struct SchoolDTO: Decodable {
 extension SchoolDTO {
     func toDomain() -> School {
         return .init(
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             name: name,
             rank: rank,
             logoImageUrl: URL(string: logoImageUrlString)!,

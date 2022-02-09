@@ -12,8 +12,8 @@ class DefaultNotificationRepository: NotificationRepository {
             .createObservable()
     }
 
-    func editReadWhether(notificationID: Int) -> Single<Void> {
-        return RemoteNotificationDataSource.shared.editReadWhether(notificationID: notificationID)
+    func editReadWhether(notificationId: Int) -> Single<Void> {
+        return RemoteNotificationDataSource.shared.editReadWhether(notificationId: notificationId)
     }
 
 }

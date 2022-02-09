@@ -10,8 +10,8 @@ enum UserAPI {
     case setMainBadge(badgeID: Int)
     case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex)
     case setHealthInformation(height: Float, weight: Int)
-    case joinClass(agencyCode: String, grade: Int, classNum: Int)
-    case setSchoolInformation(agencyCode: String)
+    case joinClass(schoolId: String, grade: Int, classNum: Int)
+    case setSchoolInformation(schoolId: String)
 }
 
 extension UserAPI: WalkhubAPI {
@@ -71,10 +71,10 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setSchoolInformation(let agencyCode):
+        case .setSchoolInformation(let schoolId):
             return .requestParameters(
                 parameters: [
-                    "agency_code": agencyCode
+                    "school_id": schoolId
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )

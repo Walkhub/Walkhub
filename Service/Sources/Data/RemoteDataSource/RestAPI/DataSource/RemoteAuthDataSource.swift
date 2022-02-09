@@ -33,7 +33,7 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         weight: Int,
         birthday: String,
         sex: Sex,
-        agencyCode: String
+        schoolId: String
     ) -> Single<Void> {
         return request(.signup(
             id: id,
@@ -45,7 +45,7 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             weight: weight,
             birthday: birthday,
             sex: sex,
-            agencyCode: agencyCode
+            schoolId: schoolId
         )).map { _ in () }
     }
 

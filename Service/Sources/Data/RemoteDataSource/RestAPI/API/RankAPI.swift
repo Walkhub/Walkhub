@@ -6,8 +6,8 @@ enum RankAPI {
     case fetchSchoolRank(dateType: DateType)
     case searchSchool(name: String)
     case fetchUserSchoolRank(scope: Scope, dateType: DateType)
-    case fetchUserRank(scope: Scope, dateType: DateType, agencyCode: String)
-    case searchUser(name: String, scope: Scope, agencyCode: String, grade: Int, classNum: Int)
+    case fetchUserRank(scope: Scope, dateType: DateType, schoolId: String)
+    case searchUser(name: String, scope: Scope, schoolId: String, grade: Int, classNum: Int)
 }
 
 extension RankAPI: WalkhubAPI {
@@ -57,21 +57,21 @@ extension RankAPI: WalkhubAPI {
                     "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
-        case .fetchUserRank(let scope, let dateType, let agencyCode):
+        case .fetchUserRank(let scope, let dateType, let schoolId):
             return .requestParameters(
                 parameters: [
                     "scope": scope.rawValue,
                     "dateType": dateType.rawValue,
-                    "agencyCode": agencyCode
+                    "schoolId": schoolId
                 ],
                 encoding: URLEncoding.queryString
             )
-        case .searchUser(let name, let scope, let agencyCode, let grade, let classNum):
+        case .searchUser(let name, let scope, let schoolId, let grade, let classNum):
             return .requestParameters(
                 parameters: [
                     "name": name,
                     "scope": scope.rawValue,
-                    "agencyCode": agencyCode,
+                    "schoolId": schoolId,
                     "grade": grade,
                     "classNum": classNum
                 ], encoding: URLEncoding.queryString
