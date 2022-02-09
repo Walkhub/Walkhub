@@ -42,12 +42,10 @@ class RankTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 }
 
-//MARK: -Layout
+// MARK: - Layout
 extension RankTableViewCell {
     private func addSubviews() {
         [imgView, nameLabel, stepLabel, badgeImgView, rankLabel]
