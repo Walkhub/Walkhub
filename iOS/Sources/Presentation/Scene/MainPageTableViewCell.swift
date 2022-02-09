@@ -63,7 +63,8 @@ class MainPageTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setUp()
+        addSubviews()
+        makeSubviewConstraints()
     }
 
     override func awakeFromNib() {
@@ -83,19 +84,14 @@ class MainPageTableViewCell: UITableViewCell {
         label.text = "5329"
         stepLabel.text = "/6000 걸음"
     }
+}
 
-    private func setUp() {
-        self.addSubview(whCircleProgressView)
-        self.addSubview(imgView)
-        self.addSubview(label)
-        self.addSubview(stepLabel)
-        self.addSubview(clock)
-        self.addSubview(location)
-        self.addSubview(fire)
-        self.addSubview(clockLabel)
-        self.addSubview(locationLabel)
-        self.addSubview(fireLabel)
-        
+extension MainPageTableViewCell {
+    private func addSubviews() {
+        [whCircleProgressView, imgView, label, stepLabel, clock, location, fire, clockLabel, locationLabel, fireLabel].forEach { self.addSubview($0)}
+    }
+    
+    private func makeSubviewConstraints() {
         whCircleProgressView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview().inset(71)
             $0.top.equalToSuperview().inset(40)
