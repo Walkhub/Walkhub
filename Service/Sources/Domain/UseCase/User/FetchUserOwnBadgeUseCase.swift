@@ -10,7 +10,7 @@ class FetchUserOwnBadgeUseCase {
         self.userRepository = userRepository
     }
 
-    func excute(userId: Int) -> Observable<[Badge]> {
+    public func excute(userId: Int) -> Observable<[Badge]> {
         userRepository.fetchBadges(userID: userId)
     }
 

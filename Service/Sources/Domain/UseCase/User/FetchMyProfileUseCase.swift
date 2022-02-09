@@ -10,7 +10,7 @@ class FetchMyProfileUseCase {
         self.userRepository = userRepository
     }
 
-    func excute() -> Observable<UserProfile> {
+    public func excute() -> Observable<UserProfile> {
         userRepository.fetchMyProfile()
     }
 
