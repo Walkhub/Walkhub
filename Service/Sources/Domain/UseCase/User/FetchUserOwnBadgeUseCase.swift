@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-class FetchUserOwnBadgeUseCase {
+public class FetchUserOwnBadgeUseCase {
 
     private let userRepository: UserRepository
 

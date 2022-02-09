@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-class SetMainBadgeUseCase {
+public class SetMainBadgeUseCase {
 
     private let userRepository: UserRepository
 

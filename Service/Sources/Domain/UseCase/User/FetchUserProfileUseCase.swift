@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-class FetchUserProfileUseCase {
+public class FetchUserProfileUseCase {
 
     private let userRepository: UserRepository
 
