@@ -70,16 +70,9 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         )).map { _ in () }
     }
 
-    func joinClass(
-        schoolId: String,
-        grade: Int,
-        classNum: Int
-    ) -> Single<Void> {
-        return request(.joinClass(
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
-        )).map { _ in () }
+    func joinClass(groupId: Int) -> Single<Void> {
+        return request(.joinClass(groupId: groupId))
+            .map { _ in () }
     }
 
     func setSchoolInformation(schoolId: String) -> Single<Void> {

@@ -64,16 +64,8 @@ class DefaultUserRepository: UserRepository {
         return RemoteUserDataSource.shared.writeHealth(height: height, weight: weight)
     }
 
-    func joinClass(
-        schoolId: String,
-        grade: Int,
-        classNum: Int
-    ) -> Single<Void> {
-        return RemoteUserDataSource.shared.joinClass(
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
-        )
+    func joinClass(groupId: Int) -> Single<Void> {
+        return RemoteUserDataSource.shared.joinClass(groupId: groupId)
     }
 
     func setSchoolInformation(schoolId: String) -> Single<Void> {
