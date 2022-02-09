@@ -83,7 +83,7 @@ class RankTableViewCell: UITableViewCell {
         
         rankBtn.snp.makeConstraints {
             $0.top.equalTo(rankStepLabel.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(30)
+            $0.leading.trailing.equalToSuperview().inset(15)
             $0.height.equalTo(40)
             $0.bottom.equalToSuperview().inset(12)
         }
