@@ -4,7 +4,7 @@ import Moya
 
 enum NotificationAPI {
     case fetchNotificationList
-    case toggleIsRead(notificationID: Int)
+    case toggleIsRead(notificationId: Int)
 }
 
 extension NotificationAPI: WalkhubAPI {
@@ -17,8 +17,8 @@ extension NotificationAPI: WalkhubAPI {
         switch self {
         case .fetchNotificationList:
             return "/"
-        case .toggleIsRead(let notificationID):
-            return "/\(notificationID)"
+        case .toggleIsRead(let notificationId):
+            return "/\(notificationId)"
         }
     }
 

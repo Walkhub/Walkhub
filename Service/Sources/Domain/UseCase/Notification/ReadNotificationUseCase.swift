@@ -10,8 +10,8 @@ public class ReadNotificationUseCase {
         self.notificationRepository = notificationRepository
     }
 
-    public func excute(notificationID: Int) -> Single<Void> {
-        notificationRepository.editReadWhether(notificationID: notificationID)
+    public func excute(notificationId: Int) -> Single<Void> {
+        notificationRepository.editReadWhether(notificationId: notificationId)
     }
 
 }
