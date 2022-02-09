@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class RankPreviewUseCase {
+public class FetchRankPreviewUseCase {
 
     private let rankRepository: RankRepository
 
