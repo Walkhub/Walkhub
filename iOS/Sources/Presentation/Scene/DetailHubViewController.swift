@@ -1,41 +1,63 @@
 import UIKit
 
+import SnapKit
+import Then
+import RxSwift
+import RxCocoa
 class DetailHubViewController: UIViewController {
 
-    private let schoolLabel = UILabel().then {
-        $0.text = "학교"
-        $0.font = .notoSansFont(ofSize: 14, family: .regular)
+    private var disposeBag = DisposeBag()
+
+    private let searchTableView = UITableView().then {
+        $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
+        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "searchCell")
     }
 
-    private let switches = UISwitch().then {
-        $0.isOn = false
-        $0.onTintColor = .primary400
-        $0.transform = CGAffineTransform(scaleX: 0.9, y: 0.8)
+    private let myViewBackground = UIView().then {
+        $0.backgroundColor = .gray50
     }
 
-    private let classLabel = UILabel().then {
-        $0.text = "반"
-        $0.font = .notoSansFont(ofSize: 14, family: .regular)
+    private let myView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 12
     }
 
-    private let dropDownBtn = DropDownButton().then {
-        $0.setTitle(" 오늘\t", for: .normal)
-        $0.arr = ["오늘", "이번주", "이번달"]
-        $0.setAction()
+    private let imgView = UIImageView().then {
+        $0.layer.cornerRadius = $0.frame.height / 2
+        $0.contentMode = .scaleToFill
+    }
+
+    private let nameLabel = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 16, family: .medium)
+    }
+
+    private let stepCountLabel = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 12, family: .regular)
+        $0.textColor = .gray800
+    }
+
+    private let rankLabel = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
     private let rankTableView = UITableView().then {
         $0.backgroundColor = .gray50
         $0.separatorStyle = .none
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
-        $0.register(MyRankTableViewCell.self, forCellReuseIdentifier: "myRankCell")
+    }
+
+    private let joinClassBtn = UIButton(type: .system).then {
+        $0.setTitle("반 등록하고 랭킹 확인하기", for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.layer.cornerRadius = 12
+        $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        rankTableView.dataSource = self
-        rankTableView.delegate = self
         view.backgroundColor = .gray50
+        demoDate()
+        setTableView()
     }
 
     override func viewDidLayoutSubviews() {
@@ -47,11 +69,17 @@ class DetailHubViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setNavigation()
+        searchTableView.isHidden = true
+        joinClassBtn.isHidden = true
     }
 }
 
-extension DetailHubViewController {
+extension DetailHubViewController: UISearchBarDelegate{
+
     private func setNavigation() {
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.barTintColor = .gray50
         let searchBtn = UIBarButtonItem(
             image: .init(systemName: "magnifyingglass"),
             style: .plain,
@@ -59,86 +87,101 @@ extension DetailHubViewController {
             action: nil).then {
                 $0.tintColor = .black
             }
-        let searchBar = UISearchBar().then {
-            $0.setImage(UIImage(), for: .search, state: .normal)
-            $0.searchTextField.backgroundColor = .clear
-            $0.searchTextField.textAlignment = .center
+        let searchBar = UISearchController().then {
+            $0.searchBar.setImage(UIImage(), for: .search, state: .normal)
+            $0.searchBar.backgroundColor = .clear
+            $0.searchBar.searchTextField.textAlignment = .left
+            $0.searchBar.searchTextField.placeholder = "이름으로 검색하기"
+            $0.searchBar.setValue("취소", forKey: "cancelButtonText")
+            searchBarCancelButtonClicked($0.searchBar)
             }
-        navigationItem.titleView = searchBar
+
+        searchBar.searchBar.delegate = self
+        searchBtn.rx.tap.subscribe(onNext: {
+            searchBar.searchBar.isHidden = false
+            searchBar.searchBar.searchTextField.becomeFirstResponder()
+        }).disposed(by: disposeBag)
+
+        navigationItem.searchController = searchBar
+        navigationItem.searchController?.searchBar.isHidden = true
         navigationItem.rightBarButtonItem = searchBtn
+        navigationController?.navigationBar.tintColor = .black
         }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.isHidden = true
     }
+}
 
 // MARK: - Layout
 extension DetailHubViewController {
     private func addSubviews() {
-        [schoolLabel, switches, classLabel, dropDownBtn, rankTableView]
+        [rankTableView, myViewBackground, searchTableView, joinClassBtn]
             .forEach { view.addSubview($0) }
+        myViewBackground.addSubview(myView)
+
+        [imgView, nameLabel, stepCountLabel, rankLabel].forEach { myView.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
-        schoolLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(116)
-            $0.leading.equalTo(16)
+
+        myViewBackground.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaInsets)
+            $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(80)
         }
 
-        switches.snp.makeConstraints {
-            $0.centerY.equalTo(schoolLabel)
-            $0.leading.equalTo(schoolLabel.snp.trailing).offset(8)
+        myView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(8)
+            $0.leading.trailing.equalToSuperview().inset(16)
         }
 
-        classLabel.snp.makeConstraints {
-            $0.top.equalTo(schoolLabel)
-            $0.leading.equalTo(switches.snp.trailing).offset(8)
+        searchTableView.snp.makeConstraints {
+            $0.top.leading.trailing.equalTo(view.safeAreaInsets)
+            $0.bottom.equalToSuperview()
         }
 
-        dropDownBtn.snp.makeConstraints {
-            $0.centerY.equalTo(schoolLabel)
+        imgView.snp.makeConstraints {
+            $0.top.equalToSuperview().inset(12)
+            $0.leading.equalToSuperview().inset(16)
+            $0.width.height.equalTo(40)
+        }
+
+        nameLabel.snp.makeConstraints {
+            $0.top.equalTo(imgView)
+            $0.leading.equalTo(imgView.snp.trailing).offset(16)
+        }
+
+        stepCountLabel.snp.makeConstraints {
+            $0.top.equalTo(nameLabel.snp.bottom)
+            $0.leading.equalTo(nameLabel)
+            $0.bottom.equalToSuperview().inset(11)
+        }
+
+        rankLabel.snp.makeConstraints {
+            $0.centerY.equalTo(imgView)
             $0.trailing.equalToSuperview().inset(16)
         }
 
         rankTableView.snp.makeConstraints {
-            $0.top.equalTo(classLabel.snp.bottom).offset(17)
+            $0.top.equalTo(view.safeAreaInsets)
             $0.leading.trailing.bottom.equalToSuperview()
+        }
+
+        joinClassBtn.snp.makeConstraints {
+            $0.bottom.leading.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(52)
         }
     }
 }
 
 extension DetailHubViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-            let headerView = UIView()
-            headerView.backgroundColor = UIColor.clear
-            return headerView
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 12
-    }
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            return 3
-        }
+        return 20
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "myRankCell", for: indexPath) as? MyRankTableViewCell
-            cell?.profileImgView.image = .init(systemName: "clock.fill")
-            cell?.nameLabel.text = "김기영"
-            cell?.stepCountLabel.text = "12319 걸음"
-            cell?.progressBar.progress = 0.8
-            cell?.nextLevelLabel.text = "다음 등수까지 1394 걸음"
-            cell?.goalStepCountLabel.text = "8900 걸음"
-
-            return cell!
-        } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "rankCell", for: indexPath) as? RankTableViewCell
             cell?.nameLabel.text = "김시안"
             cell?.imgView.image = .init(systemName: "clock.fill")
@@ -147,6 +190,39 @@ extension DetailHubViewController: UITableViewDataSource, UITableViewDelegate {
             cell?.badgeImgView.image = .init(systemName: "bell.badge")
 
             return cell!
+    }
+}
+
+extension DetailHubViewController {
+    private func setTableView() {
+        rankTableView.delegate = self
+        rankTableView.dataSource = self
+
+        rankTableView.rx.contentOffset
+            .map { $0.y <= 90 }
+            .subscribe(onNext: {
+                self.myViewBackground.isHidden = $0
+            }).disposed(by: disposeBag)
+        rankTableView.tableHeaderView = HeaderView().then {
+            $0.imgView.image = .init(systemName: "clock.fill")
+            $0.nameLabel.text = "김기영"
+            $0.stepCountLabel.text = "7483 걸음"
+            $0.rankLabel.text = "5등"
+            $0.progressBar.progress = 0.5
+            $0.nextLevelLabel.text = "다음 등수까지 1290 걸음"
+            $0.goalStepCountLabel.text = "2190 걸음"
+            $0.layer.frame.size.height = 170
         }
+        rankTableView.tableFooterView = FooterView().then {
+            $0.commentLabel.text = "131명의 친구와 함께 뛰고 있어요"
+            $0.layer.frame.size.height = 40
+        }
+    }
+
+    private func demoDate() {
+        imgView.image = .init(systemName: "clock.fill")
+        nameLabel.text = "김기영"
+        stepCountLabel.text = "5000 걸음"
+        rankLabel.text = "7등"
     }
 }
