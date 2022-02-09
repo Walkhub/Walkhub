@@ -4,9 +4,18 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+
 class DetailHubViewController: UIViewController {
 
     private var disposeBag = DisposeBag()
+
+    private let headerView = HeaderView().then {
+        $0.layer.frame.size.height = 180
+    }
+
+    private let footerView = FooterView().then {
+        $0.layer.frame.size.height = 40
+    }
 
     private let searchTableView = UITableView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
@@ -102,6 +111,7 @@ extension DetailHubViewController: UISearchBarDelegate{
         searchBtn.rx.tap.subscribe(onNext: {
             searchBar.searchBar.isHidden = false
             searchBar.searchBar.searchTextField.becomeFirstResponder()
+            self.searchTableView.isHidden = false
         }).disposed(by: disposeBag)
 
         navigationItem.searchController = searchBar
@@ -112,6 +122,7 @@ extension DetailHubViewController: UISearchBarDelegate{
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.isHidden = true
+        self.searchTableView.isHidden = true
     }
 }
 
@@ -202,20 +213,8 @@ extension DetailHubViewController {
             .subscribe(onNext: {
                 self.myViewBackground.isHidden = $0
             }).disposed(by: disposeBag)
-        rankTableView.tableHeaderView = HeaderView().then {
-            $0.imgView.image = .init(systemName: "clock.fill")
-            $0.nameLabel.text = "김기영"
-            $0.stepCountLabel.text = "7483 걸음"
-            $0.rankLabel.text = "5등"
-            $0.progressBar.progress = 0.5
-            $0.nextLevelLabel.text = "다음 등수까지 1290 걸음"
-            $0.goalStepCountLabel.text = "2190 걸음"
-            $0.layer.frame.size.height = 180
-        }
-        rankTableView.tableFooterView = FooterView().then {
-            $0.commentLabel.text = "131명의 친구와 함께 뛰고 있어요"
-            $0.layer.frame.size.height = 40
-        }
+        rankTableView.tableHeaderView = headerView
+        rankTableView.tableFooterView = footerView
     }
 
     private func demoDate() {
@@ -223,5 +222,13 @@ extension DetailHubViewController {
         nameLabel.text = "김기영"
         stepCountLabel.text = "5000 걸음"
         rankLabel.text = "7등"
+        headerView.imgView.image = .init(systemName: "clock.fill")
+        headerView.nameLabel.text = "김기영"
+        headerView.stepCountLabel.text = "7483 걸음"
+        headerView.rankLabel.text = "5등"
+        headerView.progressBar.progress = 0.5
+        headerView.nextLevelLabel.text = "다음 등수까지 1290 걸음"
+        headerView.goalStepCountLabel.text = "2190 걸음"
+        footerView.commentLabel.text = "131명의 친구와 함께 뛰고 있어요"
     }
 }
