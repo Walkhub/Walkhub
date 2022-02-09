@@ -11,7 +11,7 @@ class SetMainBadgeUseCase {
     }
 
     public func excute(badgeId: Int) -> Single<Void> {
-        userRepository.setMainBadge(badgeID: badgeId)
+        userRepository.setMainBadge(badgeId: badgeId)
     }
 
 }

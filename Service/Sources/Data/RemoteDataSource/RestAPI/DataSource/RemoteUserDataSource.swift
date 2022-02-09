@@ -41,8 +41,8 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func setMainBadge(badgeID: Int) -> Single<Void> {
-        return request(.setMainBadge(badgeID: badgeID))
+    func setMainBadge(badgeId: Int) -> Single<Void> {
+        return request(.setMainBadge(badgeId: badgeId))
             .map { _ in () }
     }
 

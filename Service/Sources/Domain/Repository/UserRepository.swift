@@ -7,7 +7,7 @@ protocol UserRepository {
     func fetchProfile(userID: Int) -> Observable<UserProfile>
     func fetchMyProfile() -> Observable<UserProfile>
     func fetchBadges(userID: Int) -> Observable<[Badge]>
-    func setMainBadge(badgeID: Int) -> Single<Void>
+    func setMainBadge(badgeId: Int) -> Single<Void>
     func changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex) -> Single<Void>
     func writeHealth(height: Float, weight: Int) -> Single<Void>
     func joinClass(schoolId: String, grade: Int, classNum: Int) -> Single<Void>

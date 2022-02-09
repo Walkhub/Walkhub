@@ -42,8 +42,8 @@ class DefaultUserRepository: UserRepository {
             .createObservable()
     }
 
-    func setMainBadge(badgeID: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.setMainBadge(badgeID: badgeID)
+    func setMainBadge(badgeId: Int) -> Single<Void> {
+        return RemoteUserDataSource.shared.setMainBadge(badgeId: badgeId)
     }
 
     func changeProfile(
