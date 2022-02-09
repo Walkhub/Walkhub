@@ -6,7 +6,7 @@ import RxCocoa
 import CoreGraphics
 
 class HomeViewController: UIViewController {
-    
+
     private let tableFooterView = UIView()
 
     private let notificationBtn = UIBarButtonItem().then {
@@ -20,7 +20,10 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        setNavigation()
+    }
+    
+    private func setNavigation() {
         navigationItem.rightBarButtonItem = notificationBtn
         navigationItem.rightBarButtonItem!.tintColor = .black
 
