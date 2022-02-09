@@ -3,8 +3,11 @@ import UIKit
 import SnapKit
 import Then
 import RxCocoa
+import CoreGraphics
 
-class MainPageViewController: UIViewController {
+class HomeViewController: UIViewController {
+    
+    private let tableFooterView = UIView()
 
     private let notificationBtn = UIBarButtonItem().then {
         $0.image = .init(systemName: "bell.fill")
@@ -22,29 +25,42 @@ class MainPageViewController: UIViewController {
         navigationItem.rightBarButtonItem!.tintColor = .black
 
         self.view.backgroundColor = .lightGray
-
-        mainTableView.register(MainPageTableViewCell.self, forCellReuseIdentifier: "cell")
-        mainTableView.register(SecondMainpageTableViewCell.self, forCellReuseIdentifier: "secondCell")
-        mainTableView.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
-        mainTableView.dataSource = self
     }
 
     override func viewDidLayoutSubviews() {
         setUp()
     }
 
+    private func attribute() {
+        tableFooterView.backgroundColor = .purple
+    }
+
     private func setUp() {
+        attribute()
+        layout()
+    }
+
+    private func layout() {
 
         self.view.addSubview(mainTableView)
 
         mainTableView.snp.makeConstraints {
             $0.top.trailing.leading.bottom.equalToSuperview()
+
+            mainTableView.register(MainPageTableViewCell.self, forCellReuseIdentifier: "cell")
+            mainTableView.register(SecondMainpageTableViewCell.self, forCellReuseIdentifier: "secondCell")
+            mainTableView.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
+            mainTableView.dataSource = self
         }
+        footerViewLayout()
     }
 
+    private func footerViewLayout() {
+      tableFooterView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 100)
+    }
 }
 
-extension MainPageViewController: UITableViewDataSource {
+extension HomeViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
             return 3
