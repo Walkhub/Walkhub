@@ -22,7 +22,7 @@ class ChartView: UIView {
         var days = [String]()
         var dataEntries: [BarChartDataEntry] = []
 
-        for _ in 0..<7 {
+        for _ in 0..<stepCounts.count {
             if week <= 7 {
                 let day = Week(rawValue: week)
                 days.append(day!.dayName)
@@ -33,7 +33,7 @@ class ChartView: UIView {
             week += 1
         }
 
-        for data in 0..<days.count {
+        for data in 0..<stepCounts.count {
             let dataEntry = BarChartDataEntry(x: Double(data), y: Double(stepCounts[data]))
             dataEntries.append(dataEntry)
         }
@@ -72,7 +72,7 @@ class ChartView: UIView {
         }
         chartColor.reverse()
 
-        for _ in 0..<28 {
+        for _ in 0..<stepCounts.count {
             let weekDay = Calendar.current.component(.weekday, from: day)
             if weekDay == 2 {
                 days.append(day.toString())
