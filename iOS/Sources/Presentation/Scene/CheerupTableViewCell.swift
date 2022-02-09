@@ -25,7 +25,9 @@ class CheerupTableViewCell: UITableViewCell {
     }
 
     let cheerUpBtn = UIButton(type: .system).then {
-        $0.setImage(.init(systemName: "clock.fill"), for: .normal)
+        $0.setImage(.init(named: "CheerUpImg"), for: .normal)
+        $0.imageView?.contentMode = .scaleToFill
+        $0.imageView?.backgroundColor = .white
         $0.layer.cornerRadius = $0.frame.height / 2
     }
 
