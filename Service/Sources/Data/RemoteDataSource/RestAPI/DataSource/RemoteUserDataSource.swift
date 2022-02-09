@@ -60,7 +60,7 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         )).map { _ in () }
     }
 
-    func writeHealth(
+    func patchHealth(
         height: Float,
         weight: Int
     ) -> Single<Void> {

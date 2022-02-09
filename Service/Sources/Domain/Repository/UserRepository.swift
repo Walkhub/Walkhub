@@ -9,7 +9,7 @@ protocol UserRepository {
     func fetchBadges(userID: Int) -> Observable<[Badge]>
     func setMainBadge(badgeId: Int) -> Single<Void>
     func changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex) -> Single<Void>
-    func writeHealth(height: Float, weight: Int) -> Single<Void>
+    func patchHealth(height: Float, weight: Int) -> Single<Void>
     func joinClass(groupId: Int) -> Single<Void>
     func setSchoolInformation(schoolId: String) -> Single<Void>
 }

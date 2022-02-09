@@ -60,8 +60,8 @@ class DefaultUserRepository: UserRepository {
         )
     }
 
-    func writeHealth(height: Float, weight: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.writeHealth(height: height, weight: weight)
+    func patchHealth(height: Float, weight: Int) -> Single<Void> {
+        return RemoteUserDataSource.shared.patchHealth(height: height, weight: weight)
     }
 
     func joinClass(groupId: Int) -> Single<Void> {
