@@ -18,6 +18,7 @@ public extension TargetDependency.SPM {
     static let SocketIO = TargetDependency.package(product: "SocketIO")
     static let KDCircularProgress = TargetDependency.package(product: "KDCircularProgress")
     static let Charts = TargetDependency.package(product: "Charts")
+    static let DropDown = TargetDependency.package(product: "DropDown")
 }
 
 public extension Package {
@@ -66,5 +67,9 @@ public extension Package {
     static let Charts = Package.remote(
         url: "https://github.com/Walkhub/Charts",
         requirement: .exact("10.0.0")
+    )
+    static let DropDown = Package.remote(
+        url: "https://github.com/AssistoLab/DropDown",
+        requirement: .branch("master")
     )
 }

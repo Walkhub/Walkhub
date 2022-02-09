@@ -14,7 +14,8 @@ let project = Project.dynamicFramework(
         .Firebase,
         .SocketIO,
         .KDCircularProgress,
-        .Charts
+        .Charts,
+        .DropDown
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -29,6 +30,7 @@ let project = Project.dynamicFramework(
         .SPM.FCM,
         .SPM.SocketIO,
         .SPM.KDCircularProgress,
-        .SPM.Charts
+        .SPM.Charts,
+        .SPM.DropDown
     ]
 )

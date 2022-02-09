@@ -38,6 +38,15 @@
         }
       },
       {
+        "package": "DropDown",
+        "repositoryURL": "https://github.com/AssistoLab/DropDown",
+        "state": {
+          "branch": "master",
+          "revision": "2ab6f6ce19f0117d1a76ea043ef8f57722c65d16",
+          "version": null
+        }
+      },
+      {
         "package": "Firebase",
         "repositoryURL": "https://github.com/firebase/firebase-ios-sdk.git",
         "state": {
