@@ -3,12 +3,10 @@ import UIKit
 class SecondMainpageTableViewCell: UITableViewCell {
 
     let fastLabel = UILabel().then {
-        $0.text = "누구보다 빠르게"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
     
     let recordLabel = UILabel().then {
-        $0.text = "지금 바로 기록하기"
         $0.font = .notoSansFont(ofSize: 16, family: .bold)
     }
     
@@ -35,8 +33,12 @@ class SecondMainpageTableViewCell: UITableViewCell {
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        demoData()
+    }
+    
+    private func demoData() {
+        fastLabel.text = "누구보다 빠르게"
+        recordLabel.text = "지금 바로 기록하기"
     }
     
     private func setUp() {

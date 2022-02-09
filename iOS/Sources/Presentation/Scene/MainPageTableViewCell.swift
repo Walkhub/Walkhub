@@ -17,17 +17,14 @@ class MainPageTableViewCell: UITableViewCell {
     }
     
     let clockLabel = UILabel().then {
-        $0.text = "7"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
     
     let locationLabel = UILabel().then {
-        $0.text = "0.52"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
     
     let fireLabel = UILabel().then {
-        $0.text = "158"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
     
@@ -47,12 +44,10 @@ class MainPageTableViewCell: UITableViewCell {
     }
     
     let label = UILabel().then {
-        $0.text = "5329"
         $0.font = .notoSansFont(ofSize: 24, family: .medium)
     }
     
     let stepLabel = UILabel().then {
-        $0.text = "/6000 걸음"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
     
@@ -78,8 +73,15 @@ class MainPageTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        demoData()
+    }
+    
+    private func demoData() {
+        clockLabel.text = "7"
+        locationLabel.text = "0.52"
+        fireLabel.text = "158"
+        label.text = "5329"
+        stepLabel.text = "/6000 걸음"
     }
 
     private func setUp() {
