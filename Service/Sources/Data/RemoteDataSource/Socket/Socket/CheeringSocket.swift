@@ -3,7 +3,11 @@ import Foundation
 import SocketIO
 
 enum CheeringSocket {
+    // for emit
     case cheering(userID: Int)
+
+    // for on
+    case observingCheer
 }
 
 extension CheeringSocket: WalkhubSocket {
@@ -13,12 +17,16 @@ extension CheeringSocket: WalkhubSocket {
     }
 
     static var config: SocketIOClientConfiguration {
-        return [.log(false), .compress, .forceWebsockets(true), .reconnects(true) ]
+        let token = try? KeychainTask.shared.fetch(accountType: .accessToken)
+        return [
+            .forceWebsockets(true),
+            .extraHeaders(["Authorization": token ?? ""])
+        ]
     }
 
     var event: String {
         switch self {
-        case .cheering:
+        case .cheering, .observingCheer:
             return "cheering"
         }
     }
@@ -27,6 +35,8 @@ extension CheeringSocket: WalkhubSocket {
         switch self {
         case .cheering(let userID):
             return ["user_id": userID]
+        default:
+            return nil
         }
     }
 
