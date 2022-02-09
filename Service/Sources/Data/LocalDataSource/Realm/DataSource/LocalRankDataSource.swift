@@ -58,7 +58,7 @@ extension LocalRankDataSource {
                filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
                )
-        ).map { $0[0] }
+        ).map { $0.first! }
     }
 
     private func storeMySchoolRank(school: School, dateType: DateType) {
@@ -98,11 +98,7 @@ extension LocalRankDataSource {
     ) -> SchoolRankRealmEntity {
         let schoolRankRealmEntity = SchoolRankRealmEntity()
         schoolRankRealmEntity.setup(
-            agencyCode: school.agencyCode,
-            name: school.name,
-            rank: school.rank,
-            logoImageUrlString: school.logoImageUrl.absoluteString,
-            walkCount: school.walkCount,
+            school: school,
             dateType: dateType,
             isMySchoolRank: isMySchoolRank
         )
@@ -133,7 +129,7 @@ extension LocalRankDataSource {
                filter: QueryFilter.string(
                 query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = true"
                )
-        ).map { $0[0] }
+        ).map { $0.first! }
     }
 
     private func storeMyRank(
@@ -186,18 +182,7 @@ extension LocalRankDataSource {
         isMyRank: Bool
     ) -> PersonRankRealmEntity {
         let personRankRealmEntity = PersonRankRealmEntity()
-        personRankRealmEntity.setup(
-            userID: user.userID,
-            name: user.name,
-            rank: user.rank,
-            grade: user.grade,
-            classNum: user.classNum,
-            profileImageUrlString: user.profileImageUrl.absoluteString,
-            walkCount: user.walkCount,
-            scope: scope,
-            dateType: dateType,
-            isMyRank: isMyRank
-        )
+        personRankRealmEntity.setup(person: user, scope: scope, dateType: dateType)
         return personRankRealmEntity
     }
 

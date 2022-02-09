@@ -1,7 +1,7 @@
 import Foundation
 
-struct School: Equatable {
-    let agencyCode: String
+public struct School: Equatable {
+    let schoolId: String
     let name: String
     let rank: Int
     let logoImageUrl: URL

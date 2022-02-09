@@ -1,6 +1,6 @@
 import Foundation
 
-struct User: Equatable {
+public struct User: Equatable {
     let userID: Int
     let name: String
     let rank: Int

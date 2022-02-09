@@ -1,6 +1,6 @@
 import Foundation
 
-struct Notice {
+public struct Notice: Equatable {
     let id: Int
     let title: String
     let content: String

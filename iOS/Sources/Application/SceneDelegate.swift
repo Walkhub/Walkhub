@@ -1,8 +1,11 @@
 import UIKit
 
+import RxFlow
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var coordinator = FlowCoordinator()
 
     func scene(
         _ scene: UIScene,
@@ -10,12 +13,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let windowScence = (scene as? UIWindowScene) else { return }
-
         window = UIWindow(windowScene: windowScence)
         window?.windowScene = windowScence
+<<<<<<< HEAD
 
         window?.rootViewController = RecordMeasurementViewController()
         window?.makeKeyAndVisible()
+=======
+        window?.backgroundColor = .systemBackground
+
+        let appFlow = AppFlow()
+        self.coordinator.coordinate(flow: appFlow, with: AppStepper())
+        Flows.use(appFlow, when: .created) { [weak self] root in
+            self?.window?.rootViewController = root
+            self?.window?.makeKeyAndVisible()
+        }
+>>>>>>> 42520ec7952b6c3605b4b8bbee9c6ea36d337d97
     }
 
     func sceneDidDisconnect(_ scene: UIScene) { }

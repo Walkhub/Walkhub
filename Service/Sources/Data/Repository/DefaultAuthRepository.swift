@@ -31,7 +31,7 @@ class DefaultAuthRepository: AuthRepository {
         weight: Int,
         birthday: String,
         sex: Sex,
-        agencyCode: String
+        schoolId: String
     ) -> Single<Void> {
         return RemoteAuthDataSource.shared.signup(
             id: id,
@@ -43,7 +43,7 @@ class DefaultAuthRepository: AuthRepository {
             weight: weight,
             birthday: birthday,
             sex: sex,
-            agencyCode: agencyCode
+            schoolId: schoolId
         ).map { _ in return () }
     }
 

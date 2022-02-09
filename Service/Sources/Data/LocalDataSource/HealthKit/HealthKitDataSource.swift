@@ -4,11 +4,11 @@ import RxSwift
 
 final class HealthKitDataSource {
 
-    public static let shared = HealthKitDataSource()
+    static let shared = HealthKitDataSource()
 
     private init() { }
 
-    public func stepCount(
+    func stepCount(
         start: Date,
         end: Date
     ) ->  Single<Double> {
@@ -20,7 +20,7 @@ final class HealthKitDataSource {
         )
     }
 
-    public func walkDistance(
+    func walkDistance(
         start: Date,
         end: Date
     ) -> Single<Double> {

@@ -29,8 +29,8 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchMyInformation() -> Single<UserProfile> {
-        return request(.fetchMyInformation)
+    func fetchMyProfile() -> Single<UserProfile> {
+        return request(.fetchMyProfile)
             .map(UserProfileDTO.self)
             .map { $0.toDomain() }
     }
@@ -71,19 +71,19 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     }
 
     func joinClass(
-        agencyCode: String,
+        schoolId: String,
         grade: Int,
         classNum: Int
     ) -> Single<Void> {
         return request(.joinClass(
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             grade: grade,
             classNum: classNum
         )).map { _ in () }
     }
 
-    func setSchoolInformation(agencyCode: String) -> Single<Void> {
-        return request(.setSchoolInformation(agencyCode: agencyCode))
+    func setSchoolInformation(schoolId: String) -> Single<Void> {
+        return request(.setSchoolInformation(schoolId: schoolId))
             .map { _ in () }
     }
 

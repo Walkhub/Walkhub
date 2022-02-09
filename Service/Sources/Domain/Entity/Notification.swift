@@ -1,6 +1,6 @@
 import Foundation
 
-struct Notification {
+public struct Notification: Equatable {
     let id: Int
     let title: String
     let content: String

@@ -17,14 +17,14 @@ enum KeychainError: Error {
 // MARK: - KeychainTask
 class KeychainTask {
 
-    public static let shared = KeychainTask()
+    static let shared = KeychainTask()
 
     private let service = Bundle.main.bundleIdentifier!
 
     private init() { }
 
     // MARK: Register
-    public func register(accountType: KeychainAccountType, value: String) {
+    func register(accountType: KeychainAccountType, value: String) {
         let keychainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -36,7 +36,7 @@ class KeychainTask {
     }
 
     // MARK: Fetch
-    public func fetch(accountType: KeychainAccountType) throws -> String {
+    func fetch(accountType: KeychainAccountType) throws -> String {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -54,7 +54,7 @@ class KeychainTask {
     }
 
     // MARK: Delete
-    public func delete(accountType: KeychainAccountType) {
+    func delete(accountType: KeychainAccountType) {
         let keyChainQuery: NSDictionary = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,

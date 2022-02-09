@@ -46,26 +46,26 @@ class DefaultRankRepository: RankRepository {
     func fetchUserRank(
         scope: Scope,
         dateTypa: DateType,
-        agencyCode: String
+        schoolId: String
     ) -> Single<[User]> {
         return RemoteRankDataSource.shared.fetchUserRank(
             scope: scope,
             dateTypa: dateTypa,
-            agencyCode: agencyCode
+            schoolId: schoolId
         )
     }
 
     func searchUser(
         name: String,
         scope: Scope,
-        agencyCode: String,
+        schoolId: String,
         grade: Int,
         classNum: Int
     ) -> Single<[User]> {
         return RemoteRankDataSource.shared.searchUser(
             name: name,
             scope: scope,
-            agencyCode: agencyCode,
+            schoolId: schoolId,
             grade: grade,
             classNum: classNum
         )
