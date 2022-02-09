@@ -46,6 +46,10 @@ class HeaderView: UIView {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
+    let badgeImgView = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+    }
+
     let progressBar = UIProgressView().then {
         $0.progressViewStyle = .default
         $0.trackTintColor = .gray300
@@ -78,7 +82,7 @@ extension HeaderView {
     private func addSubviews() {
         [schoolLabel, switches, classLabel, dropDownBtn, myView]
             .forEach { self.addSubview($0) }
-        [imgView, nameLabel, stepCountLabel, rankLabel, progressBar,
+        [imgView, nameLabel, stepCountLabel, rankLabel, badgeImgView, progressBar,
          nextLevelLabel, goalStepCountLabel].forEach { myView.addSubview($0) }
     }
 
@@ -106,7 +110,7 @@ extension HeaderView {
         myView.snp.makeConstraints {
             $0.top.equalTo(schoolLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(12)
         }
 
         imgView.snp.makeConstraints {
@@ -128,6 +132,11 @@ extension HeaderView {
         rankLabel.snp.makeConstraints {
             $0.centerY.equalTo(imgView)
             $0.trailing.equalToSuperview().inset(16)
+        }
+
+        badgeImgView.snp.makeConstraints {
+            $0.centerY.equalTo(imgView)
+            $0.trailing.equalTo(rankLabel.snp.leading).inset(11)
         }
 
         progressBar.snp.makeConstraints {

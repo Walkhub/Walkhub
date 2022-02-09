@@ -44,6 +44,7 @@ class DetailHubViewController: UIViewController {
         $0.backgroundColor = .gray50
         $0.separatorStyle = .none
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
+        $0.register(CheerupTableViewCell.self, forCellReuseIdentifier: "cheerCell")
     }
 
     private let joinClassBtn = UIButton(type: .system).then {
@@ -183,14 +184,11 @@ extension DetailHubViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "rankCell", for: indexPath) as? RankTableViewCell
-            cell?.nameLabel.text = "김시안"
-            cell?.imgView.image = .init(systemName: "clock.fill")
-            cell?.rankLabel.text = "1등"
-            cell?.stepLabel.text = "8932 걸음"
-            cell?.badgeImgView.image = .init(systemName: "bell.badge")
-
-            return cell!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cheerCell", for: indexPath) as?
+        CheerupTableViewCell
+        cell?.recordName.text = "김시안"
+        cell?.imgView.image = .init(systemName: "clock.fill")
+        return cell!
     }
 }
 
@@ -212,7 +210,7 @@ extension DetailHubViewController {
             $0.progressBar.progress = 0.5
             $0.nextLevelLabel.text = "다음 등수까지 1290 걸음"
             $0.goalStepCountLabel.text = "2190 걸음"
-            $0.layer.frame.size.height = 170
+            $0.layer.frame.size.height = 180
         }
         rankTableView.tableFooterView = FooterView().then {
             $0.commentLabel.text = "131명의 친구와 함께 뛰고 있어요"

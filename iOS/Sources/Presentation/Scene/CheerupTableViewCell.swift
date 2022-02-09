@@ -24,11 +24,9 @@ class CheerupTableViewCell: UITableViewCell {
         $0.textColor = .white
     }
 
-    let cheerUpBtn = UIButton(type: .system).then {
-        $0.setImage(.init(named: "CheerUpImg"), for: .normal)
-        $0.imageView?.contentMode = .scaleToFill
-        $0.imageView?.backgroundColor = .white
-        $0.layer.cornerRadius = $0.frame.height / 2
+    let cheerImgView = UIImageView().then {
+        $0.image = .init(named: "CheerUpImg")
+        $0.contentMode = .scaleAspectFit
     }
 
     override func awakeFromNib() {
@@ -55,7 +53,7 @@ class CheerupTableViewCell: UITableViewCell {
 extension CheerupTableViewCell {
     private func addSubviews() {
         self.addSubview(blueView)
-        [imgView, recordName, recordComment, cheerUpBtn]
+        [imgView, recordName, recordComment, cheerImgView]
             .forEach { self.addSubview($0) }
     }
 
@@ -65,7 +63,7 @@ extension CheerupTableViewCell {
         }
 
         imgView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+            $0.top.bottom.equalToSuperview().inset(12)
             $0.leading.equalToSuperview().inset(16)
             $0.height.width.equalTo(40)
         }
@@ -80,7 +78,7 @@ extension CheerupTableViewCell {
             $0.leading.equalTo(recordName.snp.trailing)
         }
 
-        cheerUpBtn.snp.makeConstraints {
+        cheerImgView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(32)
             $0.width.height.equalTo(28)
