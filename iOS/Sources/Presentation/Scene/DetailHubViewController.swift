@@ -97,6 +97,7 @@ extension DetailHubViewController: UISearchBarDelegate{
             }
 
         searchBar.searchBar.delegate = self
+
         searchBtn.rx.tap.subscribe(onNext: {
             searchBar.searchBar.isHidden = false
             searchBar.searchBar.searchTextField.becomeFirstResponder()
