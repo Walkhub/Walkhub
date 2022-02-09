@@ -57,7 +57,7 @@ class SecondMainpageTableViewCell: UITableViewCell {
         }
         
         rankImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(24)
+            $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(24)
             $0.height.width.equalTo(48)
             $0.bottom.equalToSuperview().inset(24)
