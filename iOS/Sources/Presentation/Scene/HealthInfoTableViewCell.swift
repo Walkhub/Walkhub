@@ -86,7 +86,7 @@ class HealthInfoTableViewCell: UITableViewCell {
     }
 }
 
-extension MainPageTableViewCell {
+extension HealthInfoTableViewCell {
 
 private func addSubviews() {
         [whCircleProgressView, imgView, label, stepLabel,

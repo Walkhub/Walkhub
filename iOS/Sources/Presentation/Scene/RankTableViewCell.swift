@@ -16,7 +16,7 @@ class RankTableViewCell: UITableViewCell {
     let rankStepLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
-    
+
     let rankLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }

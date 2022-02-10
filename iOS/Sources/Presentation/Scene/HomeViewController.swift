@@ -16,10 +16,10 @@ class HomeViewController: UIViewController {
 
     private let mainTableView = UITableView(frame: .zero, style: .insetGrouped).then {
         $0.backgroundColor = .init(named: "F9F9F9")
-        $0.register(MainPageTableViewCell.self, forCellReuseIdentifier: "cell")
-        $0.register(SecondMainpageTableViewCell.self, forCellReuseIdentifier: "secondCell")
+        $0.register(HealthInfoTableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "secondCell")
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
-        $0.register(ThirdMainPageTableViewCell.self, forCellReuseIdentifier: "fourthCell")
+        $0.register(WatchViewTableViewCell.self, forCellReuseIdentifier: "fourthCell")
     }
 
     override func viewDidLoad() {
@@ -72,7 +72,7 @@ extension HomeViewController: UITableViewDataSource {
             let cell = mainTableView.dequeueReusableCell(
                 withIdentifier: "cell",
                 for: indexPath
-            ) as? MainPageTableViewCell
+            ) as? HealthInfoTableViewCell
             cell?.selectionStyle = .none
             cell?.whCircleProgressView.progress = 80
 
@@ -81,7 +81,7 @@ extension HomeViewController: UITableViewDataSource {
             let cell = mainTableView.dequeueReusableCell(
                 withIdentifier: "secondCell",
                 for: indexPath
-            ) as? SecondMainpageTableViewCell
+            ) as? RecordTableViewCell
             return cell!
         } else {
             if indexPath.row == 0 {
@@ -95,7 +95,7 @@ extension HomeViewController: UITableViewDataSource {
                 let cell = mainTableView.dequeueReusableCell(
                     withIdentifier: "fourthCell",
                     for: indexPath
-                ) as? ThirdMainPageTableViewCell
+                ) as? WatchViewTableViewCell
                 cell?.selectionStyle = .none
                 return cell!
             }
