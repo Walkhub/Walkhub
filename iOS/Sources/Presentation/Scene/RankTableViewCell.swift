@@ -4,7 +4,7 @@ class RankTableViewCell: UITableViewCell {
 
     let rankImageView = UIImageView().then {
         $0.clipsToBounds = true
-        $0.layer.cornerRadius = 15
+        $0.layer.cornerRadius = $0.frame.width / 2
         $0.image = .init(systemName: "circle.fill")
         $0.tintColor = .init(named: "F9F9F9")!
     }
@@ -37,6 +37,8 @@ class RankTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        self.clipsToBounds = true
         addSubviews()
         makeSubviewConstraints()
     }
@@ -50,11 +52,12 @@ class RankTableViewCell: UITableViewCell {
 
 extension RankTableViewCell {
     private func addSubviews() {
-        [rankImageView, rankNameLabel, rankStepLabel, rankLabel].forEach { self.addSubview($0) }
+        [rankImageView, rankNameLabel, rankStepLabel, rankLabel]
+            .forEach { self.addSubview($0) }
     }
     
     private func makeSubviewConstraints() {
-        
+
         rankImageView.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(20)
             $0.centerY.equalToSuperview()
