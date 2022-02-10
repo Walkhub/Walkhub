@@ -1,6 +1,6 @@
 import UIKit
 
-class ThirdMainPageTableViewCell: UITableViewCell {
+class WatchViewTableViewCell: UITableViewCell {
 
     let watchBtn = UIButton(type: .system).then {
 

@@ -1,6 +1,6 @@
 import UIKit
 
-class SecondMainpageTableViewCell: UITableViewCell {
+class RecordTableViewCell: UITableViewCell {
 
     let fastLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)

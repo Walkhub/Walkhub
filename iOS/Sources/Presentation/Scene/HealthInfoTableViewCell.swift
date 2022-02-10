@@ -3,7 +3,7 @@ import UIKit
 import SnapKit
 import Then
 
-class MainPageTableViewCell: UITableViewCell {
+class HealthInfoTableViewCell: UITableViewCell {
 
     let whCircleProgressView = WHCircleProgressView().then {
         $0.setup(
