@@ -28,7 +28,9 @@ class RankTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        demoData()
+        if selected {
+            self.setSelected(false, animated: true)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -43,7 +45,7 @@ class RankTableViewCell: UITableViewCell {
         makeSubviewConstraints()
     }
     
-    private func demoData() {
+    func demoData() {
         rankNameLabel.text = "정 환"
         rankStepLabel.text = "7482 걸음"
         rankLabel.text = "1등"
@@ -55,7 +57,7 @@ extension RankTableViewCell {
         [rankImageView, rankNameLabel, rankStepLabel, rankLabel]
             .forEach { self.addSubview($0) }
     }
-    
+
     private func makeSubviewConstraints() {
 
         rankImageView.snp.makeConstraints {
