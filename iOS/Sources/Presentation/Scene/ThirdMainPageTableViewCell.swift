@@ -2,7 +2,7 @@ import UIKit
 
 class ThirdMainPageTableViewCell: UITableViewCell {
 
-    let watchBtn = UIButton().then {
+    let watchBtn = UIButton(type: .system).then {
 
         $0.layer.cornerRadius = 10
         $0.setTitle("모두보기", for: .normal)
@@ -31,7 +31,7 @@ class ThirdMainPageTableViewCell: UITableViewCell {
     }
 
     private func setUp() {
-        self.addSubview(watchBtn)
+        self.contentView.addSubview(watchBtn)
         
         watchBtn.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
