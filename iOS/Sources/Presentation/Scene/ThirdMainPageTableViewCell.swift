@@ -9,7 +9,7 @@ class ThirdMainPageTableViewCell: UITableViewCell {
         $0.setTitleColor(.black, for: .normal)
         $0.backgroundColor = .init(named: "F9F9F9")
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -18,7 +18,7 @@ class ThirdMainPageTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
@@ -32,7 +32,7 @@ class ThirdMainPageTableViewCell: UITableViewCell {
 
     private func setUp() {
         self.contentView.addSubview(watchBtn)
-        
+
         watchBtn.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.trailing.equalToSuperview().inset(12)

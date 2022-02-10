@@ -18,7 +18,7 @@ class SecondMainpageTableViewCell: UITableViewCell {
         $0.image = .init(systemName: "clock.fill")
         $0.tintColor = .init(named: "F9F9F9")!
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

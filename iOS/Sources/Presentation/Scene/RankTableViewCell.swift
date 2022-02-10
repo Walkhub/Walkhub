@@ -44,7 +44,7 @@ class RankTableViewCell: UITableViewCell {
         addSubviews()
         makeSubviewConstraints()
     }
-    
+
     func demoData() {
         rankNameLabel.text = "정 환"
         rankStepLabel.text = "7482 걸음"
@@ -65,7 +65,7 @@ extension RankTableViewCell {
             $0.centerY.equalToSuperview()
             $0.height.width.equalTo(40)
         }
-        
+
         rankNameLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(20)
             $0.leading.equalTo(rankImageView.snp.trailing).offset(18)
