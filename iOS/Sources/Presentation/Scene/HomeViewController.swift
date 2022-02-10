@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
     }
-    
+
     private func layout() {
 
         self.view.addSubview(mainTableView)
@@ -52,37 +52,53 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 50
+        if section == 2 {
+            return 64
+        } else {
+            return 50
+        }
     }
 }
 extension HomeViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-            return 4
+            return 3
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return section == 2 ? 2 : 1
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = mainTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? MainPageTableViewCell
-
+            let cell = mainTableView.dequeueReusableCell(
+                withIdentifier: "cell",
+                for: indexPath
+            ) as? MainPageTableViewCell
+            cell?.selectionStyle = .none
             cell?.whCircleProgressView.progress = 80
 
             return cell!
         } else if indexPath.section == 1 {
-            let cell = mainTableView.dequeueReusableCell(withIdentifier: "secondCell", for: indexPath) as? SecondMainpageTableViewCell
-
-            return cell!
-        } else if indexPath.section == 2 {
-            let cell = mainTableView.dequeueReusableCell(withIdentifier: "thirdCell", for: indexPath) as? RankTableViewCell
-
+            let cell = mainTableView.dequeueReusableCell(
+                withIdentifier: "secondCell",
+                for: indexPath
+            ) as? SecondMainpageTableViewCell
             return cell!
         } else {
-            let cell = mainTableView.dequeueReusableCell(withIdentifier: "fourthCell", for: indexPath) as? ThirdMainPageTableViewCell
-            UITableView.appearance().sectionHeaderHeight = 10
-            
-            return cell!
+            if indexPath.row == 0 {
+                let cell = mainTableView.dequeueReusableCell(
+                    withIdentifier: "thirdCell",
+                    for: indexPath
+                ) as? RankTableViewCell
+                cell?.demoData()
+                return cell!
+            } else {
+                let cell = mainTableView.dequeueReusableCell(
+                    withIdentifier: "fourthCell",
+                    for: indexPath
+                ) as? ThirdMainPageTableViewCell
+                cell?.selectionStyle = .none
+                return cell!
+            }
         }
     }
 }
