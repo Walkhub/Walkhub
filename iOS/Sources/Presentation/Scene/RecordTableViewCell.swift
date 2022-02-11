@@ -1,11 +1,3 @@
-//
-//  RecordTableViewCell.swift
-//  Walkhub
-//
-//  Created by 김기영 on 2022/02/10.
-//  Copyright © 2022 com.walkhub. All rights reserved.
-//
-
 import UIKit
 
 class RecordTableViewCell: UITableViewCell {
