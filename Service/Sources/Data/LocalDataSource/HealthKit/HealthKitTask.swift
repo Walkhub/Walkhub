@@ -67,7 +67,7 @@ final class HealthKitTask {
         }
     }
 
-    func observingDataSignal(dataType: HKQuantityTypeIdentifier) -> Observable<Void> {
+    func observingDataChange(dataType: HKQuantityTypeIdentifier) -> Observable<Void> {
         return Observable<Void>.create { observer in
             let authorization = self.requestAuthorization()
                 .filter { $0 }
