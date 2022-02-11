@@ -143,7 +143,7 @@ class PlayRecordViewController: UIViewController {
         $0.setBackgroundColor(.primary400, for: .normal)
     }
 
-    private let initializationBtn = UIButton(type: .system).then {
+    private let resetBtn = UIButton(type: .system).then {
         $0.setImage(.init(systemName: "square.fill"), for: .normal)
         $0.setBackgroundColor(.gray400, for: .normal)
         $0.tintColor = .white
@@ -153,7 +153,7 @@ class PlayRecordViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .gray50
         navigationItem.title = "기록측정"
-        [blackView, stopCommentLabel, replayBtn, initializationBtn]
+        [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
         demoData()
         setBtn()
@@ -176,7 +176,7 @@ class PlayRecordViewController: UIViewController {
                 self.stopBtn.isSelected = false
                 self.lockBtn.isHidden = false
             } else {
-                [self.blackView, self.stopCommentLabel, self.replayBtn, self.initializationBtn]
+                [self.blackView, self.stopCommentLabel, self.replayBtn, self.resetBtn]
                     .forEach { $0.isHidden = false }
                 self.stopBtn.isHidden = true
                 self.lockBtn.isHidden = true
@@ -184,7 +184,7 @@ class PlayRecordViewController: UIViewController {
         }).disposed(by: disposeBag)
 
         replayBtn.rx.tap.subscribe(onNext: {
-            [self.blackView, self.stopCommentLabel, self.replayBtn, self.initializationBtn]
+            [self.blackView, self.stopCommentLabel, self.replayBtn, self.resetBtn]
                 .forEach { $0.isHidden = true }
             self.stopBtn.isHidden = false
             self.lockBtn.isHidden = false
@@ -207,9 +207,9 @@ class PlayRecordViewController: UIViewController {
         stopBtn.layer.cornerRadius = stopBtn.frame.width / 2
         lockBtn.layer.cornerRadius = lockBtn.frame.width / 2
         replayBtn.layer.cornerRadius = replayBtn.frame.width / 2
-        initializationBtn.layer.cornerRadius = initializationBtn.frame.width / 2
+        resetBtn.layer.cornerRadius = resetBtn.frame.width / 2
         stopBtn.clipsToBounds = true
-        initializationBtn.clipsToBounds = true
+        resetBtn.clipsToBounds = true
         replayBtn.clipsToBounds = true
     }
 }
@@ -223,7 +223,7 @@ extension PlayRecordViewController {
         [reaminDistanceLabel, currentLabel, goalLabel, progressBackView, progressBar,
         stepCountLabel, stepCountNumLabel, kcalLabel, kcalNumLabel, kcalUnitLabel,
          speedLabel, speedNumLabel, speedUnitLabel, line1, line2, timeLabel, hourLabel,
-         hLabel, minuteLabel, mLabel, stopBtn, lockBtn, replayBtn, initializationBtn]
+         hLabel, minuteLabel, mLabel, stopBtn, lockBtn, replayBtn, resetBtn]
             .forEach{ whiteView.addSubview($0)}
     }
 
@@ -373,16 +373,16 @@ extension PlayRecordViewController {
         }
 
         replayBtn.snp.makeConstraints {
-            $0.top.equalTo(blackView.snp.bottom).offset(30)
+            $0.bottom.equalToSuperview().inset(40)
             $0.leading.equalToSuperview().inset(93)
             $0.width.height.equalTo(55)
         }
 
-        initializationBtn.snp.makeConstraints {
-            $0.top.equalTo(replayBtn.snp.top)
+        resetBtn.snp.makeConstraints {
             $0.leading.greaterThanOrEqualTo(replayBtn.snp.trailing).offset(65)
             $0.trailing.equalToSuperview().inset(93)
             $0.width.height.equalTo(55)
+            $0.bottom.equalToSuperview().inset(40)
         }
     }
 }
