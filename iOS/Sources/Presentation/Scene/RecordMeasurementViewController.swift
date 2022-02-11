@@ -77,6 +77,15 @@ class RecordMeasurementViewController: UIViewController {
         $0.tintColor = .primary400
     }
 
+    private let timerView = UIView().then {
+        $0.backgroundColor = .primary400
+    }
+
+    private let timerLabel = UILabel().then {
+        $0.textColor = .white
+        $0.font = .notoSansFont(ofSize: 120, family: .bold)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
@@ -98,11 +107,15 @@ class RecordMeasurementViewController: UIViewController {
         distanceBtn.isSelected = true
         createPickerView()
         dismissPickerView()
+        timerView.isHidden = true
+        timerLabel.isHidden = true
         distancePickerView.selectRow(self.distanceList.count, inComponent: 0, animated: false)
         stepCountPickerView.selectRow(self.stepCountList.count, inComponent: 0, animated: false)
     }
 
     private func setBtn() {
+        let countDown = 3
+
         distanceBtn.rx.tap.subscribe(onNext: {
             self.distanceBtn.isSelected = true
             self.stepCountBtn.isSelected = false
@@ -120,6 +133,20 @@ class RecordMeasurementViewController: UIViewController {
             self.commaLabel.text = ","
             self.uintLabel.text = "걸음"
         }).disposed(by: disposeBag)
+
+        playBtn.rx.tap.subscribe(onNext: {
+            self.timerView.isHidden = false
+            self.timerLabel.isHidden = false
+            Observable<Int>.timer(
+                .seconds(0),
+                period: .seconds(1),
+                scheduler: MainScheduler.instance
+            ).take(3)
+                .map { countDown - $0 }
+                .map { String($0) }
+                .bind(to: self.timerLabel.rx.text)
+                .disposed(by: self.disposeBag)
+        }).disposed(by: disposeBag)
     }
 }
 
@@ -127,7 +154,7 @@ class RecordMeasurementViewController: UIViewController {
 extension RecordMeasurementViewController {
     private func addSubviews() {
         [recordLabel, triangle,
-         recordTableView, whiteView].forEach { view.addSubview($0) }
+         recordTableView, whiteView, timerView, timerLabel].forEach { view.addSubview($0) }
 
         [distanceBtn, stepCountBtn, commaLabel,
          distancePickerView, stepCountPickerView, uintLabel, playBtn]
@@ -199,6 +226,14 @@ extension RecordMeasurementViewController {
             $0.top.equalTo(distancePickerView.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.height.width.equalTo(56)
+        }
+
+        timerView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
+        timerLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
         }
     }
 }
