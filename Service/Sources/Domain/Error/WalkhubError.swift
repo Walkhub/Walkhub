@@ -23,6 +23,9 @@ public enum WalkhubError: Error {
     case inaccessibleChallenge
     case undefinededChallenge
     case alreadyJoinedChallenge
+
+    // HealthKit
+    case unauthorizationHealthKit
 }
 
 extension WalkhubError: LocalizedError {
@@ -56,6 +59,8 @@ extension WalkhubError: LocalizedError {
             return "해당 챌린지를 찾을 수 없습니다."
         case .alreadyJoinedChallenge:
             return "해당 챌린지에 이미 참여 되어있습니다."
+        case .unauthorizationHealthKit:
+            return "HealthKit의 데이터에 "
         }
     }
 }
