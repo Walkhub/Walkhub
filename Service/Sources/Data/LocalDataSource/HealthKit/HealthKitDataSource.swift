@@ -43,7 +43,7 @@ final class HealthKitDataSource {
     func fetchWalkData(
         start: Date,
         end: Date
-    ) -> Single<[HKSample]> {
+    ) -> Single<[HKQuantitySample]> {
         return healthKitTask.fetchData(
             start: start,
             end: end,
@@ -55,14 +55,14 @@ final class HealthKitDataSource {
         return healthKitTask.fetchData(
             dataCountLimit: 1,
             dataType: .height
-        ).map { $0.first?.autoContentAccessingProxy as? Double ?? 0 }
+        ).map { $0.first?.quantity.doubleValue(for: .meterUnit(with: .centi)) ?? 0 }
     }
 
     func fetchUserWeight() -> Single<Double> {
         return healthKitTask.fetchData(
             dataCountLimit: 1,
             dataType: .bodyMass
-        ).map { $0.first?.autoContentAccessingProxy as? Double ?? 0 }
+        ).map { $0.first?.quantity.doubleValue(for: .gramUnit(with: .kilo)) ?? 0 }
     }
 
     func storeUserHeight(_ height: Double) {
