@@ -2,7 +2,7 @@ import Foundation
 
 class UserDefaultsDataSource {
 
-    let shared = UserDefaultsDataSource()
+    static let shared = UserDefaultsDataSource()
 
     private let userDefaults = UserDefaults.standard
 
