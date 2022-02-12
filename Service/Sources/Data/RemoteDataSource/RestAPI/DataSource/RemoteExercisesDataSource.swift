@@ -12,23 +12,23 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
     func startMeasuring(
         goal: Int,
         goalType: String
-    ) -> Single<String> {
+    ) -> Single<Int> {
         return request(.startMeasuring(
             goal: goal,
             goalType: goalType
         ))
-            .map(ExerciseIdDTO.self)
+            .map(ExercisesIdDTO.self)
             .map { $0.toDomain() }
     }
 
     func finishMeasuring(
-        exercisesID: Int,
+        exercisesId: Int,
         walkCount: Int,
         distance: Int,
         imageUrlString: String
     ) -> Single<Void> {
         return request(.finishMeasuring(
-            exercisesID: exercisesID,
+            exercisesId: exercisesId,
             walkCount: walkCount,
             distance: distance,
             imageUrlString: imageUrlString
@@ -36,13 +36,13 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
     }
 
     func saveLocations(
-        exercisesID: Int,
+        exercisesId: Int,
         order: Int,
         latitude: String,
         longitude: String
     ) -> Single<Void> {
         return request(.saveLocations(
-            exercisesID: exercisesID,
+            exercisesId: exercisesId,
             order: order,
             latitude: latitude,
             longitude: longitude

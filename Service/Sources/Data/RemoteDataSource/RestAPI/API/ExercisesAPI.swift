@@ -4,8 +4,8 @@ import Moya
 
 enum ExercisesAPI {
     case startMeasuring(goal: Int, goalType: String)
-    case finishMeasuring(exercisesID: Int, walkCount: Int, distance: Int, imageUrlString: String)
-    case saveLocations(exercisesID: Int, order: Int, latitude: String, longitude: String)
+    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String)
+    case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
     case setExsercises(date: String, distance: Int, walkCount: Int)
 }
 
@@ -19,10 +19,10 @@ extension ExercisesAPI: WalkhubAPI {
         switch self {
         case .startMeasuring:
             return "/"
-        case .finishMeasuring(let exercisesID, _, _, _):
-            return "/\(exercisesID)"
-        case .saveLocations(let exercisesID, _, _, _):
-            return "/locations/\(exercisesID)"
+        case .finishMeasuring(let exercisesId, _, _, _):
+            return "/\(exercisesId)"
+        case .saveLocations(let exercisesId, _, _, _):
+            return "/locations/\(exercisesId)"
         case .setExsercises(let date, _, _):
             return "?date=\(date)"
         }

@@ -1,16 +1,16 @@
 import Foundation
 
 // MARK: - Data Transfer Object
-struct ExerciseIdDTO: Decodable {
+struct ExercisesIdDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case exerciseId = "exercise_id"
+        case exercisesId = "exercise_id"
     }
-    let exerciseId: String
+    let exercisesId: Int
 }
 
 // MARK: - Mappings to Domain
-extension ExerciseIdDTO {
-    func toDomain() -> String {
-        return exerciseId
+extension ExercisesIdDTO {
+    func toDomain() -> Int {
+        return exercisesId
     }
 }
