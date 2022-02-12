@@ -3,14 +3,27 @@ import Foundation
 import HealthKit
 import RxSwift
 
+// MARK: - HealthKitError
+enum HealthKitError: Error {
+    case unauthorizationHealthKit
+}
+
+// MARK: - HealthKitTask
 final class HealthKitTask {
 
     static let shared = HealthKitTask()
 
-    let healthStore = HKHealthStore()
-    let healthKitTypes: Set = [
-        HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!,
-        HKObjectType.quantityType(forIdentifier: .stepCount)!
+    private let disposeBag = DisposeBag()
+    private let healthStore = HKHealthStore()
+    private let healthKitTypesToWrite: Set<HKSampleType> = [
+        .quantityType(forIdentifier: .height)!,
+        .quantityType(forIdentifier: .bodyMass)!
+    ]
+    private let healthKitTypesToRead: Set<HKObjectType> = [
+        .quantityType(forIdentifier: .stepCount)!,
+        .quantityType(forIdentifier: .distanceWalkingRunning)!,
+        .quantityType(forIdentifier: .height)!,
+        .quantityType(forIdentifier: .bodyMass)!
     ]
 
     private init() { }
@@ -18,7 +31,6 @@ final class HealthKitTask {
     func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier) -> Single<[HKSample]> {
         return Single<[HKSample]>.create { single in
             let authorization = self.requestAuthorization()
-                .filter { $0 }
                 .subscribe(onSuccess: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
@@ -37,6 +49,35 @@ final class HealthKitTask {
                     }
 
                     self.healthStore.execute(query)
+                }, onFailure: {
+                    single(.failure($0))
+                })
+            return Disposables.create([authorization])
+        }
+    }
+
+    func fetchData(dataCountLimit: Int, dataType: HKQuantityTypeIdentifier) -> Single<[HKSample]> {
+        return Single<[HKSample]>.create { single in
+            let authorization = self.requestAuthorization()
+                .subscribe(onSuccess: { _ in
+                    let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
+                    let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+                    let query = HKSampleQuery(
+                        sampleType: sampleType,
+                        predicate: nil,
+                        limit: dataCountLimit,
+                        sortDescriptors: [sortDescriptor]
+                    ) { _, result, error in
+                        guard let result = result else {
+                            single(.failure(error!))
+                            return
+                        }
+                        single(.success(result))
+                    }
+
+                    self.healthStore.execute(query)
+                }, onFailure: {
+                    single(.failure($0))
                 })
             return Disposables.create([authorization])
         }
@@ -45,7 +86,6 @@ final class HealthKitTask {
     func fetchDataValue(start: Date, end: Date, dataType: HKQuantityTypeIdentifier, unit: HKUnit) -> Single<Double> {
         return Single<Double>.create { single in
             let authorization = self.requestAuthorization()
-                .filter { $0 }
                 .subscribe(onSuccess: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
@@ -60,20 +100,36 @@ final class HealthKitTask {
                         }
                         single(.success(quantity.doubleValue(for: unit)))
                     }
-
                     self.healthStore.execute(query)
+                }, onFailure: {
+                    single(.failure($0))
                 })
             return Disposables.create([authorization])
         }
     }
 
+    func storeData(
+        dataValue: Double,
+        unit: HKUnit,
+        date: Date,
+        dataType: HKQuantityTypeIdentifier
+    ) {
+        requestAuthorization()
+            .subscribe(onSuccess: { _ in
+                HKHealthStore().save(HKQuantitySample(
+                    type: .quantityType(forIdentifier: dataType)!,
+                    quantity: .init(unit: unit, doubleValue: dataValue),
+                    start: date,
+                    end: date
+                )) { _, _ in return }
+            }).disposed(by: disposeBag)
+    }
+
     func observingDataChange(dataType: HKQuantityTypeIdentifier) -> Observable<Void> {
         return Observable<Void>.create { observer in
             let authorization = self.requestAuthorization()
-                .filter { $0 }
                 .subscribe(onSuccess: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
-
                     let query = HKObserverQuery(sampleType: sampleType, predicate: nil) { _, _, error in
                         if let error = error {
                             observer.onError(error)
@@ -81,17 +137,25 @@ final class HealthKitTask {
                         }
                         observer.onNext(())
                     }
-
                     self.healthStore.execute(query)
+                }, onFailure: {
+                    observer.onError($0)
                 })
             return Disposables.create([authorization])
         }
     }
 
-    private func requestAuthorization() -> Single<Bool> {
-        return Single<Bool>.create { single in
-            self.healthStore.requestAuthorization(toShare: nil, read: self.healthKitTypes) { isAllowed, _ in
-                single(.success(isAllowed))
+    private func requestAuthorization() -> Single<Void> {
+        return Single<Void>.create { single in
+            self.healthStore.requestAuthorization(
+                toShare: self.healthKitTypesToWrite,
+                read: self.healthKitTypesToRead
+            ) { isAllowed, _ in
+                if isAllowed {
+                    single(.success(()))
+                } else {
+                    single(.failure(HealthKitError.unauthorizationHealthKit))
+                }
             }
             return Disposables.create()
         }
