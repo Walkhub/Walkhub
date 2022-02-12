@@ -229,18 +229,18 @@ extension PlayRecordViewController {
 
     private func makeSubviewConstraints() {
         cheerUpImg.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(100)
+            $0.top.lessThanOrEqualToSuperview().offset(150)
             $0.centerX.equalToSuperview()
             $0.width.height.equalTo(130)
         }
 
         cheerCommentLabel.snp.makeConstraints {
-            $0.top.equalTo(cheerUpImg.snp.bottom).offset(5)
+            $0.top.equalTo(cheerUpImg.snp.bottom).offset(25)
             $0.centerX.equalToSuperview()
         }
 
         whiteView.snp.makeConstraints {
-            $0.top.equalTo(cheerCommentLabel.snp.bottom).offset(16)
+            $0.top.greaterThanOrEqualTo(cheerCommentLabel.snp.bottom).offset(16)
             $0.leading.trailing.bottom.equalToSuperview()
         }
 
@@ -351,6 +351,7 @@ extension PlayRecordViewController {
         }
 
         stopBtn.snp.makeConstraints {
+            $0.top.equalTo(mLabel.snp.bottom).offset(22)
             $0.centerX.equalToSuperview()
             $0.height.width.equalTo(77)
             $0.bottom.equalToSuperview().inset(40)
