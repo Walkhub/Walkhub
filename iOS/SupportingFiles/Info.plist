@@ -66,6 +66,8 @@
 	</array>
 	<key>NSHealthShareUsageDescription</key>
 	<string>건강 데이터를 불러올때 필요해요.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>건강 데이터를 작성할때 필요해요.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansCJKkr-Bold.otf</string>
