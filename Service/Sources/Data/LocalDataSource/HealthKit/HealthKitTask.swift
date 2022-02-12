@@ -28,8 +28,8 @@ final class HealthKitTask {
 
     private init() { }
 
-    func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier) -> Single<[HKSample]> {
-        return Single<[HKSample]>.create { single in
+    func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier) -> Single<[HKQuantitySample]> {
+        return Single<[HKQuantitySample]>.create { single in
             let authorization = self.requestAuthorization()
                 .subscribe(onSuccess: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
@@ -45,7 +45,7 @@ final class HealthKitTask {
                             single(.failure(error!))
                             return
                         }
-                        single(.success(result))
+                        single(.success(result.map { ($0 as? HKQuantitySample)! }))
                     }
 
                     self.healthStore.execute(query)
@@ -56,8 +56,8 @@ final class HealthKitTask {
         }
     }
 
-    func fetchData(dataCountLimit: Int, dataType: HKQuantityTypeIdentifier) -> Single<[HKSample]> {
-        return Single<[HKSample]>.create { single in
+    func fetchData(dataCountLimit: Int, dataType: HKQuantityTypeIdentifier) -> Single<[HKQuantitySample]> {
+        return Single<[HKQuantitySample]>.create { single in
             let authorization = self.requestAuthorization()
                 .subscribe(onSuccess: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
@@ -72,7 +72,7 @@ final class HealthKitTask {
                             single(.failure(error!))
                             return
                         }
-                        single(.success(result))
+                        single(.success(result.map { ($0 as? HKQuantitySample)! }))
                     }
 
                     self.healthStore.execute(query)
