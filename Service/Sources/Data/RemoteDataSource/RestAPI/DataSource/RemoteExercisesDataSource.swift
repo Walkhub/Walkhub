@@ -9,11 +9,11 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     private override init() { }
 
-    func startRecord(
+    func startMeasuring(
         goal: Int,
         goalType: String
     ) -> Single<String> {
-        return request(.startRecord(
+        return request(.startMeasuring(
             goal: goal,
             goalType: goalType
         ))
@@ -21,13 +21,13 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
             .map { $0.toDomain() }
     }
 
-    func endRecord(
+    func finishMeasuring(
         exercisesID: Int,
         walkCount: Int,
         distance: Int,
         imageUrlString: String
     ) -> Single<Void> {
-        return request(.endRecord(
+        return request(.finishMeasuring(
             exercisesID: exercisesID,
             walkCount: walkCount,
             distance: distance,

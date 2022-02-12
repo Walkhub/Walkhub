@@ -3,8 +3,8 @@ import Foundation
 import Moya
 
 enum ExercisesAPI {
-    case startRecord(goal: Int, goalType: String)
-    case endRecord(exercisesID: Int, walkCount: Int, distance: Int, imageUrlString: String)
+    case startMeasuring(goal: Int, goalType: String)
+    case finishMeasuring(exercisesID: Int, walkCount: Int, distance: Int, imageUrlString: String)
     case saveLocations(exercisesID: Int, order: Int, latitude: String, longitude: String)
     case setExsercises(date: String, distance: Int, walkCount: Int)
 }
@@ -17,9 +17,9 @@ extension ExercisesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .startRecord:
+        case .startMeasuring:
             return "/"
-        case .endRecord(let exercisesID, _, _, _):
+        case .finishMeasuring(let exercisesID, _, _, _):
             return "/\(exercisesID)"
         case .saveLocations(let exercisesID, _, _, _):
             return "/locations/\(exercisesID)"
@@ -30,9 +30,9 @@ extension ExercisesAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .startRecord, .saveLocations:
+        case .startMeasuring, .saveLocations:
             return .post
-        case .endRecord:
+        case .finishMeasuring:
             return .patch
         default:
             return .put
@@ -41,7 +41,7 @@ extension ExercisesAPI: WalkhubAPI {
 
     var task: Task {
         switch self {
-        case .startRecord(let goal, let goalType):
+        case .startMeasuring(let goal, let goalType):
             return .requestParameters(
                 parameters: [
                     "goal": goal,
@@ -49,7 +49,7 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .endRecord(_, let walkCount, let distance, let imageUrlString):
+        case .finishMeasuring(_, let walkCount, let distance, let imageUrlString):
             return .requestParameters(
                 parameters: [
                     "walk_count": walkCount,
