@@ -11,7 +11,7 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     func startMeasuring(
         goal: Int,
-        goalType: String
+        goalType: MeasuringGoalType
     ) -> Single<Int> {
         return request(.startMeasuring(
             goal: goal,

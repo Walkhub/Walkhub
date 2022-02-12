@@ -3,7 +3,7 @@ import Foundation
 import Moya
 
 enum ExercisesAPI {
-    case startMeasuring(goal: Int, goalType: String)
+    case startMeasuring(goal: Int, goalType: MeasuringGoalType)
     case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String)
     case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
     case setExsercises(date: String, distance: Int, walkCount: Int)
@@ -45,7 +45,7 @@ extension ExercisesAPI: WalkhubAPI {
             return .requestParameters(
                 parameters: [
                     "goal": goal,
-                    "goal_type": goalType
+                    "goal_type": goalType.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
