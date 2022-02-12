@@ -32,7 +32,7 @@ class MyPageViewController: UIViewController {
         $0.image = .init(named: "ClockImg")
         $0.contentMode = .scaleAspectFit
     }
-    
+
     private let timeLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
