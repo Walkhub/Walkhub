@@ -3,10 +3,12 @@ import Foundation
 import Moya
 
 enum ExercisesAPI {
+    case fetchExerciseAnalysis
+    case fetchMeasuredExercises
     case startMeasuring(goal: Int, goalType: MeasuringGoalType)
     case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
     case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
-    case setExsercises(date: String, distance: Int, walkCount: Int)
+    case saveDailyExsercises(date: Date, distance: Int, walkCount: Int, calorie: Double)
 }
 
 extension ExercisesAPI: WalkhubAPI {
@@ -17,24 +19,30 @@ extension ExercisesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
+        case .fetchExerciseAnalysis:
+            return "analysis"
+        case .fetchMeasuredExercises:
+            return "/lists"
         case .startMeasuring:
             return "/"
         case .finishMeasuring(let exercisesId, _, _, _):
             return "/\(exercisesId)"
         case .saveLocations(let exercisesId, _, _, _):
             return "/locations/\(exercisesId)"
-        case .setExsercises(let date, _, _):
-            return "?date=\(date)"
+        case .saveDailyExsercises:
+            return "/"
         }
     }
 
     var method: Moya.Method {
         switch self {
+        case .fetchExerciseAnalysis, .fetchMeasuredExercises:
+            return .get
         case .startMeasuring, .saveLocations:
             return .post
         case .finishMeasuring:
             return .patch
-        default:
+        case .saveDailyExsercises:
             return .put
         }
     }
@@ -67,14 +75,18 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setExsercises(_, let distance, let walkCount):
+        case .saveDailyExsercises(let date, let distance, let walkCount, let calorie):
             return .requestParameters(
                 parameters: [
                     "distance": distance,
-                    "walk_count": walkCount
+                    "walk_count": walkCount,
+                    "date": date.toDateString(),
+                    "calorie": calorie
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
+        default:
+            return .requestPlain
         }
     }
     var jwtTokenType: JWTTokenType? {

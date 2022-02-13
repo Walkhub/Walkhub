@@ -9,6 +9,18 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     private override init() { }
 
+    func fetchExerciseAnalysis() -> Single<ExerciseAnalysis> {
+        return request(.fetchExerciseAnalysis)
+            .map(ExerciseAnalysisDTO.self)
+            .map { $0.toDomain() }
+    }
+
+    func fetchMeasuredExercises() -> Single<[MeasuredExercise]> {
+        return request(.fetchMeasuredExercises)
+            .map(MeasuredExerciseListDTO.self)
+            .map { $0.toDomain() }
+    }
+
     func startMeasuring(
         goal: Int,
         goalType: MeasuringGoalType
@@ -49,15 +61,17 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         )).asCompletable()
     }
 
-    func setExsercises(
-        date: String,
+    func saveDailyExsercises(
+        date: Date,
         distance: Int,
-        walkCount: Int
+        walkCount: Int,
+        calorie: Double
     ) -> Completable {
-        return request(.setExsercises(
+        return request(.saveDailyExsercises(
             date: date,
             distance: distance,
-            walkCount: walkCount
+            walkCount: walkCount,
+            calorie: calorie
         )).asCompletable()
     }
 
