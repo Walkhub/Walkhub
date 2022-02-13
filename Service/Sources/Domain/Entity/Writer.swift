@@ -1,7 +1,7 @@
 import Foundation
 
 public struct Writer: Equatable {
-    let id: Int
-    let name: String
-    let profileImageUrl: URL
+    public let id: Int
+    public let name: String
+    public let profileImageUrl: URL
 }

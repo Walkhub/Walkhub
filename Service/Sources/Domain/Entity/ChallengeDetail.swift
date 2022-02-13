@@ -1,15 +1,15 @@
 import Foundation
 
 public struct ChallengeDetail {
-    let name: String
-    let content: String
-    let goal: Int
-    let award: String
-    let imageUrl: URL
-    let start: Date
-    let end: Date
-    let scope: String
-    let count: Int
-    let isMine: Bool
-    let writer: Writer
+    public let name: String
+    public let content: String
+    public let goal: Int
+    public let award: String
+    public let imageUrl: URL
+    public let start: Date
+    public let end: Date
+    public let scope: String
+    public let count: Int
+    public let isMine: Bool
+    public let writer: Writer
 }
