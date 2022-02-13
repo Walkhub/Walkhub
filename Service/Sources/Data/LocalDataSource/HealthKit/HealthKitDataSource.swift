@@ -13,11 +13,10 @@ final class HealthKitDataSource {
     private init() { }
 
     func observeExerciseRecordChangeSignal() -> Observable<Void> {
-        Observable.of(
+        Observable.zip(
             healthKitTask.observingDataChange(dataType: .stepCount),
             healthKitTask.observingDataChange(dataType: .distanceWalkingRunning)
-        ).merge()
-            .throttle(.milliseconds(500), latest: false, scheduler: MainScheduler.instance)
+        ) { _, _ in () }
     }
 
     func fetchStepCount(
