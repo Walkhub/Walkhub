@@ -12,7 +12,7 @@ final class HealthKitDataSource {
 
     private init() { }
 
-    func observeStepCountDataSignal() -> Observable<Void> {
+    func observeStepCountChangeSignal() -> Observable<Void> {
         return healthKitTask.observingDataChange(dataType: .stepCount)
     }
 
