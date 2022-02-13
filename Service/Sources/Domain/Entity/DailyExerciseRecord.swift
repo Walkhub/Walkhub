@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DailyExercise {
+public struct DailyExerciseRecord {
     let stepCount: Int
     let dailyWalkingRunningTimeAsSecond: Double
     let walkingRunningDistanceAsMeter: Double
