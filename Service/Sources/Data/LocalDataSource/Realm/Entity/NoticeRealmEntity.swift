@@ -19,7 +19,7 @@ extension NoticeRealmEntity {
         self.id = notice.id
         self.title = notice.title
         self.content = notice.content
-        self.createdAt = notice.createdAt.toString()
+        self.createdAt = notice.createdAt.toDateWithTimeString()
         self.writer = WriterRealmEntity().then {
             $0.setup(writer: notice.writer)
         }
@@ -33,7 +33,7 @@ extension NoticeRealmEntity {
             id: id,
             title: title,
             content: content,
-            createdAt: createdAt.toDate(),
+            createdAt: createdAt.toDateWithTime(),
             writer: writer!.toDomain()
         )
     }
