@@ -15,7 +15,8 @@ let project = Project.dynamicFramework(
         .SocketIO,
         .KDCircularProgress,
         .Charts,
-        .DropDown
+        .DropDown,
+        .Tabman
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -31,6 +32,7 @@ let project = Project.dynamicFramework(
         .SPM.SocketIO,
         .SPM.KDCircularProgress,
         .SPM.Charts,
-        .SPM.DropDown
+        .SPM.DropDown,
+        .SPM.Tabman
     ]
 )
