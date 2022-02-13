@@ -15,8 +15,8 @@ final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAP
             .map { $0.toDomain() }
     }
 
-    func editReadWhether(notificationID: Int) -> Single<Void> {
-        return request(.toggleIsRead(notificationID: notificationID))
+    func editReadWhether(notificationId: Int) -> Single<Void> {
+        return request(.toggleIsRead(notificationId: notificationId))
             .map { _ in () }
     }
 

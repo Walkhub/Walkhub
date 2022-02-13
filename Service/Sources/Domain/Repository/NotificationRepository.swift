@@ -4,5 +4,5 @@ import RxSwift
 
 protocol NotificationRepository {
     func fetchNotificationList() -> Observable<[Notification]>
-    func editReadWhether(notificationID: Int) -> Single<Void>
+    func editReadWhether(notificationId: Int) -> Single<Void>
 }
