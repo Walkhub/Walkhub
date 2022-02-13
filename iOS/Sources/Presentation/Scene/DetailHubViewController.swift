@@ -63,16 +63,19 @@ class DetailHubViewController: TabmanViewController {
 
         let bar = TMBar.ButtonBar()
         bar.layout.transitionStyle = .snap
+        bar.layout.interButtonSpacing = 0
 
         bar.buttons.customize {
             $0.tintColor = .gray400
             $0.selectedTintColor = .black
             $0.font = .notoSansFont(ofSize: 16, family: .medium)
+            $0.backgroundColor = .white
         }
 
         bar.layout.contentMode = .fit
 
         bar.indicator.tintColor = .primary400
+        bar.indicator.weight = .custom(value: 1)
 
         addBar(bar, dataSource: self, at: .top)
     }
