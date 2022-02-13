@@ -26,13 +26,13 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         walkCount: Int,
         distance: Int,
         imageUrlString: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.finishMeasuring(
             exercisesId: exercisesId,
             walkCount: walkCount,
             distance: distance,
             imageUrlString: imageUrlString
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func saveLocations(
@@ -40,25 +40,25 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         order: Int,
         latitude: String,
         longitude: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.saveLocations(
             exercisesId: exercisesId,
             order: order,
             latitude: latitude,
             longitude: longitude
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func setExsercises(
         date: String,
         distance: Int,
         walkCount: Int
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.setExsercises(
             date: date,
             distance: distance,
             walkCount: walkCount
-        )).map { _ in () }
+        )).asCompletable()
     }
 
 }

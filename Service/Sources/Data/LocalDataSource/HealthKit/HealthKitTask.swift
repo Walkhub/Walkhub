@@ -31,7 +31,7 @@ final class HealthKitTask {
     func fetchData(start: Date, end: Date, dataType: HKQuantityTypeIdentifier) -> Single<[HKQuantitySample]> {
         return Single<[HKQuantitySample]>.create { single in
             let authorization = self.requestAuthorization()
-                .subscribe(onSuccess: { _ in
+                .subscribe(onCompleted: {
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
                     let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
@@ -49,7 +49,7 @@ final class HealthKitTask {
                     }
 
                     self.healthStore.execute(query)
-                }, onFailure: {
+                }, onError: {
                     single(.failure($0))
                 })
             return Disposables.create([authorization])
@@ -59,7 +59,7 @@ final class HealthKitTask {
     func fetchData(dataCountLimit: Int, dataType: HKQuantityTypeIdentifier) -> Single<[HKQuantitySample]> {
         return Single<[HKQuantitySample]>.create { single in
             let authorization = self.requestAuthorization()
-                .subscribe(onSuccess: { _ in
+                .subscribe(onCompleted: { _ in
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
                     let query = HKSampleQuery(
@@ -76,7 +76,7 @@ final class HealthKitTask {
                     }
 
                     self.healthStore.execute(query)
-                }, onFailure: {
+                }, onError: {
                     single(.failure($0))
                 })
             return Disposables.create([authorization])
@@ -86,7 +86,7 @@ final class HealthKitTask {
     func fetchDataValue(start: Date, end: Date, dataType: HKQuantityTypeIdentifier, unit: HKUnit) -> Single<Double> {
         return Single<Double>.create { single in
             let authorization = self.requestAuthorization()
-                .subscribe(onSuccess: { _ in
+                .subscribe(onCompleted: {
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
                     let query = HKStatisticsQuery(
@@ -101,7 +101,7 @@ final class HealthKitTask {
                         single(.success(quantity.doubleValue(for: unit)))
                     }
                     self.healthStore.execute(query)
-                }, onFailure: {
+                }, onError: {
                     single(.failure($0))
                 })
             return Disposables.create([authorization])
@@ -115,7 +115,7 @@ final class HealthKitTask {
         dataType: HKQuantityTypeIdentifier
     ) {
         requestAuthorization()
-            .subscribe(onSuccess: { _ in
+            .subscribe(onCompleted: {
                 HKHealthStore().save(HKQuantitySample(
                     type: .quantityType(forIdentifier: dataType)!,
                     quantity: .init(unit: unit, doubleValue: dataValue),
@@ -128,7 +128,7 @@ final class HealthKitTask {
     func observingDataChange(dataType: HKQuantityTypeIdentifier) -> Observable<Void> {
         return Observable<Void>.create { observer in
             let authorization = self.requestAuthorization()
-                .subscribe(onSuccess: { _ in
+                .subscribe(onCompleted: {
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let query = HKObserverQuery(sampleType: sampleType, predicate: nil) { _, _, error in
                         if let error = error {
@@ -138,23 +138,23 @@ final class HealthKitTask {
                         observer.onNext(())
                     }
                     self.healthStore.execute(query)
-                }, onFailure: {
+                }, onError: {
                     observer.onError($0)
                 })
             return Disposables.create([authorization])
         }
     }
 
-    private func requestAuthorization() -> Single<Void> {
-        return Single<Void>.create { single in
+    private func requestAuthorization() -> Completable {
+        return Completable.create { completable in
             self.healthStore.requestAuthorization(
                 toShare: self.healthKitTypesToWrite,
                 read: self.healthKitTypesToRead
             ) { isAllowed, _ in
                 if isAllowed {
-                    single(.success(()))
+                    completable(.completed)
                 } else {
-                    single(.failure(HealthKitError.unauthorizationHealthKit))
+                    completable(.error(HealthKitError.unauthorizationHealthKit))
                 }
             }
             return Disposables.create()
