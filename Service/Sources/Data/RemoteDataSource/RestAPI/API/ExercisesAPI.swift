@@ -4,7 +4,7 @@ import Moya
 
 enum ExercisesAPI {
     case startMeasuring(goal: Int, goalType: MeasuringGoalType)
-    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String)
+    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
     case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
     case setExsercises(date: String, distance: Int, walkCount: Int)
 }
@@ -54,7 +54,7 @@ extension ExercisesAPI: WalkhubAPI {
                 parameters: [
                     "walk_count": walkCount,
                     "distance": distance,
-                    "image_url": imageUrlString
+                    "image_url": imageUrlString ?? NSNull()
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
