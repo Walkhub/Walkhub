@@ -8,7 +8,7 @@ enum ExercisesAPI {
     case startMeasuring(goal: Int, goalType: MeasuringGoalType)
     case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
     case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
-    case saveDailyExsercises(date: Date, distance: Int, walkCount: Int, calorie: Double)
+    case saveDailyExsercises(date: Date, distance: Double, walkCount: Int, calorie: Double)
 }
 
 extension ExercisesAPI: WalkhubAPI {

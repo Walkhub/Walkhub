@@ -63,7 +63,7 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     func saveDailyExsercises(
         date: Date,
-        distance: Int,
+        distance: Double,
         walkCount: Int,
         calorie: Double
     ) -> Completable {
