@@ -1,6 +1,6 @@
 import Foundation
 
 public struct UserRank: Equatable {
-    let myRank: User
-    let rankList: [User]
+    public let myRank: User
+    public let rankList: [User]
 }

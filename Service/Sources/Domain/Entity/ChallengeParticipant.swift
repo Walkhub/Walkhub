@@ -1,8 +1,8 @@
 import Foundation
 
 public struct ChallengeParticipant {
-    let id: Int
-    let name: String
-    let gcn: String
-    let profileImageUrlString: URL
+    public let id: Int
+    public let name: String
+    public let gcn: String
+    public let profileImageUrlString: URL
 }

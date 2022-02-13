@@ -1,10 +1,10 @@
 import Foundation
 
 public struct Challenge {
-    let id: Int
-    let name: String
-    let start: Date
-    let end: Date
-    let imageUrl: URL
-    let scope: String
+    public let id: Int
+    public let name: String
+    public let start: Date
+    public let end: Date
+    public let imageUrl: URL
+    public let scope: String
 }
