@@ -59,7 +59,7 @@ final class HealthKitTask {
     func fetchData(dataCountLimit: Int, dataType: HKQuantityTypeIdentifier) -> Single<[HKQuantitySample]> {
         return Single<[HKQuantitySample]>.create { single in
             let authorization = self.requestAuthorization()
-                .subscribe(onCompleted: { _ in
+                .subscribe(onCompleted: {
                     let sampleType = HKSampleType.quantityType(forIdentifier: dataType)!
                     let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
                     let query = HKSampleQuery(
