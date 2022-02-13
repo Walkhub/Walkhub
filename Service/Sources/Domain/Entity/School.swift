@@ -1,9 +1,9 @@
 import Foundation
 
 public struct School: Equatable {
-    let schoolId: String
-    let name: String
-    let rank: Int
-    let logoImageUrl: URL
-    let walkCount: Int
+    public let schoolId: String
+    public let name: String
+    public let rank: Int
+    public let logoImageUrl: URL
+    public let walkCount: Int
 }
