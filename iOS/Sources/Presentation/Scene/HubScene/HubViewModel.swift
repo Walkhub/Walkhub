@@ -21,30 +21,35 @@ class HubViewModel: ViewModelType {
     }
 
     struct Output {
-        let schoolRank: PublishRelay<SchoolRank>
+        let mySchoolRank: PublishRelay<MySchool>
+        let schoolRank: PublishRelay<[School]>
     }
 
     func transform(_ input: Input) -> Output {
-        let schoolRank = PublishRelay<SchoolRank>()
+        let mySchoolRank = PublishRelay<MySchool>()
+        let schoolRank = PublishRelay<[School]>()
 
         input.dayData.asObservable().flatMap {
             self.fetchSchoolUseCase.excute(dateType: .day)
         }.subscribe(onNext: {
-            schoolRank.accept($0)
+            mySchoolRank.accept($0.mySchoolRank)
+            schoolRank.accept($0.schoolList)
         }).disposed(by: disposeBag)
 
         input.weekData.asObservable().flatMap {
             self.fetchSchoolUseCase.excute(dateType: .week)
         }.subscribe(onNext: {
-            schoolRank.accept($0)
+            mySchoolRank.accept($0.mySchoolRank)
+            schoolRank.accept($0.schoolList)
         }).disposed(by: disposeBag)
 
         input.monthData.asObservable().flatMap {
             self.fetchSchoolUseCase.excute(dateType: .month)
         }.subscribe(onNext: {
-            schoolRank.accept($0)
+            mySchoolRank.accept($0.mySchoolRank)
+            schoolRank.accept($0.schoolList)
         }).disposed(by: disposeBag)
 
-        return Output(schoolRank: schoolRank)
+        return Output(mySchoolRank: mySchoolRank, schoolRank: schoolRank)
     }
 }
