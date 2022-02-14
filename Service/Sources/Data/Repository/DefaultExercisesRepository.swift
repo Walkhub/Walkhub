@@ -3,9 +3,7 @@ import Foundation
 import HealthKit
 import RxSwift
 
-public class DefaultExercisesRepository: ExercisesRepository {
-
-    public init() { }
+class DefaultExercisesRepository: ExercisesRepository {
 
     private let healthKitDataSource = HealthKitDataSource.shared
     private let coreLocationDataSource = CoreLocationDataSource.shared
@@ -214,7 +212,6 @@ extension DefaultExercisesRepository {
     }
 
     // MARK: BurnedKilocalories
-    // TODO: 데이터 가져오기 실패시 처리 특히 키/몸무게
     private func fetchDailyBurnedKilocalories() -> Single<Double> {
         Single<Double>.zip(
             fetchDailySpeedAsMeterPerSecond().map { self.meterPerSecondToKillometerPerHour(meterPerSecond: $0) },
@@ -222,21 +219,14 @@ extension DefaultExercisesRepository {
             healthKitDataSource.fetchUserWeight(),
             healthKitDataSource.fetchUserHeight(),
             fetchDailyStepCount()
-        ) { speedAsKillometerPerHour, walkingRunningTimeAsHour, userWeight, userHeight, stepCount in
-            let userSex = self.userDefaultsDataSource.userSex
-            let met = self.calculateMET(speedAsKillometerPerHour: speedAsKillometerPerHour)
-            let bmr = self.calculateBMR(
-                userWeight: userWeight,
-                userHeight: userHeight,
-                userSex: userSex
-            )
-            return self.calculateBurnedKilocalories(
-                userSex: userSex,
-                met: met,
-                bmr: bmr,
-                timeAsHour: walkingRunningTimeAsHour,
-                stepCount: stepCount
-            )
+        ) {
+            self.calculateBurnedKilocalories(
+            speedAsKillometerPerHour: $0,
+            walkingRunningTimeAsHour: $1,
+            userWeight: $2,
+            userHeight: $3,
+            stepCount: $4
+            )  
         }
     }
 
@@ -247,20 +237,13 @@ extension DefaultExercisesRepository {
             healthKitDataSource.fetchUserWeight(),
             healthKitDataSource.fetchUserHeight(),
             fetchMeasuringStepCount()
-        ) { speedAsKillometerPerHour, walkingRunningTimeAsHour, userWeight, userHeight, stepCount in
-            let userSex = self.userDefaultsDataSource.userSex
-            let met = self.calculateMET(speedAsKillometerPerHour: speedAsKillometerPerHour)
-            let bmr = self.calculateBMR(
-                userWeight: userWeight,
-                userHeight: userHeight,
-                userSex: userSex
-            )
-            return self.calculateBurnedKilocalories(
-                userSex: userSex,
-                met: met,
-                bmr: bmr,
-                timeAsHour: walkingRunningTimeAsHour,
-                stepCount: stepCount
+        ) {
+            self.calculateBurnedKilocalories(
+                speedAsKillometerPerHour: $0,
+                walkingRunningTimeAsHour: $1,
+                userWeight: $2,
+                userHeight: $3,
+                stepCount: $4
             )
         }
     }
@@ -279,17 +262,23 @@ extension DefaultExercisesRepository {
     }
 
     private func calculateBurnedKilocalories(
-        userSex: Sex,
-        met: Double,
-        bmr: Double,
-        timeAsHour: Double,
+        speedAsKillometerPerHour: Double,
+        walkingRunningTimeAsHour: Double,
+        userWeight: Double,
+        userHeight: Double,
         stepCount: Int
     ) -> Double {
-        if userSex == .noAnswer {
-            return Double(stepCount) / 30
-        } else {
-            return met * bmr / 24 * timeAsHour
+        let userSex = self.userDefaultsDataSource.userSex
+        if userSex == .noAnswer || userHeight == 0 || userWeight == 0 {
+            return Double(stepCount / 30)
         }
+        let met = self.calculateMET(speedAsKillometerPerHour: speedAsKillometerPerHour)
+        let bmr = self.calculateBMR(
+            userWeight: userWeight,
+            userHeight: userHeight,
+            userSex: userSex
+        )
+        return met * bmr / 24 * walkingRunningTimeAsHour
     }
 
     private func meterPerSecondToKillometerPerHour(meterPerSecond: Double) -> Double {
