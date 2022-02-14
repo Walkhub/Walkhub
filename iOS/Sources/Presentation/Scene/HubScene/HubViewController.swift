@@ -53,7 +53,6 @@ class HubViewController: UIViewController {
     private let dropDownBtn = DropDownButton().then {
         $0.setTitle(" 어제\t", for: .normal)
         $0.arr = ["어제", "이번주", "이번달"]
-        $0.setAction()
     }
 
     private let rankTableView = UITableView().then {
@@ -73,15 +72,30 @@ class HubViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        rankTableView.dataSource = self
         setNavigation()
         demoData()
         bindViewModel()
+        setDropDown()
     }
 
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewContraints()
+    }
+
+    private func setDropDown() {
+        dropDownBtn.dropDown.selectionAction = { row, item in
+            self.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.dropDownBtn.dropDown.clearSelection()
+            switch row {
+            case 0:
+                self.dayData.accept(())
+            case 1:
+                self.weekData.accept(())
+            default:
+                self.monthData.accept(())
+            }
+        }
     }
 
     private func bindViewModel() {
