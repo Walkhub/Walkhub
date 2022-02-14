@@ -18,15 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScence
         window?.backgroundColor = .systemBackground
 
-        self.window?.rootViewController = HealthKitTestVC()
-        self.window?.makeKeyAndVisible()
-
-//        let appFlow = AppFlow()
-//        self.coordinator.coordinate(flow: appFlow, with: AppStepper())
-//        Flows.use(appFlow, when: .created) { [weak self] root in
-//            self?.window?.rootViewController = root
-//            self?.window?.makeKeyAndVisible()
-//        }
+        let appFlow = AppFlow()
+        self.coordinator.coordinate(flow: appFlow, with: AppStepper())
+        Flows.use(appFlow, when: .created) { [weak self] root in
+            self?.window?.rootViewController = root
+            self?.window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) { }
