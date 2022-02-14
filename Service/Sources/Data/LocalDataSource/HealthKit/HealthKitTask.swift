@@ -47,7 +47,6 @@ final class HealthKitTask {
                         }
                         single(.success(result.map { ($0 as? HKQuantitySample)! }))
                     }
-
                     self.healthStore.execute(query)
                 }, onError: {
                     single(.failure($0))
@@ -74,7 +73,6 @@ final class HealthKitTask {
                         }
                         single(.success(result.map { ($0 as? HKQuantitySample)! }))
                     }
-
                     self.healthStore.execute(query)
                 }, onError: {
                     single(.failure($0))
@@ -93,12 +91,9 @@ final class HealthKitTask {
                         quantityType: sampleType,
                         quantitySamplePredicate: predicate,
                         options: [.cumulativeSum]
-                    ) { _, result, error in
-                        guard let quantity = result?.sumQuantity() else {
-                            single(.failure(error!))
-                            return
-                        }
-                        single(.success(quantity.doubleValue(for: unit)))
+                    ) { _, result, _ in
+                        let quantity = result?.sumQuantity()
+                        single(.success(quantity?.doubleValue(for: unit) ?? 0.0))
                     }
                     self.healthStore.execute(query)
                 }, onError: {
