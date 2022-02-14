@@ -1,10 +1,12 @@
 import Foundation
 
-class UserDefaultsDataSource {
+final class UserDefaultsDataSource {
 
     static let shared = UserDefaultsDataSource()
 
     private let userDefaults = UserDefaults.standard
+
+    private init() { }
 
     var userSex: Sex {
         get {
