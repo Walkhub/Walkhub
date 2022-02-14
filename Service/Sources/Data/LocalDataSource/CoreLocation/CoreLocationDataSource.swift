@@ -9,7 +9,7 @@ final class CoreLocationDataSource: NSObject, CLLocationManagerDelegate {
 
     private let locationManager = CLLocationManager()
 
-    let liveUserLocation = PublishSubject<UserLocation>()
+    var userLocationListDuringUpdate = [UserLocation]()
 
     private override init() {
         super.init()
@@ -27,6 +27,7 @@ final class CoreLocationDataSource: NSObject, CLLocationManagerDelegate {
 
     func stopUpdatingLocation() {
         self.locationManager.stopUpdatingLocation()
+        self.userLocationListDuringUpdate = []
     }
 
     func locationManager(
@@ -34,9 +35,11 @@ final class CoreLocationDataSource: NSObject, CLLocationManagerDelegate {
         didUpdateLocations locations: [CLLocation]
     ) {
         let lastLocation = locations.last
-        let latitude = lastLocation?.coordinate.latitude
-        let longitude = lastLocation?.coordinate.longitude
-        self.liveUserLocation.onNext(UserLocation(latitude: latitude!, longitude: longitude!))
+        let userLocation = UserLocation(
+            latitude: (lastLocation?.coordinate.latitude)!,
+            longitude: (lastLocation?.coordinate.longitude)!
+        )
+        self.userLocationListDuringUpdate.append(userLocation)
     }
 
 }

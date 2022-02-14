@@ -8,6 +8,7 @@ public class DefaultExercisesRepository: ExercisesRepository {
     public init() { }
 
     private let healthKitDataSource = HealthKitDataSource.shared
+    private let coreLocationDataSource = CoreLocationDataSource.shared
     private let localExercisesDataSource = LocalExerciseDataSource.shared
     private let remoteExercisesDataSource = RemoteExercisesDataSource.shared
     private let userDefaultsDataSource = UserDefaultsDataSource.shared
@@ -20,6 +21,7 @@ public class DefaultExercisesRepository: ExercisesRepository {
             if !newValue {
                 exerciseId = nil
                 measuringStartAt = nil
+                coreLocationDataSource.stopUpdatingLocation()
             }
         }
     }
@@ -77,24 +79,34 @@ public class DefaultExercisesRepository: ExercisesRepository {
 
     func startMeasuring(goal: Int, goalType: MeasuringGoalType) -> Completable {
         remoteExercisesDataSource.startMeasuring(goal: goal, goalType: goalType)
-            .do(onSuccess: { [weak self] exerciseId in
-                self?.exerciseId = exerciseId
-                self?.measuringStartAt = Date()
+            .do(onSuccess: { exerciseId in
+                self.exerciseId = exerciseId
+                self.measuringStartAt = Date()
+                self.coreLocationDataSource.startUpdatingLocation()
             }).asCompletable()
     }
 
     func finishMeasuring(imageUrlString: String?) -> Completable {
-        fetchMeasuringExerciseRecord()
-            .flatMapCompletable {
-                self.remoteExercisesDataSource.finishMeasuring(
-                    exercisesId: self.exerciseId!,
-                    walkCount: $0.stepCount,
-                    distance: Int($0.walkingRunningDistanceAsMeter),
-                    imageUrlString: imageUrlString
-                )
-            }.do(onCompleted: { [weak self] in
-                self?.isMeasuring = false
-            })
+        saveUserLocationListDuringMeasuring().andThen(
+            fetchMeasuringExerciseRecord()
+                .flatMapCompletable {
+                    self.remoteExercisesDataSource.finishMeasuring(
+                        exercisesId: self.exerciseId!,
+                        walkCount: $0.stepCount,
+                        distance: Int($0.walkingRunningDistanceAsMeter),
+                        imageUrlString: imageUrlString
+                    )
+                }
+        ).do(onCompleted: {
+            self.isMeasuring = false
+        })
+    }
+
+    private func saveUserLocationListDuringMeasuring() -> Completable {
+        remoteExercisesDataSource.saveLocations(
+            exercisesId: self.exerciseId!,
+            locationList: coreLocationDataSource.userLocationListDuringUpdate
+        )
     }
 
 }
@@ -103,7 +115,7 @@ public class DefaultExercisesRepository: ExercisesRepository {
 extension DefaultExercisesRepository {
 
     // MARK: ExerciseRecord
-    func fetchDailyExerciseRecord() -> Single<DailyExerciseRecord> {
+    private func fetchDailyExerciseRecord() -> Single<DailyExerciseRecord> {
         return Single<DailyExerciseRecord>.zip(
             fetchDailyStepCount(),
             fetchDailyWalkingRunningTimeAsSecond(),
@@ -117,7 +129,7 @@ extension DefaultExercisesRepository {
         )}
     }
 
-    func fetchMeasuringExerciseRecord() -> Single<MeasuringExerciseRecord> {
+    private func fetchMeasuringExerciseRecord() -> Single<MeasuringExerciseRecord> {
         Single<MeasuringExerciseRecord>.zip(
             fetchMeasuringStepCount(),
             fetchMeasuringWalkingRunningTimeAsSecond(),
@@ -134,14 +146,14 @@ extension DefaultExercisesRepository {
     }
 
     // MARK: StepCount
-    func fetchDailyStepCount() -> Single<Int> {
+    private func fetchDailyStepCount() -> Single<Int> {
         healthKitDataSource.fetchStepCount(
             start: Calendar.current.startOfDay(for: Date()),
             end: Date()
         )
     }
 
-    func fetchMeasuringStepCount() -> Single<Int> {
+    private func fetchMeasuringStepCount() -> Single<Int> {
         if isMeasuring {
             return healthKitDataSource.fetchStepCount(
                 start: measuringStartAt!,
@@ -153,14 +165,14 @@ extension DefaultExercisesRepository {
     }
 
     // MARK: WalkingRunningTime
-    func fetchDailyWalkingRunningTimeAsSecond() -> Single<Double> {
+    private func fetchDailyWalkingRunningTimeAsSecond() -> Single<Double> {
         healthKitDataSource.fetchWalkData(
             start: Calendar.current.startOfDay(for: Date()),
             end: Date()
         ).map { self.getSumOfTimeIntervalAsSecond(data: $0) }
     }
 
-    func fetchMeasuringWalkingRunningTimeAsSecond() -> Single<Double> {
+    private func fetchMeasuringWalkingRunningTimeAsSecond() -> Single<Double> {
         if isMeasuring {
             return healthKitDataSource.fetchWalkData(
                 start: measuringStartAt!,
@@ -170,14 +182,14 @@ extension DefaultExercisesRepository {
     }
 
     // MARK: WalkingRunningDistance
-    func fetchDailyWalkingRunningDistanceAsMeter() -> Single<Double> {
+    private func fetchDailyWalkingRunningDistanceAsMeter() -> Single<Double> {
         healthKitDataSource.fetchWalkDistance(
             start: Calendar.current.startOfDay(for: Date()),
             end: Date()
         )
     }
 
-    func fetchMeasuringWalkingRunningDistanceAsMeter() -> Single<Double> {
+    private func fetchMeasuringWalkingRunningDistanceAsMeter() -> Single<Double> {
         if isMeasuring {
             return healthKitDataSource.fetchWalkDistance(
                 start: measuringStartAt!,
@@ -187,14 +199,14 @@ extension DefaultExercisesRepository {
     }
 
     // MARK: Speed
-    func fetchDailySpeedAsMeterPerSecond() -> Single<Double> {
+    private func fetchDailySpeedAsMeterPerSecond() -> Single<Double> {
         Single<Double>.zip(
             fetchDailyWalkingRunningDistanceAsMeter(),
             fetchDailyWalkingRunningTimeAsSecond()
         ) { $0/$1 }
     }
 
-    func fetchMeasuringSpeedAsMeterPerSecond() -> Single<Double> {
+    private func fetchMeasuringSpeedAsMeterPerSecond() -> Single<Double> {
         Single<Double>.zip(
             fetchMeasuringWalkingRunningDistanceAsMeter(),
             fetchMeasuringWalkingRunningTimeAsSecond()
@@ -203,7 +215,7 @@ extension DefaultExercisesRepository {
 
     // MARK: BurnedKilocalories
     // TODO: 데이터 가져오기 실패시 처리 특히 키/몸무게
-    func fetchDailyBurnedKilocalories() -> Single<Double> {
+    private func fetchDailyBurnedKilocalories() -> Single<Double> {
         Single<Double>.zip(
             fetchDailySpeedAsMeterPerSecond().map { self.meterPerSecondToKillometerPerHour(meterPerSecond: $0) },
             fetchDailyWalkingRunningTimeAsSecond().map { self.secondToHour(second: $0) },
@@ -228,7 +240,7 @@ extension DefaultExercisesRepository {
         }
     }
 
-    func fetchMeasuringBurnedKilocalories() -> Single<Double> {
+    private func fetchMeasuringBurnedKilocalories() -> Single<Double> {
         Single<Double>.zip(
             fetchMeasuringSpeedAsMeterPerSecond().map { self.meterPerSecondToKillometerPerHour(meterPerSecond: $0) },
             fetchMeasuringWalkingRunningTimeAsSecond().map { self.secondToHour(second: $0) },
@@ -255,7 +267,7 @@ extension DefaultExercisesRepository {
 
 }
 
-// MARK: - Private Methods
+// MARK: - Calculate Methods
 extension DefaultExercisesRepository {
 
     private func getSumOfTimeIntervalAsSecond(data: [HKSample]) -> Double {
