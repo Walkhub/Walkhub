@@ -49,15 +49,11 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     func saveLocations(
         exercisesId: Int,
-        order: Int,
-        latitude: String,
-        longitude: String
+        locationList: [UserLocation]
     ) -> Completable {
         return request(.saveLocations(
             exercisesId: exercisesId,
-            order: order,
-            latitude: latitude,
-            longitude: longitude
+            locationList: locationList
         )).asCompletable()
     }
 

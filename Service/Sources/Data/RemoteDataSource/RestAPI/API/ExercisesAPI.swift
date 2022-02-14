@@ -7,7 +7,7 @@ enum ExercisesAPI {
     case fetchMeasuredExercises
     case startMeasuring(goal: Int, goalType: MeasuringGoalType)
     case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
-    case saveLocations(exercisesId: Int, order: Int, latitude: String, longitude: String)
+    case saveLocations(exercisesId: Int, locationList: [UserLocation])
     case saveDailyExsercises(date: Date, distance: Double, walkCount: Int, calorie: Double)
 }
 
@@ -27,7 +27,7 @@ extension ExercisesAPI: WalkhubAPI {
             return "/"
         case .finishMeasuring(let exercisesId, _, _, _):
             return "/\(exercisesId)"
-        case .saveLocations(let exercisesId, _, _, _):
+        case .saveLocations(let exercisesId, _):
             return "/locations/\(exercisesId)"
         case .saveDailyExsercises:
             return "/"
@@ -66,12 +66,20 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .saveLocations(_, let order, let latitude, let longitude):
+        case .saveLocations(_, let locationList):
             return .requestParameters(
                 parameters: [
-                    "order": order,
-                    "latitude": latitude,
-                    "longtiude": longitude
+                    "location_list": [
+                        locationList
+                            .enumerated()
+                            .map {
+                                return [
+                                    "sequence": $0.0 + 1,
+                                    "latitude": $0.1.latitude,
+                                    "longitude": $0.1.longitude
+                                ]
+                            }
+                    ]
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
