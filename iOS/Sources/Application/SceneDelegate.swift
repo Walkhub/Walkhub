@@ -1,5 +1,6 @@
 import UIKit
 
+import BackgroundTasks
 import RxFlow
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -17,12 +18,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScence
         window?.backgroundColor = .systemBackground
 
-        let appFlow = AppFlow()
-        self.coordinator.coordinate(flow: appFlow, with: AppStepper())
-        Flows.use(appFlow, when: .created) { [weak self] root in
-            self?.window?.rootViewController = root
-            self?.window?.makeKeyAndVisible()
-        }
+        self.window?.rootViewController = HealthKitTestVC()
+        self.window?.makeKeyAndVisible()
+
+//        let appFlow = AppFlow()
+//        self.coordinator.coordinate(flow: appFlow, with: AppStepper())
+//        Flows.use(appFlow, when: .created) { [weak self] root in
+//            self?.window?.rootViewController = root
+//            self?.window?.makeKeyAndVisible()
+//        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) { }
@@ -33,6 +37,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) { }
 
-    func sceneDidEnterBackground(_ scene: UIScene) { }
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        AppDelegate.scheduleSynchronizeDailyExerciseRecordIfNeeded()
+        print(".")
+    }
 
 }
