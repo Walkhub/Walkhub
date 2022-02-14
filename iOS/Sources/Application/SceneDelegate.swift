@@ -39,7 +39,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidEnterBackground(_ scene: UIScene) {
         AppDelegate.scheduleSynchronizeDailyExerciseRecordIfNeeded()
-        print(".")
     }
 
 }
