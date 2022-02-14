@@ -22,7 +22,7 @@ extension PersonRealmEntity {
     func setup(person: User) {
         self.userID = person.userID
         self.name = person.name
-        self.rank = person.rank
+        self.rank = person.ranking
         self.grade = person.grade
         self.classNum = person.classNum
         self.profileImageUrlString = person.profileImageUrl.absoluteString
@@ -42,7 +42,7 @@ extension PersonRealmEntity {
         return .init(
             userID: userID,
             name: name,
-            rank: rank,
+            ranking: rank,
             grade: grade,
             classNum: classNum,
             profileImageUrl: URL(string: profileImageUrlString)!,

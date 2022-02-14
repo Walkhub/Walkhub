@@ -8,14 +8,20 @@ struct ChallengeDTO: Decodable {
         case start = "start_at"
         case end = "end_at"
         case imageUrlString = "image_url"
-        case scope
+        case userScope = "user_scope"
+        case goalScope = "goal_scope"
+        case goalType = "goal_type"
+        case writer
     }
     let id: Int
     let name: String
     let start: String
     let end: String
     let imageUrlString: String
-    let scope: String
+    let userScope: String
+    let goalScope: String
+    let goalType: String
+    let writer: WriterDTO
 }
 
 // MARK: - Mappings to Domain
@@ -27,7 +33,10 @@ extension ChallengeDTO {
             start: start.toDate(),
             end: end.toDate(),
             imageUrl: URL(string: imageUrlString)!,
-            scope: scope
+            userScope: userScope,
+            goalScope: goalScope,
+            goalType: goalType,
+            writer: writer.toDomain()
         )
     }
 }

@@ -26,7 +26,7 @@ final class RemoteChallengesDataSource: RestApiRemoteDataSource<ChallengesAPI> {
             .map { _ in () }
     }
 
-    func fetchParticipantsChallengesList(challengeID: Int) -> Single<[ChallengeParticipant]> {
+    func fetchParticipantsChallengesList(challengeID: Int) -> Single<ChallengeParticipantList> {
         return request(.fetchParticipantsChallengesList(challengeID: challengeID))
             .map(ChallengeParticipantListDTO.self)
             .map { $0.toDomain() }
