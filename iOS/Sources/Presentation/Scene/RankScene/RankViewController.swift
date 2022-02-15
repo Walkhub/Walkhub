@@ -9,7 +9,7 @@ class RankViewController: UIViewController {
 
     private var disposeBag = DisposeBag()
 
-    private let headerView = HeaderView().then {
+    private let headerView = RankHeaderView().then {
         $0.layer.frame.size.height = 180
     }
 
