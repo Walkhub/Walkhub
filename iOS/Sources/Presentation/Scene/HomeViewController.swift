@@ -89,7 +89,6 @@ extension HomeViewController: UITableViewDataSource {
                     withIdentifier: "thirdCell",
                     for: indexPath
                 ) as? RankTableViewCell
-                cell?.demoData()
                 return cell!
             } else {
                 let cell = mainTableView.dequeueReusableCell(
