@@ -9,9 +9,9 @@ class DefaultNotificationRepository: NotificationRepository {
 
     func fetchNotificationList() -> Observable<[Notification]> {
         return OfflineCacheUtil<[Notification]>()
-            .localData { localNotificationDataSource.fetchNotificationList() }
-            .remoteData { remoteNotificationDataSource.fetchNotificationList() }
-            .doOnNeedRefresh { localNotificationDataSource.storeNotificationList(notificationList: $0) }
+            .localData { self.localNotificationDataSource.fetchNotificationList() }
+            .remoteData { self.remoteNotificationDataSource.fetchNotificationList() }
+            .doOnNeedRefresh { self.localNotificationDataSource.storeNotificationList(notificationList: $0) }
             .createObservable()
     }
 
