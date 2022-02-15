@@ -25,7 +25,7 @@ class DefaultRankRepository: RankRepository {
     ) -> Observable<UserRank> {
         return OfflineCacheUtil<UserRank>()
             .localData { self.localRankDataSource.fetchUserRank(scope: scope, dateType: dateType) }
-            .remoteData { self.remoteRankDataSource.fetchUserSchoolRank(scope: scope,dateType: dateType) }
+            .remoteData { self.remoteRankDataSource.fetchUserSchoolRank(scope: scope, dateType: dateType) }
             .doOnNeedRefresh { self.localRankDataSource.storeUserRank(userRank: $0, scope: scope, dateType: dateType) }
             .createObservable()
     }
