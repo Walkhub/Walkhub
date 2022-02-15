@@ -10,7 +10,7 @@ public class JoinClassUseCase {
         self.userRepository = userRepository
     }
 
-    public func excute(groupId: Int) -> Single<Void> {
+    public func excute(groupId: Int) -> Completable {
         userRepository.joinClass(groupId: groupId)
     }
 

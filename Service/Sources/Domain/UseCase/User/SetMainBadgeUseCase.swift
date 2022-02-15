@@ -10,7 +10,7 @@ public class SetMainBadgeUseCase {
         self.userRepository = userRepository
     }
 
-    public func excute(badgeId: Int) -> Single<Void> {
+    public func excute(badgeId: Int) -> Completable {
         userRepository.setMainBadge(badgeId: badgeId)
     }
 

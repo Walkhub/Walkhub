@@ -10,7 +10,7 @@ public class PatchHealthUseCase {
         self.userRepository = userRepository
     }
 
-    public func excute(height: Float, weight: Int) -> Single<Void> {
+    public func excute(height: Float, weight: Int) -> Completable {
         userRepository.patchHealth(height: height, weight: weight)
     }
 
