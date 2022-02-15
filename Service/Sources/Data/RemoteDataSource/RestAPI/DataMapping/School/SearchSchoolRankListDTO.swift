@@ -6,3 +6,9 @@ struct SearchSchoolRankListDTO: Decodable {
     }
     let list: [SearchSchoolRankDTO]
 }
+
+extension SearchSchoolRankListDTO {
+    func toDoamin() -> [SearchSchoolRank] {
+        return list.map { $0.toDomain() }
+    }
+}

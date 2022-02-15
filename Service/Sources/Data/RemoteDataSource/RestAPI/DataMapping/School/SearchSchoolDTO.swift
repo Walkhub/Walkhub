@@ -10,3 +10,13 @@ struct SearchSchoolDTO: Decodable {
     let name: String
     let logoImageUrlString: String
 }
+
+extension SearchSchoolDTO {
+    func toDomain() -> SearchSchool {
+        return .init(
+            id: id,
+            name: name,
+            logoImageUrlString: URL(string: logoImageUrlString)!
+        )
+    }
+}

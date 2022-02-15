@@ -32,7 +32,8 @@ extension UserProfileDTO {
             school: school,
             grade: grade,
             classNum: classNum,
-            titleBadge: titleBadge.toDomain()
+            titleBadge: titleBadge.toDomain(),
+            level: level.toDomain()
         )
     }
 }

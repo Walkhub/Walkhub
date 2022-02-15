@@ -12,3 +12,14 @@ struct MyBadgeDTO: Decodable {
     let imageUrlString: String
     let isMine: Bool
 }
+
+extension MyBadgeDTO {
+    func toDomain() -> MyBadge {
+        return .init(
+            id: id,
+            name: name,
+            imageUrlString: URL(string: imageUrlString)!,
+            isMine: isMine
+        )
+    }
+}
