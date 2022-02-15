@@ -6,10 +6,12 @@ final class LocalUserDataSource {
 
     static let shared = LocalUserDataSource()
 
+    private let realmTask = RealmTask.shared
+
     private init() { }
 
     func fetchProfile(userID: Int) -> Single<UserProfile> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: UserProfileRealmEntity.self,
                filter: QueryFilter.string(query: "userID = '\(userID)'")
         ).map { $0.first!.toDomain() }
@@ -18,11 +20,11 @@ final class LocalUserDataSource {
     func storeProfile(profile: UserProfile) {
         let profileEntity = UserProfileRealmEntity()
         profileEntity.setup(profile: profile)
-        RealmTask.shared.set(profileEntity)
+        realmTask.set(profileEntity)
     }
 
     func fetchMyProfile() -> Single<UserProfile> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: UserProfileRealmEntity.self,
                filter: QueryFilter.string(query: "isMyProfile = true")
         ).map { $0.first!.toDomain() }
@@ -31,11 +33,11 @@ final class LocalUserDataSource {
     func storeMyProfile(profile: UserProfile) {
         let profileEntity = UserProfileRealmEntity()
         profileEntity.setup(profile: profile, isMyProfile: true)
-        RealmTask.shared.set(profileEntity)
+        realmTask.set(profileEntity)
     }
 
     func fetchBadges(userID: Int) -> Single<[Badge]> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: BadgeRealmEntity.self,
                filter: QueryFilter.string(query: "ownerID = '\(userID)'")
         ).map { $0.map { $0.toDomain() } }
@@ -47,7 +49,7 @@ final class LocalUserDataSource {
                 $0.setup(ownerID: userID, badge: badge)
             }
         }
-        RealmTask.shared.set(badgeEntityList)
+        realmTask.set(badgeEntityList)
     }
 
 }
