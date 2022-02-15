@@ -9,56 +9,66 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     private override init() { }
 
-    func startRecord(
-        goal: Int,
-        goalType: String
-    ) -> Single<String> {
-        return request(.startRecord(
-            goal: goal,
-            goalType: goalType
-        ))
-            .map(ExerciseIdDTO.self)
+    func fetchExerciseAnalysis() -> Single<ExerciseAnalysis> {
+        return request(.fetchExerciseAnalysis)
+            .map(ExerciseAnalysisDTO.self)
             .map { $0.toDomain() }
     }
 
-    func endRecord(
-        exercisesID: Int,
+    func fetchMeasuredExercises() -> Single<[MeasuredExercise]> {
+        return request(.fetchMeasuredExercises)
+            .map(MeasuredExerciseListDTO.self)
+            .map { $0.toDomain() }
+    }
+
+    func startMeasuring(
+        goal: Int,
+        goalType: MeasuringGoalType
+    ) -> Single<Int> {
+        return request(.startMeasuring(
+            goal: goal,
+            goalType: goalType
+        ))
+            .map(ExercisesIdDTO.self)
+            .map { $0.toDomain() }
+    }
+
+    func finishMeasuring(
+        exercisesId: Int,
         walkCount: Int,
         distance: Int,
-        imageUrlString: String
-    ) -> Single<Void> {
-        return request(.endRecord(
-            exercisesID: exercisesID,
+        imageUrlString: String?
+    ) -> Completable {
+        return request(.finishMeasuring(
+            exercisesId: exercisesId,
             walkCount: walkCount,
             distance: distance,
             imageUrlString: imageUrlString
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func saveLocations(
-        exercisesID: Int,
-        order: Int,
-        latitude: String,
-        longitude: String
-    ) -> Single<Void> {
+        exercisesId: Int,
+        locationList: [UserLocation]
+    ) -> Completable {
         return request(.saveLocations(
-            exercisesID: exercisesID,
-            order: order,
-            latitude: latitude,
-            longitude: longitude
-        )).map { _ in () }
+            exercisesId: exercisesId,
+            locationList: locationList
+        )).asCompletable()
     }
 
-    func setExsercises(
-        date: String,
-        distance: Int,
-        walkCount: Int
-    ) -> Single<Void> {
-        return request(.setExsercises(
+    func saveDailyExsercises(
+        date: Date,
+        distance: Double,
+        walkCount: Int,
+        calorie: Double
+    ) -> Completable {
+        return request(.saveDailyExsercises(
             date: date,
             distance: distance,
-            walkCount: walkCount
-        )).map { _ in () }
+            walkCount: walkCount,
+            calorie: calorie
+        )).asCompletable()
     }
 
 }

@@ -4,16 +4,19 @@ import RxSwift
 
 class DefaultNotificationRepository: NotificationRepository {
 
+    private let remoteNotificationDataSource = RemoteNotificationDataSource.shared
+    private let localNotificationDataSource = LocalNotificationDataSource.shared
+
     func fetchNotificationList() -> Observable<[Notification]> {
         return OfflineCacheUtil<[Notification]>()
-            .remoteData { RemoteNotificationDataSource.shared.fetchNotificationList() }
-            .localData { LocalNotificationDataSource.shared.fetchNotificationList() }
-            .doOnNeedRefresh { LocalNotificationDataSource.shared.storeNotificationList(notificationList: $0) }
+            .localData { self.localNotificationDataSource.fetchNotificationList() }
+            .remoteData { self.remoteNotificationDataSource.fetchNotificationList() }
+            .doOnNeedRefresh { self.localNotificationDataSource.storeNotificationList(notificationList: $0) }
             .createObservable()
     }
 
     func editReadWhether(notificationId: Int) -> Single<Void> {
-        return RemoteNotificationDataSource.shared.editReadWhether(notificationId: notificationId)
+        return remoteNotificationDataSource.editReadWhether(notificationId: notificationId)
     }
 
 }

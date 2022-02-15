@@ -1,10 +1,10 @@
 import Foundation
 
 public struct Notification: Equatable {
-    let id: Int
-    let title: String
-    let content: String
-    let type: NotificationType
-    let value: Int
-    let isRead: Bool
+    public let id: Int
+    public let title: String
+    public let content: String
+    public let type: NotificationType
+    public let value: Int
+    public let isRead: Bool
 }

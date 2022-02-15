@@ -11,7 +11,7 @@ protocol WalkhubSocket {
 
 extension WalkhubSocket {
 
-    static private var baseURL: URL { URL(string: "https://api.walkhub.co.kr")! }
+    static private var baseURL: URL { URL(string: "https://server.walkhub.co.kr")! }
 
     static private var manager: SocketManager {
         SocketManager(socketURL: baseURL, config: config)

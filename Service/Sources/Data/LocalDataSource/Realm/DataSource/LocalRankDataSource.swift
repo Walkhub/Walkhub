@@ -6,6 +6,8 @@ final class LocalRankDataSource {
 
     static let shared = LocalRankDataSource()
 
+    private let realmTask = RealmTask.shared
+
     private init() { }
 
     func fetchSchoolRank(dateType: DateType) -> Single<SchoolRank> {
@@ -52,26 +54,25 @@ final class LocalRankDataSource {
 // MARK: School Rank
 extension LocalRankDataSource {
 
-    private func fetchMySchoolRank(dateType: DateType) -> Single<SchoolRankRealmEntity> {
-        return RealmTask.shared.fetchObjects(
-            for: SchoolRankRealmEntity.self,
+    private func fetchMySchoolRank(dateType: DateType) -> Single<MySchoolRankRealmEntity> {
+        return realmTask.fetchObjects(
+            for: MySchoolRankRealmEntity.self,
                filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
                )
         ).map { $0.first! }
     }
 
-    private func storeMySchoolRank(school: School, dateType: DateType) {
-        let mySchoolRank = schoolToSchoolRankRealmEntity(
+    private func storeMySchoolRank(school: MySchool, dateType: DateType) {
+        let mySchoolRank = mySchoolToSchoolRankRealmEntity(
             school: school,
-            dateType: dateType,
-            isMySchoolRank: true
+            dateType: dateType
         )
-        RealmTask.shared.set(mySchoolRank)
+        realmTask.set(mySchoolRank)
     }
 
     private func fetchSchoolRankList(dateType: DateType) -> Single<[SchoolRankRealmEntity]> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: SchoolRankRealmEntity.self,
                filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
@@ -88,7 +89,7 @@ extension LocalRankDataSource {
                 isMySchoolRank: false
             )
         }
-        RealmTask.shared.set(schoolRankList)
+        realmTask.set(schoolRankList)
     }
 
     private func schoolToSchoolRankRealmEntity(
@@ -105,8 +106,20 @@ extension LocalRankDataSource {
         return schoolRankRealmEntity
     }
 
+    private func mySchoolToSchoolRankRealmEntity(
+        school: MySchool,
+        dateType: DateType
+    ) -> MySchoolRankRealmEntity {
+        let mySchoolRankRealmEntity = MySchoolRankRealmEntity()
+        mySchoolRankRealmEntity.setup(
+            school: school,
+            dateType: dateType
+        )
+        return mySchoolRankRealmEntity
+    }
+
     private func generateSchoolRank(
-        mySchoolRank: SchoolRankRealmEntity,
+        mySchoolRank: MySchoolRankRealmEntity,
         list: [SchoolRankRealmEntity]
     ) -> SchoolRank {
         return .init(
@@ -124,7 +137,7 @@ extension LocalRankDataSource {
         scope: Scope,
         dateType: DateType
     ) -> Single<PersonRankRealmEntity> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: PersonRankRealmEntity.self,
                filter: QueryFilter.string(
                 query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = true"
@@ -143,14 +156,14 @@ extension LocalRankDataSource {
             dateType: dateType,
             isMyRank: true
         )
-        RealmTask.shared.set(myRank)
+        realmTask.set(myRank)
     }
 
     private func fetchUserRankList(
         scope: Scope,
         dateType: DateType
     ) -> Single<[PersonRankRealmEntity]> {
-        return RealmTask.shared.fetchObjects(
+        return realmTask.fetchObjects(
             for: PersonRankRealmEntity.self,
                filter: QueryFilter.string(
                 query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = false"
@@ -172,7 +185,7 @@ extension LocalRankDataSource {
                 isMyRank: false
             )
         }
-        RealmTask.shared.set(userRankList)
+        realmTask.set(userRankList)
     }
 
     private func userToPersonRankRealmEntity(

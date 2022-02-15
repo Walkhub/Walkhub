@@ -3,10 +3,12 @@ import Foundation
 import Moya
 
 enum ExercisesAPI {
-    case startRecord(goal: Int, goalType: String)
-    case endRecord(exercisesID: Int, walkCount: Int, distance: Int, imageUrlString: String)
-    case saveLocations(exercisesID: Int, order: Int, latitude: String, longitude: String)
-    case setExsercises(date: String, distance: Int, walkCount: Int)
+    case fetchExerciseAnalysis
+    case fetchMeasuredExercises
+    case startMeasuring(goal: Int, goalType: MeasuringGoalType)
+    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
+    case saveLocations(exercisesId: Int, locationList: [UserLocation])
+    case saveDailyExsercises(date: Date, distance: Double, walkCount: Int, calorie: Double)
 }
 
 extension ExercisesAPI: WalkhubAPI {
@@ -17,64 +19,82 @@ extension ExercisesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .startRecord:
+        case .fetchExerciseAnalysis:
+            return "analysis"
+        case .fetchMeasuredExercises:
+            return "/lists"
+        case .startMeasuring:
             return "/"
-        case .endRecord(let exercisesID, _, _, _):
-            return "/\(exercisesID)"
-        case .saveLocations(let exercisesID, _, _, _):
-            return "/locations/\(exercisesID)"
-        case .setExsercises(let date, _, _):
-            return "?date=\(date)"
+        case .finishMeasuring(let exercisesId, _, _, _):
+            return "/\(exercisesId)"
+        case .saveLocations(let exercisesId, _):
+            return "/locations/\(exercisesId)"
+        case .saveDailyExsercises:
+            return "/"
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .startRecord, .saveLocations:
+        case .fetchExerciseAnalysis, .fetchMeasuredExercises:
+            return .get
+        case .startMeasuring, .saveLocations:
             return .post
-        case .endRecord:
+        case .finishMeasuring:
             return .patch
-        default:
+        case .saveDailyExsercises:
             return .put
         }
     }
 
     var task: Task {
         switch self {
-        case .startRecord(let goal, let goalType):
+        case .startMeasuring(let goal, let goalType):
             return .requestParameters(
                 parameters: [
                     "goal": goal,
-                    "goal_type": goalType
+                    "goal_type": goalType.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .endRecord(_, let walkCount, let distance, let imageUrlString):
+        case .finishMeasuring(_, let walkCount, let distance, let imageUrlString):
             return .requestParameters(
                 parameters: [
                     "walk_count": walkCount,
                     "distance": distance,
-                    "image_url": imageUrlString
+                    "image_url": imageUrlString ?? NSNull()
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .saveLocations(_, let order, let latitude, let longitude):
+        case .saveLocations(_, let locationList):
             return .requestParameters(
                 parameters: [
-                    "order": order,
-                    "latitude": latitude,
-                    "longtiude": longitude
+                    "location_list": [
+                        locationList
+                            .enumerated()
+                            .map {
+                                return [
+                                    "sequence": $0.0 + 1,
+                                    "latitude": $0.1.latitude,
+                                    "longitude": $0.1.longitude
+                                ]
+                            }
+                    ]
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setExsercises(_, let distance, let walkCount):
+        case .saveDailyExsercises(let date, let distance, let walkCount, let calorie):
             return .requestParameters(
                 parameters: [
                     "distance": distance,
-                    "walk_count": walkCount
+                    "walk_count": walkCount,
+                    "date": date.toDateString(),
+                    "calorie": calorie
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
+        default:
+            return .requestPlain
         }
     }
     var jwtTokenType: JWTTokenType? {

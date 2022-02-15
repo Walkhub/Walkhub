@@ -11,7 +11,7 @@ protocol WalkhubAPI: TargetType, JWTTokenAuthorizable {
 
 extension WalkhubAPI {
 
-    var baseURL: URL { URL(string: "https://api.walkhub.co.kr")! }
+    var baseURL: URL { URL(string: "https://server.walkhub.co.kr")! }
 
     var path: String {
         return domain.uri+urlPath

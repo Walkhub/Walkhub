@@ -1,5 +1,6 @@
 import UIKit
 
+import BackgroundTasks
 import RxFlow
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -33,6 +34,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) { }
 
-    func sceneDidEnterBackground(_ scene: UIScene) { }
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        AppDelegate.scheduleSynchronizeDailyExerciseRecordIfNeeded()
+    }
 
 }
