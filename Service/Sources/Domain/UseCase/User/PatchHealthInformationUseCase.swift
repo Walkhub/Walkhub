@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class PatchHealthUseCase {
+public class PatchHealthInformationUseCase {
 
     private let userRepository: UserRepository
 
