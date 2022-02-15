@@ -1,6 +1,6 @@
 import UIKit
 
-class WatchViewTableViewCell: UITableViewCell {
+class SeeMoreRankTableViewCell: UITableViewCell {
 
     let watchBtn = UIButton(type: .system).then {
 

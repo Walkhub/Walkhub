@@ -19,7 +19,7 @@ class HomeViewController: UIViewController {
         $0.register(HealthInfoTableViewCell.self, forCellReuseIdentifier: "cell")
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "secondCell")
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
-        $0.register(WatchViewTableViewCell.self, forCellReuseIdentifier: "fourthCell")
+        $0.register(SeeMoreRankTableViewCell.self, forCellReuseIdentifier: "fourthCell")
     }
 
     override func viewDidLoad() {
@@ -81,7 +81,7 @@ extension HomeViewController: UITableViewDataSource {
             let cell = mainTableView.dequeueReusableCell(
                 withIdentifier: "secondCell",
                 for: indexPath
-            ) as? RecordTableViewCell
+            ) as? StartExerciseMeasuringTableViewCell
             return cell!
         } else {
             if indexPath.row == 0 {
@@ -95,7 +95,7 @@ extension HomeViewController: UITableViewDataSource {
                 let cell = mainTableView.dequeueReusableCell(
                     withIdentifier: "fourthCell",
                     for: indexPath
-                ) as? WatchViewTableViewCell
+                ) as? SeeMoreRankTableViewCell
                 cell?.selectionStyle = .none
                 return cell!
             }

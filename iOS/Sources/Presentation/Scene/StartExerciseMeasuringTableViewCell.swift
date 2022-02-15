@@ -1,6 +1,6 @@
 import UIKit
 
-class RecordTableViewCell: UITableViewCell {
+class StartExerciseMeasuringTableViewCell: UITableViewCell {
 
     let fastLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
