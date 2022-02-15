@@ -4,6 +4,26 @@ import RxSwift
 
 class DefaultUserRepository: UserRepository {
 
+    func changeProfile(
+        name: String,
+        profileImageUrlString: String,
+        sex: Sex
+    ) -> Single<Void> {
+        return RemoteUserDataSource.shared.changeProfile(
+            name: name,
+            profileImageUrlString: profileImageUrlString,
+            sex: sex
+        )
+    }
+
+    func setSchoolInformation(schoolId: Int) -> Single<Void> {
+        return RemoteUserDataSource.shared.setSchoolInformation(schoolId: schoolId)
+    }
+
+    func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
+        return RemoteUserDataSource.shared.changeGoalWalkCount(goalWalkCount: goalWalkCount)
+    }
+
     func changePassword(
         accountID: String,
         phoneNumber: String,
@@ -34,50 +54,19 @@ class DefaultUserRepository: UserRepository {
             .createObservable()
     }
 
-    func fetchBadges(userID: Int) -> Observable<[Badge]> {
-        return OfflineCacheUtil<[Badge]>()
-            .localData { LocalUserDataSource.shared.fetchBadges(userID: userID) }
-            .remoteData { RemoteUserDataSource.shared.fetchBadges(userID: userID) }
-            .doOnNeedRefresh { LocalUserDataSource.shared.storeBadges(userID: userID, badges: $0) }
-            .createObservable()
-    }
-
-    func setMainBadge(badgeID: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.setMainBadge(badgeID: badgeID)
-    }
-
-    func changeProfile(
-        name: String,
-        profileImageUrlString: String,
-        birthday: String,
-        sex: Sex
-    ) -> Single<Void> {
-        return RemoteUserDataSource.shared.changeProfile(
-            name: name,
-            profileImageUrlString: profileImageUrlString,
-            birthday: birthday,
-            sex: sex
-        )
-    }
-
     func writeHealth(height: Float, weight: Int) -> Single<Void> {
         return RemoteUserDataSource.shared.writeHealth(height: height, weight: weight)
     }
 
     func joinClass(
-        schoolId: String,
-        grade: Int,
-        classNum: Int
+        sectionId schoolId: Int,
+        classCode grade: String,
+        num classNum: Int
     ) -> Single<Void> {
         return RemoteUserDataSource.shared.joinClass(
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
+            sectionId: schoolId,
+            classCode: grade,
+            num: classNum
         )
     }
-
-    func setSchoolInformation(schoolId: String) -> Single<Void> {
-        return RemoteUserDataSource.shared.setSchoolInformation(schoolId: schoolId)
-    }
-
 }

@@ -12,10 +12,6 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func searchSchool(name: String) -> Single<[School]> {
-        return RemoteRankDataSource.shared.searchSchool(name: name)
-    }
-
     func fetchUserSchoolRank(
         scope: Scope,
         dateType: DateType
@@ -43,32 +39,25 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func fetchUserRank(
-        scope: Scope,
-        dateTypa: DateType,
-        schoolId: String
-    ) -> Single<[User]> {
-        return RemoteRankDataSource.shared.fetchUserRank(
-            scope: scope,
-            dateTypa: dateTypa,
-            schoolId: schoolId
-        )
-    }
-
-    func searchUser(
-        name: String,
-        scope: Scope,
-        schoolId: String,
-        grade: Int,
-        classNum: Int
-    ) -> Single<[User]> {
-        return RemoteRankDataSource.shared.searchUser(
+    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchool]> {
+        return RemoteRankDataSource.shared.searchSchool(
             name: name,
-            scope: scope,
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
+            dateType: dateType
         )
     }
 
+    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[User]> {
+        return RemoteRankDataSource.shared.fetchUserRank(
+            schoolId: schoolId,
+            dateType: dateType
+        )
+    }
+
+    func searchUser(schoolId: Int, name: String, dateType: DateType) -> Single<[User]> {
+        return searchUser(
+            schoolId: schoolId,
+            name: name,
+            dateType: dateType
+        )
+    }
 }
