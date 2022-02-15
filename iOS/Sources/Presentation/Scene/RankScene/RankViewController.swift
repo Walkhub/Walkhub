@@ -4,10 +4,15 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class RankViewController: UIViewController {
 
+    private var viewModel: RankViewModel
     private var disposeBag = DisposeBag()
+
+    private let scope = PublishRelay<Scope>()
+    internal let dateType = PublishRelay<DateType>()
 
     private let headerView = RankHeaderView().then {
         $0.layer.frame.size.height = 180
@@ -28,6 +33,11 @@ class RankViewController: UIViewController {
 
     private let imgView = UIImageView().then {
         $0.layer.cornerRadius = $0.frame.height / 2
+        $0.contentMode = .scaleToFill
+    }
+
+    private let badgeImgView = UIImageView().then {
+        $0.layer.cornerRadius = $0.frame.width / 2
         $0.contentMode = .scaleToFill
     }
 
@@ -63,17 +73,107 @@ class RankViewController: UIViewController {
         view.backgroundColor = .gray50
         demoDate()
         setTableView()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
+        setDropDownAndSwitch()
+        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         joinClassBtn.isHidden = true
+    }
+
+    convenience init(viewModel: RankViewModel) {
+        self.init(viewModel: viewModel)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setDropDownAndSwitch() {
+        headerView.dropDownBtn.dropDown.selectionAction = { row, item in
+            self.headerView.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.headerView.dropDownBtn.dropDown.clearSelection()
+            switch row {
+            case 0:
+                self.dateType.accept(.day)
+            case 1:
+                self.dateType.accept(.week)
+            default:
+                self.dateType.accept(.month)
+            }
+        }
+
+        headerView.switches.rx.isOn.subscribe(onNext: {
+            if $0 {
+                self.scope.accept(.class)
+            } else {
+                self.scope.accept(.school)
+            }
+        }).disposed(by: disposeBag)
+    }
+
+    private func bindViewModel() {
+        let input = RankViewModel.Input(
+            switchOn: scope.asDriver(onErrorJustReturn: .school),
+            dayType: dateType.asDriver(onErrorJustReturn: .day)
+        )
+
+        let output = viewModel.transform(input)
+
+        output.myRank.asObservable().subscribe(onNext: { rank, num in
+            self.headerView.imgView.image = rank.profileImageUrl.toImage()
+            self.headerView.nameLabel.text = rank.name
+            self.headerView.stepCountLabel.text = "\(rank.walkCount) 걸음"
+            self.headerView.rankLabel.text = "\(rank.ranking)등"
+            self.headerView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
+            self.headerView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
+            self.headerView.progressBar.progress = Float(rank.walkCount / num! )
+            self.imgView.image = rank.profileImageUrl.toImage()
+            self.nameLabel.text = rank.name
+            self.stepCountLabel.text = "\(rank.walkCount) 걸음"
+            self.rankLabel.text = "\(rank.ranking)등"
+            switch rank.ranking {
+            case 1:
+                self.headerView.badgeImgView.image = .init(named: "GoldBadgeImg")
+                self.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                self.headerView.badgeImgView.image = .init(named: "SilverBadgeImg")
+                self.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                self.headerView.badgeImgView.image = .init(named: "BronzeBadgeImg")
+                self.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                self.headerView.badgeImgView.image = UIImage()
+            }
+        }).disposed(by: disposeBag)
+
+        output.userList.bind(to: rankTableView.rx.items(
+            cellIdentifier: "rankCell",
+            cellType: RankTableViewCell.self)
+        ) { _, items, cell in
+            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.nameLabel.text = items.name
+            cell.rankLabel.text = "\(items.ranking)등"
+            cell.stepLabel.text = "\(items.walkCount) 걸음"
+            switch items.ranking {
+            case 1:
+                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                cell.badgeImgView.image = UIImage()
+            }
+        }.disposed(by: disposeBag)
     }
 }
 
@@ -84,7 +184,8 @@ extension RankViewController {
             .forEach { view.addSubview($0) }
         myViewBackground.addSubview(myView)
 
-        [imgView, nameLabel, stepCountLabel, rankLabel].forEach { myView.addSubview($0) }
+        [imgView, nameLabel, stepCountLabel, rankLabel, badgeImgView]
+            .forEach { myView.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
@@ -120,6 +221,13 @@ extension RankViewController {
         rankLabel.snp.makeConstraints {
             $0.centerY.equalTo(imgView)
             $0.trailing.equalToSuperview().inset(16)
+        }
+
+        badgeImgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(27)
+            $0.width.equalTo(14)
+            $0.trailing.equalTo(rankLabel.snp.leading).inset(11)
         }
 
         rankTableView.snp.makeConstraints {
