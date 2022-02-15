@@ -64,5 +64,4 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             .map(UserIdDTO.self)
             .map { $0.toDomain() }
     }
-
 }
