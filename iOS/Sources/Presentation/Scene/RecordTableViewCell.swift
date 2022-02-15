@@ -1,0 +1,84 @@
+import UIKit
+
+class RecordTableViewCell: UITableViewCell {
+
+    let imgView = UIImageView().then {
+        $0.layer.cornerRadius = $0.frame.width / 2
+    }
+
+    let blueView = UIView().then {
+        $0.backgroundColor = .primary400
+    }
+
+    let recordName = UILabel().then {
+        $0.font = .notoSansFont(ofSize: 14, family: .bold)
+        $0.textColor = .white
+    }
+
+    let recordComment = UILabel().then {
+        $0.text = "님의 기록을 응원합니다."
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
+        $0.textColor = .white
+    }
+
+    let cheerImgView = UIImageView().then {
+        $0.image = .init(named: "CheerUpImg")
+        $0.contentMode = .scaleAspectFit
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .clear
+        addSubviews()
+        makeSubviewConstraints()
+    }
+}
+
+extension RecordTableViewCell {
+    private func addSubviews() {
+        self.addSubview(blueView)
+        [imgView, recordName, recordComment, cheerImgView]
+            .forEach { blueView.addSubview($0) }
+    }
+
+    private func makeSubviewConstraints() {
+        blueView.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(8)
+        }
+        imgView.snp.makeConstraints {
+            $0.top.bottom.equalToSuperview().inset(12)
+            $0.leading.equalToSuperview().inset(16)
+            $0.height.width.equalTo(40)
+        }
+
+        recordName.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.leading.equalTo(imgView.snp.trailing).offset(16)
+        }
+
+        recordComment.snp.makeConstraints {
+            $0.bottom.equalTo(recordName)
+            $0.leading.equalTo(recordName.snp.trailing)
+        }
+
+        cheerImgView.snp.makeConstraints {
+            $0.centerY.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(32)
+            $0.width.height.equalTo(28)
+        }
+    }
+}

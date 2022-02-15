@@ -1,7 +1,7 @@
 import Foundation
 
 public struct Badge: Equatable {
-    let id: Int
-    let name: String
-    let imageUrl: URL
+    public let id: Int
+    public let name: String
+    public let imageUrl: URL
 }

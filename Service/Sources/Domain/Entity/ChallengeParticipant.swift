@@ -1,8 +1,7 @@
 import Foundation
 
-public struct ChallengeParticipant {
-    let id: Int
-    let name: String
-    let gcn: String
-    let profileImageUrlString: URL
+public struct ChallengeParticipant: Equatable {
+    public let id: Int
+    public let name: String
+    public let profileImageUrlString: URL
 }

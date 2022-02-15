@@ -5,7 +5,7 @@ struct UserDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case name
-        case rank
+        case ranking
         case grade
         case classNum = "class_num"
         case profileImageUrlString = "profile_image_url"
@@ -13,7 +13,7 @@ struct UserDTO: Decodable {
     }
     let userID: Int
     let name: String
-    let rank: Int
+    let ranking: Int
     let grade: Int
     let classNum: Int
     let profileImageUrlString: String
@@ -26,7 +26,7 @@ extension UserDTO {
         return .init(
             userID: userID,
             name: name,
-            rank: rank,
+            ranking: ranking,
             grade: grade,
             classNum: classNum,
             profileImageUrl: URL(string: profileImageUrlString)!,
