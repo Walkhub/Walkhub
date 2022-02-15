@@ -4,16 +4,19 @@ import RxSwift
 
 class DefaultRankRepository: RankRepository {
 
+    private let remoteRankDataSource = RemoteRankDataSource.shared
+    private let localRankDataSource = LocalRankDataSource.shared
+
     func fetchSchoolRank(dateType: DateType) -> Observable<SchoolRank> {
         return OfflineCacheUtil<SchoolRank>()
-            .remoteData { RemoteRankDataSource.shared.fetchSchoolRank(dateType: dateType) }
-            .localData { LocalRankDataSource.shared.fetchSchoolRank(dateType: dateType) }
-            .doOnNeedRefresh { LocalRankDataSource.shared.storeSchoolRank(schoolRank: $0, dateType: dateType) }
+            .localData { self.localRankDataSource.fetchSchoolRank(dateType: dateType) }
+            .remoteData { self.remoteRankDataSource.fetchSchoolRank(dateType: dateType) }
+            .doOnNeedRefresh { self.localRankDataSource.storeSchoolRank(schoolRank: $0, dateType: dateType) }
             .createObservable()
     }
 
     func searchSchool(name: String) -> Single<[School]> {
-        return RemoteRankDataSource.shared.searchSchool(name: name)
+        return remoteRankDataSource.searchSchool(name: name)
     }
 
     func fetchUserSchoolRank(
@@ -21,25 +24,9 @@ class DefaultRankRepository: RankRepository {
         dateType: DateType
     ) -> Observable<UserRank> {
         return OfflineCacheUtil<UserRank>()
-            .remoteData {
-                RemoteRankDataSource.shared.fetchUserSchoolRank(
-                    scope: scope,
-                    dateType: dateType
-                )
-            }
-            .localData {
-                LocalRankDataSource.shared.fetchUserRank(
-                    scope: scope,
-                    dateType: dateType
-                )
-            }
-            .doOnNeedRefresh {
-                LocalRankDataSource.shared.storeUserRank(
-                    userRank: $0,
-                    scope: scope,
-                    dateType: dateType
-                )
-            }
+            .localData { self.localRankDataSource.fetchUserRank(scope: scope, dateType: dateType) }
+            .remoteData { self.remoteRankDataSource.fetchUserSchoolRank(scope: scope,dateType: dateType) }
+            .doOnNeedRefresh { self.localRankDataSource.storeUserRank(userRank: $0, scope: scope, dateType: dateType) }
             .createObservable()
     }
 
@@ -48,7 +35,7 @@ class DefaultRankRepository: RankRepository {
         dateTypa: DateType,
         schoolId: String
     ) -> Single<[User]> {
-        return RemoteRankDataSource.shared.fetchUserRank(
+        return remoteRankDataSource.fetchUserRank(
             scope: scope,
             dateTypa: dateTypa,
             schoolId: schoolId
@@ -62,7 +49,7 @@ class DefaultRankRepository: RankRepository {
         grade: Int,
         classNum: Int
     ) -> Single<[User]> {
-        return RemoteRankDataSource.shared.searchUser(
+        return remoteRankDataSource.searchUser(
             name: name,
             scope: scope,
             schoolId: schoolId,
