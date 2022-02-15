@@ -23,6 +23,12 @@ public enum WalkhubError: Error {
     case inaccessibleChallenge
     case undefinededChallenge
     case alreadyJoinedChallenge
+
+    // Badges
+    case undefinededUser
+
+    // Levels
+    case undefindedLevel
 }
 
 extension WalkhubError: LocalizedError {
@@ -56,6 +62,10 @@ extension WalkhubError: LocalizedError {
             return "해당 챌린지를 찾을 수 없습니다."
         case .alreadyJoinedChallenge:
             return "해당 챌린지에 이미 참여 되어있습니다."
+        case .undefinededUser:
+            return "해당 유저를 찾을 수 없습니다."
+        case .undefindedLevel:
+            return "해당 레벨 아이디를 찾을 수 없습니다."
         }
     }
 }
