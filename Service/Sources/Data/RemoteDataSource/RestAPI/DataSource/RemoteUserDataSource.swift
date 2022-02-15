@@ -35,17 +35,6 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchBadges(userID: Int) -> Single<[Badge]> {
-        return request(.fetchBadges(userID: userID))
-            .map(BadgeListDTO.self)
-            .map { $0.toDomain() }
-    }
-
-    func setMainBadge(badgeId: Int) -> Completable {
-        return request(.setMainBadge(badgeId: badgeId))
-            .asCompletable()
-    }
-
     func changeProfile(
         name: String,
         profileImageUrl: URL,
@@ -62,19 +51,24 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         height: Float,
         weight: Int
     ) -> Completable {
-        return request(.setHealthInformation(
+        return request(.patchHealthInformation(
             height: height,
             weight: weight
         )).asCompletable()
     }
 
-    func joinClass(groupId: Int) -> Completable {
-        return request(.joinClass(groupId: groupId))
+    func joinClass(classCode: Int, number: Int) -> Completable {
+        return request(.joinClass(classCode: classCode, number: number))
             .asCompletable()
     }
 
     func setSchoolInformation(schoolId: String) -> Completable {
-        return request(.setSchoolInformation(schoolId: schoolId))
+        return request(.patchSchoolInformation(schoolId: schoolId))
+            .asCompletable()
+    }
+
+    func changeGoalWalkCount(goalWalkCount: Int) -> Completable {
+        return request(.changeGoalWalkCount(goalWalkCount: goalWalkCount))
             .asCompletable()
     }
 

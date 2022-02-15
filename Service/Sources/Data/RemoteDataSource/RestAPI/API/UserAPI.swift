@@ -6,13 +6,11 @@ enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
-    case fetchBadges(userID: Int)
-    case setMainBadge(badgeId: Int)
     case changeProfile(name: String, profileImageUrl: URL, sex: Sex)
     case patchHealthInformation(height: Float, weight: Int)
     case joinClass(classCode: Int, number: Int)
     case patchSchoolInformation(schoolId: String)
-    case set
+    case changeGoalWalkCount(goalWalkCount: Int)
 }
 
 extension UserAPI: WalkhubAPI {
@@ -27,16 +25,14 @@ extension UserAPI: WalkhubAPI {
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
-        case .fetchBadges(let userID):
-            return "/\(userID)/badges"
-        case .setMainBadge(let badgeId):
-            return "/badges/\(badgeId)"
         case .patchHealthInformation:
             return "/healths"
         case .joinClass:
             return "/classes"
         case .patchSchoolInformation:
             return "/school"
+        case .changeGoalWalkCount:
+            return "/goal"
         default:
             return "/"
         }
@@ -54,11 +50,11 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrl, let sex):
+        case .changeProfile(let name, let profileImageUrlString, let sex):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "profile_image_url": profileImageUrl.absoluteString,
+                    "profile_image_url": profileImageUrlString,
                     "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
@@ -86,6 +82,12 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
+        case .changeGoalWalkCount(let goalWalkCount):
+            return .requestParameters(
+                parameters: [
+                    "daily_walk_count_goal": goalWalkCount
+                ],
+                encoding: JSONEncoding.prettyPrinted)
         default: return .requestPlain
         }
     }
@@ -94,8 +96,6 @@ extension UserAPI: WalkhubAPI {
         switch self {
         case .changeProfile, .changePassword, .patchSchoolInformation, .patchHealthInformation:
             return .patch
-        case .setMainBadge:
-            return .put
         case .joinClass:
             return .post
         default:

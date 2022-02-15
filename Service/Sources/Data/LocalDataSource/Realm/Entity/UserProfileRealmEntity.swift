@@ -11,6 +11,7 @@ class UserProfileRealmEntity: Object {
     @Persisted var grade: Int?
     @Persisted var classNum: Int?
     @Persisted var titleBadge: BadgeRealmEntity?
+    @Persisted var level: LevelRealmEntity?
     @Persisted var isMyProfile: Bool = false
 
 }
@@ -27,6 +28,9 @@ extension UserProfileRealmEntity {
         self.titleBadge = BadgeRealmEntity().then {
             $0.setup(ownerID: profile.userID, badge: profile.titleBadge)
         }
+        self.level = LevelRealmEntity().then {
+            $0.setup(level: profile.level)
+        }
         self.isMyProfile = isMyProfile
     }
 }
@@ -41,7 +45,8 @@ extension UserProfileRealmEntity {
             school: school,
             grade: grade,
             classNum: classNum,
-            titleBadge: titleBadge!.toDomain()
+            titleBadge: titleBadge!.toDomain(),
+            level: level!.toDomain()
         )
     }
 }

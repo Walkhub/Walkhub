@@ -6,3 +6,9 @@ struct CaloriesLevelListDTO: Decodable {
     }
     let caloriesLevelList: [CaloriesLevelDTO]
 }
+
+extension CaloriesLevelListDTO {
+    func toDomain() -> [CaloriesLevel] {
+        return caloriesLevelList.map { $0.toDomain() }
+    }
+}

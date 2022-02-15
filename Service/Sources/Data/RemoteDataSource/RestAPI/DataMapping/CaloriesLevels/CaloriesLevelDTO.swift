@@ -18,3 +18,17 @@ struct CaloriesLevelDTO: Decodable {
     let level: Int
     let message: String
 }
+
+extension CaloriesLevelDTO {
+    func toDomain() -> CaloriesLevel {
+        return .init(
+            levelID: levelID,
+            foodImageUrlString: URL(string: foodImageUrlString)!,
+            foodName: foodName,
+            calorie: calorie,
+            size: size,
+            level: level,
+            message: message
+        )
+    }
+}

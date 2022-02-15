@@ -20,7 +20,6 @@ class RankHeaderView: UIView {
     let dropDownBtn = DropDownButton().then {
         $0.setTitle(" 오늘\t", for: .normal)
         $0.arr = ["오늘", "이번주", "이번달"]
-        $0.setAction()
     }
 
     let myView = UIView().then {

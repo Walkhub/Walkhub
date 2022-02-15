@@ -6,3 +6,9 @@ struct MyBadgeListDTO: Decodable {
     }
     let list: [MyBadgeDTO]
 }
+
+extension MyBadgeListDTO {
+    func toDomain() -> [MyBadge] {
+        return list.map { $0.toDomain() }
+    }
+}

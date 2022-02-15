@@ -8,3 +8,12 @@ struct LevelDTO: Decodable {
     let name: String
     let imageUrlString: String
 }
+
+extension LevelDTO {
+    func toDomain() -> Level {
+        return .init(
+            name: name,
+            imageUrlString: URL(string: imageUrlString)!
+            )
+    }
+}

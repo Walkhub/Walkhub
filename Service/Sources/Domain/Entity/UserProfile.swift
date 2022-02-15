@@ -8,4 +8,5 @@ public struct UserProfile: Equatable {
     public let grade: Int?
     public let classNum: Int?
     public let titleBadge: Badge
+    public let level: Level
 }

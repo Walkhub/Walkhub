@@ -37,18 +37,6 @@ class DefaultUserRepository: UserRepository {
             .createObservable()
     }
 
-    func fetchBadges(userID: Int) -> Observable<[Badge]> {
-        return OfflineCacheUtil<[Badge]>()
-            .localData { self.localUserDataSource.fetchBadges(userID: userID) }
-            .remoteData { self.remoteUserDataSource.fetchBadges(userID: userID) }
-            .doOnNeedRefresh { self.localUserDataSource.storeBadges(userID: userID, badges: $0) }
-            .createObservable()
-    }
-
-    func setMainBadge(badgeId: Int) -> Completable {
-        return remoteUserDataSource.setMainBadge(badgeId: badgeId)
-    }
-
     func changeProfile(
         name: String,
         profileImageUrl: URL,
@@ -65,12 +53,16 @@ class DefaultUserRepository: UserRepository {
         return remoteUserDataSource.patchHealthInformation(height: height, weight: weight)
     }
 
-    func joinClass(groupId: Int) -> Completable {
-        return remoteUserDataSource.joinClass(groupId: groupId)
+    func joinClass(classCode: Int, number: Int) -> Completable {
+        return remoteUserDataSource.joinClass(classCode: classCode, number: number)
     }
 
     func setSchoolInformation(schoolId: String) -> Completable {
         return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
+    }
+
+    func changeGoalWalkCount(goalWalkCount: Int) -> Completable {
+        return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
     }
 
 }
