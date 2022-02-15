@@ -13,7 +13,7 @@ class RankViewController: UIViewController {
         $0.layer.frame.size.height = 180
     }
 
-    private let footerView = FooterView().then {
+    private let footerView = RankCommentFooterView().then {
         $0.layer.frame.size.height = 40
     }
 

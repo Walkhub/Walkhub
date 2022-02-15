@@ -1,6 +1,6 @@
 import UIKit
 
-class FooterView: UIView {
+class RankCommentFooterView: UIView {
     let commentLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
