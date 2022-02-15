@@ -11,6 +11,7 @@ public extension Container {
 
     private func registerRepositories() {
         self.register(AuthRepository.self) { _ in DefaultAuthRepository() }
+        self.register(ExercisesRepository.self) { _ in DefaultExercisesRepository() }
     }
 
     private func registerUseCases() {
@@ -22,6 +23,11 @@ public extension Container {
         }
         self.register(VerificationPhoneUseCase.self) { resolver in
             return VerificationPhoneUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        }
+        self.register(SynchronizeDailyExerciseRecordUseCase.self) { resolver in
+            return SynchronizeDailyExerciseRecordUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
         }
     }
 
