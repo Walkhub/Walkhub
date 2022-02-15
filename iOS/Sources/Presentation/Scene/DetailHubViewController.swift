@@ -122,7 +122,10 @@ extension DetailHubViewController: PageboyViewControllerDataSource, TMBarDataSou
         return viewController.count
     }
 
-    func viewController(for pageboyViewController: PageboyViewController, at index: PageboyViewController.PageIndex) -> UIViewController? {
+    func viewController(
+        for pageboyViewController: PageboyViewController,
+        at index: PageboyViewController.PageIndex
+    ) -> UIViewController? {
         return viewController[index]
     }
 

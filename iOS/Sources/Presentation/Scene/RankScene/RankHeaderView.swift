@@ -1,6 +1,6 @@
 import UIKit
 
-class HeaderView: UIView {
+class RankHeaderView: UIView {
     let schoolLabel = UILabel().then {
         $0.text = "학교"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
@@ -78,7 +78,8 @@ class HeaderView: UIView {
 }
 
 // MARK: - Layout
-extension HeaderView {
+// swiftlint:disable function_body_length
+extension RankHeaderView {
     private func addSubviews() {
         [schoolLabel, switches, classLabel, dropDownBtn, myView]
             .forEach { self.addSubview($0) }
