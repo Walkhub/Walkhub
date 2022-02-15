@@ -6,10 +6,12 @@ final class LocalNoticeDataSource {
 
     static let shared = LocalNoticeDataSource()
 
+    private let realmTask = RealmTask.shared
+
     private init() { }
 
     func fetchNoticeList() -> Single<[Notice]> {
-        return RealmTask.shared.fetchObjects(for: NoticeRealmEntity.self)
+        return realmTask.fetchObjects(for: NoticeRealmEntity.self)
             .map { $0.map { $0.toDomain() } }
     }
 
@@ -19,7 +21,7 @@ final class LocalNoticeDataSource {
                 $0.setup(notice: notice)
             }
         }
-        RealmTask.shared.set(noticeRealmEntityList)
+        realmTask.set(noticeRealmEntityList)
     }
 
 }

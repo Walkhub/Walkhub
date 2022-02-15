@@ -215,6 +215,7 @@ class PlayRecordViewController: UIViewController {
 }
 
 // MARK: - Layout
+// swiftlint:disable function_body_length
 extension PlayRecordViewController {
     private func addsubViews() {
         [cheerUpImg, cheerCommentLabel, whiteView, blackView, stopCommentLabel]
@@ -224,7 +225,7 @@ extension PlayRecordViewController {
         stepCountLabel, stepCountNumLabel, kcalLabel, kcalNumLabel, kcalUnitLabel,
          speedLabel, speedNumLabel, speedUnitLabel, line1, line2, timeLabel, hourLabel,
          hLabel, minuteLabel, mLabel, stopBtn, lockBtn, replayBtn, resetBtn]
-            .forEach{ whiteView.addSubview($0)}
+            .forEach { whiteView.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {

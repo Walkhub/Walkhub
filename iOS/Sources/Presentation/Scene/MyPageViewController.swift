@@ -164,6 +164,8 @@ class MyPageViewController: UIViewController {
     }
 }
 
+// MARK: - Layout
+// swiftlint:disable function_body_length
 extension MyPageViewController {
     private func addSubviews() {
         [profileView, schoolView, badgeView, levelView].forEach { view.addSubview($0) }

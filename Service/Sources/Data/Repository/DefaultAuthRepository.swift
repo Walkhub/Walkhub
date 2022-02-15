@@ -7,15 +7,7 @@ import Moya
 
 class DefaultAuthRepository: AuthRepository {
 
-    func findId(phoneNumber: String) -> Single<Void> {
-        return RemoteAuthDataSource.shared.findID(phoneNumber: phoneNumber)
-            .map { _ in return () }
-    }
-
-    func renewalToken() -> Single<Void> {
-        return RemoteAuthDataSource.shared.renewalToken()
-            .map { _ in return () }
-    }
+    private let remoteAuthDataSource = RemoteAuthDataSource.shared
 
     func signin(
         id: String,
@@ -23,7 +15,7 @@ class DefaultAuthRepository: AuthRepository {
     ) -> Single<Void> {
         return fetchDeviceToken()
             .flatMap { deviceToken in
-                return RemoteAuthDataSource.shared.signin(
+                return self.remoteAuthDataSource.signin(
                     id: id,
                     password: password,
                     deviceToken: deviceToken
@@ -43,7 +35,7 @@ class DefaultAuthRepository: AuthRepository {
         sex: Sex,
         schoolId: String
     ) -> Single<Void> {
-        return RemoteAuthDataSource.shared.signup(
+        return remoteAuthDataSource.signup(
             id: id,
             password: password,
             name: name,
@@ -58,7 +50,7 @@ class DefaultAuthRepository: AuthRepository {
     }
 
     func verificationPhone(phoneNumber: String) -> Single<Void> {
-        return RemoteAuthDataSource.shared.verificationPhone(
+        return remoteAuthDataSource.verificationPhone(
             phoneNumber: phoneNumber
         ).map { _ in return () }
     }

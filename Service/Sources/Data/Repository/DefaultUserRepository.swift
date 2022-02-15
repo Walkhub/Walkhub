@@ -4,25 +4,8 @@ import RxSwift
 
 class DefaultUserRepository: UserRepository {
 
-    func changeProfile(
-        name: String,
-        profileImageUrlString: String,
-        sex: Sex
-    ) -> Single<Void> {
-        return RemoteUserDataSource.shared.changeProfile(
-            name: name,
-            profileImageUrlString: profileImageUrlString,
-            sex: sex
-        )
-    }
-
-    func setSchoolInformation(schoolId: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.setSchoolInformation(schoolId: schoolId)
-    }
-
-    func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.changeGoalWalkCount(goalWalkCount: goalWalkCount)
-    }
+    private let remoteUserDataSource = RemoteUserDataSource.shared
+    private let localUserDataSource = LocalUserDataSource.shared
 
     func changePassword(
         accountID: String,
@@ -30,7 +13,7 @@ class DefaultUserRepository: UserRepository {
         authCode: String,
         newPassword: String
     ) -> Single<Void> {
-        return RemoteUserDataSource.shared.changePassword(
+        return remoteUserDataSource.changePassword(
             accountID: accountID,
             phoneNumber: phoneNumber,
             authCode: authCode,
@@ -40,22 +23,33 @@ class DefaultUserRepository: UserRepository {
 
     func fetchProfile(userID: Int) -> Observable<UserProfile> {
         return OfflineCacheUtil<UserProfile>()
-            .localData { LocalUserDataSource.shared.fetchProfile(userID: userID) }
-            .remoteData { RemoteUserDataSource.shared.fetchProfile(userID: userID) }
-            .doOnNeedRefresh { LocalUserDataSource.shared.storeProfile(profile: $0) }
+            .localData { self.localUserDataSource.fetchProfile(userID: userID) }
+            .remoteData { self.remoteUserDataSource.fetchProfile(userID: userID) }
+            .doOnNeedRefresh { self.localUserDataSource.storeProfile(profile: $0) }
             .createObservable()
     }
 
     func fetchMyProfile() -> Observable<UserProfile> {
         return OfflineCacheUtil<UserProfile>()
-            .localData { LocalUserDataSource.shared.fetchMyProfile() }
-            .remoteData { RemoteUserDataSource.shared.fetchMyProfile() }
-            .doOnNeedRefresh { LocalUserDataSource.shared.storeMyProfile(profile: $0) }
+            .localData { self.localUserDataSource.fetchMyProfile() }
+            .remoteData { self.remoteUserDataSource.fetchMyProfile() }
+            .doOnNeedRefresh { self.localUserDataSource.storeMyProfile(profile: $0) }
             .createObservable()
     }
 
+    func changeProfile(
+        name: String,
+        profileImageUrlString: String,
+        sex: Sex
+    ) -> Single<Void> {
+        return remoteUserDataSource.changeProfile(
+            name: name,
+            profileImageUrlString: profileImageUrlString,
+            sex: sex
+        )
+    }
     func writeHealth(height: Float, weight: Int) -> Single<Void> {
-        return RemoteUserDataSource.shared.writeHealth(height: height, weight: weight)
+        return remoteUserDataSource.writeHealth(height: height, weight: weight)
     }
 
     func joinClass(
@@ -63,10 +57,18 @@ class DefaultUserRepository: UserRepository {
         classCode grade: String,
         num classNum: Int
     ) -> Single<Void> {
-        return RemoteUserDataSource.shared.joinClass(
+        return remoteUserDataSource.joinClass(
             sectionId: schoolId,
             classCode: grade,
             num: classNum
         )
+    }
+
+    func setSchoolInformation(schoolId: Int) -> Single<Void> {
+        return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
+    }
+
+    func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
+        return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
     }
 }

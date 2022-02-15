@@ -11,11 +11,6 @@ class DefaultBadgeRepository: BadgeRepository {
             .createObservable()
     }
 
-    func setMainBadge(badgeId: Int) -> Single<Void> {
-        return RemoteBadgesDataSource.shared.setMainBadge(badgeId: badgeId)
-            .map { _ in () }
-    }
-
     func fetchGetBadges() -> Single<[Badge]> {
         return RemoteBadgesDataSource.shared.fetchGetBadges()
     }

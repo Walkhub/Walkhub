@@ -23,7 +23,7 @@ extension NoticeDTO {
             id: id,
             title: title,
             content: content,
-            createdAt: createdAt.toDate(),
+            createdAt: createdAt.toDateWithTime(),
             writer: writer.toDomain()
         )
     }

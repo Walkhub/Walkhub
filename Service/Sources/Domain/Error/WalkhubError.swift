@@ -29,6 +29,10 @@ public enum WalkhubError: Error {
 
     // Levels
     case undefindedLevel
+
+    // Exercise
+    case unauthorizationHealthKit
+    case notMeasuring
 }
 
 extension WalkhubError: LocalizedError {
@@ -66,6 +70,10 @@ extension WalkhubError: LocalizedError {
             return "해당 유저를 찾을 수 없습니다."
         case .undefindedLevel:
             return "해당 레벨 아이디를 찾을 수 없습니다."
+        case .unauthorizationHealthKit:
+            return "HealthKit의 데이터에 "
+        case .notMeasuring:
+            return "현제 기록을 측정하고 있지 않습니다."
         }
     }
 }

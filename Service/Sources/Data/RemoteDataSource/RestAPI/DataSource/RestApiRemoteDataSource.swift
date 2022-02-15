@@ -83,7 +83,7 @@ extension RestApiRemoteDataSource {
 
     private func checkTokenIsValid() throws -> Bool {
         do {
-            let expiredDate = try KeychainTask.shared.fetch(accountType: .expiredAt).toDate()
+            let expiredDate = try KeychainTask.shared.fetch(accountType: .expiredAt).toDateWithTime()
             return expiredDate <= Date()
         } catch {
             throw TokenError.noToken
