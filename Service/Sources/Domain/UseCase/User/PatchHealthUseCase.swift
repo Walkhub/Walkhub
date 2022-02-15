@@ -11,7 +11,7 @@ public class PatchHealthUseCase {
     }
 
     public func excute(height: Float, weight: Int) -> Completable {
-        userRepository.patchHealth(height: height, weight: weight)
+        userRepository.patchHealthInformation(height: height, weight: weight)
     }
 
 }

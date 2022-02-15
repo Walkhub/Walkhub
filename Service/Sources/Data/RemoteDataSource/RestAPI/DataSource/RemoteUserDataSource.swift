@@ -48,19 +48,17 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
 
     func changeProfile(
         name: String,
-        profileImageUrlString: String,
-        birthday: String,
+        profileImageUrl: URL,
         sex: Sex
     ) -> Completable {
         return request(.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString,
-            birthday: birthday,
+            profileImageUrl: profileImageUrl,
             sex: sex
         )).asCompletable()
     }
 
-    func patchHealth(
+    func patchHealthInformation(
         height: Float,
         weight: Int
     ) -> Completable {

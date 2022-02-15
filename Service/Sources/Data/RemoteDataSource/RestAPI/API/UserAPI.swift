@@ -8,10 +8,11 @@ enum UserAPI {
     case fetchMyProfile
     case fetchBadges(userID: Int)
     case setMainBadge(badgeId: Int)
-    case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex)
-    case setHealthInformation(height: Float, weight: Int)
-    case joinClass(groupId: Int)
-    case setSchoolInformation(schoolId: String)
+    case changeProfile(name: String, profileImageUrl: URL, sex: Sex)
+    case patchHealthInformation(height: Float, weight: Int)
+    case joinClass(classCode: Int, number: Int)
+    case patchSchoolInformation(schoolId: String)
+    case set
 }
 
 extension UserAPI: WalkhubAPI {
@@ -30,11 +31,11 @@ extension UserAPI: WalkhubAPI {
             return "/\(userID)/badges"
         case .setMainBadge(let badgeId):
             return "/badges/\(badgeId)"
-        case .setHealthInformation:
+        case .patchHealthInformation:
             return "/healths"
-        case .joinClass(let groupId):
-            return "/classes/\(groupId)"
-        case .setSchoolInformation:
+        case .joinClass:
+            return "/classes"
+        case .patchSchoolInformation:
             return "/school"
         default:
             return "/"
@@ -53,17 +54,16 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrlString, let birthday, let sex):
+        case .changeProfile(let name, let profileImageUrl, let sex):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "profile_image_url": profileImageUrlString,
-                    "birthday": birthday,
+                    "profile_image_url": profileImageUrl.absoluteString,
                     "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setHealthInformation(let height, let weight):
+        case .patchHealthInformation(let height, let weight):
             return .requestParameters(
                 parameters: [
                     "height": height,
@@ -71,7 +71,15 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setSchoolInformation(let schoolId):
+        case .joinClass(let classCode, let number):
+            return .requestParameters(
+                parameters: [
+                    "classCode": classCode,
+                    "number": number
+                ],
+                encoding: JSONEncoding.prettyPrinted
+            )
+        case .patchSchoolInformation(let schoolId):
             return .requestParameters(
                 parameters: [
                     "school_id": schoolId
@@ -84,9 +92,9 @@ extension UserAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .changeProfile, .changePassword, .setSchoolInformation, .setHealthInformation:
+        case .changeProfile, .changePassword, .patchSchoolInformation, .patchHealthInformation:
             return .patch
-        case .fetchBadges:
+        case .setMainBadge:
             return .put
         case .joinClass:
             return .post
@@ -111,7 +119,7 @@ extension UserAPI: WalkhubAPI {
                 404: .undefinededClass,
                 409: .alreadyJoinedClass
             ]
-        case .setSchoolInformation:
+        case .patchSchoolInformation:
             return [
                 401: .unauthorization,
                 404: .undefinededSchool

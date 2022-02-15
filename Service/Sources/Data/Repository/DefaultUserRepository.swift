@@ -51,20 +51,18 @@ class DefaultUserRepository: UserRepository {
 
     func changeProfile(
         name: String,
-        profileImageUrlString: String,
-        birthday: String,
+        profileImageUrl: URL,
         sex: Sex
     ) -> Completable {
         return remoteUserDataSource.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString,
-            birthday: birthday,
+            profileImageUrl: profileImageUrl,
             sex: sex
         )
     }
 
-    func patchHealth(height: Float, weight: Int) -> Completable {
-        return remoteUserDataSource.patchHealth(height: height, weight: weight)
+    func patchHealthInformation(height: Float, weight: Int) -> Completable {
+        return remoteUserDataSource.patchHealthInformation(height: height, weight: weight)
     }
 
     func joinClass(groupId: Int) -> Completable {
