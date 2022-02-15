@@ -8,4 +8,6 @@ protocol AuthRepository {
     func signup(id: String, password: String, name: String, phoneNumber: String, authCode: String, height: Float,
                 weight: Int, birthday: String, sex: Sex, schoolId: String) -> Single<Void>
     func verificationPhone(phoneNumber: String) -> Single<Void>
+    func findId(phoneNumber: String) -> Single<Void>
+    func renewalToken() -> Single<Void>
 }
