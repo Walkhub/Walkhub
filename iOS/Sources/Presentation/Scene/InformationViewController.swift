@@ -92,6 +92,7 @@ class InformationViewController: UIViewController {
 }
 
 // MARK: - Layout
+// swiftlint:disable function_body_length
 extension InformationViewController {
     private func addSubviews() {
         [whiteView, stepByStepLabel, rankLabel, joinerLabel].forEach { view.addSubview($0) }

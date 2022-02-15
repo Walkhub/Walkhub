@@ -215,6 +215,7 @@ class PlayRecordViewController: UIViewController {
 }
 
 // MARK: - Layout
+// swiftlint:disable function_body_length
 extension PlayRecordViewController {
     private func addsubViews() {
         [cheerUpImg, cheerCommentLabel, whiteView, blackView, stopCommentLabel]

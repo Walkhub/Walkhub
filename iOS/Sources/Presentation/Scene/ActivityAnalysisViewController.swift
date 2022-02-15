@@ -1,4 +1,3 @@
-// swiftlint:disable function_body_length
 // swiftlint:disable file_length
 
 import UIKit
@@ -268,6 +267,7 @@ extension ActivityAnalysisViewController {
 }
 
 // MARK: - Layout
+// swiftlint:disable function_body_length
 extension ActivityAnalysisViewController {
     private func addSubviews() {
         view.addSubview(scrollView)

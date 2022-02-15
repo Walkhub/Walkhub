@@ -78,6 +78,7 @@ class RankHeaderView: UIView {
 }
 
 // MARK: - Layout
+// swiftlint:disable function_body_length
 extension RankHeaderView {
     private func addSubviews() {
         [schoolLabel, switches, classLabel, dropDownBtn, myView]
