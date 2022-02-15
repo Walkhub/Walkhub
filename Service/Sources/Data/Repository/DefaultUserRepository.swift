@@ -37,50 +37,38 @@ class DefaultUserRepository: UserRepository {
             .createObservable()
     }
 
-    func fetchBadges(userID: Int) -> Observable<[Badge]> {
-        return OfflineCacheUtil<[Badge]>()
-            .localData { self.localUserDataSource.fetchBadges(userID: userID) }
-            .remoteData { self.remoteUserDataSource.fetchBadges(userID: userID) }
-            .doOnNeedRefresh { self.localUserDataSource.storeBadges(userID: userID, badges: $0) }
-            .createObservable()
-    }
-
-    func setMainBadge(badgeID: Int) -> Single<Void> {
-        return remoteUserDataSource.setMainBadge(badgeID: badgeID)
-    }
-
     func changeProfile(
         name: String,
         profileImageUrlString: String,
-        birthday: String,
         sex: Sex
     ) -> Single<Void> {
         return remoteUserDataSource.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
-            birthday: birthday,
             sex: sex
         )
     }
-
     func writeHealth(height: Float, weight: Int) -> Single<Void> {
         return remoteUserDataSource.writeHealth(height: height, weight: weight)
     }
 
     func joinClass(
-        schoolId: String,
-        grade: Int,
-        classNum: Int
+        sectionId schoolId: Int,
+        classCode grade: String,
+        num classNum: Int
     ) -> Single<Void> {
         return remoteUserDataSource.joinClass(
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
+            sectionId: schoolId,
+            classCode: grade,
+            num: classNum
         )
     }
 
-    func setSchoolInformation(schoolId: String) -> Single<Void> {
+    func setSchoolInformation(schoolId: Int) -> Single<Void> {
         return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
     }
 
+    func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
+        return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
+    }
 }

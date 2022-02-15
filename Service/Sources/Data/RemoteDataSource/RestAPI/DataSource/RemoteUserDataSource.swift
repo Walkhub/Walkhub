@@ -35,27 +35,14 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchBadges(userID: Int) -> Single<[Badge]> {
-        return request(.fetchBadges(userID: userID))
-            .map(BadgeListDTO.self)
-            .map { $0.toDomain() }
-    }
-
-    func setMainBadge(badgeID: Int) -> Single<Void> {
-        return request(.setMainBadge(badgeID: badgeID))
-            .map { _ in () }
-    }
-
     func changeProfile(
         name: String,
         profileImageUrlString: String,
-        birthday: String,
         sex: Sex
     ) -> Single<Void> {
         return request(.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
-            birthday: birthday,
             sex: sex
         )).map { _ in () }
     }
@@ -71,19 +58,24 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     }
 
     func joinClass(
-        schoolId: String,
-        grade: Int,
-        classNum: Int
+        sectionId: Int,
+        classCode: String,
+        num: Int
     ) -> Single<Void> {
         return request(.joinClass(
-            schoolId: schoolId,
-            grade: grade,
-            classNum: classNum
+            sectionId: sectionId,
+            classCode: classCode,
+            num: num
         )).map { _ in () }
     }
 
-    func setSchoolInformation(schoolId: String) -> Single<Void> {
+    func setSchoolInformation(schoolId: Int) -> Single<Void> {
         return request(.setSchoolInformation(schoolId: schoolId))
+            .map { _ in () }
+    }
+
+    func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
+        return request(.changeGoalWalkCount(goalWalkCount: goalWalkCount))
             .map { _ in () }
     }
 

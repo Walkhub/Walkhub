@@ -12,7 +12,7 @@ class DropDownButton: UIButton {
 
     private var disposeBag = DisposeBag()
 
-    private lazy var dropDown = DropDown().then {
+    lazy var dropDown = DropDown().then {
         $0.dataSource = arr
         $0.anchorView = self
         $0.backgroundColor = .gray50
@@ -31,12 +31,6 @@ class DropDownButton: UIButton {
         fatalError()
     }
 
-    public func setAction() {
-        dropDown.selectionAction = { _, item in
-            self.setTitle(" \(item)\t", for: .normal)
-            self.dropDown.clearSelection()
-        }
-    }
 
     private func setDropDownBtn() {
         self.setBackgroundColor(.gray50, for: .normal)

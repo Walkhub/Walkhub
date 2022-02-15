@@ -19,14 +19,12 @@ extension AuthAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .signin:
+        case .signin, .renewalToken:
             return "/token"
         case .signup:
             return "/"
         case .verificationPhone:
             return "verification-codes"
-        case .renewalToken:
-            return "/reissue"
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
         }

@@ -4,8 +4,8 @@ import RxSwift
 
 protocol RankRepository {
     func fetchSchoolRank(dateType: DateType) -> Observable<SchoolRank>
-    func searchSchool(name: String) -> Single<[School]>
+    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchool]>
     func fetchUserSchoolRank(scope: Scope, dateType: DateType) -> Observable<UserRank>
-    func fetchUserRank(scope: Scope, dateTypa: DateType, schoolId: String) -> Single<[User]>
-    func searchUser(name: String, scope: Scope, schoolId: String, grade: Int, classNum: Int) -> Single<[User]>
+    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[User]>
+    func searchUser(schoolId: Int, name: String, dateType: DateType) -> Single<[User]>
 }

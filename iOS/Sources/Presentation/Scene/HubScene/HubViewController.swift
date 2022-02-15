@@ -2,8 +2,17 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class HubViewController: UIViewController {
+
+    private var viewModel: HubViewModel
+    private var disposeBag = DisposeBag()
+
+    private let dayData = PublishRelay<Void>()
+    private let weekData = PublishRelay<Void>()
+    private let monthData = PublishRelay<Void>()
 
     private let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 검색"
@@ -44,7 +53,6 @@ class HubViewController: UIViewController {
     private let dropDownBtn = DropDownButton().then {
         $0.setTitle(" 어제\t", for: .normal)
         $0.arr = ["어제", "이번주", "이번달"]
-        $0.setAction()
     }
 
     private let rankTableView = UITableView().then {
@@ -53,17 +61,69 @@ class HubViewController: UIViewController {
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "schoolRankCell")
     }
 
+    convenience init(viewModel: HubViewModel) {
+        self.init(viewModel: viewModel)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        rankTableView.dataSource = self
         setNavigation()
         demoData()
+        bindViewModel()
+        setDropDown()
     }
 
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewContraints()
+    }
+
+    private func setDropDown() {
+        dropDownBtn.dropDown.selectionAction = { row, item in
+            self.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.dropDownBtn.dropDown.clearSelection()
+            switch row {
+            case 0:
+                self.dayData.accept(())
+            case 1:
+                self.weekData.accept(())
+            default:
+                self.monthData.accept(())
+            }
+        }
+    }
+
+    private func bindViewModel() {
+        let input = HubViewModel.Input(
+            dayData: dayData.asDriver(onErrorJustReturn: ()),
+            weekData: weekData.asDriver(onErrorJustReturn: ()),
+            monthData: monthData.asDriver(onErrorJustReturn: ())
+        )
+
+        let output = viewModel.transform(input)
+
+        output.schoolRank.bind(to: rankTableView.rx.items(
+            cellIdentifier: "schoolRankCell",
+            cellType: RankTableViewCell.self)
+        ) { _, items, cell in
+            let data = try? Data(contentsOf: items.logoImageUrl)
+            cell.imgView.image = .init(data: data!)
+            cell.nameLabel.text = items.name
+            cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.studentsCount)"
+            cell.rankLabel.text = "\(items.ranking)등"
+        }.disposed(by: disposeBag)
+
+        output.mySchoolRank.asObservable().subscribe(onNext: {
+            let data = try? Data(contentsOf: $0.logoImageUrlString)
+            self.schoolImgView.image = UIImage(data: data!)
+            self.schoolName.text = $0.name
+            self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
+        }).disposed(by: disposeBag)
     }
 }
 
@@ -93,25 +153,6 @@ extension HubViewController {
                                             constant: (leftBarItemWidth ?? 0) + 16),
             titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor)
                ])
-    }
-}
-
-extension HubViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "schoolRankCell",
-            for: indexPath
-        ) as? RankTableViewCell
-        cell?.imgView.image = .init(systemName: "clock.fill")
-        cell?.nameLabel.text = "대덕소프트웨어마이스터고등학교"
-        cell?.stepLabel.text = "총 1,123,345 걸음 / 236"
-        cell?.badgeImgView.image = .init(systemName: "bell.badge")
-        cell?.rankLabel.text = "1등"
-        return cell!
     }
 }
 

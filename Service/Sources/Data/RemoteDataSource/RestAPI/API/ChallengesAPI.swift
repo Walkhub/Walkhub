@@ -7,6 +7,7 @@ enum ChallengesAPI {
     case fetchDetailChallenges(challengeID: Int)
     case joinChallenges(challengeID: Int)
     case fetchParticipantsChallengesList(challengeID: Int)
+    case fetchJoinedChallenges
 }
 
 extension ChallengesAPI: WalkhubAPI {
@@ -21,7 +22,9 @@ extension ChallengesAPI: WalkhubAPI {
         case .fetchChallengesList:
             return "/lists"
         case .fetchParticipantsChallengesList(let challengeID):
-            return "/\(challengeID)/participants"
+            return "/\(challengeID)/participants/students"
+        case .fetchJoinedChallenges:
+            return "/participated"
         }
     }
 
@@ -29,7 +32,8 @@ extension ChallengesAPI: WalkhubAPI {
         switch self {
         case .joinChallenges:
             return .post
-        case .fetchChallengesList, .fetchDetailChallenges, .fetchParticipantsChallengesList:
+        case .fetchChallengesList, .fetchDetailChallenges, .fetchParticipantsChallengesList,
+                .fetchJoinedChallenges:
             return .get
         }
     }
@@ -62,6 +66,10 @@ extension ChallengesAPI: WalkhubAPI {
                 401: .unauthorization,
                 403: .inaccessibleChallenge,
                 404: .undefinededChallenge
+            ]
+        case .fetchJoinedChallenges:
+            return [
+                401: .unauthorization
             ]
         }
     }

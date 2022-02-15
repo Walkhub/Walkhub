@@ -42,6 +42,8 @@ enum ApiDomain: String {
     case challenges
     case images
     case schools
+    case badges
+    case levels
 }
 
 extension ApiDomain {

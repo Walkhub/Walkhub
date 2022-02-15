@@ -14,3 +14,15 @@ struct SearchSchoolRankDTO: Decodable {
     let logoImageUrlString: String
     let walkCount: Int
 }
+
+extension SearchSchoolRankDTO {
+    func toDomain() -> SearchSchoolRank {
+        return .init(
+            id: id,
+            name: name,
+            ranking: ranking,
+            logoImageUrlString: URL(string: logoImageUrlString)!,
+            walkCount: walkCount
+        )
+    }
+}
