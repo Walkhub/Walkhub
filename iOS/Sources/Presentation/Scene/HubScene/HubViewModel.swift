@@ -15,9 +15,7 @@ class HubViewModel: ViewModelType {
     private var disposeBag = DisposeBag()
 
     struct Input {
-        let dayData: Driver<Void>
-        let weekData: Driver<Void>
-        let monthData: Driver<Void>
+        let dateType: Driver<DateType>
     }
 
     struct Output {
@@ -29,22 +27,8 @@ class HubViewModel: ViewModelType {
         let mySchoolRank = PublishRelay<MySchool>()
         let schoolRank = PublishRelay<[School]>()
 
-        input.dayData.asObservable().flatMap {
-            self.fetchSchoolUseCase.excute(dateType: .day)
-        }.subscribe(onNext: {
-            mySchoolRank.accept($0.mySchoolRank)
-            schoolRank.accept($0.schoolList)
-        }).disposed(by: disposeBag)
-
-        input.weekData.asObservable().flatMap {
-            self.fetchSchoolUseCase.excute(dateType: .week)
-        }.subscribe(onNext: {
-            mySchoolRank.accept($0.mySchoolRank)
-            schoolRank.accept($0.schoolList)
-        }).disposed(by: disposeBag)
-
-        input.monthData.asObservable().flatMap {
-            self.fetchSchoolUseCase.excute(dateType: .month)
+        input.dateType.asObservable().withLatestFrom(input.dateType).flatMap {
+            self.fetchSchoolUseCase.excute(dateType: $0)
         }.subscribe(onNext: {
             mySchoolRank.accept($0.mySchoolRank)
             schoolRank.accept($0.schoolList)
