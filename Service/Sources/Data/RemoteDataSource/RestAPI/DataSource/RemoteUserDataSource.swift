@@ -57,7 +57,7 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         )).asCompletable()
     }
 
-    func joinClass(classCode: Int, number: Int) -> Completable {
+    func joinClass(classCode: String, number: Int) -> Completable {
         return request(.joinClass(classCode: classCode, number: number))
             .asCompletable()
     }

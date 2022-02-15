@@ -10,8 +10,8 @@ public class JoinClassUseCase {
         self.userRepository = userRepository
     }
 
-    public func excute(groupId: Int) -> Completable {
-        userRepository.joinClass(groupId: groupId)
+    public func excute(classCode: String, number: Int) -> Completable {
+        userRepository.joinClass(classCode: classCode, number: number)
     }
 
 }

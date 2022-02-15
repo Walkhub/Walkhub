@@ -8,7 +8,7 @@ enum UserAPI {
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrl: URL, sex: Sex)
     case patchHealthInformation(height: Float, weight: Int)
-    case joinClass(classCode: Int, number: Int)
+    case joinClass(classCode: String, number: Int)
     case patchSchoolInformation(schoolId: String)
     case changeGoalWalkCount(goalWalkCount: Int)
 }

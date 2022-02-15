@@ -53,7 +53,7 @@ class DefaultUserRepository: UserRepository {
         return remoteUserDataSource.patchHealthInformation(height: height, weight: weight)
     }
 
-    func joinClass(classCode: Int, number: Int) -> Completable {
+    func joinClass(classCode: String, number: Int) -> Completable {
         return remoteUserDataSource.joinClass(classCode: classCode, number: number)
     }
 
