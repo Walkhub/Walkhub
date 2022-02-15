@@ -6,12 +6,11 @@ enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
-    case fetchBadges(userID: Int)
-    case setMainBadge(badgeID: Int)
-    case changeProfile(name: String, profileImageUrlString: String, birthday: String, sex: Sex)
+    case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
     case setHealthInformation(height: Float, weight: Int)
-    case joinClass(schoolId: String, grade: Int, classNum: Int)
-    case setSchoolInformation(schoolId: String)
+    case joinClass(sectionId: Int, classCode: String, num: Int)
+    case setSchoolInformation(schoolId: Int)
+    case changeGoalWalkCount(goalWalkCount: Int)
 }
 
 extension UserAPI: WalkhubAPI {
@@ -26,16 +25,14 @@ extension UserAPI: WalkhubAPI {
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
-        case .fetchBadges(let userID):
-            return "/\(userID)/badges"
-        case .setMainBadge(let badgeID):
-            return "/badges/\(badgeID)"
         case .setHealthInformation:
             return "/healths"
-        case .joinClass(let code, let grade, let classNum):
-            return "/classes/\(code)/\(grade)/\(classNum)"
+        case .joinClass(let sectionId, _, _):
+            return "/classes/{\(sectionId)}"
         case .setSchoolInformation:
             return "/school"
+        case .changeGoalWalkCount:
+            return "/goal"
         default:
             return "/"
         }
@@ -53,12 +50,11 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrlString, let birthday, let sex):
+        case .changeProfile(let name, let profileImageUrlString, let sex):
             return .requestParameters(
                 parameters: [
                     "name": name,
                     "profile_image_url": profileImageUrlString,
-                    "birthday": birthday,
                     "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
@@ -78,6 +74,19 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
+        case .joinClass(_, let classCode, let num):
+            return .requestParameters(
+                parameters: [
+                    "class_code": classCode,
+                    "number": num
+                ],
+                encoding: JSONEncoding.prettyPrinted)
+        case .changeGoalWalkCount(let goalWalkCount):
+            return .requestParameters(
+                parameters: [
+                    "daily_walk_count_goal": goalWalkCount
+                ],
+                encoding: JSONEncoding.prettyPrinted)
         default: return .requestPlain
         }
     }
@@ -86,8 +95,6 @@ extension UserAPI: WalkhubAPI {
         switch self {
         case .changeProfile, .changePassword, .setSchoolInformation, .setHealthInformation:
             return .patch
-        case .fetchBadges:
-            return .put
         case .joinClass:
             return .post
         default:

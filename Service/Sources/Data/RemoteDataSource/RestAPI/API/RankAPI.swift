@@ -4,10 +4,10 @@ import Moya
 
 enum RankAPI {
     case fetchSchoolRank(dateType: DateType)
-    case searchSchool(name: String)
+    case searchSchool(name: String, dateType: DateType)
     case fetchUserSchoolRank(scope: Scope, dateType: DateType)
-    case fetchUserRank(scope: Scope, dateType: DateType, schoolId: String)
-    case searchUser(name: String, scope: Scope, schoolId: String, grade: Int, classNum: Int)
+    case fetchUserRank(schoolId: Int, dateType: DateType)
+    case searchUser(name: String, dateType: DateType)
 }
 
 extension RankAPI: WalkhubAPI {
@@ -21,13 +21,13 @@ extension RankAPI: WalkhubAPI {
         case .fetchSchoolRank:
             return "/schools"
         case .searchSchool:
-            return "/"
+            return "/schools/search"
         case .fetchUserSchoolRank:
             return "/users/my-school"
-        case .fetchUserRank:
-            return "/users"
+        case .fetchUserRank(let schoolId, _):
+            return "/users/{\(schoolId)}"
         case .searchUser:
-            return "/search"
+            return "/users/search"
         }
     }
 
@@ -44,10 +44,11 @@ extension RankAPI: WalkhubAPI {
                 ],
                 encoding: URLEncoding.queryString
             )
-        case .searchSchool(let name):
+        case .searchSchool(let name, let dateType):
             return .requestParameters(
                 parameters: [
-                    "name": name
+                    "name": name,
+                    "schoolDateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
         case .fetchUserSchoolRank(let scope, let dateType):
@@ -57,23 +58,18 @@ extension RankAPI: WalkhubAPI {
                     "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
-        case .fetchUserRank(let scope, let dateType, let schoolId):
+        case .fetchUserRank(_, let dateType):
             return .requestParameters(
                 parameters: [
-                    "scope": scope.rawValue,
-                    "dateType": dateType.rawValue,
-                    "schoolId": schoolId
+                    "dateType": dateType.rawValue
                 ],
                 encoding: URLEncoding.queryString
             )
-        case .searchUser(let name, let scope, let schoolId, let grade, let classNum):
+        case .searchUser(let name, let dateType):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "scope": scope.rawValue,
-                    "schoolId": schoolId,
-                    "grade": grade,
-                    "classNum": classNum
+                    "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
         }
