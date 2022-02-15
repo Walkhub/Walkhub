@@ -14,13 +14,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         phoneNumber: String,
         authCode: String,
         newPassword: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.changePassword(
             accountID: accountID,
             phoneNumber: phoneNumber,
             authCode: authCode,
             newPassword: newPassword
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func fetchProfile(userID: Int) -> Single<UserProfile> {
@@ -41,9 +41,9 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { $0.toDomain() }
     }
 
-    func setMainBadge(badgeId: Int) -> Single<Void> {
+    func setMainBadge(badgeId: Int) -> Completable {
         return request(.setMainBadge(badgeId: badgeId))
-            .map { _ in () }
+            .asCompletable()
     }
 
     func changeProfile(
@@ -51,33 +51,33 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         profileImageUrlString: String,
         birthday: String,
         sex: Sex
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
             birthday: birthday,
             sex: sex
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func patchHealth(
         height: Float,
         weight: Int
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.setHealthInformation(
             height: height,
             weight: weight
-        )).map { _ in () }
+        )).asCompletable()
     }
 
-    func joinClass(groupId: Int) -> Single<Void> {
+    func joinClass(groupId: Int) -> Completable {
         return request(.joinClass(groupId: groupId))
-            .map { _ in () }
+            .asCompletable()
     }
 
-    func setSchoolInformation(schoolId: String) -> Single<Void> {
+    func setSchoolInformation(schoolId: String) -> Completable {
         return request(.setSchoolInformation(schoolId: schoolId))
-            .map { _ in () }
+            .asCompletable()
     }
 
 }

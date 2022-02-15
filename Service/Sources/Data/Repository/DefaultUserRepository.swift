@@ -12,7 +12,7 @@ class DefaultUserRepository: UserRepository {
         phoneNumber: String,
         authCode: String,
         newPassword: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return remoteUserDataSource.changePassword(
             accountID: accountID,
             phoneNumber: phoneNumber,
@@ -45,7 +45,7 @@ class DefaultUserRepository: UserRepository {
             .createObservable()
     }
 
-    func setMainBadge(badgeId: Int) -> Single<Void> {
+    func setMainBadge(badgeId: Int) -> Completable {
         return remoteUserDataSource.setMainBadge(badgeId: badgeId)
     }
 
@@ -54,7 +54,7 @@ class DefaultUserRepository: UserRepository {
         profileImageUrlString: String,
         birthday: String,
         sex: Sex
-    ) -> Single<Void> {
+    ) -> Completable {
         return remoteUserDataSource.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
@@ -63,15 +63,15 @@ class DefaultUserRepository: UserRepository {
         )
     }
 
-    func patchHealth(height: Float, weight: Int) -> Single<Void> {
+    func patchHealth(height: Float, weight: Int) -> Completable {
         return remoteUserDataSource.patchHealth(height: height, weight: weight)
     }
 
-    func joinClass(groupId: Int) -> Single<Void> {
+    func joinClass(groupId: Int) -> Completable {
         return remoteUserDataSource.joinClass(groupId: groupId)
     }
 
-    func setSchoolInformation(schoolId: String) -> Single<Void> {
+    func setSchoolInformation(schoolId: String) -> Completable {
         return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
     }
 
