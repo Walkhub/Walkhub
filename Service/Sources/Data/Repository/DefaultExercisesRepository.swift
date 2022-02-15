@@ -221,12 +221,12 @@ extension DefaultExercisesRepository {
             fetchDailyStepCount()
         ) {
             self.calculateBurnedKilocalories(
-            speedAsKillometerPerHour: $0,
-            walkingRunningTimeAsHour: $1,
-            userWeight: $2,
-            userHeight: $3,
-            stepCount: $4
-            )  
+                speedAsKillometerPerHour: $0,
+                walkingRunningTimeAsHour: $1,
+                userWeight: $2,
+                userHeight: $3,
+                stepCount: $4
+            )
         }
     }
 
