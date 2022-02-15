@@ -17,7 +17,7 @@ extension LevelAPI: WalkhubAPI {
         case .fetchCaloriesLevelList:
             return "/list"
         case .setMaxCaloriesLavel(let levelId):
-            return "/{\(levelId)}"
+            return "/\(levelId)"
         }
     }
 

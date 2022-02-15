@@ -28,7 +28,7 @@ extension UserAPI: WalkhubAPI {
         case .setHealthInformation:
             return "/healths"
         case .joinClass(let sectionId, _, _):
-            return "/classes/{\(sectionId)}"
+            return "/classes/\(sectionId)"
         case .setSchoolInformation:
             return "/school"
         case .changeGoalWalkCount:

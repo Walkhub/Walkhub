@@ -21,9 +21,9 @@ extension BadgeAPI: WalkhubAPI {
         case .fetchMyBadgeList:
             return "/"
         case .fetchUserBadgeList(let userId):
-            return "/{\(userId)}"
+            return "/\(userId)"
         case .setMainBadge(let badgeId):
-            return "/{\(badgeId)}"
+            return "/\(badgeId)"
         }
     }
 
