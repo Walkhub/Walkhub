@@ -32,8 +32,8 @@ final class RemoteChallengesDataSource: RestApiRemoteDataSource<ChallengesAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchJoingChallenges() -> Single<[Challenge]> {
-        return request(.fetchJoingChallenges)
+    func fetchJoinedChallenges() -> Single<[Challenge]> {
+        return request(.fetchJoinedChallenges)
             .map(ChallengeListDTO.self)
             .map { $0.toDomain() }
     }
