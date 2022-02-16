@@ -63,12 +63,16 @@ class HomeViewController: UIViewController {
 
         let output = viewModel.transform(input)
 
-        output.rankList.bind(to: rankTableViewCell.rankTableView.rx.items(cellIdentifier: "cell", cellType: RankTableViewCell.self)) { row, items, cell in
+        output.rankList.bind(
+            to: rankTableViewCell.rankTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: RankTableViewCell.self
+        )) { row, items, cell in
             cell.imgView.image = items.profileImageUrl.toImage()
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "\(items.walkCount) 걸음"
             cell.rankLabel.text = "\(items.ranking)등"
-        }
+        }.disposed(by: disposeBag)
 
         healthInfoTableViewCell.setup(
             dailyExercisesData: output.mainData,
@@ -92,9 +96,11 @@ extension HomeViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
             return 3
     }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 2 ? 2 : 1
+        return 1
     }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = mainTableView.dequeueReusableCell(
