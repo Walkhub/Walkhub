@@ -8,7 +8,6 @@ import Service
 
 class RankViewController: UIViewController {
 
-    private var viewModel: RankViewModel!
     private var disposeBag = DisposeBag()
 
     internal let scope = PublishRelay<Scope>()
