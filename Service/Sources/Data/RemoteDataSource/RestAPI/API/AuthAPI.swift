@@ -46,7 +46,7 @@ extension AuthAPI: WalkhubAPI {
         case .signin(let id, let password, let deviceToken):
             return .requestParameters(
                 parameters: [
-                    "user_id": id,
+                    "account_id": id,
                     "password": password,
                     "device_token": deviceToken
                 ],
@@ -56,7 +56,7 @@ extension AuthAPI: WalkhubAPI {
                      let height, let weight, let birthday, let sex, let schoolId):
             return .requestParameters(
                 parameters: [
-                    "user_id": id,
+                    "account_id": id,
                     "password": password,
                     "name": name,
                     "phone_number": phoneNumber,
