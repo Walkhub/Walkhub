@@ -9,32 +9,33 @@ class LoginViewController: UIViewController {
 
     var viewModel: LoginViewModel!
 
-    private let logoImageView = UIImageView()
-    private let nameLabel = UILabel().then {
-        $0.text = "Walkhub"
-        $0.font = .notoSansFont(ofSize: 24, family: .medium)
-        $0.textColor = .primary400
+    private let idTextField = WHTextfield().then {
+        $0.placeholder = "아이디"
+        $0.autocapitalizationType = .none
+        $0.keyboardType = .asciiCapable
     }
-    private let copywritingLabel = UILabel().then {
-        $0.text = "요즘걷들의 최신 트랜드"
-        $0.font = .notoSansFont(ofSize: 16, family: .regular)
+    private let passwordTextField = WHTextfield().then {
+        $0.placeholder = "비밀번호"
+        $0.isSecureTextEntry = true
+        $0.keyboardType = .asciiCapable
     }
-    private let idTextField = UITextField()
-    private let passwordTextField = UITextField()
-    private let loginButton = UIButton().then {
-        $0.setTitle("가입하기", for: .normal)
+    private let loginButton = UIButton(type: .system).then {
+        $0.setTitle("로그인하기", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
         $0.backgroundColor = .primary400
         $0.layer.cornerRadius = 12
     }
-    private let findIdButton = UIButton().then {
+    private let findIdButton = UIButton(type: .system).then {
         $0.setTitle("아이디 찾기", for: .normal)
         $0.setTitleColor(.gray400, for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.titleLabel?.textAlignment = .right
     }
-    private let changePasswordButton = UIButton().then {
+    private let lineViewBetweenFindIdAndChangePwdBtn = UIView().then {
+        $0.backgroundColor = .gray200
+    }
+    private let changePasswordButton = UIButton(type: .system).then {
         $0.setTitle("비밀번호 변경", for: .normal)
         $0.setTitleColor(.gray400, for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 14, family: .regular)
@@ -47,11 +48,66 @@ class LoginViewController: UIViewController {
         setupNavigaionBar()
     }
 
+    override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewContraints()
+    }
+
 }
 
 // MARK: - NavigaionBar
 extension LoginViewController {
     private func setupNavigaionBar() {
-        self.navigationController?.navigationBar.setupBackButton()
+        self.navigationController?.navigationBar.setBackButtonToX()
     }
+}
+
+// MARK: - Layout
+extension LoginViewController {
+
+    private func addSubviews() {
+        [idTextField,
+         passwordTextField,
+         loginButton,
+         findIdButton,
+         lineViewBetweenFindIdAndChangePwdBtn,
+         changePasswordButton
+        ].forEach {
+            self.view.addSubview($0)
+        }
+    }
+
+    private func makeSubviewContraints() {
+
+        idTextField.snp.makeConstraints {
+            $0.height.equalTo(44)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(12)
+            $0.left.right.equalToSuperview().inset(16)
+        }
+        passwordTextField.snp.makeConstraints {
+            $0.height.equalTo(44)
+            $0.top.equalTo(idTextField.snp.bottom).offset(8)
+            $0.left.right.equalToSuperview().inset(16)
+        }
+        loginButton.snp.makeConstraints {
+            $0.height.equalTo(52)
+            $0.top.equalTo(passwordTextField.snp.bottom).offset(20)
+            $0.left.right.equalToSuperview().inset(16)
+        }
+        lineViewBetweenFindIdAndChangePwdBtn.snp.makeConstraints {
+            $0.height.equalTo(16)
+            $0.width.equalTo(1)
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(loginButton.snp.bottom).offset(22)
+        }
+        findIdButton.snp.makeConstraints {
+            $0.centerY.equalTo(lineViewBetweenFindIdAndChangePwdBtn)
+            $0.right.equalTo(lineViewBetweenFindIdAndChangePwdBtn.snp.left).offset(-12)
+        }
+        changePasswordButton.snp.makeConstraints {
+            $0.centerY.equalTo(lineViewBetweenFindIdAndChangePwdBtn)
+            $0.left.equalTo(lineViewBetweenFindIdAndChangePwdBtn.snp.right).offset(12)
+        }
+    }
+
 }
