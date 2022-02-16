@@ -11,7 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Container
     static var continer: Container {
         let continer = Container()
-        continer.registerServiceDependencies()
+        continer.registerDependencies()
         return continer
     }
 
