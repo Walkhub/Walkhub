@@ -27,7 +27,7 @@ class OnboardingViewController: UIViewController, Stepper {
         끝이없다.
         나의 걸음은,
         """
-        $0.font = .notoSansFont(ofSize: 24, family: .medium)
+        $0.font = .notoSansFont(ofSize: 32, family: .bold)
         $0.textAlignment = .right
         $0.textColor = .white
         $0.numberOfLines = 0
@@ -101,7 +101,7 @@ extension OnboardingViewController {
         }
         nameLabel.snp.makeConstraints {
             $0.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(self.copywritingLabel.snp.top)
+            $0.bottom.equalTo(self.copywritingLabel.snp.top).offset(-8)
         }
     }
 
