@@ -9,15 +9,19 @@ class DetailHubViewModel: ViewModelType {
     private let searchUserUseCase: SearchUserUseCase
     private let fetchUserSchoolRankUseCase: FetchUserSchoolRankUseCase
     private let fetchUserRankUseCase: FetchUserRankUseCase
+    private let fetchSchoolDetailsUseCase: FetchSchoolDetailsUseCase
 
     init(
         searchUserUseCase: SearchUserUseCase,
         fetchUserSchoolRankUseCase: FetchUserSchoolRankUseCase,
-        fetchUserRankUseCase: FetchUserRankUseCase) {
-            self.searchUserUseCase = searchUserUseCase
-            self.fetchUserSchoolRankUseCase = fetchUserSchoolRankUseCase
-            self.fetchUserRankUseCase = fetchUserRankUseCase
-        }
+        fetchUserRankUseCase: FetchUserRankUseCase,
+        fetchSchoolDetailsUseCase: FetchSchoolDetailsUseCase
+    ) {
+        self.searchUserUseCase = searchUserUseCase
+        self.fetchUserSchoolRankUseCase = fetchUserSchoolRankUseCase
+        self.fetchUserRankUseCase = fetchUserRankUseCase
+        self.fetchSchoolDetailsUseCase = fetchSchoolDetailsUseCase
+    }
 
     private var disposeBag = DisposeBag()
 
@@ -27,18 +31,21 @@ class DetailHubViewModel: ViewModelType {
         let dateType: Driver<DateType>
         let switchOn: Driver<Scope>
         let isMySchool: Driver<Bool>
+        let getDetails: Driver<Void>
     }
 
     struct Output {
         let searchUserList: PublishRelay<[User]>
         let myRank: PublishRelay<(User, Int?)>
         let userList: PublishRelay<[User]>
+        let schoolDetails: PublishRelay<SchoolDetails>
     }
 
     func transform(_ input: Input) -> Output {
         let searchUserList = PublishRelay<[User]>()
         let myRank = PublishRelay<(User, Int?)>()
         let userList = PublishRelay<[User]>()
+        let schoolDetails = PublishRelay<SchoolDetails>()
 
         let info = Driver.combineLatest(input.name, input.schoolId, input.dateType)
         let mySchoolType = Driver.combineLatest(input.switchOn, input.dateType)
@@ -74,10 +81,17 @@ class DetailHubViewModel: ViewModelType {
             }
         }).disposed(by: disposeBag)
 
+        input.getDetails.asObservable().withLatestFrom(input.schoolId).flatMap {
+            self.fetchSchoolDetailsUseCase.excute(schoolId: $0)
+        }.subscribe(onNext: {
+            schoolDetails.accept($0)
+        }).disposed(by: disposeBag)
+
         return Output(
             searchUserList: searchUserList,
             myRank: myRank,
-            userList: userList
+            userList: userList,
+            schoolDetails: schoolDetails
         )
     }
 }

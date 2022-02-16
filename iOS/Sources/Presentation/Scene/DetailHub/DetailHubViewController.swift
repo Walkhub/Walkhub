@@ -59,7 +59,6 @@ class DetailHubViewController: TabmanViewController {
     }
 
     func addViewController() {
-
         [rankVC, informationVC].forEach { viewController.append($0) }
     }
 
@@ -91,7 +90,8 @@ class DetailHubViewController: TabmanViewController {
             schoolId: schoolId.asDriver(onErrorJustReturn: 0),
             dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day),
             switchOn: rankVC.scope.asDriver(onErrorJustReturn: .school),
-            isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true)
+            isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true),
+            getDetails: informationVC.getDetails.asDriver(onErrorJustReturn: ())
         )
         let output = viewModel.transform(input)
 
@@ -121,6 +121,10 @@ class DetailHubViewController: TabmanViewController {
 
         output.userList.asObservable().subscribe(onNext: {
             self.rankVC.userList.accept($0)
+        }).disposed(by: disposeBag)
+
+        output.schoolDetails.asObservable().subscribe(onNext: {
+            self.informationVC.schoolDetials.accept($0)
         }).disposed(by: disposeBag)
     }
 }
