@@ -14,7 +14,7 @@ final class RemoteLevelsDataSource: RestApiRemoteDataSource<LevelAPI> {
     }
 
     func setMaxCaloriesLevel(levelId: Int) -> Single<Void> {
-        return request(.setMaxCaloriesLavel(levelId: levelId))
+        return request(.setMaxCaloriesLevel(levelId: levelId))
             .map { _ in () }
     }
 }
