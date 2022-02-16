@@ -4,6 +4,7 @@ import Moya
 
 enum SchoolAPI {
     case searchSchool(name: String)
+    case fetchSchoolDetails(schoolId: Int)
 }
 
 extension SchoolAPI: WalkhubAPI {
@@ -12,7 +13,12 @@ extension SchoolAPI: WalkhubAPI {
     }
 
     var urlPath: String {
-        return "/search"
+        switch self {
+        case .searchSchool:
+            return "/search"
+        case .fetchSchoolDetails(let schoolId):
+            return "/details/\(schoolId)"
+        }
     }
 
     var errorMapper: [Int : WalkhubError]? {
@@ -28,6 +34,8 @@ extension SchoolAPI: WalkhubAPI {
                 parameters: ["name": name],
                 encoding: URLEncoding.queryString
             )
+        default:
+            return .requestPlain
         }
     }
 
