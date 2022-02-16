@@ -12,8 +12,12 @@ enum WalkhubStep: Step {
     // Onboarding
     case onboardingIsRequired
     case signupIsRequired
+
+    // Login
     case loginIsRequired
     case userIsLoggedIn
+    case findIdIsRequired
+    case changePasswordIsRequired
 
     // Home
     case homeIsRequired
