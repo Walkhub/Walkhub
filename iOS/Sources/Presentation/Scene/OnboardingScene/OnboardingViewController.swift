@@ -88,20 +88,20 @@ extension OnboardingViewController {
         }
         signinButton.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.bottom.equalTo(self.additionalSafeAreaInsets).inset(32)
+            $0.bottom.equalTo(view.safeAreaInsets).inset(32)
         }
         signupButton.snp.makeConstraints {
             $0.height.equalTo(52)
             $0.left.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(self.signinButton.snp.top).offset(-20)
+            $0.bottom.equalTo(signinButton.snp.top).offset(-20)
         }
         copywritingLabel.snp.makeConstraints {
             $0.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(self.signupButton.snp.top).offset(-32)
+            $0.bottom.equalTo(signupButton.snp.top).offset(-32)
         }
         nameLabel.snp.makeConstraints {
             $0.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(self.copywritingLabel.snp.top).offset(-8)
+            $0.bottom.equalTo(copywritingLabel.snp.top).offset(-8)
         }
     }
 
