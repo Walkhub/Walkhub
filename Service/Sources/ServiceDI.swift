@@ -15,6 +15,9 @@ public extension Container {
     }
 
     private func registerUseCases() {
+        self.register(CheckIsSigninedUseCase.self) { resolver in
+            return CheckIsSigninedUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        }
         self.register(SinginUseCase.self) { resolver in
             return SinginUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
