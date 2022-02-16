@@ -1,5 +1,6 @@
 import UIKit
 
+import Loaf
 import RxFlow
 
 class LoginFlow: Flow {
@@ -24,6 +25,8 @@ class LoginFlow: Flow {
             return navigateToLoginScreen()
         case .userIsLoggedIn:
             return navigationToTabsScreen()
+        case .loaf(let message, let state, let location):
+            return showLoaf(message, state: state, location: location)
         default:
             return .none
         }
@@ -37,6 +40,15 @@ class LoginFlow: Flow {
     }
 
     private func navigationToTabsScreen() -> FlowContributors {
+        return .none
+    }
+
+    private func showLoaf(
+        _ message: String,
+        state: Loaf.State,
+        location: Loaf.Location
+    ) -> FlowContributors {
+        Loaf(message, state: state, location: location, sender: self.rootViewController).show()
         return .none
     }
 

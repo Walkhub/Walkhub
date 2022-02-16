@@ -1,11 +1,13 @@
 import Foundation
 
+import Loaf
 import RxFlow
 
 enum WalkhubStep: Step {
 
     // Application
     case tabsIsRequired
+    case loaf(_ message: String, state: Loaf.State, location: Loaf.Location)
     case alert(title: String, content: String)
     case unauthorized
 

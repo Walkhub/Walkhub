@@ -46,9 +46,9 @@ class LoginViewModel: ViewModelType, Stepper {
         input.loginButtonIsTapped
             .asObservable()
             .flatMap {
-                Driver.combineLatest(
-                    input.idTextfieldString,
-                    input.passwordTextfieldString
+                Observable.zip(
+                    input.idTextfieldString.asObservable().take(1),
+                    input.passwordTextfieldString.asObservable().take(1)
                 ) { (id: $0, password: $1) }
             }
             .flatMap {
@@ -59,7 +59,7 @@ class LoginViewModel: ViewModelType, Stepper {
                         print("SUCCESS")
                     })
                     .andThen(Single.just(WalkhubStep.userIsLoggedIn))
-                    .catchAndReturn(WalkhubStep.alert(title: "error", content: "로그인 실패"))
+                    .catchAndReturn(WalkhubStep.loaf("로그인 실패", state: .error, location: .top))
             }
             .bind(to: steps)
             .disposed(by: disposeBag)
