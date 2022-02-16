@@ -7,13 +7,13 @@ import RxCocoa
 
 class DetailHubViewController: TabmanViewController {
 
-    internal var schoolId = PublishRelay<Int>()
+    internal let schoolId = PublishRelay<Int>()
 
     private var viewController = [UIViewController]()
 
-    private var rankVC: RankViewController
-    private var informationVC: InformationViewController
-    private var viewModel: DetailHubViewModel
+    private var rankVC: RankViewController!
+    private var informationVC: InformationViewController!
+    private var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
 
@@ -58,17 +58,6 @@ class DetailHubViewController: TabmanViewController {
         }
     }
 
-    convenience init(
-        rankVC: RankViewController,
-        informationVC: InformationViewController,
-        viewModel: DetailHubViewModel) {
-            self.init(rankVC: rankVC, informationVC: informationVC, viewModel: viewModel)
-        }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     func addViewController() {
 
         [rankVC, informationVC].forEach { viewController.append($0) }
@@ -100,7 +89,9 @@ class DetailHubViewController: TabmanViewController {
         let input = DetailHubViewModel.Input(
             name: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId.asDriver(onErrorJustReturn: 0),
-            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day)
+            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day),
+            switchOn: rankVC.scope.asDriver(onErrorJustReturn: .school),
+            isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true)
         )
         let output = viewModel.transform(input)
 
@@ -123,6 +114,14 @@ class DetailHubViewController: TabmanViewController {
                 cell.badgeImgView.image = UIImage()
             }
         }.disposed(by: disposeBag)
+
+        output.myRank.asObservable().subscribe(onNext: {
+            self.rankVC.myRank.accept($0)
+        }).disposed(by: disposeBag)
+
+        output.userList.asObservable().subscribe(onNext: {
+            self.rankVC.userList.accept($0)
+        }).disposed(by: disposeBag)
     }
 }
 
