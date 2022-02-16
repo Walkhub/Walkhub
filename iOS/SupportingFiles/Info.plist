@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.walkhub.Walkhub.synchronizeExerciseRecord</string>
@@ -26,10 +28,10 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-    <key>NSLocationWhenInUseUsageDescription</key>
-        <string>기록 측정을 위해 필요해요.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>백그라운드에서 기록측정을 하기위해 필요해요.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>기록 측정을 위해 필요해요.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>백그라운드에서 기록측정을 하기위해 필요해요.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>건강 데이터를 불러올때 필요해요.</string>
 	<key>NSHealthUpdateUsageDescription</key>
