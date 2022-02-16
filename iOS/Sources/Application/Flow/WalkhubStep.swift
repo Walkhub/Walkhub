@@ -9,7 +9,9 @@ enum WalkhubStep: Step {
     case alert(title: String, content: String)
     case unauthorized
 
-    // Login
+    // Onboarding
+    case onboardingIsRequired
+    case signupIsRequired
     case loginIsRequired
     case userIsLoggedIn
 
