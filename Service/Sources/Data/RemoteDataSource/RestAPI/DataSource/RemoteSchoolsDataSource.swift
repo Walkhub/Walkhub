@@ -12,4 +12,10 @@ final class RemoteSchoolsDataSource: RestApiRemoteDataSource<SchoolAPI> {
             .map(SearchSchoolListDTO.self)
             .map { $0.toDomain() }
     }
+
+    func fetchSchoolDetails(schoolId: Int) -> Single<SchoolDetails> {
+        return request(.fetchSchoolDetails(schoolId: schoolId))
+            .map(SchoolDetailsDTO.self)
+            .map { $0.toDomain() }
+    }
 }

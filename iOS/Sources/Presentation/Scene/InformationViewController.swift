@@ -2,8 +2,14 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
+import Service
 
 class InformationViewController: UIViewController {
+
+    internal let getDetails = PublishRelay<Void>()
+    internal let schoolDetials = PublishRelay<SchoolDetails>()
 
     private let informationLabel = UILabel().then {
         $0.text = "학교 정보"

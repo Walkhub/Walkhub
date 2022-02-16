@@ -3,10 +3,17 @@ import UIKit
 import Pageboy
 import Tabman
 import RxSwift
+import RxCocoa
 
 class DetailHubViewController: TabmanViewController {
 
+    internal let schoolId = PublishRelay<Int>()
+
     private var viewController = [UIViewController]()
+
+    private var rankVC: RankViewController!
+    private var informationVC: InformationViewController!
+    private var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
 
@@ -52,10 +59,7 @@ class DetailHubViewController: TabmanViewController {
     }
 
     func addViewController() {
-        let detailHubVC = RankViewController()
-        let informationVC = InformationViewController()
-
-        [detailHubVC, informationVC].forEach { viewController.append($0) }
+        [rankVC, informationVC].forEach { viewController.append($0) }
     }
 
     func setTopTabbar() {
@@ -78,6 +82,50 @@ class DetailHubViewController: TabmanViewController {
         bar.indicator.weight = .custom(value: 1)
 
         addBar(bar, dataSource: self, at: .top)
+    }
+
+    private func bindViewModel() {
+        let input = DetailHubViewModel.Input(
+            name: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            schoolId: schoolId.asDriver(onErrorJustReturn: 0),
+            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day),
+            switchOn: rankVC.scope.asDriver(onErrorJustReturn: .school),
+            isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true),
+            getDetails: informationVC.getDetails.asDriver(onErrorJustReturn: ())
+        )
+        let output = viewModel.transform(input)
+
+        output.userList.bind(to: searchTableView.rx.items(
+            cellIdentifier: "searchCell",
+            cellType: RankTableViewCell.self)
+        ) { _, item, cell in
+            cell.imgView.image = item.profileImageUrl.toImage()
+            cell.nameLabel.text = item.name
+            cell.stepLabel.text = "\(item.walkCount) 걸음"
+            cell.rankLabel.text = "\(item.ranking) 등"
+            switch item.ranking {
+            case 1:
+                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                cell.badgeImgView.image = UIImage()
+            }
+        }.disposed(by: disposeBag)
+
+        output.myRank.asObservable().subscribe(onNext: {
+            self.rankVC.myRank.accept($0)
+        }).disposed(by: disposeBag)
+
+        output.userList.asObservable().subscribe(onNext: {
+            self.rankVC.userList.accept($0)
+        }).disposed(by: disposeBag)
+
+        output.schoolDetails.asObservable().subscribe(onNext: {
+            self.informationVC.schoolDetials.accept($0)
+        }).disposed(by: disposeBag)
     }
 }
 
