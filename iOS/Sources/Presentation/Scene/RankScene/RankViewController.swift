@@ -8,14 +8,21 @@ import Service
 
 class RankViewController: UIViewController {
 
-    private var viewModel: RankViewModel
+    private var viewModel: RankViewModel!
     private var disposeBag = DisposeBag()
 
-    private let scope = PublishRelay<Scope>()
+    internal let scope = PublishRelay<Scope>()
     internal let dateType = PublishRelay<DateType>()
+    internal let myRank = PublishRelay<(User, Int?)>()
+    internal let userList = PublishRelay<[User]>()
+    internal let isMySchool = PublishRelay<Bool>()
 
-    private let headerView = RankHeaderView().then {
+    private let mySchoolHeaderView = RankHeaderView().then {
         $0.layer.frame.size.height = 180
+    }
+
+    private let anotherSchoolHeaderView = AnotherSchoolRankHeaderView().then {
+        $0.layer.frame.size.height = 48
     }
 
     private let footerView = RankCommentFooterView().then {
@@ -71,7 +78,6 @@ class RankViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        demoDate()
         setTableView()
         bindViewModel()
     }
@@ -81,26 +87,18 @@ class RankViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
         setDropDownAndSwitch()
-        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         joinClassBtn.isHidden = true
-    }
-
-    convenience init(viewModel: RankViewModel) {
-        self.init(viewModel: viewModel)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        setTableView()
     }
 
     private func setDropDownAndSwitch() {
-        headerView.dropDownBtn.dropDown.selectionAction = { row, item in
-            self.headerView.dropDownBtn.setTitle(" \(item)\t", for: .normal)
-            self.headerView.dropDownBtn.dropDown.clearSelection()
+        mySchoolHeaderView.dropDownBtn.dropDown.selectionAction = { row, item in
+            self.mySchoolHeaderView.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.mySchoolHeaderView.dropDownBtn.dropDown.clearSelection()
             switch row {
             case 0:
                 self.dateType.accept(.day)
@@ -111,7 +109,20 @@ class RankViewController: UIViewController {
             }
         }
 
-        headerView.switches.rx.isOn.subscribe(onNext: {
+        anotherSchoolHeaderView.dropDownBtn.dropDown.selectionAction = { row, item in
+            self.mySchoolHeaderView.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.mySchoolHeaderView.dropDownBtn.dropDown.clearSelection()
+            switch row {
+            case 0:
+                self.dateType.accept(.day)
+            case 1:
+                self.dateType.accept(.week)
+            default:
+                self.dateType.accept(.month)
+            }
+        }
+
+        mySchoolHeaderView.switches.rx.isOn.subscribe(onNext: {
             if $0 {
                 self.scope.accept(.class)
             } else {
@@ -121,41 +132,41 @@ class RankViewController: UIViewController {
     }
 
     private func bindViewModel() {
-        let input = RankViewModel.Input(
-            switchOn: scope.asDriver(onErrorJustReturn: .school),
-            dayType: dateType.asDriver(onErrorJustReturn: .day)
-        )
-
-        let output = viewModel.transform(input)
-
-        output.myRank.asObservable().subscribe(onNext: { rank, num in
-            self.headerView.imgView.image = rank.profileImageUrl.toImage()
-            self.headerView.nameLabel.text = rank.name
-            self.headerView.stepCountLabel.text = "\(rank.walkCount) 걸음"
-            self.headerView.rankLabel.text = "\(rank.ranking)등"
-            self.headerView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
-            self.headerView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
-            self.headerView.progressBar.progress = Float(rank.walkCount / num! )
+        myRank.asObservable().subscribe(onNext: { rank, num in
+            self.mySchoolHeaderView.imgView.image = rank.profileImageUrl.toImage()
+            self.mySchoolHeaderView.nameLabel.text = rank.name
+            self.mySchoolHeaderView.stepCountLabel.text = "\(rank.walkCount) 걸음"
+            self.mySchoolHeaderView.rankLabel.text = "\(rank.ranking)등"
+            if rank.ranking != 1 {
+                self.mySchoolHeaderView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
+                self.mySchoolHeaderView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
+                self.mySchoolHeaderView.progressBar.progress = Float(rank.walkCount / num! )
+            } else {
+                self.mySchoolHeaderView.nextLevelLabel.text = "최고 등수를 달성했어요!"
+                self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
+                self.mySchoolHeaderView.progressBar.progress = 1
+            }
             self.imgView.image = rank.profileImageUrl.toImage()
             self.nameLabel.text = rank.name
             self.stepCountLabel.text = "\(rank.walkCount) 걸음"
             self.rankLabel.text = "\(rank.ranking)등"
             switch rank.ranking {
             case 1:
-                self.headerView.badgeImgView.image = .init(named: "GoldBadgeImg")
+                self.mySchoolHeaderView.badgeImgView.image = .init(named: "GoldBadgeImg")
                 self.badgeImgView.image = .init(named: "GoldBadgeImg")
             case 2:
-                self.headerView.badgeImgView.image = .init(named: "SilverBadgeImg")
+                self.mySchoolHeaderView.badgeImgView.image = .init(named: "SilverBadgeImg")
                 self.badgeImgView.image = .init(named: "SilverBadgeImg")
             case 3:
-                self.headerView.badgeImgView.image = .init(named: "BronzeBadgeImg")
+                self.mySchoolHeaderView.badgeImgView.image = .init(named: "BronzeBadgeImg")
                 self.badgeImgView.image = .init(named: "BronzeBadgeImg")
             default:
-                self.headerView.badgeImgView.image = UIImage()
+                self.mySchoolHeaderView.badgeImgView.image = UIImage()
+                self.badgeImgView.image = UIImage()
             }
         }).disposed(by: disposeBag)
 
-        output.userList.bind(to: rankTableView.rx.items(
+        userList.bind(to: rankTableView.rx.items(
             cellIdentifier: "rankCell",
             cellType: RankTableViewCell.self)
         ) { _, items, cell in
@@ -241,48 +252,22 @@ extension RankViewController {
         }
     }
 }
-
-extension RankViewController: UITableViewDataSource, UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cheerCell", for: indexPath) as?
-        CheerupTableViewCell
-        cell?.recordName.text = "김시안"
-        cell?.imgView.image = .init(systemName: "clock.fill")
-        return cell!
-    }
-}
-
 extension RankViewController {
     private func setTableView() {
-        rankTableView.delegate = self
-        rankTableView.dataSource = self
-
         rankTableView.rx.contentOffset
             .map { $0.y <= 90 }
             .subscribe(onNext: {
                 self.myViewBackground.isHidden = $0
             }).disposed(by: disposeBag)
-        rankTableView.tableHeaderView = headerView
-        rankTableView.tableFooterView = footerView
-    }
 
-    private func demoDate() {
-        imgView.image = .init(systemName: "clock.fill")
-        nameLabel.text = "김기영"
-        stepCountLabel.text = "5000 걸음"
-        rankLabel.text = "7등"
-        headerView.imgView.image = .init(systemName: "clock.fill")
-        headerView.nameLabel.text = "김기영"
-        headerView.stepCountLabel.text = "7483 걸음"
-        headerView.rankLabel.text = "5등"
-        headerView.progressBar.progress = 0.5
-        headerView.nextLevelLabel.text = "다음 등수까지 1290 걸음"
-        headerView.goalStepCountLabel.text = "2190 걸음"
-        footerView.commentLabel.text = "131명의 친구와 함께 뛰고 있어요"
+        isMySchool.asObservable().subscribe(onNext: {
+            if $0 {
+                self.rankTableView.tableHeaderView = self.mySchoolHeaderView
+            } else {
+                self.rankTableView.tableHeaderView = self.anotherSchoolHeaderView
+            }
+        }).disposed(by: disposeBag)
+
+        rankTableView.tableFooterView = footerView
     }
 }
