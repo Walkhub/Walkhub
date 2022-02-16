@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class SinginUseCase {
+public class SigninUseCase {
 
     private let authRepository: AuthRepository
 
