@@ -2,8 +2,13 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
+import Service
 
 class HealthInfoTableViewCell: UITableViewCell {
+
+    private var disposeBag = DisposeBag()
 
     let whCircleProgressView = WHCircleProgressView().then {
         $0.setup(
@@ -74,15 +79,28 @@ class HealthInfoTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        demoData()
     }
 
-    private func demoData() {
-        clockLabel.text = "7"
-        locationLabel.text = "0.52"
-        fireLabel.text = "158"
-        label.text = "5329"
-        stepLabel.text = "/6000 걸음"
+    internal func setup(
+        dailyExercisesData: PublishRelay<DailyExerciseRecord>,
+        caloriesData: PublishRelay<CaloriesLevel>,
+        exerciseAnalysis: PublishRelay<ExerciseAnalysis>
+    ) {
+        dailyExercisesData.asObservable().subscribe(onNext: {
+            self.clockLabel.text = "\($0.walkingRunningTimeAsSecond * 60)"
+            self.fireLabel.text = "\($0.burnedKilocalories)"
+            self.locationLabel.text = "\($0.walkingRunningDistanceAsMeter)"
+            self.label.text = "\($0.stepCount)"
+        }).disposed(by: disposeBag)
+
+        exerciseAnalysis.asObservable().subscribe(onNext: {
+            self.whCircleProgressView.progress = Double($0.walkCount / $0.dailyWalkCountGoal)
+            self.stepLabel.text = "/\($0.dailyWalkCountGoal) 걸음"
+        }).disposed(by: disposeBag)
+
+        caloriesData.asObservable().subscribe(onNext: {
+            self.imgView.image = $0.foodImageUrlString.toImage()
+        }).disposed(by: disposeBag)
     }
 }
 

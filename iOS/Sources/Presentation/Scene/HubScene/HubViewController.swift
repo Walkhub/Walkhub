@@ -4,15 +4,14 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class HubViewController: UIViewController {
 
-    private var viewModel: HubViewModel
+    private var viewModel: HubViewModel!
     private var disposeBag = DisposeBag()
 
-    private let dayData = PublishRelay<Void>()
-    private let weekData = PublishRelay<Void>()
-    private let monthData = PublishRelay<Void>()
+    private let dateType = PublishRelay<DateType>()
 
     private let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 검색"
@@ -20,6 +19,11 @@ class HubViewController: UIViewController {
         $0.navigationItem.hidesSearchBarWhenScrolling = false
         $0.hidesNavigationBarDuringPresentation = false
         $0.automaticallyShowsCancelButton = false
+    }
+
+    private let searchTableView = UITableView().then {
+        $0.backgroundColor = .white
+        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "searchCell")
     }
 
     private let mySchoolLabel = UILabel().then {
@@ -61,19 +65,10 @@ class HubViewController: UIViewController {
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "schoolRankCell")
     }
 
-    convenience init(viewModel: HubViewModel) {
-        self.init(viewModel: viewModel)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
         setNavigation()
-        demoData()
         bindViewModel()
         setDropDown()
     }
@@ -89,20 +84,19 @@ class HubViewController: UIViewController {
             self.dropDownBtn.dropDown.clearSelection()
             switch row {
             case 0:
-                self.dayData.accept(())
+                self.dateType.accept(.day)
             case 1:
-                self.weekData.accept(())
+                self.dateType.accept(.week)
             default:
-                self.monthData.accept(())
+                self.dateType.accept(.month)
             }
         }
     }
 
     private func bindViewModel() {
         let input = HubViewModel.Input(
-            dayData: dayData.asDriver(onErrorJustReturn: ()),
-            weekData: weekData.asDriver(onErrorJustReturn: ()),
-            monthData: monthData.asDriver(onErrorJustReturn: ())
+            dateType: dateType.asDriver(onErrorJustReturn: .day),
+            name: searchController.searchBar.searchTextField.rx.text.orEmpty.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -111,28 +105,51 @@ class HubViewController: UIViewController {
             cellIdentifier: "schoolRankCell",
             cellType: RankTableViewCell.self)
         ) { _, items, cell in
-            let data = try? Data(contentsOf: items.logoImageUrl)
-            cell.imgView.image = .init(data: data!)
+            cell.imgView.image = items.logoImageUrl.toImage()
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.studentsCount)"
             cell.rankLabel.text = "\(items.ranking)등"
+            switch items.ranking {
+            case 1:
+                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                cell.badgeImgView.image = UIImage()
+            }
         }.disposed(by: disposeBag)
 
         output.mySchoolRank.asObservable().subscribe(onNext: {
-            let data = try? Data(contentsOf: $0.logoImageUrlString)
-            self.schoolImgView.image = UIImage(data: data!)
+            self.schoolImgView.image = $0.logoImageUrlString.toImage()
             self.schoolName.text = $0.name
             self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
         }).disposed(by: disposeBag)
+
+        output.searchSchoolRankList.bind(to: searchTableView.rx.items(
+            cellIdentifier: "searchCell",
+            cellType: RankTableViewCell.self
+        )) { _, items, cell in
+            cell.imgView.image = items.logoImageUrlString.toImage()
+            cell.nameLabel.text = items.name
+            cell.rankLabel.text = "\(items.ranking)등"
+            cell.stepLabel.text = "총 \(items.walkCount) 걸음"
+            switch items.ranking {
+            case 1:
+                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                cell.badgeImgView.image = UIImage()
+            }
+        }.disposed(by: disposeBag)
     }
 }
 
 extension HubViewController {
-    private func demoData() {
-        schoolImgView.image = .init(systemName: "clock.fill")
-        schoolName.text = "대덕소프트웨어마이스터고등학교"
-        gradeClassLabel.text = "3학년 3반"
-    }
 
     private func setNavigation() {
         navigationItem.searchController = searchController
@@ -159,7 +176,7 @@ extension HubViewController {
 // MARK: - Layout
 extension HubViewController {
     private func addSubviews() {
-        [mySchoolLabel, mySchoolView, top100Label, dropDownBtn, rankTableView]
+        [mySchoolLabel, mySchoolView, top100Label, dropDownBtn, rankTableView, searchTableView]
             .forEach { view.addSubview($0) }
 
         [schoolImgView, schoolName, gradeClassLabel]
@@ -210,6 +227,10 @@ extension HubViewController {
             $0.top.equalTo(top100Label.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview()
+        }
+
+        searchTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
 }

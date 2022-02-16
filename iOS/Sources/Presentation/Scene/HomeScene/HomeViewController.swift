@@ -2,12 +2,21 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
 import RxCocoa
 import CoreGraphics
 
 class HomeViewController: UIViewController {
 
-    private let cellView = UIView()
+    private var viewModel: HomeViewModel!
+    private var disposeBag = DisposeBag()
+
+    private let getData = PublishRelay<Void>()
+
+    private let healthInfoTableViewCell = HealthInfoTableViewCell()
+    private let startRecordTalbeViewCell = StartExerciseMeasuringTableViewCell()
+    private let rankTableViewCell = RankPreviewTableViewCell()
+    private let seeMoreRankTableViewCell = SeeMoreRankTableViewCell()
 
     private let notificationBtn = UIBarButtonItem().then {
         $0.image = .init(systemName: "bell.fill")
@@ -17,16 +26,27 @@ class HomeViewController: UIViewController {
     private let mainTableView = UITableView(frame: .zero, style: .insetGrouped).then {
         $0.backgroundColor = .init(named: "F9F9F9")
         $0.register(HealthInfoTableViewCell.self, forCellReuseIdentifier: "cell")
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "secondCell")
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
+        $0.register(StartExerciseMeasuringTableViewCell.self, forCellReuseIdentifier: "secondCell")
+        $0.register(RankPreviewTableViewCell.self, forCellReuseIdentifier: "thirdCell")
         $0.register(SeeMoreRankTableViewCell.self, forCellReuseIdentifier: "fourthCell")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
-        layout()
-        mainTableView.dataSource = self
+        mainTableView.delegate = self
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
+    }
+
+    override func viewDidLayoutSubviews() {
+        self.view.addSubview(mainTableView)
+
+        mainTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
 
     private func setNavigation() {
@@ -36,17 +56,28 @@ class HomeViewController: UIViewController {
         self.view.backgroundColor = .lightGray
     }
 
-    override func viewDidLayoutSubviews() {
-    }
+    private func bindViewModel() {
+        let input = HomeViewModel.Input(
+            getMainData: getData.asDriver(onErrorJustReturn: ())
+        )
 
-    private func layout() {
+        let output = viewModel.transform(input)
 
-        self.view.addSubview(mainTableView)
-        self.view.addSubview(cellView)
+        output.rankList.bind(
+            to: rankTableViewCell.rankTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: RankTableViewCell.self
+        )) { row, items, cell in
+            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.nameLabel.text = items.name
+            cell.stepLabel.text = "\(items.walkCount) 걸음"
+            cell.rankLabel.text = "\(items.ranking)등"
+        }.disposed(by: disposeBag)
 
-        mainTableView.snp.makeConstraints {
-            $0.top.trailing.leading.bottom.equalToSuperview()
-        }
+        healthInfoTableViewCell.setup(
+            dailyExercisesData: output.mainData,
+            caloriesData: output.caloriesData,
+            exerciseAnalysis: output.goalData)
     }
 }
 
@@ -59,22 +90,23 @@ extension HomeViewController: UITableViewDelegate {
         }
     }
 }
+
 extension HomeViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
             return 3
     }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 2 ? 2 : 1
+        return 1
     }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = mainTableView.dequeueReusableCell(
                 withIdentifier: "cell",
                 for: indexPath
             ) as? HealthInfoTableViewCell
-            cell?.selectionStyle = .none
-            cell?.whCircleProgressView.progress = 80
 
             return cell!
         } else if indexPath.section == 1 {
@@ -95,7 +127,6 @@ extension HomeViewController: UITableViewDataSource {
                     withIdentifier: "fourthCell",
                     for: indexPath
                 ) as? SeeMoreRankTableViewCell
-                cell?.selectionStyle = .none
                 return cell!
             }
         }

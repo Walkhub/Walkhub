@@ -136,6 +136,8 @@ extension RankHeaderView {
 
         badgeImgView.snp.makeConstraints {
             $0.centerY.equalTo(imgView)
+            $0.height.equalTo(27)
+            $0.width.equalTo(14)
             $0.trailing.equalTo(rankLabel.snp.leading).inset(11)
         }
 

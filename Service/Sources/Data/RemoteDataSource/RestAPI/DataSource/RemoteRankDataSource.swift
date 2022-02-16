@@ -15,9 +15,9 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
             .map { $0.toDomain() }
     }
 
-    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchool]> {
+    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchoolRank]> {
         return request(.searchSchool(name: name, dateType: dateType))
-            .map(SearchSchoolListDTO.self)
+            .map(SearchSchoolRankListDTO.self)
             .map { $0.toDomain() }
     }
 

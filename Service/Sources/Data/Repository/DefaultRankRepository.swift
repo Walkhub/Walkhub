@@ -15,7 +15,7 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchool]> {
+    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchoolRank]> {
         return remoteRankDataSource.searchSchool(name: name, dateType: dateType)
     }
 
