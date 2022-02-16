@@ -13,6 +13,11 @@ class HomeViewController: UIViewController {
 
     private let getData = PublishRelay<Void>()
 
+    private let healthInfoTableViewCell = HealthInfoTableViewCell()
+    private let startRecordTalbeViewCell = StartExerciseMeasuringTableViewCell()
+    private let rankTableViewCell = RankPreviewTableViewCell()
+    private let seeMoreRankTableViewCell = SeeMoreRankTableViewCell()
+
     private let notificationBtn = UIBarButtonItem().then {
         $0.image = .init(systemName: "bell.fill")
         $0.tintColor = .black
@@ -21,8 +26,8 @@ class HomeViewController: UIViewController {
     private let mainTableView = UITableView(frame: .zero, style: .insetGrouped).then {
         $0.backgroundColor = .init(named: "F9F9F9")
         $0.register(HealthInfoTableViewCell.self, forCellReuseIdentifier: "cell")
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "secondCell")
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "thirdCell")
+        $0.register(StartExerciseMeasuringTableViewCell.self, forCellReuseIdentifier: "secondCell")
+        $0.register(RankPreviewTableViewCell.self, forCellReuseIdentifier: "thirdCell")
         $0.register(SeeMoreRankTableViewCell.self, forCellReuseIdentifier: "fourthCell")
     }
 
@@ -30,6 +35,10 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         setNavigation()
         mainTableView.delegate = self
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
     }
 
     override func viewDidLayoutSubviews() {
@@ -53,6 +62,18 @@ class HomeViewController: UIViewController {
         )
 
         let output = viewModel.transform(input)
+
+        output.rankList.bind(to: rankTableViewCell.rankTableView.rx.items(cellIdentifier: "cell", cellType: RankTableViewCell.self)) { row, items, cell in
+            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.nameLabel.text = items.name
+            cell.stepLabel.text = "\(items.walkCount) 걸음"
+            cell.rankLabel.text = "\(items.ranking)등"
+        }
+
+        healthInfoTableViewCell.setup(
+            dailyExercisesData: output.mainData,
+            caloriesData: output.caloriesData,
+            exerciseAnalysis: output.goalData)
     }
 }
 
@@ -80,8 +101,6 @@ extension HomeViewController: UITableViewDataSource {
                 withIdentifier: "cell",
                 for: indexPath
             ) as? HealthInfoTableViewCell
-            cell?.selectionStyle = .none
-            cell?.whCircleProgressView.progress = 80
 
             return cell!
         } else if indexPath.section == 1 {
@@ -102,7 +121,6 @@ extension HomeViewController: UITableViewDataSource {
                     withIdentifier: "fourthCell",
                     for: indexPath
                 ) as? SeeMoreRankTableViewCell
-                cell?.selectionStyle = .none
                 return cell!
             }
         }
