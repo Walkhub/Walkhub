@@ -34,7 +34,16 @@ class OnboardingFlow: Flow {
     }
 
     private func navigationToLoginScreen() -> FlowContributors {
-        return .none
+        let loginFlow = LoginFlow()
+
+        Flows.use(loginFlow, when: .created) { [weak self] root in
+            self?.rootViewController.pushViewController(root, animated: true)
+        }
+
+        return .one(flowContributor: .contribute(
+            withNextPresentable: loginFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.loginIsRequired)
+        ))
     }
 
     private func navigationToSignupScreen() -> FlowContributors {

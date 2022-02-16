@@ -46,11 +46,28 @@ class OnboardingViewController: UIViewController, Stepper {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        setButtonsAction()
+
     }
 
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewContraints()
+    }
+
+    private func setButtonsAction() {
+
+        signupButton.rx.tap
+            .map { WalkhubStep.signupIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        signinButton.rx.tap
+            .map { WalkhubStep.loginIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
     }
 
 }
