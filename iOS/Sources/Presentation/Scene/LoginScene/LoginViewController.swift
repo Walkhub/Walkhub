@@ -9,6 +9,7 @@ class LoginViewController: UIViewController {
 
     var viewModel: LoginViewModel!
 
+    // MARK: UI
     private let idTextField = WHTextfield().then {
         $0.placeholder = "아이디"
         $0.autocapitalizationType = .none
@@ -42,10 +43,12 @@ class LoginViewController: UIViewController {
         $0.titleLabel?.textAlignment = .left
     }
 
+    // MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
         setupNavigaionBar()
+        bind()
     }
 
     override func viewDidLayoutSubviews() {
@@ -53,6 +56,20 @@ class LoginViewController: UIViewController {
         makeSubviewContraints()
     }
 
+}
+
+// MARK: - Bind ViewModel
+extension LoginViewController {
+    private func bind() {
+        let input = LoginViewModel.Input(
+            idTextfieldString: self.idTextField.rx.text.orEmpty.asDriver(),
+            passwordTextfieldString: self.passwordTextField.rx.text.orEmpty.asDriver(),
+            loginButtonIsTapped: loginButton.rx.tap.asDriver(),
+            findIdButtonIsTapped: findIdButton.rx.tap.asDriver(),
+            changePasswordButtonIsTapped: changePasswordButton.rx.tap.asDriver()
+        )
+        _ = viewModel.transform(input)
+    }
 }
 
 // MARK: - NavigaionBar
