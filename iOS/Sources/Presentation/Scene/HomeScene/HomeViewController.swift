@@ -8,7 +8,7 @@ import CoreGraphics
 
 class HomeViewController: UIViewController {
 
-    private var viewModel: HomeViewModel!
+    var viewModel: HomeViewModel!
     private var disposeBag = DisposeBag()
 
     private let getData = PublishRelay<Void>()
@@ -67,7 +67,7 @@ class HomeViewController: UIViewController {
             to: rankTableViewCell.rankTableView.rx.items(
             cellIdentifier: "cell",
             cellType: RankTableViewCell.self
-        )) { row, items, cell in
+        )) { _, items, cell in
             cell.imgView.image = items.profileImageUrl.toImage()
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "\(items.walkCount) 걸음"
