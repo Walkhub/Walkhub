@@ -4,7 +4,7 @@ import Moya
 
 enum LevelAPI {
     case fetchCaloriesLevelList
-    case setMaxCaloriesLavel(levelId: Int)
+    case setMaxCaloriesLevel(levelId: Int)
 }
 
 extension LevelAPI: WalkhubAPI {
@@ -16,18 +16,18 @@ extension LevelAPI: WalkhubAPI {
         switch self {
         case .fetchCaloriesLevelList:
             return "/list"
-        case .setMaxCaloriesLavel(let levelId):
+        case .setMaxCaloriesLevel(let levelId):
             return "/\(levelId)"
         }
     }
 
-    var errorMapper: [Int : WalkhubError]? {
+    var errorMapper: [Int: WalkhubError]? {
         switch self {
         case .fetchCaloriesLevelList:
             return [
                 401: .unauthorization
             ]
-        case .setMaxCaloriesLavel:
+        case .setMaxCaloriesLevel:
             return [
                 401: .unauthorization,
                 404: .undefindedLevel
@@ -37,7 +37,7 @@ extension LevelAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .setMaxCaloriesLavel:
+        case .setMaxCaloriesLevel:
             return .patch
         case .fetchCaloriesLevelList:
             return .get

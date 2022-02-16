@@ -75,7 +75,6 @@ extension JWTPlugin {
     private func fetchAccessToken() -> String {
         do {
             return try keychainDataSource.fetchAccessToken()
-            
         } catch {
             return ""
         }
@@ -84,7 +83,6 @@ extension JWTPlugin {
     private func fetchRefreshToken() -> String {
         do {
             return try keychainDataSource.fetchRefreshToken()
-            
         } catch {
             return ""
         }

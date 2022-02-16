@@ -15,7 +15,7 @@ extension SchoolAPI: WalkhubAPI {
         return "/search"
     }
 
-    var errorMapper: [Int : WalkhubError]? {
+    var errorMapper: [Int: WalkhubError]? {
         return [
             401: .undefinededSchool
         ]
