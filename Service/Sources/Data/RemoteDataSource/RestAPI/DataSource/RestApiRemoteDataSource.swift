@@ -63,7 +63,7 @@ private extension RestApiRemoteDataSource {
             }
             return Disposables.create(disposables)
         }.retry(when: { (errorObservable: Observable<TokenError>) in
-            errorObservable.flatMap { error -> Single<Void> in
+            errorObservable.flatMap { error -> Completable in
                 if error == .tokenExpired {
                     return RemoteAuthDataSource.shared.renewalToken()
                 } else {
@@ -83,7 +83,7 @@ extension RestApiRemoteDataSource {
 
     private func checkTokenIsValid() throws -> Bool {
         do {
-            let expiredDate = try KeychainTask.shared.fetch(accountType: .expiredAt).toDateWithTime()
+            let expiredDate = try KeychainDataSource.shared.fetchExpiredDate()
             return expiredDate <= Date()
         } catch {
             throw TokenError.noToken

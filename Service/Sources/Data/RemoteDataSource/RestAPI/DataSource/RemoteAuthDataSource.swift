@@ -15,12 +15,12 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         id: String,
         password: String,
         deviceToken: String
-    ) -> Single<Void> {
+    ) -> Single<UserSinginResponseDTO> {
         return request(.signin(
             id: id,
             password: password,
             deviceToken: deviceToken
-        )).map { _ in () }
+        )).map(UserSinginResponseDTO.self)
     }
 
     func signup(
@@ -34,7 +34,7 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         birthday: String,
         sex: Sex,
         schoolId: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.signup(
             id: id,
             password: password,
@@ -46,17 +46,17 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             birthday: birthday,
             sex: sex,
             schoolId: schoolId
-        )).map { _ in () }
+        )).asCompletable()
     }
 
-    func verificationPhone(phoneNumber: String) -> Single<Void> {
+    func verificationPhone(phoneNumber: String) -> Completable {
         return request(.verificationPhone(phoneNumber: phoneNumber))
-            .map { _ in () }
+            .asCompletable()
     }
 
-    func renewalToken() -> Single<Void> {
+    func renewalToken() -> Completable {
         return request(.renewalToken)
-            .map { _ in () }
+            .asCompletable()
     }
 
     func findID(phoneNumber: String) -> Single<String> {

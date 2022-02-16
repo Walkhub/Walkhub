@@ -23,7 +23,7 @@ public class SingupUseCase {
         birthday: String,
         sex: Sex,
         schoolId: String
-    ) -> Single<Void> {
+    ) -> Completable {
         authRepository.signup(
             id: id,
             password: password,

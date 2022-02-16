@@ -28,8 +28,16 @@ public enum JWTTokenType {
     }
 }
 
+// MARK: - TokenError
+enum TokenError: Error {
+    case noToken
+    case tokenExpired
+}
+
 // MARK: - JWTPlugin
 final class JWTPlugin: PluginType {
+
+    private let keychainDataSource = KeychainDataSource.shared
 
     public func prepare(
         _ request: URLRequest,
@@ -49,19 +57,6 @@ final class JWTPlugin: PluginType {
 
     }
 
-    public func didReceive(
-        _ result: Result<Response, MoyaError>,
-        target: TargetType
-    ) {
-        switch result {
-        case .success(let response):
-            if let newToken = try? response.map(TokenDTO.self) {
-                self.setToken(token: newToken)
-            }
-        default : break
-        }
-    }
-
 }
 
 extension JWTPlugin {
@@ -71,38 +66,28 @@ extension JWTPlugin {
         case .none:
             return nil
         case .accessToken:
-            return getAccessToken()
+            return fetchAccessToken()
         case .refreshToken:
-            return getRefreshToken()
+            return fetchRefreshToken()
         }
     }
 
-    private func getAccessToken() -> String {
+    private func fetchAccessToken() -> String {
         do {
-            return try KeychainTask.shared.fetch(accountType: .accessToken)
+            return try keychainDataSource.fetchAccessToken()
+            
         } catch {
             return ""
         }
     }
 
-    private func getRefreshToken() -> String {
+    private func fetchRefreshToken() -> String {
         do {
-            return try KeychainTask.shared.fetch(accountType: .refreshToken)
+            return try keychainDataSource.fetchRefreshToken()
+            
         } catch {
             return ""
         }
     }
 
-    private func setToken(token: TokenDTO) {
-        KeychainTask.shared.register(accountType: .accessToken, value: token.accessToken)
-        KeychainTask.shared.register(accountType: .refreshToken, value: token.refreshToken)
-        KeychainTask.shared.register(accountType: .expiredAt, value: token.expiredAt)
-    }
-
-}
-
-// MARK: - TokenError
-enum TokenError: Error {
-    case noToken
-    case tokenExpired
 }
