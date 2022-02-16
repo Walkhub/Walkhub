@@ -21,6 +21,11 @@ class HubViewController: UIViewController {
         $0.automaticallyShowsCancelButton = false
     }
 
+    private let searchTableView = UITableView().then {
+        $0.backgroundColor = .white
+        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "searchCell")
+    }
+
     private let mySchoolLabel = UILabel().then {
         $0.text = "내 학교"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
@@ -98,7 +103,8 @@ class HubViewController: UIViewController {
 
     private func bindViewModel() {
         let input = HubViewModel.Input(
-            dateType: dateType.asDriver(onErrorJustReturn: .day)
+            dateType: dateType.asDriver(onErrorJustReturn: .day),
+            name: searchController.searchBar.searchTextField.rx.text.orEmpty.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -128,6 +134,26 @@ class HubViewController: UIViewController {
             self.schoolName.text = $0.name
             self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
         }).disposed(by: disposeBag)
+
+        output.searchSchoolRankList.bind(to: searchTableView.rx.items(
+            cellIdentifier: "searchCell",
+            cellType: RankTableViewCell.self
+        )) { _, items, cell in
+            cell.imgView.image = items.logoImageUrlString.toImage()
+            cell.nameLabel.text = items.name
+            cell.rankLabel.text = "\(items.ranking)등"
+            cell.stepLabel.text = "총 \(items.walkCount) 걸음"
+            switch items.ranking {
+            case 1:
+                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
+            case 2:
+                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
+            case 3:
+                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
+            default:
+                cell.badgeImgView.image = UIImage()
+            }
+        }.disposed(by: disposeBag)
     }
 }
 
@@ -158,7 +184,7 @@ extension HubViewController {
 // MARK: - Layout
 extension HubViewController {
     private func addSubviews() {
-        [mySchoolLabel, mySchoolView, top100Label, dropDownBtn, rankTableView]
+        [mySchoolLabel, mySchoolView, top100Label, dropDownBtn, rankTableView, searchTableView]
             .forEach { view.addSubview($0) }
 
         [schoolImgView, schoolName, gradeClassLabel]
@@ -209,6 +235,10 @@ extension HubViewController {
             $0.top.equalTo(top100Label.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.bottom.equalToSuperview()
+        }
+
+        searchTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
 }
