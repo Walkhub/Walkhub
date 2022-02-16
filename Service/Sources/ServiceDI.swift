@@ -18,8 +18,8 @@ public extension Container {
         self.register(CheckIsSigninedUseCase.self) { resolver in
             return CheckIsSigninedUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
-        self.register(SinginUseCase.self) { resolver in
-            return SinginUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        self.register(SigninUseCase.self) { resolver in
+            return SigninUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
         self.register(SingupUseCase.self) { resolver in
             return SingupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
