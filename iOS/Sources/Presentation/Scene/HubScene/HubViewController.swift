@@ -8,7 +8,7 @@ import Service
 
 class HubViewController: UIViewController {
 
-    private var viewModel: HubViewModel
+    private var viewModel: HubViewModel!
     private var disposeBag = DisposeBag()
 
     private let dateType = PublishRelay<DateType>()
@@ -63,14 +63,6 @@ class HubViewController: UIViewController {
         $0.backgroundColor = .white
         $0.separatorStyle = .none
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "schoolRankCell")
-    }
-
-    convenience init(viewModel: HubViewModel) {
-        self.init(viewModel: viewModel)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
