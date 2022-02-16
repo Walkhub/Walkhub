@@ -15,6 +15,7 @@ extension Container {
     }
 
     private func registerViewController() {
+        self.register(OnboardingViewController.self) { _ in return OnboardingViewController() }
     }
 
 }
