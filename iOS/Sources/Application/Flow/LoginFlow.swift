@@ -40,7 +40,23 @@ class LoginFlow: Flow {
     }
 
     private func navigationToTabsScreen() -> FlowContributors {
-        return .none
+
+        let tabsFlow = TabsFlow()
+
+        Flows.use(tabsFlow, when: .created) { [weak self] root in
+            root.modalPresentationStyle = .fullScreen
+            root.modalTransitionStyle = .coverVertical
+            DispatchQueue.main.async {
+                self?.rootViewController.present(root, animated: true)
+                Loaf("로그인 성공!", state: .success, location: .bottom, sender: root).show()
+            }
+        }
+
+        return .one(flowContributor: .contribute(
+            withNextPresentable: tabsFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.tabsIsRequired))
+        )
+
     }
 
     private func showLoaf(
