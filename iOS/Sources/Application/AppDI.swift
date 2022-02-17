@@ -23,6 +23,12 @@ extension Container {
                 fetchRankPreviewUseCase: resolver.resolve(FetchRankPreviewUseCase.self)!
             )
         }
+        self.register(HubViewModel.self) { resolver in
+            HubViewModel(
+                fetchSchoolUseCase: resolver.resolve(FetchSchoolRankUseCase.self)!,
+                searchSchoolRankUseCase: resolver.resolve(SearchSchoolRankUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -35,6 +41,11 @@ extension Container {
         self.register(HomeViewController.self) { resolver in
             return HomeViewController().then {
                 $0.viewModel = resolver.resolve(HomeViewModel.self)!
+            }
+        }
+        self.register(HubViewController.self) { resolver in
+            return HubViewController().then {
+                $0.viewModel = resolver.resolve(HubViewModel.self)!
             }
         }
     }
