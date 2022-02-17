@@ -4,12 +4,12 @@ import Moya
 import RxSwift
 
 // MARK: - JWTTokenAuthorizable
-public protocol JWTTokenAuthorizable {
+protocol JWTTokenAuthorizable {
     var jwtTokenType: JWTTokenType? { get }
 }
 
 // MARK: - JWTTokenType
-public enum JWTTokenType {
+enum JWTTokenType {
 
     case none
 
@@ -21,7 +21,7 @@ public enum JWTTokenType {
         case .accessToken:
             return "Authorization"
         case .refreshToken:
-            return "X-Refresh-Token"
+            return "Refresh-Token"
         default:
             return nil
         }
@@ -39,11 +39,7 @@ final class JWTPlugin: PluginType {
 
     private let keychainDataSource = KeychainDataSource.shared
 
-    public func prepare(
-        _ request: URLRequest,
-        target: TargetType
-    ) throws -> URLRequest {
-
+    func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         guard let authorizable = target as? JWTTokenAuthorizable,
               let tokenType = authorizable.jwtTokenType,
               tokenType != .none
@@ -54,7 +50,6 @@ final class JWTPlugin: PluginType {
         let authValue = "Bearer \(getToken(type: tokenType)!)"
         request.addValue(authValue, forHTTPHeaderField: tokenType.headerString!)
         return request
-
     }
 
 }
