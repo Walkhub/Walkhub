@@ -12,9 +12,9 @@ class RestApiRemoteDataSource<API: WalkhubAPI> {
     func request(_ api: API) -> Single<Response> {
         return Single<Response>.create { single in
             var disposabels = [Disposable]()
-            if self.checkApiIsAuthorizable(api) {
+            if self.checkApiIsNeedAccessToken(api) {
                 disposabels.append(
-                    self.authorizableRequest(api)
+                    self.requestWithAccessToken(api)
                         .subscribe(
                             onSuccess: { single(.success($0)) },
                             onFailure: { single(.failure($0)) })
@@ -45,7 +45,7 @@ private extension RestApiRemoteDataSource {
             }
     }
 
-    private func authorizableRequest(_ api: API) -> Single<Response> {
+    private func requestWithAccessToken(_ api: API) -> Single<Response> {
         return Single<Response>.create { single in
             var disposables = [Disposable]()
             do {
@@ -77,8 +77,8 @@ private extension RestApiRemoteDataSource {
 
 extension RestApiRemoteDataSource {
 
-    private func checkApiIsAuthorizable(_ api: API) -> Bool {
-        return !(api.jwtTokenType == JWTTokenType.none)
+    private func checkApiIsNeedAccessToken(_ api: API) -> Bool {
+        return api.jwtTokenType == JWTTokenType.accessToken
     }
 
     private func checkTokenIsValid() throws -> Bool {
