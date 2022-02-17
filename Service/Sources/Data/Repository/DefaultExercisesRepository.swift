@@ -61,8 +61,7 @@ class DefaultExercisesRepository: ExercisesRepository {
                 dailyWalkCountGoal: 0,
                 walkCount: $1.stepCount,
                 calorie: $1.burnedKilocalories,
-                distane: $1.walkingRunningDistanceAsMeter,
-                walkTime: $1.walkingRunningTimeAsSecond
+                distane: Int($1.walkingRunningDistanceAsMeter)
             )
         }
     }
@@ -201,20 +200,21 @@ extension DefaultExercisesRepository {
         Single<Double>.zip(
             fetchDailyWalkingRunningDistanceAsMeter(),
             fetchDailyWalkingRunningTimeAsSecond()
-        ) { $0/$1 }
+        ) { $1 != 0 ? $0/$1 : 0.0 }
     }
 
     private func fetchMeasuringSpeedAsMeterPerSecond() -> Single<Double> {
         Single<Double>.zip(
             fetchMeasuringWalkingRunningDistanceAsMeter(),
             fetchMeasuringWalkingRunningTimeAsSecond()
-        ) { $0/$1 }
+        ) { $1 != 0 ? $0/$1 : 0.0 }
     }
 
     // MARK: BurnedKilocalories
     private func fetchDailyBurnedKilocalories() -> Single<Double> {
         Single<Double>.zip(
-            fetchDailySpeedAsMeterPerSecond().map { self.meterPerSecondToKillometerPerHour(meterPerSecond: $0) },
+            fetchDailySpeedAsMeterPerSecond()
+                .map { self.meterPerSecondToKillometerPerHour(meterPerSecond: $0) },
             fetchDailyWalkingRunningTimeAsSecond().map { self.secondToHour(second: $0) },
             healthKitDataSource.fetchUserWeight(),
             healthKitDataSource.fetchUserHeight(),
