@@ -35,7 +35,7 @@ extension AuthAPI: WalkhubAPI {
         case .signin, .signup, .verificationPhone:
             return .post
         case .renewalToken:
-            return .put
+            return .patch
         case .findID:
             return .get
         }
