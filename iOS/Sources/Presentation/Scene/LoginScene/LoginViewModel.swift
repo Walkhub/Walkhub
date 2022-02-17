@@ -53,11 +53,6 @@ class LoginViewModel: ViewModelType, Stepper {
             }
             .flatMap {
                 self.signinUseCase.excute(id: $0.id, password: $0.password)
-                    .do(onError: {
-                        print("ERROR \($0)")
-                    }, onCompleted: {
-                        print("SUCCESS")
-                    })
                     .andThen(Single.just(WalkhubStep.userIsLoggedIn))
                     .catchAndReturn(WalkhubStep.loaf("로그인 실패", state: .error, location: .top))
             }
