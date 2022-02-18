@@ -10,7 +10,7 @@ public class VerificationPhoneUseCase {
         self.authRepository = authRepository
     }
 
-    public func excute(phoneNumber: String) -> Single<Void> {
+    public func excute(phoneNumber: String) -> Completable {
         authRepository.verificationPhone(phoneNumber: phoneNumber)
     }
 

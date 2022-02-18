@@ -1,3 +1,4 @@
+// swiftlint:disable function_body_length
 import Foundation
 
 import Swinject
@@ -11,12 +12,24 @@ public extension Container {
 
     private func registerRepositories() {
         self.register(AuthRepository.self) { _ in DefaultAuthRepository() }
+        self.register(BadgeRepository.self) { _ in DefaultBadgeRepository() }
         self.register(ExercisesRepository.self) { _ in DefaultExercisesRepository() }
+        self.register(ImageRepository.self) { _ in DefaultImageRepository() }
+        self.register(LevelRepository.self) { _ in DefaultLevelRepository() }
+        self.register(NoticeRepository.self) { _ in DefaultNoticeRepository() }
+        self.register(NotificationRepository.self) { _ in DefaultNotificationRepository() }
+        self.register(RankRepository.self) { _ in DefaultRankRepository() }
+        self.register(SchoolRepository.self) { _ in DefaultSchoolRepository() }
+        self.register(UserRepository.self) { _ in DefaultUserRepository() }
     }
 
     private func registerUseCases() {
-        self.register(SinginUseCase.self) { resolver in
-            return SinginUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+
+        self.register(CheckIsSigninedUseCase.self) { resolver in
+            return CheckIsSigninedUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        }
+        self.register(SigninUseCase.self) { resolver in
+            return SigninUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
         self.register(SingupUseCase.self) { resolver in
             return SingupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
@@ -24,11 +37,77 @@ public extension Container {
         self.register(VerificationPhoneUseCase.self) { resolver in
             return VerificationPhoneUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
+
+        self.register(FetchExerciseAnalysisUseCase.self) { resolver in
+            return FetchExerciseAnalysisUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchLiveDailyExerciseRecordUseCase.self) { resolver in
+            return FetchLiveDailyExerciseRecordUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
         self.register(SynchronizeDailyExerciseRecordUseCase.self) { resolver in
             return SynchronizeDailyExerciseRecordUseCase(
                 exercisesRepository: resolver.resolve(ExercisesRepository.self)!
             )
         }
+
+        self.register(FetchCalroiesLevelUseCase.self) { resolver in
+            return FetchCalroiesLevelUseCase(
+                levelRepository: resolver.resolve(LevelRepository.self)!,
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+
+        self.register(FetchNotificationListUseCase.self) { resolver in
+            return FetchNotificationListUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(ReadNotificationUseCase.self) { resolver in
+            return ReadNotificationUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+
+        self.register(FetchRankPreviewUseCase.self) { resolver in
+            return FetchRankPreviewUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+        self.register(FetchSchoolDetailsUseCase.self) { resolver in
+            return FetchSchoolDetailsUseCase(
+                schoolRepository: resolver.resolve(SchoolRepository.self)!
+            )
+        }
+        self.register(FetchSchoolRankUseCase.self) { resolver in
+            return FetchSchoolRankUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+        self.register(FetchUserRankUseCase.self) { resolver in
+            return FetchUserRankUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+        self.register(FetchUserSchoolRankUseCase.self) { resolver in
+            return FetchUserSchoolRankUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+        self.register(SearchSchoolRankUseCase.self) { resolver in
+            return SearchSchoolRankUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+        self.register(SearchUserUseCase.self) { resolver in
+            return SearchUserUseCase(
+                rankRepository: resolver.resolve(RankRepository.self)!
+            )
+        }
+
     }
 
 }

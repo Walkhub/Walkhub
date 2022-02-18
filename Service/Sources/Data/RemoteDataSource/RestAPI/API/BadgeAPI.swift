@@ -40,7 +40,7 @@ extension BadgeAPI: WalkhubAPI {
         return .accessToken
     }
 
-    var errorMapper: [Int : WalkhubError]? {
+    var errorMapper: [Int: WalkhubError]? {
         switch self {
         case .fetchUserBadgeList:
             return [

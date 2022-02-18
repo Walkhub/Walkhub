@@ -16,7 +16,8 @@ let project = Project.dynamicFramework(
         .KDCircularProgress,
         .Charts,
         .DropDown,
-        .Tabman
+        .Tabman,
+        .Loaf
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -33,6 +34,7 @@ let project = Project.dynamicFramework(
         .SPM.KDCircularProgress,
         .SPM.Charts,
         .SPM.DropDown,
-        .SPM.Tabman
+        .SPM.Tabman,
+        .SPM.Loaf
     ]
 )

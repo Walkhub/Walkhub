@@ -8,14 +8,16 @@ import CoreGraphics
 
 class HomeViewController: UIViewController {
 
-    private var viewModel: HomeViewModel!
+    var viewModel: HomeViewModel!
     private var disposeBag = DisposeBag()
 
     private let getData = PublishRelay<Void>()
 
     private let healthInfoTableViewCell = HealthInfoTableViewCell()
     private let startRecordTalbeViewCell = StartExerciseMeasuringTableViewCell()
-    private let rankTableViewCell = RankPreviewTableViewCell()
+    private let rankTableViewCell = RankPreviewTableViewCell().then {
+        $0.rankTableView.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
+    }
     private let seeMoreRankTableViewCell = SeeMoreRankTableViewCell()
 
     private let notificationBtn = UIBarButtonItem().then {
@@ -24,17 +26,15 @@ class HomeViewController: UIViewController {
     }
 
     private let mainTableView = UITableView(frame: .zero, style: .insetGrouped).then {
-        $0.backgroundColor = .init(named: "F9F9F9")
-        $0.register(HealthInfoTableViewCell.self, forCellReuseIdentifier: "cell")
-        $0.register(StartExerciseMeasuringTableViewCell.self, forCellReuseIdentifier: "secondCell")
-        $0.register(RankPreviewTableViewCell.self, forCellReuseIdentifier: "thirdCell")
-        $0.register(SeeMoreRankTableViewCell.self, forCellReuseIdentifier: "fourthCell")
+        $0.backgroundColor = .gray50
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
+        bindViewModel()
         mainTableView.delegate = self
+        mainTableView.dataSource = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,38 +63,31 @@ class HomeViewController: UIViewController {
 
         let output = viewModel.transform(input)
 
-        output.rankList.bind(
-            to: rankTableViewCell.rankTableView.rx.items(
-            cellIdentifier: "cell",
-            cellType: RankTableViewCell.self
-        )) { row, items, cell in
-            cell.imgView.image = items.profileImageUrl.toImage()
-            cell.nameLabel.text = items.name
-            cell.stepLabel.text = "\(items.walkCount) 걸음"
-            cell.rankLabel.text = "\(items.ranking)등"
-        }.disposed(by: disposeBag)
+        rankTableViewCell.setup(userList: output.rankList)
 
         healthInfoTableViewCell.setup(
             dailyExercisesData: output.mainData,
             caloriesData: output.caloriesData,
-            exerciseAnalysis: output.goalData)
+            exerciseAnalysis: output.goalData
+        )
     }
 }
 
-extension HomeViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 2 {
-            return 64
-        } else {
-            return 50
+extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 0:
+            return 380
+        case 1:
+            return 96
+        default:
+            return 250
         }
     }
-}
-
-extension HomeViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-            return 3
+        return 3
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -103,31 +96,14 @@ extension HomeViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = mainTableView.dequeueReusableCell(
-                withIdentifier: "cell",
-                for: indexPath
-            ) as? HealthInfoTableViewCell
-
-            return cell!
+            return healthInfoTableViewCell
         } else if indexPath.section == 1 {
-            let cell = mainTableView.dequeueReusableCell(
-                withIdentifier: "secondCell",
-                for: indexPath
-            ) as? StartExerciseMeasuringTableViewCell
-            return cell!
+            return startRecordTalbeViewCell
         } else {
             if indexPath.row == 0 {
-                let cell = mainTableView.dequeueReusableCell(
-                    withIdentifier: "thirdCell",
-                    for: indexPath
-                ) as? RankTableViewCell
-                return cell!
+                return rankTableViewCell
             } else {
-                let cell = mainTableView.dequeueReusableCell(
-                    withIdentifier: "fourthCell",
-                    for: indexPath
-                ) as? SeeMoreRankTableViewCell
-                return cell!
+                return seeMoreRankTableViewCell
             }
         }
     }

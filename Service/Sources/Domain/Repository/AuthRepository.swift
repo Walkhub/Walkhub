@@ -4,8 +4,9 @@ import Foundation
 import RxSwift
 
 protocol AuthRepository {
-    func signin(id: String, password: String) -> Single<Void>
+    func tokenRefresh() -> Completable
+    func signin(id: String, password: String) -> Completable
     func signup(id: String, password: String, name: String, phoneNumber: String, authCode: String, height: Float,
-                weight: Int, birthday: String, sex: Sex, schoolId: String) -> Single<Void>
-    func verificationPhone(phoneNumber: String) -> Single<Void>
+                weight: Int, birthday: String, sex: Sex, schoolId: String) -> Completable
+    func verificationPhone(phoneNumber: String) -> Completable
 }

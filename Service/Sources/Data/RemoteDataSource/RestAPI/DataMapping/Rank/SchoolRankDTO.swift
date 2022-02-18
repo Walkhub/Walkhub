@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Data Transfer Object
 struct SchoolRankDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case mySchoolRank = "my_rank"
+        case mySchoolRank = "my_school_rank"
         case schoolList = "school_list"
     }
     let mySchoolRank: MySchoolDTO

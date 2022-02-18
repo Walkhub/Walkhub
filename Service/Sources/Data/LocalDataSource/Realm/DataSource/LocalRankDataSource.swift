@@ -58,7 +58,7 @@ extension LocalRankDataSource {
         return realmTask.fetchObjects(
             for: MySchoolRankRealmEntity.self,
                filter: QueryFilter.string(
-                query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
+                query: "dateType = '\(dateType.rawValue)'"
                )
         ).map { $0.first! }
     }
@@ -75,7 +75,7 @@ extension LocalRankDataSource {
         return realmTask.fetchObjects(
             for: SchoolRankRealmEntity.self,
                filter: QueryFilter.string(
-                query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
+                query: "dateType = '\(dateType.rawValue)' AND isMySchoolRank = true"
                ),
                sortProperty: "rank"
         )

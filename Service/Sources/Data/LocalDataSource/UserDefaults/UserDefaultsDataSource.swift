@@ -13,7 +13,7 @@ final class UserDefaultsDataSource {
             Sex(rawValue: userDefaults.string(forKey: "userSex") ?? "") ?? .noAnswer
         }
         set(newValue) {
-            userDefaults.set(newValue, forKey: "userSex")
+            userDefaults.set(newValue.rawValue, forKey: "userSex")
         }
     }
 

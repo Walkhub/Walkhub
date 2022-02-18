@@ -8,7 +8,7 @@ import Service
 
 class HubViewController: UIViewController {
 
-    private var viewModel: HubViewModel!
+    var viewModel: HubViewModel!
     private var disposeBag = DisposeBag()
 
     private let dateType = PublishRelay<DateType>()
@@ -76,6 +76,10 @@ class HubViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewContraints()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        dateType.accept(.week)
     }
 
     private func setDropDown() {

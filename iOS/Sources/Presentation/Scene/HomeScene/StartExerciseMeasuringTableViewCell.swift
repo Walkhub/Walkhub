@@ -14,23 +14,18 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
 
     let rankImageView = UIImageView().then {
         $0.clipsToBounds = true
-        $0.layer.cornerRadius = 15
-        $0.image = .init(systemName: "clock.fill")
-        $0.tintColor = .init(named: "F9F9F9")!
-    }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        $0.layer.cornerRadius = 24
+        $0.image = .init(systemName: "clear")
+        $0.backgroundColor = .gray300
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -46,20 +41,20 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
         self.contentView.addSubview(rankImageView)
 
         fastLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(24)
+            $0.bottom.equalTo(contentView.snp.centerY)
             $0.leading.equalToSuperview().inset(24)
         }
 
         recordLabel.snp.makeConstraints {
-            $0.top.equalTo(fastLabel.snp.bottom)
+            $0.bottom.equalTo(contentView.snp.centerY)
             $0.leading.equalToSuperview().inset(24)
+            $0.bottom.equalToSuperview().inset(24)
         }
 
         rankImageView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalToSuperview().inset(24)
             $0.height.width.equalTo(48)
-            $0.bottom.equalToSuperview().inset(24)
         }
     }
 }

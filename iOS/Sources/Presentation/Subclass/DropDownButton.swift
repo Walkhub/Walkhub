@@ -31,7 +31,6 @@ class DropDownButton: UIButton {
         fatalError()
     }
 
-
     private func setDropDownBtn() {
         self.setBackgroundColor(.gray50, for: .normal)
         self.setTitleColor(.gray800, for: .normal)

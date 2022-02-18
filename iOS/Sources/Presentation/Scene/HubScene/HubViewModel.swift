@@ -1,23 +1,25 @@
 import Foundation
 
-import RxSwift
 import RxCocoa
+import RxFlow
+import RxSwift
 import Service
 
-class HubViewModel: ViewModelType {
+class HubViewModel: ViewModelType, Stepper {
 
     private let fetchSchoolUseCase: FetchSchoolRankUseCase
     private let searchSchoolRankUseCase: SearchSchoolRankUseCase
 
     init(
         fetchSchoolUseCase: FetchSchoolRankUseCase,
-         searchSchoolRankUseCase: SearchSchoolRankUseCase
+        searchSchoolRankUseCase: SearchSchoolRankUseCase
     ) {
         self.fetchSchoolUseCase = fetchSchoolUseCase
         self.searchSchoolRankUseCase = searchSchoolRankUseCase
     }
 
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
 
     struct Input {
         let dateType: Driver<DateType>

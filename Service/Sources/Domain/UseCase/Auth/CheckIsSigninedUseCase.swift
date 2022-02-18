@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class SigninUseCase {
+public class CheckIsSigninedUseCase {
 
     private let authRepository: AuthRepository
 
@@ -10,8 +10,8 @@ public class SigninUseCase {
         self.authRepository = authRepository
     }
 
-    public func excute(id: String, password: String) -> Completable {
-        authRepository.signin(id: id, password: password)
+    public func excute() -> Completable {
+        authRepository.tokenRefresh()
     }
 
 }

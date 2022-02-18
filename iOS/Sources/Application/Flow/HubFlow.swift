@@ -4,6 +4,8 @@ import RxFlow
 
 class HubFlow: Flow {
 
+    private let container = AppDelegate.continer
+
     var root: Presentable {
         return rootViewController
     }
@@ -22,7 +24,12 @@ class HubFlow: Flow {
     }
 
     private func navigateToHubScreen() -> FlowContributors {
-        return .none
+        let hubViewController = container.resolve(HubViewController.self)!
+        self.rootViewController.pushViewController(hubViewController, animated: false)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: hubViewController,
+            withNextStepper: hubViewController.viewModel
+        ))
     }
 
 }
