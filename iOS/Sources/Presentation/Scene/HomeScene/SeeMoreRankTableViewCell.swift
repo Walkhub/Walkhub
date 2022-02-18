@@ -3,11 +3,10 @@ import UIKit
 class SeeMoreRankTableViewCell: UITableViewCell {
 
     let watchBtn = UIButton(type: .system).then {
-
         $0.layer.cornerRadius = 10
         $0.setTitle("모두보기", for: .normal)
         $0.setTitleColor(.black, for: .normal)
-        $0.backgroundColor = .init(named: "F9F9F9")
+        $0.backgroundColor = .gray300
     }
 
     override func awakeFromNib() {

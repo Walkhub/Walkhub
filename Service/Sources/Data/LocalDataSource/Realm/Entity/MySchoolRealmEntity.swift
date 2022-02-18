@@ -8,7 +8,6 @@ class MySchoolRealmEntity: Object {
     @Persisted var schoolId: Int = 0
     @Persisted var name: String = ""
     @Persisted var logoImageUrlString: String = ""
-    @Persisted var walkCount: Int = 0
     @Persisted var grade: Int = 0
     @Persisted var classNum: Int = 0
 }
@@ -18,7 +17,6 @@ extension MySchoolRealmEntity {
         self.schoolId = school.id
         self.name = school.name
         self.logoImageUrlString = school.logoImageUrlString.absoluteString
-        self.walkCount = school.walkCount
         self.grade = school.grade
         self.classNum = school.classNum
         self.compoundKey = compoundKey
@@ -34,7 +32,6 @@ extension MySchoolRealmEntity {
             id: schoolId,
             name: name,
             logoImageUrlString: URL(string: logoImageUrlString)!,
-            walkCount: walkCount,
             grade: grade,
             classNum: classNum
         )

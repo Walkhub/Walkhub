@@ -14,13 +14,13 @@ enum ExercisesAPI {
 extension ExercisesAPI: WalkhubAPI {
 
     var domain: ApiDomain {
-        .exercies
+        .exercises
     }
 
     var urlPath: String {
         switch self {
         case .fetchExerciseAnalysis:
-            return "analysis"
+            return "/analysis"
         case .fetchMeasuredExercises:
             return "/lists"
         case .startMeasuring:

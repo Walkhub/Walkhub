@@ -4,6 +4,7 @@ import RealmSwift
 
 class MySchoolRankRealmEntity: MySchoolRealmEntity {
     @Persisted var dateType: String = DateType.day.rawValue
+    @Persisted var isMyRank: Bool = true
 }
 
 extension MySchoolRankRealmEntity {
