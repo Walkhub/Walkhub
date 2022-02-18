@@ -35,7 +35,7 @@ extension WalkhubAPI {
 // MARK: - ApiDomain enum
 enum ApiDomain: String {
     case users
-    case exercies
+    case exercises
     case notices
     case notification
     case ranks
