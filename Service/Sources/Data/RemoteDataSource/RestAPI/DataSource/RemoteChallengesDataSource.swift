@@ -15,19 +15,19 @@ final class RemoteChallengesDataSource: RestApiRemoteDataSource<ChallengesAPI> {
             .map { $0.toDomain() }
     }
 
-    func fetchChallengeDetail(challengeID: Int) -> Single<ChallengeDetail> {
-        return request(.fetchChallengeDetail(challengeID: challengeID))
+    func fetchChallengeDetail(challengeId: Int) -> Single<ChallengeDetail> {
+        return request(.fetchChallengeDetail(challengeId: challengeId))
             .map(ChallengeDetailDTO.self)
             .map { $0.toDomain() }
     }
 
-    func joinChallenges(challengeID: Int) -> Single<Void> {
-        return request(.joinChallenges(challengeID: challengeID))
+    func joinChallenges(challengeId: Int) -> Single<Void> {
+        return request(.joinChallenges(challengeId: challengeId))
             .map { _ in () }
     }
 
-    func fetchParticipantsChallengesList(challengeID: Int) -> Single<ChallengeParticipantList> {
-        return request(.fetchParticipantsChallengesList(challengeID: challengeID))
+    func fetchParticipantsChallengesList(challengeId: Int) -> Single<ChallengeParticipantList> {
+        return request(.fetchParticipantsChallengesList(challengeId: challengeId))
             .map(ChallengeParticipantListDTO.self)
             .map { $0.toDomain() }
     }

@@ -4,8 +4,8 @@ import RxSwift
 
 protocol ChallengeRepository {
     func fetchChallengesList() -> Single<[Challenge]>
-    func fetchChallengeDetail(challengeID: Int) -> Single<ChallengeDetail>
-    func joinChallenges(challengeID: Int) -> Single<Void>
-    func fetchParticipantsChallengesList(challengeID: Int) -> Single<ChallengeParticipantList>
+    func fetchChallengeDetail(challengeId: Int) -> Single<ChallengeDetail>
+    func joinChallenges(challengeId: Int) -> Single<Void>
+    func fetchParticipantsChallengesList(challengeId: Int) -> Single<ChallengeParticipantList>
     func fetchJoingChallenges() -> Single<[Challenge]>
 }
