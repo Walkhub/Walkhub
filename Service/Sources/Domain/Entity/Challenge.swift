@@ -6,8 +6,8 @@ public struct Challenge: Equatable {
     public let start: Date
     public let end: Date
     public let imageUrl: URL
-    public let userScope: String
-    public let goalScope: String
-    public let goalType: String
+    public let userScope: GroupScope
+    public let goalScope: ChallengeGoalScope
+    public let goalType: ExerciseGoalType
     public let writer: Writer
 }

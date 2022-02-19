@@ -23,7 +23,7 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
 
     func startMeasuring(
         goal: Int,
-        goalType: MeasuringGoalType
+        goalType: ExerciseGoalType
     ) -> Single<Int> {
         return request(.startMeasuring(
             goal: goal,

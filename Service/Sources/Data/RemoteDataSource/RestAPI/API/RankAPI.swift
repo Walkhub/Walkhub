@@ -5,7 +5,7 @@ import Moya
 enum RankAPI {
     case fetchSchoolRank(dateType: DateType)
     case searchSchool(name: String, dateType: DateType)
-    case fetchUserSchoolRank(scope: Scope, dateType: DateType)
+    case fetchUserSchoolRank(scope: GroupScope, dateType: DateType)
     case fetchUserRank(schoolId: Int, dateType: DateType)
     case searchUser(name: String, dateType: DateType)
 }
