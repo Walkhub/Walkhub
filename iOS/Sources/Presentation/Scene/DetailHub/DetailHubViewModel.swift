@@ -29,7 +29,7 @@ class DetailHubViewModel: ViewModelType {
         let name: Driver<String>
         let schoolId: Driver<Int>
         let dateType: Driver<DateType>
-        let switchOn: Driver<Scope>
+        let switchOn: Driver<GroupScope>
         let isMySchool: Driver<Bool>
         let getDetails: Driver<Void>
     }

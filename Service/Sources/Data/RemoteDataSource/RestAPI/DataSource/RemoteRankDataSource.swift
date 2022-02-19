@@ -22,7 +22,7 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
     }
 
     func fetchUserSchoolRank(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Single<UserRank> {
         return request(.fetchUserSchoolRank(scope: scope, dateType: dateType))
