@@ -4,7 +4,7 @@ import Moya
 
 enum ChallengesAPI {
     case fetchChallengesList
-    case fetchDetailChallenges(challengeID: Int)
+    case fetchChallengeDetail(challengeID: Int)
     case joinChallenges(challengeID: Int)
     case fetchParticipantsChallengesList(challengeID: Int)
     case fetchJoinedChallenges
@@ -17,7 +17,7 @@ extension ChallengesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .fetchDetailChallenges(let challengeID), .joinChallenges(let challengeID):
+        case .fetchChallengeDetail(let challengeID), .joinChallenges(let challengeID):
             return "/\(challengeID)"
         case .fetchChallengesList:
             return "/lists"
@@ -32,7 +32,7 @@ extension ChallengesAPI: WalkhubAPI {
         switch self {
         case .joinChallenges:
             return .post
-        case .fetchChallengesList, .fetchDetailChallenges, .fetchParticipantsChallengesList,
+        case .fetchChallengesList, .fetchChallengeDetail, .fetchParticipantsChallengesList,
                 .fetchJoinedChallenges:
             return .get
         }
@@ -49,7 +49,7 @@ extension ChallengesAPI: WalkhubAPI {
                 401: .unauthorization,
                 403: .inaccessibleChallenge
             ]
-        case .fetchDetailChallenges:
+        case .fetchChallengeDetail:
             return [
                 401: .unauthorization,
                 403: .inaccessibleChallenge,
