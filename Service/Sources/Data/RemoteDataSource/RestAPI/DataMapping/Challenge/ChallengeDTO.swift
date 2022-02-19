@@ -33,9 +33,9 @@ extension ChallengeDTO {
             start: start.toDateWithTime(),
             end: end.toDateWithTime(),
             imageUrl: URL(string: imageUrlString)!,
-            userScope: userScope,
-            goalScope: goalScope,
-            goalType: goalType,
+            userScope: GroupScope(rawValue: userScope)!,
+            goalScope: ChallengeGoalScope(rawValue: goalScope)!,
+            goalType: ExerciseGoalType(rawValue: goalType)!,
             writer: writer.toDomain()
         )
     }
