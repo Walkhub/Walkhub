@@ -176,6 +176,7 @@ extension AgreeTermsViewController {
     }
 
     private func makeSubviewConstraints() {
+
         agreeTermsLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)

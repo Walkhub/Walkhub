@@ -25,7 +25,6 @@ class PersonalInformationPolicyViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
         setNavigation()
-        // Do any additional setup after loading the view.
     }
     
     private func setNavigation() {
