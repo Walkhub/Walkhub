@@ -147,12 +147,6 @@ class AgreeTermsViewController: UIViewController {
                 self.allAgreeBtn.isSelected = false
             }
         }).disposed(by: disposeBag)
-
-//        completeBtn.rx.tap.subscribe(onNext: {
-//            if self.allAgreeBtn.isSelected {
-//                self.completeBtn.isSelected = false
-//            }
-//        })
     }
 
     private func setNavigation() {
