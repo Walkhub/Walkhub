@@ -100,8 +100,8 @@ class SignUpViewController: UIViewController {
 
         nameTextField.rx.text.orEmpty
             .map(checkName(_:))
-            .subscribe(onNext: { eeee in
-                switch eeee {
+            .subscribe(onNext: { name in
+                switch name {
                 case .over:
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = "이름은 10자 내로 입력해주세요."
