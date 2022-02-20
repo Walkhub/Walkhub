@@ -161,12 +161,26 @@ class AgreeTermsViewController: UIViewController {
 }
 
 extension AgreeTermsViewController {
+
     private func addSubviews() {
-        [completeBtn, agreeTermsLabel, infoLabel, agreeTermsProgressBar, finishSignUpLabel,
-         agreeServiceLabel, allAgreeView, allAgreeLabel, allAgreeBtn, termsView, termsLabel,
-         termsBtn, personalInformationView, personalInfomationLabel, personalInformationBtn]
-            .forEach { view.addSubview($0) }
+        [completeBtn,
+         agreeTermsLabel,
+         infoLabel,
+         agreeTermsProgressBar,
+         finishSignUpLabel,
+         agreeServiceLabel,
+         allAgreeView,
+         allAgreeLabel,
+         allAgreeBtn,
+         termsView,
+         termsLabel,
+         termsBtn,
+         personalInformationView,
+         personalInfomationLabel,
+         personalInformationBtn
+        ].forEach { view.addSubview($0) }
     }
+
     private func makeSubviewConstraints() {
         agreeTermsLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
