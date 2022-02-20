@@ -20,11 +20,9 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
             self.phoneNumberTextField.text = String(name[..<index])
 
             return .over
-        }
-        else if name.count < 11 && name.count > 0 {
+        } else if name.count < 11 && name.count > 0 {
             return .under
-        }
-        else {
+        } else {
             return .normal
         }
     }
@@ -81,8 +79,8 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
     private func setTextField() {
         phoneNumberTextField.rx.text.orEmpty
             .map(checkPhoneNumber(_:))
-            .subscribe(onNext: { aaaa in
-                switch aaaa {
+            .subscribe(onNext: { phoneNumber in
+                switch phoneNumber {
                 case .over:
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = ""
@@ -107,7 +105,6 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
         setNavigation()
         setTextField()
         phoneNumberTextField.inputAccessoryView = accessoryView
-        // Do any additional setup after loading the view.
     }
 
     override func viewDidLayoutSubviews() {
