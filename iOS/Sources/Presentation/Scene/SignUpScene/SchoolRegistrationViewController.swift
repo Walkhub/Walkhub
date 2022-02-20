@@ -120,8 +120,14 @@ extension SchoolRegistrationViewController: UISearchBarDelegate {
 
 extension SchoolRegistrationViewController {
     private func addSubviews() {
-        [schoolRegistrationLabel, belongSchoolLabel, searchSchoolTextField, continueBtn, infoLabel, schoolResistrationProgressBar, searchTableView]
-            .forEach { view.addSubview($0) }
+        [schoolRegistrationLabel,
+         belongSchoolLabel,
+         searchSchoolTextField,
+         continueBtn,
+         infoLabel,
+         schoolResistrationProgressBar,
+         searchTableView
+        ].forEach { view.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
