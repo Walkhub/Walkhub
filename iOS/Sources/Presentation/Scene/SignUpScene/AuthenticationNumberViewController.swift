@@ -21,11 +21,6 @@ class AuthenticationNumberViewController: UIViewController {
 
     var limitTime: Int = 300
 
-//    private func sendButtonClicked(_ sender: UIButton) {
-//        timerLabel.isHidden = false
-//        getSetTime()
-//    }
-
     private let continueBtn = UIButton(type: .system).then {
         $0.setTitle("계속하기", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
@@ -161,12 +156,11 @@ class AuthenticationNumberViewController: UIViewController {
 
         authenticationNumberTextField.rx.text.orEmpty
             .map(authenticationNumber(_:))
-            .subscribe(onNext: { aaaa in
-                switch aaaa {
+            .subscribe(onNext: { authenticationNumber in
+                switch authenticationNumber {
                 case .over:
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = "인증번호 5자리를 입력해주세요."
-                    //                    self.nameTextField.resignFirstResponder()
                     self.continueBtn.isEnabled = false
 
                 case .under:
@@ -178,7 +172,7 @@ class AuthenticationNumberViewController: UIViewController {
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = "인증번호 5자리를 입력해주세요."
                     self.continueBtn.isEnabled = false
-                    
+
                 case .normal:
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = ""
