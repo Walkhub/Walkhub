@@ -65,9 +65,7 @@ class PWViewController: UIViewController {
 
     private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
 
-//    let regex = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,50}"
-
-    private let pwTextField = UITextField().then {
+   private let pwTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -87,7 +85,6 @@ class PWViewController: UIViewController {
         setNavigation()
         setTextField()
         pwTextField.inputAccessoryView = accessoryView
-        // Do any additional setup after loading the view.
     }
 
     private func setNavigation() {
@@ -103,17 +100,6 @@ class PWViewController: UIViewController {
         return pred.evaluate(with: "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}")
     }
 
-//    func validatePassword(_ input: String) -> Validation<String, String> {
-//        let regex = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}"
-//        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
-//        let isValid = predicate.evaluate(with: input)
-//
-//        if isValid {
-//            return .valid(input)
-//        } else {
-//            return .invalid("invalid password")
-//        }
-//    }
     private func setTextField() {
         pwTextField.rx.text.orEmpty
             .map { $0 != "" }
@@ -150,14 +136,6 @@ class PWViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
-//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//            let utf8Char = string.cString(using: .utf8)
-//            let isBackSpace = strcmp(utf8Char, "\\b")
-//            if string.hasCharacters() || isBackSpace == -92{
-//                return true
-//            }
-//            return false
-//        }
 }
 
 extension PWViewController {
@@ -202,18 +180,3 @@ extension PWViewController {
         }
     }
 }
-
-//extension String {
-//    func hasCharacters() -> Bool {
-//            do {
-//                let regex = try NSRegularExpression(pattern: "^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+=-])", options: .caseInsensitive)
-//                if let _ = regex.firstMatch(in: self, options: NSRegularExpression.MatchingOptions.reportCompletion, range: NSMakeRange(0, self.count)){
-//                    return true
-//                }
-//            } catch {
-//                print(error.localizedDescription)
-//                return false
-//            }
-//            return false
-//        }
-//}
