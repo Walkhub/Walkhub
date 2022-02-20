@@ -79,7 +79,6 @@ class IDViewController: UIViewController {
         setNavigation()
         setTextField()
         idTextField.inputAccessoryView = accessoryView
-        // Do any additional setup after loading the view.
     }
 
     private func setNavigation() {
@@ -89,8 +88,8 @@ class IDViewController: UIViewController {
     private func setTextField() {
         idTextField.rx.text.orEmpty
             .map(checkId(_:))
-            .subscribe(onNext: { aaaa in
-                switch aaaa {
+            .subscribe(onNext: { identity in
+                switch identity {
                 case .over:
                     self.infoLabel.textColor = .red
                     self.infoLabel.text = "아이디는 5~30자 내로 입력해주세요."
