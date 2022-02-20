@@ -100,7 +100,6 @@ class EnterHealthInformationViewController: UIViewController {
         setBtn()
         setNavigation()
         completeBtn.isEnabled = false
-        // Do any additional setup after loading the view.
     }
 
     private func setNavigation() {
@@ -150,10 +149,17 @@ class EnterHealthInformationViewController: UIViewController {
 
 extension EnterHealthInformationViewController {
     private func addSubviews() {
-        [enterHealthInformationLabel, healthInformationLabel,
-         enterInformationLabel, heightTextField, weightTextField,
-         heightLabel, weightLabel, maleBtn, femaleBtn, completeBtn]
-            .forEach { view.addSubview($0) }
+        [enterHealthInformationLabel,
+         healthInformationLabel,
+         enterInformationLabel,
+         heightTextField,
+         weightTextField,
+         heightLabel,
+         weightLabel,
+         maleBtn,
+         femaleBtn,
+         completeBtn
+        ].forEach { view.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
