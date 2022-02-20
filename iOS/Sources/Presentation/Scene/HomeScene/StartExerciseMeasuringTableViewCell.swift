@@ -13,15 +13,14 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
     }
 
     let rankImageView = UIImageView().then {
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 24
-        $0.image = .init(systemName: "clear")
-        $0.backgroundColor = .gray300
+        $0.image = .init(named: "startImg")
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
+        rankImageView.clipsToBounds = true
+        rankImageView.layer.cornerRadius = rankImageView.frame.size.height / 2
     }
 
     required init?(coder: NSCoder) {
