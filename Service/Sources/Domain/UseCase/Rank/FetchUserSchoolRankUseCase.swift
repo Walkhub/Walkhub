@@ -10,7 +10,7 @@ public class FetchUserSchoolRankUseCase {
     }
 
     public func excute(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Observable<(UserRank, Int?)> {
         return rankRepository.fetchUserSchoolRank(

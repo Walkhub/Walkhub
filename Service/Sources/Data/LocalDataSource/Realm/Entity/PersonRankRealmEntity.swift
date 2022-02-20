@@ -4,7 +4,7 @@ import RealmSwift
 
 class PersonRankRealmEntity: PersonRealmEntity {
 
-    @Persisted var scope: String = Scope.class.rawValue
+    @Persisted var scope: String = GroupScope.class.rawValue
     @Persisted var dateType: String = DateType.day.rawValue
     @Persisted var isMyRank: Bool = false
 
@@ -15,7 +15,7 @@ extension PersonRankRealmEntity {
 
     func setup(
         person: User,
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType,
         isMyRank: Bool = false
     ) {

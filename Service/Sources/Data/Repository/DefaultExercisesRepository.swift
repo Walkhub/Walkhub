@@ -74,7 +74,7 @@ class DefaultExercisesRepository: ExercisesRepository {
             .createObservable()
     }
 
-    func startMeasuring(goal: Int, goalType: MeasuringGoalType) -> Completable {
+    func startMeasuring(goal: Int, goalType: ExerciseGoalType) -> Completable {
         remoteExercisesDataSource.startMeasuring(goal: goal, goalType: goalType)
             .do(onSuccess: { exerciseId in
                 self.exerciseId = exerciseId
