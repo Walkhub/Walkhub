@@ -50,15 +50,19 @@ class DefaultExercisesRepository: ExercisesRepository {
         Observable.combineLatest(
             OfflineCacheUtil<[Int]>()
                 .localData { self.localExercisesDataSource.fetchWalkCountRecordList() }
-                .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map { $0.walkCountList } }
+                .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map {
+                    self.userDefaultsDataSource.dailyWalkCountGoal = $0.dailyWalkCountGoal
+                    return $0.walkCountList
+                } }
                 .doOnNeedRefresh { self.localExercisesDataSource.storeWalkCountRecordList($0) }
                 .createObservable(),
             fetchLiveDailyExerciseRecord()
         ) {
             let walkCountList: [Int] = $0.dropLast()+[$1.stepCount]
+            let dailyWalkCountGoal: Int = self.userDefaultsDataSource.dailyWalkCountGoal
             return ExerciseAnalysis(
                 walkCountList: walkCountList,
-                dailyWalkCountGoal: 0,
+                dailyWalkCountGoal: dailyWalkCountGoal,
                 walkCount: $1.stepCount,
                 calorie: $1.burnedKilocalories,
                 distane: Int($1.walkingRunningDistanceAsMeter)
