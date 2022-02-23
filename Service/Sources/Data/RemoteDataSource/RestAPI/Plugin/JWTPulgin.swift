@@ -52,6 +52,16 @@ final class JWTPlugin: PluginType {
         return request
     }
 
+    func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
+        switch result {
+        case .success(let data):
+            if let newToken = try? data.map(AccessTokenDTO.self) {
+                self.setToken(accessTokenDTO: newToken)
+            }
+        default : break
+        }
+    }
+
 }
 
 extension JWTPlugin {
@@ -81,6 +91,11 @@ extension JWTPlugin {
         } catch {
             return ""
         }
+    }
+
+    private func setToken(accessTokenDTO: AccessTokenDTO) {
+        keychainDataSource.registerAccessToken(accessTokenDTO.accessToken)
+        keychainDataSource.registerExpiredAt(accessTokenDTO.expiredAt)
     }
 
 }
