@@ -25,7 +25,7 @@ extension RankAPI: WalkhubAPI {
         case .fetchUserSchoolRank:
             return "/users/my-school"
         case .fetchUserRank(let schoolId, _):
-            return "/users/{\(schoolId)}"
+            return "/users/\(schoolId)"
         case .searchUser:
             return "/users/search"
         }
