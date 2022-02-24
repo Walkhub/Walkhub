@@ -40,12 +40,12 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
         self.contentView.addSubview(rankImageView)
 
         fastLabel.snp.makeConstraints {
-            $0.bottom.equalTo(contentView.snp.centerY)
+            $0.top.equalToSuperview().inset(24)
             $0.leading.equalToSuperview().inset(24)
         }
 
         recordLabel.snp.makeConstraints {
-            $0.bottom.equalTo(contentView.snp.centerY)
+            $0.top.equalTo(fastLabel.snp.bottom)
             $0.leading.equalToSuperview().inset(24)
             $0.bottom.equalToSuperview().inset(24)
         }
