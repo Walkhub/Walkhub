@@ -35,4 +35,7 @@ class DefaultChallengeRepository: ChallengeRepository {
             .createObservable()
     }
 
+    func fetchEndChallengList() -> Single<[Challenge]> {
+        remoteChallengesDataSource.fetchEndChallengeList()
+    }
 }

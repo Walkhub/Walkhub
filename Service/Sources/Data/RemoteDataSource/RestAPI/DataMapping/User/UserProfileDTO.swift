@@ -15,7 +15,7 @@ struct UserProfileDTO: Decodable {
     let userID: Int
     let name: String
     let profileImageUrlString: String
-    let school: String
+    let school: String?
     let grade: Int?
     let classNum: Int?
     let titleBadge: BadgeDTO
@@ -29,7 +29,7 @@ extension UserProfileDTO {
             userID: userID,
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!,
-            school: school,
+            school: school ?? "",
             grade: grade,
             classNum: classNum,
             titleBadge: titleBadge.toDomain(),
