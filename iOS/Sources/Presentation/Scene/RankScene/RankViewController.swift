@@ -14,6 +14,7 @@ class RankViewController: UIViewController {
     internal let dateType = PublishRelay<DateType>()
     internal let myRank = PublishRelay<(User, Int?)>()
     internal let userList = PublishRelay<[User]>()
+    internal let defaultUserList = PublishRelay<[DefaultSchoolUserRank]>()
     internal let isMySchool = PublishRelay<Bool>()
 
     private let mySchoolHeaderView = RankHeaderView().then {
