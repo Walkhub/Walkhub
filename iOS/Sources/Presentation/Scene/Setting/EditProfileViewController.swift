@@ -54,6 +54,7 @@ class EditProfileViewController: UIViewController {
     }
 
     private let editNameBtn = UIButton(type: .system).then {
+        $0.tintColor = .black
         $0.setImage(.init(named: "editImg"), for: .normal)
     }
 
@@ -73,6 +74,7 @@ class EditProfileViewController: UIViewController {
     }
 
     private let editSchoolInformationBtn = UIButton(type: .system).then {
+        $0.tintColor = .black
         $0.setImage(.init(named: "editImg"), for: .normal)
     }
 
