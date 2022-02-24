@@ -6,8 +6,8 @@ struct UserRankDTO: Decodable {
         case myRank = "my_ranking"
         case rankList = "ranking_list"
     }
-    let myRank: UserDTO
-    let rankList: [UserDTO]
+    let myRank: RankedUserDTO
+    let rankList: [RankedUserDTO]
 }
 
 // MARK: - Mappings to Domain
@@ -15,7 +15,6 @@ extension UserRankDTO {
     func toDomain() -> UserRank {
         return .init(
             myRank: myRank.toDomain(),
-            rankList: rankList.map { $0.toDomain() }
-        )
+            rankList: rankList.map { $0.toDomain() })
     }
 }

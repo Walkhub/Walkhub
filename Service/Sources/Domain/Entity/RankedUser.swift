@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DefaultSchoolUserRank {
+public struct RankedUser: Equatable {
     public let userId: Int
     public let name: String
     public let ranking: Int

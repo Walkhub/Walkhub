@@ -1,6 +1,6 @@
 import Foundation
 
-struct DefaultSchoolUserRankDTO: Decodable {
+struct RankedUserDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case name
@@ -15,8 +15,8 @@ struct DefaultSchoolUserRankDTO: Decodable {
     let walkCount: Int
 }
 
-extension DefaultSchoolUserRankDTO {
-    func toDomain() -> DefaultSchoolUserRank {
+extension RankedUserDTO {
+    func toDomain() -> RankedUser {
         return .init(
             userId: userId,
             name: name,

@@ -36,17 +36,17 @@ class DetailHubViewModel: ViewModelType {
 
     struct Output {
         let searchUserList: PublishRelay<[User]>
-        let myRank: PublishRelay<(User, Int?)>
-        let userList: PublishRelay<[User]>
-        let defaultUserList: PublishRelay<[DefaultSchoolUserRank]>
+        let myRank: PublishRelay<(RankedUser, Int?)>
+        let userList: PublishRelay<[RankedUser]>
+        let defaultUserList: PublishRelay<[RankedUser]>
         let schoolDetails: PublishRelay<SchoolDetails>
     }
 
     func transform(_ input: Input) -> Output {
         let searchUserList = PublishRelay<[User]>()
-        let myRank = PublishRelay<(User, Int?)>()
-        let userList = PublishRelay<[User]>()
-        let defaultUserList = PublishRelay<[DefaultSchoolUserRank]>()
+        let myRank = PublishRelay<(RankedUser, Int?)>()
+        let userList = PublishRelay<[RankedUser]>()
+        let defaultUserList = PublishRelay<[RankedUser]>()
         let schoolDetails = PublishRelay<SchoolDetails>()
 
         let info = Driver.combineLatest(input.name, input.schoolId, input.dateType)

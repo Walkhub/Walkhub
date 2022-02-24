@@ -12,9 +12,9 @@ class RankViewController: UIViewController {
 
     internal let scope = PublishRelay<GroupScope>()
     internal let dateType = PublishRelay<DateType>()
-    internal let myRank = PublishRelay<(User, Int?)>()
-    internal let userList = PublishRelay<[User]>()
-    internal let defaultUserList = PublishRelay<[DefaultSchoolUserRank]>()
+    internal let myRank = PublishRelay<(RankedUser, Int?)>()
+    internal let userList = PublishRelay<[RankedUser]>()
+    internal let defaultUserList = PublishRelay<[RankedUser]>()
     internal let isMySchool = PublishRelay<Bool>()
 
     private let mySchoolHeaderView = RankHeaderView().then {

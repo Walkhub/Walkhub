@@ -33,7 +33,7 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
     func fetchUserRank(
         schoolId: Int,
         dateType: DateType
-    ) -> Single<[DefaultSchoolUserRank]> {
+    ) -> Single<[RankedUser]> {
         return request(.fetchUserRank(schoolId: schoolId, dateType: dateType))
             .map(DefaultSchoolUserRankListDTO.self)
             .map { $0.toDomain() }

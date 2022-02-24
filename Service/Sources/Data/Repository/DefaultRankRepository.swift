@@ -30,7 +30,7 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[DefaultSchoolUserRank]> {
+    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[RankedUser]> {
         return remoteRankDataSource.fetchUserRank(
             schoolId: schoolId,
             dateType: dateType
