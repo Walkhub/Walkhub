@@ -7,3 +7,12 @@ public struct ExerciseAnalysis: Equatable {
     public let calorie: Double
     public let distane: Int
 }
+
+extension ExerciseAnalysis {
+    public func excute() -> ExerciseAnalysisRemotePart {
+        return .init(
+            walkCountList: walkCountList,
+            dailyWalkCountGoal: dailyWalkCountGoal
+        )
+    }
+}

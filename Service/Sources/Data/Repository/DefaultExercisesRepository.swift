@@ -48,18 +48,11 @@ class DefaultExercisesRepository: ExercisesRepository {
 
     func fetchExerciseAnalysis() -> Observable<ExerciseAnalysis> {
         Observable.combineLatest(
-            OfflineCacheUtil<[Int]>()
-                .localData { self.localExercisesDataSource.fetchWalkCountRecordList() }
-                .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map {
-                    self.userDefaultsDataSource.dailyWalkCountGoal = $0.dailyWalkCountGoal
-                    return $0.walkCountList
-                } }
-                .doOnNeedRefresh { self.localExercisesDataSource.storeWalkCountRecordList($0) }
-                .createObservable(),
+           fetchWalkCountListAndDailyWalkCountGoal(),
             fetchLiveDailyExerciseRecord()
         ) {
-            let walkCountList: [Int] = $0.dropLast()+[$1.stepCount]
-            let dailyWalkCountGoal: Int = self.userDefaultsDataSource.dailyWalkCountGoal
+            let walkCountList: [Int] = $0.walkCountList.dropLast()+[$1.stepCount]
+            let dailyWalkCountGoal: Int = $0.dailyWalkCountGoal
             return ExerciseAnalysis(
                 walkCountList: walkCountList,
                 dailyWalkCountGoal: dailyWalkCountGoal,
@@ -110,6 +103,20 @@ class DefaultExercisesRepository: ExercisesRepository {
         )
     }
 
+    private func fetchWalkCountListAndDailyWalkCountGoal() -> Observable<ExerciseAnalysisRemotePart> {
+        return OfflineCacheUtil<ExerciseAnalysisRemotePart>()
+            .localData { self.localExercisesDataSource.fetchWalkCountRecordList().map {
+                ExerciseAnalysisRemotePart(
+                    walkCountList: $0,
+                    dailyWalkCountGoal: self.userDefaultsDataSource.dailyWalkCountGoal
+                )
+            } }
+            .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map {
+                $0.excute()
+            } }
+            .doOnNeedRefresh { self.localExercisesDataSource.storeWalkCountRecordList($0.walkCountList) }
+            .createObservable()
+    }
 }
 
 // MARK: - Fetch Data Form HealthKit
