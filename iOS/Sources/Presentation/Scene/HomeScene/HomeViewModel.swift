@@ -47,24 +47,28 @@ class HomeViewModel: ViewModelType, Stepper {
         input.getMainData.asObservable().flatMap {
             self.fetchCalroiesLevelUseCase.excute()
         }.subscribe(onNext: {
+            print("1: \($0)")
             caloriesData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
             self.fetchLiveDailyExerciseRecordUseCase.excute()
-        }.subscribe(onNext: { data in
-            mainData.accept(data)
+        }.subscribe(onNext: {
+            print("2: \($0)")
+            mainData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
             self.fetchExercisesAnalysisUseCase.excute()
         }.subscribe(onNext: {
+            print("3: \($0)")
             goalData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
             self.fetchRankPreviewUseCase.excute()
         }.subscribe(onNext: {
+            print("4: \($0)")
             rankList.accept($0)
         }).disposed(by: disposeBag)
 
