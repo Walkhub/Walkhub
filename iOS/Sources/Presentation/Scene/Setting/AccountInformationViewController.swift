@@ -99,7 +99,7 @@ extension AccountInformationViewController {
 
     private func makeSubviewConstraints() {
         line.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaInsets)
+            $0.top.equalTo(view.snp.topMargin)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(1)
         }
