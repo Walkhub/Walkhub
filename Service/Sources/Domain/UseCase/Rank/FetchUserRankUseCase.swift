@@ -13,7 +13,7 @@ public class FetchUserRankUseCase {
     public func excute(
         schoolId: Int,
         dateType: DateType
-    ) -> Single<[User]> {
+    ) -> Single<[DefaultSchoolUserRank]> {
         return rankRepository.fetchUserRank(
             schoolId: schoolId,
             dateType: dateType
