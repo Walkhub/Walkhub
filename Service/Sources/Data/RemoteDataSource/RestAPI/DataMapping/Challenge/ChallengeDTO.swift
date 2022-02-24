@@ -17,7 +17,7 @@ struct ChallengeDTO: Decodable {
     let name: String
     let start: String
     let end: String
-    let imageUrlString: String
+    let imageUrlString: String?
     let userScope: String
     let goalScope: String
     let goalType: String
@@ -32,7 +32,7 @@ extension ChallengeDTO {
             name: name,
             start: start.toDateWithTime(),
             end: end.toDateWithTime(),
-            imageUrl: URL(string: imageUrlString)!,
+            imageUrl: URL(string: imageUrlString ?? "")!,
             userScope: GroupScope(rawValue: userScope)!,
             goalScope: ChallengeGoalScope(rawValue: goalScope)!,
             goalType: ExerciseGoalType(rawValue: goalType)!,
