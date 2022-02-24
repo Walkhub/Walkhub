@@ -2,7 +2,7 @@ import Foundation
 
 struct MyBadgeDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case id
+        case id = "badge_id"
         case name
         case imageUrlString = "image_url"
         case isMine = "is_mine"
