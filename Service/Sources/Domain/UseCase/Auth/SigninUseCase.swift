@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class SinginUseCase {
+public class SigninUseCase {
 
     private let authRepository: AuthRepository
 
@@ -10,7 +10,7 @@ public class SinginUseCase {
         self.authRepository = authRepository
     }
 
-    public func excute(id: String, password: String) -> Single<Void> {
+    public func excute(id: String, password: String) -> Completable {
         authRepository.signin(id: id, password: password)
     }
 

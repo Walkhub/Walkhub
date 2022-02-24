@@ -4,12 +4,12 @@ import Moya
 import RxSwift
 
 // MARK: - JWTTokenAuthorizable
-public protocol JWTTokenAuthorizable {
+protocol JWTTokenAuthorizable {
     var jwtTokenType: JWTTokenType? { get }
 }
 
 // MARK: - JWTTokenType
-public enum JWTTokenType {
+enum JWTTokenType {
 
     case none
 
@@ -21,21 +21,25 @@ public enum JWTTokenType {
         case .accessToken:
             return "Authorization"
         case .refreshToken:
-            return "X-Refresh-Token"
+            return "Refresh-Token"
         default:
             return nil
         }
     }
 }
 
+// MARK: - TokenError
+enum TokenError: Error {
+    case noToken
+    case tokenExpired
+}
+
 // MARK: - JWTPlugin
 final class JWTPlugin: PluginType {
 
-    public func prepare(
-        _ request: URLRequest,
-        target: TargetType
-    ) throws -> URLRequest {
+    private let keychainDataSource = KeychainDataSource.shared
 
+    func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         guard let authorizable = target as? JWTTokenAuthorizable,
               let tokenType = authorizable.jwtTokenType,
               tokenType != .none
@@ -46,17 +50,13 @@ final class JWTPlugin: PluginType {
         let authValue = "Bearer \(getToken(type: tokenType)!)"
         request.addValue(authValue, forHTTPHeaderField: tokenType.headerString!)
         return request
-
     }
 
-    public func didReceive(
-        _ result: Result<Response, MoyaError>,
-        target: TargetType
-    ) {
+    func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
         switch result {
-        case .success(let response):
-            if let newToken = try? response.map(TokenDTO.self) {
-                self.setToken(token: newToken)
+        case .success(let data):
+            if let newToken = try? data.map(AccessTokenDTO.self) {
+                self.setToken(accessTokenDTO: newToken)
             }
         default : break
         }
@@ -71,38 +71,31 @@ extension JWTPlugin {
         case .none:
             return nil
         case .accessToken:
-            return getAccessToken()
+            return fetchAccessToken()
         case .refreshToken:
-            return getRefreshToken()
+            return fetchRefreshToken()
         }
     }
 
-    private func getAccessToken() -> String {
+    private func fetchAccessToken() -> String {
         do {
-            return try KeychainTask.shared.fetch(accountType: .accessToken)
+            return try keychainDataSource.fetchAccessToken()
         } catch {
             return ""
         }
     }
 
-    private func getRefreshToken() -> String {
+    private func fetchRefreshToken() -> String {
         do {
-            return try KeychainTask.shared.fetch(accountType: .refreshToken)
+            return try keychainDataSource.fetchRefreshToken()
         } catch {
             return ""
         }
     }
 
-    private func setToken(token: TokenDTO) {
-        KeychainTask.shared.register(accountType: .accessToken, value: token.accessToken)
-        KeychainTask.shared.register(accountType: .refreshToken, value: token.refreshToken)
-        KeychainTask.shared.register(accountType: .expiredAt, value: token.expiredAt)
+    private func setToken(accessTokenDTO: AccessTokenDTO) {
+        keychainDataSource.registerAccessToken(accessTokenDTO.accessToken)
+        keychainDataSource.registerExpiredAt(accessTokenDTO.expiredAt)
     }
 
-}
-
-// MARK: - TokenError
-enum TokenError: Error {
-    case noToken
-    case tokenExpired
 }

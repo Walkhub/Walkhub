@@ -20,8 +20,8 @@ class AppFlow: Flow {
         switch step {
         case .tabsIsRequired:
             return navigationToTabsScreen()
-        case .loginIsRequired:
-            return navigationToLoginScreen()
+        case .onboardingIsRequired:
+            return navigationToOnboardingScreen()
         default:
             return .none
         }
@@ -50,11 +50,11 @@ extension AppFlow {
 
     }
 
-    private func navigationToLoginScreen() -> FlowContributors {
+    private func navigationToOnboardingScreen() -> FlowContributors {
 
-        let tabsFlow = LoginFlow()
+        let onboardingFlow = OnboardingFlow()
 
-        Flows.use(tabsFlow, when: .created) { [weak self] root in
+        Flows.use(onboardingFlow, when: .created) { [weak self] root in
             root.modalPresentationStyle = .fullScreen
             root.modalTransitionStyle = .crossDissolve
             DispatchQueue.main.async {
@@ -63,9 +63,9 @@ extension AppFlow {
         }
 
         return .one(flowContributor: .contribute(
-            withNextPresentable: tabsFlow,
-            withNextStepper: OneStepper(withSingleStep: WalkhubStep.loginIsRequired))
-        )
+            withNextPresentable: onboardingFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.onboardingIsRequired)
+        ))
 
     }
 

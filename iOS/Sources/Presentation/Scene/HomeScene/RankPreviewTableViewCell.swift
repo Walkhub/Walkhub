@@ -1,10 +1,16 @@
 import UIKit
 
+import RxSwift
+import RxCocoa
+import Service
+
 class RankPreviewTableViewCell: UITableViewCell {
+
+    private var disposeBag = DisposeBag()
 
     let rankTableView = UITableView().then {
         $0.separatorStyle = .none
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -27,4 +33,16 @@ class RankPreviewTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
+    internal func setup(userList: PublishRelay<[User]>) {
+        userList.bind(
+            to: rankTableView.rx.items(
+            cellIdentifier: "rankCell",
+            cellType: RankTableViewCell.self
+        )) { _, items, cell in
+            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.nameLabel.text = items.name
+            cell.stepLabel.text = "\(items.walkCount) 걸음"
+            cell.rankLabel.text = "\(items.ranking)등"
+        }.disposed(by: disposeBag)
+    }
 }

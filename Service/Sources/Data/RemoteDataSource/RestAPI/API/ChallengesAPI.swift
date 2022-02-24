@@ -4,9 +4,9 @@ import Moya
 
 enum ChallengesAPI {
     case fetchChallengesList
-    case fetchDetailChallenges(challengeID: Int)
-    case joinChallenges(challengeID: Int)
-    case fetchParticipantsChallengesList(challengeID: Int)
+    case fetchChallengeDetail(challengeId: Int)
+    case joinChallenges(challengeId: Int)
+    case fetchParticipantsChallengesList(challengeId: Int)
     case fetchJoinedChallenges
 }
 
@@ -17,12 +17,12 @@ extension ChallengesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .fetchDetailChallenges(let challengeID), .joinChallenges(let challengeID):
-            return "/\(challengeID)"
+        case .fetchChallengeDetail(let challengeId), .joinChallenges(let challengeId):
+            return "/\(challengeId)"
         case .fetchChallengesList:
             return "/lists"
-        case .fetchParticipantsChallengesList(let challengeID):
-            return "/\(challengeID)/participants/students"
+        case .fetchParticipantsChallengesList(let challengeId):
+            return "/\(challengeId)/participants/students"
         case .fetchJoinedChallenges:
             return "/participated"
         }
@@ -32,7 +32,7 @@ extension ChallengesAPI: WalkhubAPI {
         switch self {
         case .joinChallenges:
             return .post
-        case .fetchChallengesList, .fetchDetailChallenges, .fetchParticipantsChallengesList,
+        case .fetchChallengesList, .fetchChallengeDetail, .fetchParticipantsChallengesList,
                 .fetchJoinedChallenges:
             return .get
         }
@@ -49,7 +49,7 @@ extension ChallengesAPI: WalkhubAPI {
                 401: .unauthorization,
                 403: .inaccessibleChallenge
             ]
-        case .fetchDetailChallenges:
+        case .fetchChallengeDetail:
             return [
                 401: .unauthorization,
                 403: .inaccessibleChallenge,

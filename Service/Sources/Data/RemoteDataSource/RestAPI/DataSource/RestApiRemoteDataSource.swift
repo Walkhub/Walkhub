@@ -9,12 +9,14 @@ class RestApiRemoteDataSource<API: WalkhubAPI> {
 
     private let provider = MoyaProvider<API>(plugins: [JWTPlugin()])
 
+    private let keychainDataSource = KeychainDataSource.shared
+
     func request(_ api: API) -> Single<Response> {
         return Single<Response>.create { single in
             var disposabels = [Disposable]()
-            if self.checkApiIsAuthorizable(api) {
+            if self.checkApiIsNeedAccessToken(api) {
                 disposabels.append(
-                    self.authorizableRequest(api)
+                    self.requestWithAccessToken(api)
                         .subscribe(
                             onSuccess: { single(.success($0)) },
                             onFailure: { single(.failure($0)) })
@@ -36,38 +38,36 @@ private extension RestApiRemoteDataSource {
 
     private func defaultRequest(_ api: API) -> Single<Response> {
         return provider.rx.request(api)
-            .timeout(.seconds(2), scheduler: MainScheduler.asyncInstance)
+            .timeout(.seconds(5), scheduler: MainScheduler.asyncInstance)
             .catch { error in
-                guard let moyaError = error as? MoyaError else {
+                guard let errorCode = (error as? MoyaError)?.response?.statusCode else {
                     return Single.error(error)
                 }
-                return Single.error(api.errorMapper?[moyaError.errorCode] ?? error)
+                return Single.error(api.errorMapper?[errorCode] ?? error)
             }
     }
 
-    private func authorizableRequest(_ api: API) -> Single<Response> {
-        return Single<Response>.create { single in
-            var disposables = [Disposable]()
+    private func requestWithAccessToken(_ api: API) -> Single<Response> {
+        return Single.deferred {
             do {
                 if try self.checkTokenIsValid() {
-                    disposables.append(
-                        self.defaultRequest(api).subscribe(
-                            onSuccess: { single(.success($0)) },
-                            onFailure: { single(.failure($0)) })
-                    )
+                    return self.defaultRequest(api)
                 } else {
-                    single(.failure(TokenError.tokenExpired))
+                    return .error(TokenError.tokenExpired)
                 }
             } catch {
-                single(.failure(error))
+                return .error(error)
             }
-            return Disposables.create(disposables)
-        }.retry(when: { (errorObservable: Observable<TokenError>) in
-            errorObservable.flatMap { error -> Single<Void> in
-                if error == .tokenExpired {
-                    return RemoteAuthDataSource.shared.renewalToken()
-                } else {
-                    throw TokenError.noToken
+        }
+        .retry(when: { (errorObservable: Observable<TokenError>) in
+            return errorObservable
+                .flatMap { error -> Observable<Void> in
+                switch error {
+                case .tokenExpired:
+                    return self.renewalToken()
+                        .andThen(.just(()))
+                default:
+                    return .error(error)
                 }
             }
         })
@@ -77,17 +77,23 @@ private extension RestApiRemoteDataSource {
 
 extension RestApiRemoteDataSource {
 
-    private func checkApiIsAuthorizable(_ api: API) -> Bool {
-        return !(api.jwtTokenType == JWTTokenType.none)
+    private func checkApiIsNeedAccessToken(_ api: API) -> Bool {
+        return api.jwtTokenType == JWTTokenType.accessToken
     }
 
     private func checkTokenIsValid() throws -> Bool {
         do {
-            let expiredDate = try KeychainTask.shared.fetch(accountType: .expiredAt).toDateWithTime()
-            return expiredDate <= Date()
+            let expiredDate = try keychainDataSource.fetchExpiredDate()
+            return Date() <= expiredDate
         } catch {
             throw TokenError.noToken
         }
+    }
+
+    private func renewalToken() -> Completable {
+        return MoyaProvider<AuthAPI>(plugins: [JWTPlugin()]).rx
+            .request(.renewalToken)
+            .asCompletable()
     }
 
 }

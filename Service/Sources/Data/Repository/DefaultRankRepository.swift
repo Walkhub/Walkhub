@@ -20,7 +20,7 @@ class DefaultRankRepository: RankRepository {
     }
 
     func fetchUserSchoolRank(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Observable<UserRank> {
         return OfflineCacheUtil<UserRank>()

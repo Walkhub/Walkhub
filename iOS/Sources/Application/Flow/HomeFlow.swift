@@ -4,6 +4,8 @@ import RxFlow
 
 class HomeFlow: Flow {
 
+    private let container = AppDelegate.continer
+
     var root: Presentable {
         return rootViewController
     }
@@ -22,7 +24,12 @@ class HomeFlow: Flow {
     }
 
     private func navigateToHomeScreen() -> FlowContributors {
-        return .none
+        let homeViewController = container.resolve(HomeViewController.self)!
+        self.rootViewController.pushViewController(homeViewController, animated: false)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: homeViewController,
+            withNextStepper: homeViewController.viewModel
+        ))
     }
 
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum MeasuringGoalType: String {
+public enum ExerciseGoalType: String {
     case distance = "DISTANCE"
     case walkCount = "WALK"
 }

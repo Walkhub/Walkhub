@@ -82,7 +82,7 @@ final class HealthKitDataSource {
             dataValue: weight,
             unit: .gramUnit(with: .kilo),
             date: Date(),
-            dataType: .height
+            dataType: .bodyMass
         )
     }
 

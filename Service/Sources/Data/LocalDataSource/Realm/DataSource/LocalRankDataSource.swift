@@ -23,7 +23,7 @@ final class LocalRankDataSource {
     }
 
     func fetchUserRank(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Single<UserRank> {
         return Single.zip(
@@ -34,7 +34,7 @@ final class LocalRankDataSource {
 
     func storeUserRank(
         userRank: UserRank,
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) {
         storeMyRank(
@@ -58,7 +58,7 @@ extension LocalRankDataSource {
         return realmTask.fetchObjects(
             for: MySchoolRankRealmEntity.self,
                filter: QueryFilter.string(
-                query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
+                query: "dateType = '\(dateType.rawValue)'"
                )
         ).map { $0.first! }
     }
@@ -75,7 +75,7 @@ extension LocalRankDataSource {
         return realmTask.fetchObjects(
             for: SchoolRankRealmEntity.self,
                filter: QueryFilter.string(
-                query: "dateType = '\(dateType.rawValue)' AND isMyRank = true"
+                query: "dateType = '\(dateType.rawValue)' AND isMySchoolRank = true"
                ),
                sortProperty: "rank"
         )
@@ -134,7 +134,7 @@ extension LocalRankDataSource {
 extension LocalRankDataSource {
 
     private func fetchMyRank(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Single<PersonRankRealmEntity> {
         return realmTask.fetchObjects(
@@ -147,7 +147,7 @@ extension LocalRankDataSource {
 
     private func storeMyRank(
         user: User,
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) {
         let myRank = userToPersonRankRealmEntity(
@@ -160,7 +160,7 @@ extension LocalRankDataSource {
     }
 
     private func fetchUserRankList(
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) -> Single<[PersonRankRealmEntity]> {
         return realmTask.fetchObjects(
@@ -174,7 +174,7 @@ extension LocalRankDataSource {
 
     private func storeUserRankList(
         rankList: [User],
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType
     ) {
         let userRankList = rankList.map {
@@ -190,7 +190,7 @@ extension LocalRankDataSource {
 
     private func userToPersonRankRealmEntity(
         user: User,
-        scope: Scope,
+        scope: GroupScope,
         dateType: DateType,
         isMyRank: Bool
     ) -> PersonRankRealmEntity {

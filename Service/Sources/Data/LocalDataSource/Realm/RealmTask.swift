@@ -52,7 +52,6 @@ final class RealmTask: RealmTaskType {
         guard let realm = try? Realm() else {
             fatalError("Undefinded Realm")
         }
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
         return realm
     }
 

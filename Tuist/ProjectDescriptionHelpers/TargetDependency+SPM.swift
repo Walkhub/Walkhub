@@ -20,6 +20,7 @@ public extension TargetDependency.SPM {
     static let Charts = TargetDependency.package(product: "Charts")
     static let DropDown = TargetDependency.package(product: "DropDown")
     static let Tabman = TargetDependency.package(product: "Tabman")
+    static let Loaf = TargetDependency.package(product: "Loaf")
 }
 
 public extension Package {
@@ -73,8 +74,12 @@ public extension Package {
         url: "https://github.com/AssistoLab/DropDown",
         requirement: .branch("master")
     )
-
     static let Tabman = Package.remote(
         url: "https://github.com/uias/Tabman",
-        requirement: .upToNextMajor(from: "2.12.0"))
+        requirement: .upToNextMajor(from: "2.12.0")
+    )
+    static let Loaf = Package.remote(
+        url: "https://github.com/schmidyy/Loaf.git",
+        requirement: .upToNextMajor(from: "0.7.0")
+    )
 }

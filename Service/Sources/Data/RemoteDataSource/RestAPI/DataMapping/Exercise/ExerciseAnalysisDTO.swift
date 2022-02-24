@@ -4,18 +4,16 @@ import Foundation
 struct ExerciseAnalysisDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case walkCountList = "walk_count_list"
-        case dailyWalkCountGoal = "dailyWalkCountGoal"
+        case dailyWalkCountGoal = "daily_walk_count_goal"
         case walkCount = "walk_count"
         case calorie
-        case distane
-        case walkTime = "walk_time"
+        case distance
     }
     let walkCountList: [Int]
     let dailyWalkCountGoal: Int
-    let walkCount: Int
-    let calorie: Double
-    let distane: Double
-    let walkTime: Double
+    let walkCount: Int?
+    let calorie: Double?
+    let distance: Int?
 }
 
 // MARK: - Mappings to Domain
@@ -24,10 +22,9 @@ extension ExerciseAnalysisDTO {
         return .init(
             walkCountList: walkCountList,
             dailyWalkCountGoal: dailyWalkCountGoal,
-            walkCount: walkCount,
-            calorie: calorie,
-            distane: distane,
-            walkTime: walkTime
+            walkCount: walkCount ?? 0,
+            calorie: calorie ?? 0,
+            distane: distance ?? 0
         )
     }
 }

@@ -1,10 +1,11 @@
 import Foundation
 
-import RxSwift
 import RxCocoa
+import RxFlow
+import RxSwift
 import Service
 
-class HomeViewModel: ViewModelType {
+class HomeViewModel: ViewModelType, Stepper {
 
     private let fetchCalroiesLevelUseCase: FetchCalroiesLevelUseCase
     private let fetchLiveDailyExerciseRecordUseCase: FetchLiveDailyExerciseRecordUseCase
@@ -24,6 +25,7 @@ class HomeViewModel: ViewModelType {
     }
 
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
 
     struct Input {
         let getMainData: Driver<Void>
@@ -73,5 +75,4 @@ class HomeViewModel: ViewModelType {
             rankList: rankList
         )
     }
-
 }

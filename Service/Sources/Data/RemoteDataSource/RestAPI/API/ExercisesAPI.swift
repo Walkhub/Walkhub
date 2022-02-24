@@ -5,7 +5,7 @@ import Moya
 enum ExercisesAPI {
     case fetchExerciseAnalysis
     case fetchMeasuredExercises
-    case startMeasuring(goal: Int, goalType: MeasuringGoalType)
+    case startMeasuring(goal: Int, goalType: ExerciseGoalType)
     case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
     case saveLocations(exercisesId: Int, locationList: [UserLocation])
     case saveDailyExsercises(date: Date, distance: Double, walkCount: Int, calorie: Double)
@@ -14,13 +14,13 @@ enum ExercisesAPI {
 extension ExercisesAPI: WalkhubAPI {
 
     var domain: ApiDomain {
-        .exercies
+        .exercises
     }
 
     var urlPath: String {
         switch self {
         case .fetchExerciseAnalysis:
-            return "analysis"
+            return "/analysis"
         case .fetchMeasuredExercises:
             return "/lists"
         case .startMeasuring:

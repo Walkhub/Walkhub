@@ -10,7 +10,7 @@ class RankViewController: UIViewController {
 
     private var disposeBag = DisposeBag()
 
-    internal let scope = PublishRelay<Scope>()
+    internal let scope = PublishRelay<GroupScope>()
     internal let dateType = PublishRelay<DateType>()
     internal let myRank = PublishRelay<(User, Int?)>()
     internal let userList = PublishRelay<[User]>()

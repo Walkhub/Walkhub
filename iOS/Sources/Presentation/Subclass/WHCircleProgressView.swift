@@ -86,7 +86,7 @@ extension WHCircleProgressView {
 
     private func makeSubviewConstraints() {
         trackView.snp.makeConstraints {
-            $0.top.bottom.left.right.equalToSuperview()
+            $0.top.bottom.left.right.equalToSuperview().inset(-25)
         }
         progressView.snp.makeConstraints {
             $0.top.bottom.left.right.equalToSuperview()

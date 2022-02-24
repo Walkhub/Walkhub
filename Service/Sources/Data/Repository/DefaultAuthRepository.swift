@@ -8,19 +8,33 @@ import Moya
 class DefaultAuthRepository: AuthRepository {
 
     private let remoteAuthDataSource = RemoteAuthDataSource.shared
+    private let keychainDataSource = KeychainDataSource.shared
+    private let healthKitDataSource = HealthKitDataSource.shared
+    private let userDefualtDataSource = UserDefaultsDataSource.shared
+
+    func tokenRefresh() -> Completable {
+        remoteAuthDataSource.renewalToken()
+    }
 
     func signin(
         id: String,
         password: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return fetchDeviceToken()
-            .flatMap { deviceToken in
+            .flatMapCompletable { deviceToken in
                 return self.remoteAuthDataSource.signin(
                     id: id,
                     password: password,
                     deviceToken: deviceToken
-                )
-            }.map { _ in return () }
+                ).do(onSuccess: {
+                    self.keychainDataSource.registerAccessToken($0.accessToken)
+                    self.keychainDataSource.registerRefreshToken($0.refreshToken)
+                    self.keychainDataSource.registerExpiredAt($0.expiredAt)
+                    self.healthKitDataSource.storeUserHeight($0.height)
+                    self.healthKitDataSource.storeUserWeight(Double($0.weight))
+                    self.userDefualtDataSource.userSex = Sex(rawValue: $0.sex)!
+                }).asCompletable()
+            }
     }
 
     func signup(
@@ -34,7 +48,7 @@ class DefaultAuthRepository: AuthRepository {
         birthday: String,
         sex: Sex,
         schoolId: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return remoteAuthDataSource.signup(
             id: id,
             password: password,
@@ -46,13 +60,13 @@ class DefaultAuthRepository: AuthRepository {
             birthday: birthday,
             sex: sex,
             schoolId: schoolId
-        ).map { _ in return () }
+        )
     }
 
-    func verificationPhone(phoneNumber: String) -> Single<Void> {
+    func verificationPhone(phoneNumber: String) -> Completable {
         return remoteAuthDataSource.verificationPhone(
             phoneNumber: phoneNumber
-        ).map { _ in return () }
+        )
     }
 
 }
