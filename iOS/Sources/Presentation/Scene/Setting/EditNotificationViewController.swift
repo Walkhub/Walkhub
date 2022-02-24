@@ -117,7 +117,7 @@ extension EditNotificationViewController {
 
     private func makeSubviewConstraints() {
         line1.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaInsets.snp.top)
+            $0.top.equalTo(view.safeAreaInsets)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(1)
         }
