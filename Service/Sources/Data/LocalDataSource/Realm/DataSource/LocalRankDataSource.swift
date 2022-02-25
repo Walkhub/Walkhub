@@ -146,7 +146,7 @@ extension LocalRankDataSource {
     }
 
     private func storeMyRank(
-        user: User,
+        user: RankedUser,
         scope: GroupScope,
         dateType: DateType
     ) {
@@ -173,7 +173,7 @@ extension LocalRankDataSource {
     }
 
     private func storeUserRankList(
-        rankList: [User],
+        rankList: [RankedUser],
         scope: GroupScope,
         dateType: DateType
     ) {
@@ -189,7 +189,7 @@ extension LocalRankDataSource {
     }
 
     private func userToPersonRankRealmEntity(
-        user: User,
+        user: RankedUser,
         scope: GroupScope,
         dateType: DateType,
         isMyRank: Bool

@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Data Transfer Object
 struct MeasuredExerciseDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case exerciseId = "exercise_list"
+        case exerciseId = "exercise_id"
         case imageUrlString = "image_url"
         case startAt = "start_at"
         case latitude

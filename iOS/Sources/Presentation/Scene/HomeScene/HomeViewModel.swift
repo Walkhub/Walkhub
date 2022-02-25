@@ -35,14 +35,14 @@ class HomeViewModel: ViewModelType, Stepper {
         let caloriesData: PublishRelay<CaloriesLevel>
         let mainData: PublishRelay<DailyExerciseRecord>
         let goalData: PublishRelay<ExerciseAnalysis>
-        let rankList: PublishRelay<[User]>
+        let rankList: PublishRelay<[RankedUser]>
     }
 
     func transform(_ input: Input) -> Output {
         let caloriesData = PublishRelay<CaloriesLevel>()
         let mainData = PublishRelay<DailyExerciseRecord>()
         let goalData = PublishRelay<ExerciseAnalysis>()
-        let rankList = PublishRelay<[User]>()
+        let rankList = PublishRelay<[RankedUser]>()
 
         input.getMainData.asObservable().flatMap {
             self.fetchCalroiesLevelUseCase.excute()
