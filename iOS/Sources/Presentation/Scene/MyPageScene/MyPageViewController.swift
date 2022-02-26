@@ -2,9 +2,15 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class MyPageViewController: UIViewController {
 
+    var viewModel: MyPageViewModel!
+    private var disposeBag = DisposeBag()
+
+    private let getData = PublishRelay<Void>()
     private let profileView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 12
@@ -115,6 +121,7 @@ class MyPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
+        bindViewModel()
         demoData()
         setNavigation()
     }
@@ -122,6 +129,32 @@ class MyPageViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
+    }
+
+    private func bindViewModel() {
+        let input = MyPageViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
+
+        output.myProfile.asObservable().subscribe(onNext: {
+            self.profileImgView.image = $0.profileImageUrl.toImage()
+            self.profileName.text = $0.name
+            self.schoolName.text = $0.school
+            if $0.grade != 0 && $0.classNum != 0 {
+                self.classLabel.text = "\($0.grade)학년 \($0.classNum)반"
+            }
+            self.badgeImgView.image = $0.titleBadge.imageUrl.toImage()
+            self.badgeLabel.text = $0.titleBadge.name
+            self.levelLabel.text = $0.level.name
+            self.levelImgView.image = $0.level.imageUrlString.toImage()
+        }).disposed(by: disposeBag)
+
+        output.dailyExercise.asObservable().subscribe(onNext: {
+            self.stepCounLabel.text = "\($0.stepCount)"
+            self.timeLabel.text = "\(Int($0.walkingRunningTimeAsSecond / 60))"
+            self.distanceLabel.text = String(format: "%.2f", $0.walkingRunningDistanceAsMeter / 1000)
+            self.kcalLabel.text = "\(Int($0.burnedKilocalories))"
+        }).disposed(by: disposeBag)
     }
 
     private func demoData() {
