@@ -2,7 +2,7 @@ import Foundation
 
 import RealmSwift
 
-class PersonRankRealmEntity: PersonRealmEntity {
+class PersonRankRealmEntity: RankedPersonRealmEntity {
 
     @Persisted var scope: String = GroupScope.class.rawValue
     @Persisted var dateType: String = DateType.day.rawValue
@@ -14,12 +14,12 @@ class PersonRankRealmEntity: PersonRealmEntity {
 extension PersonRankRealmEntity {
 
     func setup(
-        person: User,
+        person: RankedUser,
         scope: GroupScope,
         dateType: DateType,
         isMyRank: Bool = false
     ) {
-        super.setup(person: person)
+        super.setup(user: person)
         self.scope = scope.rawValue
         self.dateType = dateType.rawValue
         self.isMyRank = isMyRank
@@ -27,7 +27,7 @@ extension PersonRankRealmEntity {
     }
 
     private func compoundKeyValue() -> String {
-        return "\(rank)\(scope)\(dateType)\(isMyRank)"
+        return "\(ranking)\(scope)\(dateType)\(isMyRank)"
     }
 
 }

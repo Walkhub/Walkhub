@@ -123,6 +123,10 @@ class DetailHubViewController: TabmanViewController {
             self.rankVC.userList.accept($0)
         }).disposed(by: disposeBag)
 
+        output.defaultUserList.asObservable().subscribe(onNext: {
+            self.rankVC.defaultUserList.accept($0)
+        }).disposed(by: disposeBag)
+
         output.schoolDetails.asObservable().subscribe(onNext: {
             self.informationVC.schoolDetials.accept($0)
         }).disposed(by: disposeBag)
