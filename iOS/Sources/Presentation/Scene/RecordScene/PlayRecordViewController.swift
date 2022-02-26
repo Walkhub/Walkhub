@@ -7,7 +7,9 @@ import RxCocoa
 
 class PlayRecordViewController: UIViewController {
 
+    var viewModel: PlayRecordViewModel!
     private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Void>()
 
     private let cheerUpImg = UIImageView().then {
         $0.image = .init(named: "CheerUpImg")
@@ -156,6 +158,7 @@ class PlayRecordViewController: UIViewController {
         [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
         demoData()
+        bindViewModel()
         setBtn()
     }
 
@@ -201,6 +204,22 @@ class PlayRecordViewController: UIViewController {
         speedNumLabel.text = "0.3"
         hourLabel.text = "12"
         minuteLabel.text = "30"
+    }
+
+    private func bindViewModel() {
+        let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
+
+        output.dailyExericse.asObservable().subscribe(onNext: {
+            let hour = $0.wlkingRunningTimeAsSecond / 3600
+            let minute = Int($0.wlkingRunningTimeAsSecond) % 3600
+            self.stepCountNumLabel.text = "\($0.stepCount)"
+            self.kcalNumLabel.text = "\($0.burnedKilocalories)"
+            self.hourLabel.text = "\(hour)"
+            self.minuteLabel.text = "\(hour * 60)"
+            self.speedLabel.text = "\($0.speedAsMeterPerSecond)"
+        }).disposed(by: disposeBag)
     }
 
     private func setLayoutRound() {
