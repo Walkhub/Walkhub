@@ -30,8 +30,8 @@ extension UserProfileDTO {
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!,
             school: school ?? "",
-            grade: grade,
-            classNum: classNum,
+            grade: grade ?? 0,
+            classNum: classNum ?? 0,
             titleBadge: titleBadge.toDomain(),
             level: level.toDomain()
         )
