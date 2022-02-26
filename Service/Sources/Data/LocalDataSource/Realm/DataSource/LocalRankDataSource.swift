@@ -168,7 +168,7 @@ extension LocalRankDataSource {
                filter: QueryFilter.string(
                 query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = false"
                ),
-               sortProperty: "rank"
+               sortProperty: "ranking"
         )
     }
 

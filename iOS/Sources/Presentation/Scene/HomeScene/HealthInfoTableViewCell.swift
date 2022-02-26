@@ -78,7 +78,7 @@ class HealthInfoTableViewCell: UITableViewCell {
             DispatchQueue.main.async {
                 self.distanceLabel.text = String(format: "%0.2f", data.walkingRunningDistanceAsMeter / 1000 )
                 self.timeLabel.text = "\(Int(data.walkingRunningTimeAsSecond / 60))"
-                self.burnKcalLabel.text = "\(-(Int(data.burnedKilocalories)))"
+                self.burnKcalLabel.text = "\(Int(data.burnedKilocalories))"
                 self.label.text = "\(data.stepCount)"
             }
         }).disposed(by: disposeBag)
