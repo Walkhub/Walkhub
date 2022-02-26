@@ -75,7 +75,7 @@ class ChartView: UIView {
         for _ in 0..<stepCounts.count {
             let weekDay = Calendar.current.component(.weekday, from: day)
             if weekDay == 2 {
-                days.append(day.toString())
+                days.append(day.toString(dateFormat: "M.dd"))
             } else {
                 days.append("")
             }
