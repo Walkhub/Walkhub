@@ -4,10 +4,13 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class PlayRecordViewController: UIViewController {
 
     var viewModel: PlayRecordViewModel!
+    var goalType: String = ""
+    var goal: Int = 0
     private var disposeBag = DisposeBag()
     private let getData = PublishRelay<Void>()
 
@@ -25,7 +28,6 @@ class PlayRecordViewController: UIViewController {
     }
 
     private let reaminDistanceLabel = UILabel().then {
-        $0.text = "남은 거리"
         $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
@@ -211,13 +213,35 @@ class PlayRecordViewController: UIViewController {
 
         let output = viewModel.transform(input)
 
+        output.recordExercise.asObservable().subscribe(onNext: {
+            self.goalType = $0.goalType.rawValue
+            self.goal = $0.goal
+            if self.goalType == "DISTANCE" {
+                self.goalLabel.text = "/\($0.goal)km"
+                self.reaminDistanceLabel.text = "남은 거리"
+                self.stepCountLabel.text = "걸음수"
+            } else {
+                self.goalLabel.text = "/\($0.goal)보"
+                self.reaminDistanceLabel.text = "남은 걸음"
+                self.stepCountLabel.text = "거리"
+            }
+        }).disposed(by: disposeBag)
+
         output.dailyExericse.asObservable().subscribe(onNext: {
             let hour = $0.wlkingRunningTimeAsSecond / 3600
             let minute = Int($0.wlkingRunningTimeAsSecond) % 3600
-            self.stepCountNumLabel.text = "\($0.stepCount)"
+            if self.goalType == "DISTANCE" {
+                self.stepCountNumLabel.text = "\($0.stepCount)"
+                self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
+                self.currentLabel.text = String(format: "%.0f", $0.walkingRunningDistanceAsMeter * 1000)
+            } else {
+                self.stepCountNumLabel.text = "\($0.stepCount)"
+                self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
+                self.currentLabel.text = String(format: "%.0f", $0.walkingRunningDistanceAsMeter * 1000)
+            }
             self.kcalNumLabel.text = "\($0.burnedKilocalories)"
             self.hourLabel.text = "\(hour)"
-            self.minuteLabel.text = "\(hour * 60)"
+            self.minuteLabel.text = "\(minute * 60)"
             self.speedLabel.text = "\($0.speedAsMeterPerSecond)"
         }).disposed(by: disposeBag)
     }

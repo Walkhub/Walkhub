@@ -55,7 +55,8 @@ extension Container {
         self.register(PlayRecordViewModel.self) { resolver in
             PlayRecordViewModel(
                 fetchExerciseAnalysisUseCase: resolver.resolve(FetchExerciseAnalysisUseCase.self)!,
-                fetchMeasuringExerciseUseCase: resolver.resolve(FetchMeasuringExerciseUseCase.self)!
+                fetchMeasuringExerciseUseCase: resolver.resolve(FetchMeasuringExerciseUseCase.self)!,
+                fetchRecordExerciseUseCase: resolver.resolve(FetchRecordExerciseUseCase.self)!
             )
         }
         self.register(RecordMeasurementViewModel.self) { resolver in

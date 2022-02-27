@@ -8,13 +8,16 @@ class PlayRecordViewModel: ViewModelType {
 
     private let fetchExerciseAnalysisUseCase: FetchExerciseAnalysisUseCase
     private let fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase
+    private let fetchRecordExerciseUseCase: FetchRecordExerciseUseCase
 
     init(
         fetchExerciseAnalysisUseCase: FetchExerciseAnalysisUseCase,
-        fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase
+        fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase,
+        fetchRecordExerciseUseCase: FetchRecordExerciseUseCase
     ) {
         self.fetchMeasuringExerciseUseCase = fetchMeasuringExerciseUseCase
         self.fetchExerciseAnalysisUseCase = fetchExerciseAnalysisUseCase
+        self.fetchRecordExerciseUseCase = fetchRecordExerciseUseCase
     }
 
     private var disposeBag = DisposeBag()
@@ -25,11 +28,13 @@ class PlayRecordViewModel: ViewModelType {
     struct Output {
         let exerciseAnalysis: PublishRelay<ExerciseAnalysis>
         let dailyExericse: PublishRelay<MeasuringExerciseRecord>
+        let recordExercise: PublishRelay<RecordExercise>
     }
 
     func transform(_ input: Input) -> Output {
         let exerciseAnalysis = PublishRelay<ExerciseAnalysis>()
         let dailyExercise = PublishRelay<MeasuringExerciseRecord>()
+        let recordExercise = PublishRelay<RecordExercise>()
 
         input.getData.asObservable().flatMap {
             self.fetchExerciseAnalysisUseCase.excute()
@@ -43,8 +48,16 @@ class PlayRecordViewModel: ViewModelType {
             dailyExercise.accept($0)
         }).disposed(by: disposeBag)
 
+        input.getData.asObservable().flatMap {
+            self.fetchRecordExerciseUseCase.excute()
+        }.subscribe(onNext: {
+            recordExercise.accept($0)
+        }).disposed(by: disposeBag)
+
         return Output(
             exerciseAnalysis: exerciseAnalysis,
-            dailyExericse: dailyExercise)
+            dailyExericse: dailyExercise,
+            recordExercise: recordExercise
+        )
     }
 }

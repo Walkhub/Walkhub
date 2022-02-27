@@ -74,6 +74,7 @@ class DefaultExercisesRepository: ExercisesRepository {
     func startMeasuring(goal: Int, goalType: ExerciseGoalType) -> Completable {
         remoteExercisesDataSource.startMeasuring(goal: goal, goalType: goalType)
             .do(onSuccess: { exerciseId in
+                self.localExercisesDataSource.storeRecordExercise(exerciseId, goal, goalType)
                 self.exerciseId = exerciseId
                 self.measuringStartAt = Date()
                 self.coreLocationDataSource.startUpdatingLocation()
@@ -94,6 +95,10 @@ class DefaultExercisesRepository: ExercisesRepository {
         ).do(onCompleted: {
             self.isMeasuring = false
         })
+    }
+
+    func fetchRecordExercise() -> Single<RecordExercise> {
+        return localExercisesDataSource.fetchRecordExercise()
     }
 
     private func saveUserLocationListDuringMeasuring() -> Completable {
