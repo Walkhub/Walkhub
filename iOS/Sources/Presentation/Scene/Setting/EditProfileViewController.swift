@@ -7,8 +7,11 @@ import RxCocoa
 
 class EditProfileViewController: UIViewController {
 
+    var viewModel: EditProfileViewModel!
     private let imagePickerView = UIImagePickerController()
 
+    private let getData = PublishRelay<Void>()
+    private let image = PublishRelay<[Data]>()
     private var disposeBag = DisposeBag()
 
     private let searchController = UISearchController(searchResultsController: nil).then {
@@ -90,6 +93,7 @@ class EditProfileViewController: UIViewController {
         imagePickerView.delegate = self
         nameTextField.delegate = self
         searchController.searchBar.delegate = self
+        bindViewModel()
         demoData()
         setBtn()
     }
@@ -111,6 +115,43 @@ class EditProfileViewController: UIViewController {
         nameTextField.text = "김기영"
         schoolLabel.text = "대덕소프트웨어마이스터고등학교"
         gradeClassLabel.text = "2학년 1반"
+    }
+
+    private func bindViewModel() {
+        let input = EditProfileViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            profileImage: image.asDriver(onErrorJustReturn: []),
+            name: nameTextField.rx.text.orEmpty.asDriver(),
+            search: (navigationItem.searchController?.searchBar.searchTextField.rx.text.orEmpty.asDriver())!,
+            cellTap: schoolListTableView.rx.itemSelected.asSignal(),
+            buttonDidTap: editBtn.rx.tap.asDriver())
+
+        let output = viewModel.transform(input)
+
+        output.schoolInfo.asObservable().subscribe(onNext: {
+            self.schoolLabel.text = $0.name
+            self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
+        }).disposed(by: disposeBag)
+
+        output.searchSchool.bind(to: schoolListTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: SchoolListTableViewCell.self
+        )
+        ) {_, items, cell in
+            cell.logoImgView.image = items.logoImageUrlString.toImage()
+            cell.schoolNameLabel.text = items.name
+        }.disposed(by: disposeBag)
+
+        output.profile.asObservable().subscribe(onNext: {
+            self.nameTextField.text = $0.name
+            self.schoolLabel.text = $0.school
+            if $0.grade ?? 0 != 0 && (($0.classNum ?? 0) != 0) {
+                self.gradeClassLabel.text = "\($0.grade ?? 0)학년 \($0.classNum ?? 0)반"
+            } else {
+                self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
+            }
+            self.profileImgView.image = $0.profileImageUrl.toImage()
+        }).disposed(by: disposeBag)
     }
 
     private func setBtn() {
@@ -227,10 +268,12 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
 
     func imagePickerController(
         _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            profileImgView.image = image
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+    ) {
+        if let profileImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            profileImgView.image = profileImage
+            let profileImages = [profileImage.jpegData(compressionQuality: 1.0)!]
+            image.accept(profileImages)
         }
 
         imagePickerView.dismiss(animated: true, completion: nil)
