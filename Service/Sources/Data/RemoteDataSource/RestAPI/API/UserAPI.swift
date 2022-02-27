@@ -6,7 +6,7 @@ enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
-    case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
+    case changeProfile(name: String, profileImageUrlString: String)
     case setHealthInformation(height: Float, weight: Int)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
@@ -50,12 +50,11 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrlString, let sex):
+        case .changeProfile(let name, let profileImageUrlString):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "profile_image_url": profileImageUrlString,
-                    "sex": sex.rawValue
+                    "profile_image_url": profileImageUrlString
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )

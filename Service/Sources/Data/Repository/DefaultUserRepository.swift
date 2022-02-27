@@ -39,13 +39,11 @@ class DefaultUserRepository: UserRepository {
 
     func changeProfile(
         name: String,
-        profileImageUrlString: String,
-        sex: Sex
-    ) -> Single<Void> {
+        profileImageUrlString: String
+    ) -> Completable {
         return remoteUserDataSource.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString,
-            sex: sex
+            profileImageUrlString: profileImageUrlString
         )
     }
     func writeHealth(height: Float, weight: Int) -> Single<Void> {
@@ -64,7 +62,7 @@ class DefaultUserRepository: UserRepository {
         )
     }
 
-    func setSchoolInformation(schoolId: Int) -> Single<Void> {
+    func setSchoolInformation(schoolId: Int) -> Completable {
         return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
     }
 
