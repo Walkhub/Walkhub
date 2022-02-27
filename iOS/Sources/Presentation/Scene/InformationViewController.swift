@@ -10,6 +10,7 @@ class InformationViewController: UIViewController {
 
     internal let getDetails = PublishRelay<Void>()
     internal let schoolDetials = PublishRelay<SchoolDetails>()
+    private var disposeBag = DisposeBag()
 
     private let informationLabel = UILabel().then {
         $0.text = "학교 정보"
@@ -79,7 +80,7 @@ class InformationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        demoData()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
@@ -87,13 +88,18 @@ class InformationViewController: UIViewController {
         makeSubviewConstraints()
     }
 
-    private func demoData() {
+    private func bindViewModel() {
         totalStepCountNumLabel.text = "932,320"
         hourLabel.text = "1"
         minuteLabel.text = "30"
         stepByStepLabel.text = "총 932,320 걸음"
         rankLabel.text = "4등"
         joinerLabel.text = "참가자 240명"
+        schoolDetials.asObservable().subscribe(onNext: {
+            self.totalStepCountNumLabel.text = $0.weekTotalWalkCount.toString()
+            self.rankLabel.text = "\($0.weekRanking)등"
+            self.joinerLabel.text = "참가자 \($0.totalUserCount.toString())명"
+        }).disposed(by: disposeBag)
     }
 }
 

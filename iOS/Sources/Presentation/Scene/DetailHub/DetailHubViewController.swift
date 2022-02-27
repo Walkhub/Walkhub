@@ -42,6 +42,7 @@ class DetailHubViewController: TabmanViewController {
         super.viewDidLoad()
         addViewController()
         setTopTabbar()
+        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
