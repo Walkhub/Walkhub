@@ -29,6 +29,41 @@ extension Container {
                 searchSchoolRankUseCase: resolver.resolve(SearchSchoolRankUseCase.self)!
             )
         }
+        self.register(DetailHubViewModel.self) { resolver in
+            DetailHubViewModel(
+                searchUserUseCase: resolver.resolve(SearchUserUseCase.self)!,
+                fetchUserSchoolRankUseCase: resolver.resolve(FetchUserSchoolRankUseCase.self)!,
+                fetchUserRankUseCase: resolver.resolve(FetchUserRankUseCase.self)!,
+                fetchSchoolDetailsUseCase: resolver.resolve(FetchSchoolDetailsUseCase.self)!
+            )
+        }
+        self.register(ActivityAnalysisViewModel.self) { resolver in
+            ActivityAnalysisViewModel(
+                fetchCaloriesLevelUseCase: resolver.resolve(FetchCalroiesLevelUseCase.self)!,
+                fetchLiveDailyExerciseRecordUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!,
+                fetchExerciseAnalysisUseCase: resolver.resolve(FetchExerciseAnalysisUseCase.self)!,
+                fetchWeekStepCountChartsUseCase: resolver.resolve(FetchWeekStepCountChartsUseCase.self)!,
+                fetchMonthStepCountChartsUseCase: resolver.resolve(FetchMonthStepCountChartsUseCase.self)!
+            )
+        }
+        self.register(MyPageViewModel.self) { resolver in
+            MyPageViewModel(
+                fetchMyPageUseCase: resolver.resolve(FetchMyPageUseCase.self)!,
+                fetchDailyExerciseUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!
+            )
+        }
+        self.register(PlayRecordViewModel.self) { resolver in
+            PlayRecordViewModel(
+                fetchExerciseAnalysisUseCase: resolver.resolve(FetchExerciseAnalysisUseCase.self)!,
+                fetchMeasuringExerciseUseCase: resolver.resolve(FetchMeasuringExerciseUseCase.self)!
+            )
+        }
+        self.register(RecordMeasurementViewModel.self) { resolver in
+            RecordMeasurementViewModel(
+                fetchExercisesListUseCase: resolver.resolve(FetchExercisesListUseCase.self)!,
+                startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -46,6 +81,31 @@ extension Container {
         self.register(HubViewController.self) { resolver in
             return HubViewController().then {
                 $0.viewModel = resolver.resolve(HubViewModel.self)!
+            }
+        }
+        self.register(DetailHubViewController.self) { resolver in
+            return DetailHubViewController().then {
+                $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
+            }
+        }
+        self.register(ActivityAnalysisViewController.self) { resolver  in
+            return ActivityAnalysisViewController().then {
+                $0.viewModel = resolver.resolve(ActivityAnalysisViewModel.self)!
+            }
+        }
+        self.register(MyPageViewController.self) { resolver in
+            return MyPageViewController().then {
+                $0.viewModel = resolver.resolve(MyPageViewModel.self)!
+            }
+        }
+        self.register(PlayRecordViewController.self) { resolver in
+            return PlayRecordViewController().then {
+                $0.viewModel = resolver.resolve(PlayRecordViewModel.self)!
+            }
+        }
+        self.register(RecordMeasurementViewController.self) { resolver in
+            return RecordMeasurementViewController().then {
+                $0.viewModel = resolver.resolve(RecordMeasurementViewModel.self)!
             }
         }
     }
