@@ -5,12 +5,12 @@ import Then
 
 class SchoolListTableViewCell: UITableViewCell {
 
-    private let logoImgView = UIImageView().then {
+    let logoImgView = UIImageView().then {
         $0.layer.cornerRadius = $0.frame.size.height / 2
         $0.contentMode = .scaleToFill
     }
 
-    private let schoolNameLabel = UILabel().then {
+    let schoolNameLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
