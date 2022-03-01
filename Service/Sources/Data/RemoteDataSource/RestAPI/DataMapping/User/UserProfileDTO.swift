@@ -7,6 +7,7 @@ struct UserProfileDTO: Decodable {
         case name
         case profileImageUrlString = "profile_image_url"
         case school = "school_name"
+        case schoolImageUrlString = "school_image_url"
         case grade
         case classNum
         case titleBadge = "title_badge"
@@ -16,6 +17,7 @@ struct UserProfileDTO: Decodable {
     let name: String
     let profileImageUrlString: String
     let school: String?
+    let schoolImageUrlString: String
     let grade: Int?
     let classNum: Int?
     let titleBadge: BadgeDTO

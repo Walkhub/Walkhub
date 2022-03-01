@@ -233,11 +233,11 @@ class PlayRecordViewController: UIViewController {
             if self.goalType == "DISTANCE" {
                 self.stepCountNumLabel.text = "\($0.stepCount)"
                 self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
-                self.currentLabel.text = String(format: "%.0f", $0.walkingRunningDistanceAsMeter * 1000)
+                self.currentLabel.text = String(format: "%.f", $0.walkingRunningDistanceAsMeter * 1000)
             } else {
                 self.stepCountNumLabel.text = "\($0.stepCount)"
                 self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
-                self.currentLabel.text = String(format: "%.0f", $0.walkingRunningDistanceAsMeter * 1000)
+                self.currentLabel.text = String(format: "%.f", $0.walkingRunningDistanceAsMeter * 1000)
             }
             self.kcalNumLabel.text = "\($0.burnedKilocalories)"
             self.hourLabel.text = "\(hour)"

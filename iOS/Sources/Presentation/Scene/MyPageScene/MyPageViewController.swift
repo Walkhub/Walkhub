@@ -143,6 +143,7 @@ class MyPageViewController: UIViewController {
             if $0.grade != 0 && $0.classNum != 0 {
                 self.classLabel.text = "\($0.grade)학년 \($0.classNum)반"
             }
+            self.schoolImgView.image = $0.schoolImageUrl.toImage()
             self.badgeImgView.image = $0.titleBadge.imageUrl.toImage()
             self.badgeLabel.text = $0.titleBadge.name
             self.levelLabel.text = $0.level.name
