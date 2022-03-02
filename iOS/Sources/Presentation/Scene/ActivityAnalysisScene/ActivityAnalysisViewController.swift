@@ -233,6 +233,10 @@ class ActivityAnalysisViewController: UIViewController {
             cornerRadius: imgView.frame.width / 2).cgPath
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
+    }
+
     private func bindViewModel() {
         let input = ActivityAnalysisViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
@@ -248,7 +252,7 @@ class ActivityAnalysisViewController: UIViewController {
             self.imgView.image = $0.foodImageUrlString.toImage()
             self.foodName.text = $0.foodName
             self.foodKcalLabel.text = "\($0.calorie)"
-            self.criteriaLabel.text = $0.size
+            self.criteriaLabel.text = "\($0.size)"
             self.commentLabel.text = $0.message
             self.levelLabel.text = "Lv.\($0.level)"
             calorie = $0.calorie
@@ -259,15 +263,17 @@ class ActivityAnalysisViewController: UIViewController {
             goalCount = $0.dailyWalkCountGoal
         }).disposed(by: disposeBag)
 
-        output.dailyExerciseData.asObservable().subscribe(onNext: {
-            let hour = $0.walkingRunningTimeAsSecond / 3600
-            let minute = Int($0.walkingRunningTimeAsSecond) % 3600
-            self.currentStepCountsLabel.text = "\($0.stepCount)"
-            self.burnKcalNumLabel.text = "\($0.burnedKilocalories)"
-            self.hourLabel.text = "\(hour)"
-            self.minuteLabel.text = "\(minute * 60)"
-            self.levelProgressBar.progress = Float(Int($0.burnedKilocalories) / calorie)
-            self.stepCountProgressBar.progress = Float($0.stepCount / goalCount)
+        output.dailyExerciseData.asObservable().subscribe(onNext: { data in
+            let hour = data.walkingRunningTimeAsSecond / 3600
+            let minute = Int(data.walkingRunningTimeAsSecond) % 3600
+            DispatchQueue.main.async {
+                self.currentStepCountsLabel.text = "\(data.stepCount)"
+                self.burnKcalNumLabel.text = "\(data.burnedKilocalories)"
+                self.hourLabel.text = "\(hour)"
+                self.minuteLabel.text = "\(minute * 60)"
+                self.levelProgressBar.progress = Float(Int(data.burnedKilocalories) / calorie)
+                self.stepCountProgressBar.progress = Float(data.stepCount / goalCount)
+            }
         }).disposed(by: disposeBag)
 
         output.weekCharts.asObservable().subscribe(onNext: {

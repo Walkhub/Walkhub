@@ -5,7 +5,7 @@ import RxCocoa
 import Service
 import RxFlow
 
-class ActivityAnalysisViewModel: ViewModelType {
+class ActivityAnalysisViewModel: ViewModelType, Stepper {
 
     private let fetchCaloriesLevelUseCase: FetchCalroiesLevelUseCase
     private let fetchLiveDailyExerciseRecordUseCase: FetchLiveDailyExerciseRecordUseCase
