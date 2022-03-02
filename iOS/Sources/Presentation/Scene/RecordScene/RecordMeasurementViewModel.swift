@@ -3,8 +3,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 import Service
+import RxFlow
 
-class RecordMeasurementViewModel: ViewModelType {
+class RecordMeasurementViewModel: ViewModelType, Stepper {
 
     private let fetchExercisesListUseCase: FetchExercisesListUseCase
     private let startExerciseUseCase: StartExerciseUseCase
@@ -17,6 +18,7 @@ class RecordMeasurementViewModel: ViewModelType {
         self.startExerciseUseCase = startExerciseUseCase
     }
 
+    var steps = PublishRelay<Step>()
     private var disposeBag = DisposeBag()
 
     struct Input {
@@ -40,10 +42,12 @@ class RecordMeasurementViewModel: ViewModelType {
             exercisesList.accept($0)
         }).disposed(by: disposeBag)
 
-        input.start.asObservable().withLatestFrom(info).flatMap { goal, goalType in
-            self.startExerciseUseCase.excute(goal: goal, goalType: goalType)
-        }.subscribe(onNext: { _ in
-        }).disposed(by: disposeBag)
+        input.start.asObservable().withLatestFrom(info).flatMap {
+                self.startExerciseUseCase.excute(goal: $0, goalType: $1)
+                    .andThen(Single.just(WalkhubStep.timerIsRequired))
+            }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(exercisesList: exercisesList)
     }

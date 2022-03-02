@@ -11,11 +11,14 @@ class RecordMeasurementViewController: UIViewController {
 
     var viewModel: RecordMeasurementViewModel!
     private var disposeBag = DisposeBag()
-    private var distanceList = Array(0...99)
-    private var stepCountList = Array(0...99)
+    private var integerNumList = Array(0...99)
+    private var underDecimalPointNumList = Array(0...99)
     private let getData = PublishRelay<Void>()
     private let goal = PublishRelay<Int>()
     private let goalType = PublishRelay<ExerciseGoalType>()
+
+    private var selectedFirstNum = 0
+    private var selectedSecondNum = 0
 
     private let recordLabel = UILabel().then {
         $0.text = "전체 기록"
@@ -43,7 +46,7 @@ class RecordMeasurementViewController: UIViewController {
         $0.backgroundColor = .white
     }
 
-    private let distanceBtn = UIButton(type: .system).then {
+    private let distanceBtn = UIButton().then {
         $0.setTitle("거리", for: .normal)
         $0.layer.cornerRadius = 15
         $0.layer.masksToBounds = true
@@ -53,8 +56,8 @@ class RecordMeasurementViewController: UIViewController {
         $0.setTitleColor(.gray400, for: .normal)
     }
 
-    private let stepCountBtn = UIButton(type: .system).then {
-        $0.setTitle("시간", for: .normal)
+    private let stepCountBtn = UIButton().then {
+        $0.setTitle("걸음수", for: .normal)
         $0.layer.cornerRadius = 15
         $0.layer.masksToBounds = true
         $0.setBackgroundColor(.primary400, for: .selected)
@@ -68,8 +71,8 @@ class RecordMeasurementViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
     }
 
-    private let distancePickerView = UIPickerView()
-    private let stepCountPickerView = UIPickerView()
+    private let integerNumPickerView = UIPickerView()
+    private let underDecimalPointNumPickerView = UIPickerView()
 
     private let uintLabel = UILabel().then {
         $0.text = "km"
@@ -82,23 +85,15 @@ class RecordMeasurementViewController: UIViewController {
         $0.tintColor = .primary400
     }
 
-    private let timerView = UIView().then {
-        $0.backgroundColor = .primary400
-    }
-
-    private let timerLabel = UILabel().then {
-        $0.textColor = .white
-        $0.font = .notoSansFont(ofSize: 120, family: .bold)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
         self.navigationItem.title = "기록 측정"
         recordTableView.delegate = self
-        recordTableView.dataSource = self
         recordTableView.tableHeaderView = headerView
         headerView.recordListCollecionView.delegate = self
+        bindViewModel()
+        setPickerView()
         setBtn()
     }
 
@@ -109,22 +104,17 @@ class RecordMeasurementViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         distanceBtn.isSelected = true
-        createPickerView()
-        dismissPickerView()
-        timerView.isHidden = true
-        timerLabel.isHidden = true
-        distancePickerView.selectRow(self.distanceList.count, inComponent: 0, animated: false)
-        stepCountPickerView.selectRow(self.stepCountList.count, inComponent: 0, animated: false)
+        integerNumPickerView.selectRow(self.integerNumList.count, inComponent: 0, animated: false)
+        integerNumPickerView.selectRow(self.underDecimalPointNumList.count, inComponent: 1, animated: false)
+        goalType.accept(.distance)
     }
 
     private func setBtn() {
-        let countDown = 3
-
         distanceBtn.rx.tap.subscribe(onNext: {
             self.distanceBtn.isSelected = true
             self.stepCountBtn.isSelected = false
-            self.stepCountList = Array(0...99)
-            self.stepCountPickerView.reloadAllComponents()
+            self.underDecimalPointNumList = Array(0...99)
+            self.integerNumPickerView.reloadAllComponents()
             self.commaLabel.text = "."
             self.uintLabel.text = "km"
             self.goalType.accept(.distance)
@@ -133,25 +123,11 @@ class RecordMeasurementViewController: UIViewController {
         stepCountBtn.rx.tap.subscribe(onNext: {
             self.distanceBtn.isSelected = false
             self.stepCountBtn.isSelected = true
-            self.stepCountList = Array(0...999)
-            self.stepCountPickerView.reloadAllComponents()
+            self.underDecimalPointNumList = Array(0...999)
+            self.integerNumPickerView.reloadAllComponents()
             self.commaLabel.text = ","
             self.uintLabel.text = "걸음"
             self.goalType.accept(.walkCount)
-        }).disposed(by: disposeBag)
-
-        playBtn.rx.tap.subscribe(onNext: {
-            self.timerView.isHidden = false
-            self.timerLabel.isHidden = false
-            Observable<Int>.timer(
-                .seconds(0),
-                period: .seconds(1),
-                scheduler: MainScheduler.instance
-            ).take(3)
-                .map { countDown - $0 }
-                .map { String($0) }
-                .bind(to: self.timerLabel.rx.text)
-                .disposed(by: self.disposeBag)
         }).disposed(by: disposeBag)
     }
 
@@ -178,10 +154,10 @@ class RecordMeasurementViewController: UIViewController {
 extension RecordMeasurementViewController {
     private func addSubviews() {
         [recordLabel, triangle,
-         recordTableView, whiteView, timerView, timerLabel].forEach { view.addSubview($0) }
+         recordTableView, whiteView].forEach { view.addSubview($0) }
 
         [distanceBtn, stepCountBtn, commaLabel,
-         distancePickerView, stepCountPickerView, uintLabel, playBtn]
+         integerNumPickerView, uintLabel, playBtn]
             .forEach { whiteView.addSubview($0) }
     }
 
@@ -222,70 +198,54 @@ extension RecordMeasurementViewController {
             $0.height.equalTo(28)
         }
 
-        distancePickerView.snp.makeConstraints {
+        integerNumPickerView.snp.makeConstraints {
             $0.top.equalTo(stepCountBtn.snp.bottom).offset(20)
-            $0.leading.equalToSuperview().inset(72)
-            $0.width.equalTo(45)
-            $0.height.equalTo(126)
+            $0.leading.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(60)
+            $0.height.equalTo(140)
         }
 
         commaLabel.snp.makeConstraints {
-            $0.centerY.equalTo(distancePickerView)
-            $0.leading.equalTo(distancePickerView.snp.trailing).offset(24)
-        }
-
-        stepCountPickerView.snp.makeConstraints {
-            $0.top.equalTo(distancePickerView)
-            $0.leading.equalTo(commaLabel.snp.trailing).offset(24)
-            $0.width.equalTo(50)
-            $0.height.equalTo(126)
+            $0.center.equalTo(integerNumPickerView)
         }
 
         uintLabel.snp.makeConstraints {
-            $0.centerY.equalTo(distancePickerView)
+            $0.centerY.equalTo(integerNumPickerView)
             $0.trailing.equalToSuperview().inset(72)
         }
 
         playBtn.snp.makeConstraints {
-            $0.top.equalTo(distancePickerView.snp.bottom).offset(20)
+            $0.top.equalTo(integerNumPickerView.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.height.width.equalTo(56)
-        }
-
-        timerView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-
-        timerLabel.snp.makeConstraints {
-            $0.center.equalToSuperview()
         }
     }
 }
 
-extension RecordMeasurementViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+extension RecordMeasurementViewController: UIPickerViewDataSource, UIPickerViewDelegate {
+
+    fileprivate func setPickerView() {
+        integerNumPickerView.dataSource = self
+        underDecimalPointNumPickerView.dataSource = self
+        integerNumPickerView.delegate = self
+        underDecimalPointNumPickerView.delegate = self
+    }
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 3
-    }
-
-    fileprivate func createPickerView() {
-        stepCountPickerView.delegate = self
-        distancePickerView.delegate = self
-    }
-
-    fileprivate func dismissPickerView() {
-        let toolBar = UIToolbar()
-        toolBar.sizeToFit()
+        return 2
     }
 
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-        return 50
+        return 100
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if pickerView == distancePickerView {
-            return distanceList.count * 2
-        } else {
-            return stepCountList.count * 2
+        switch component {
+        case 0:
+            return integerNumList.count * 2
+        case 1:
+            return underDecimalPointNumList.count * 2
+        default:
+            return 0
         }
     }
 
@@ -302,24 +262,36 @@ extension RecordMeasurementViewController: UIPickerViewDelegate, UIPickerViewDat
             $0.textAlignment = .center
             $0.font = .systemFont(ofSize: 24, weight: .bold)
             $0.textColor = .black
-            if pickerView  == stepCountPickerView && distanceBtn.isSelected {
-                $0.text = String(format: "%02d", stepCountList[row % stepCountList.count])
-            } else if pickerView == stepCountPickerView && !distanceBtn.isSelected {
-                $0.text = String(format: "%03d", stepCountList[row % stepCountList.count])
+            if component  == 1 && distanceBtn.isSelected {
+                $0.text = String(format: "%02d", underDecimalPointNumList[row % underDecimalPointNumList.count])
+            } else if component == 1 && !distanceBtn.isSelected {
+                $0.text = String(format: "%03d", underDecimalPointNumList[row % underDecimalPointNumList.count])
             } else {
-                $0.text = String(format: "%02d", distanceList[row % distanceList.count])
+                $0.text = String(format: "%02d", integerNumList[row % integerNumList.count])
             }
         }
         return label
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if pickerView == distancePickerView {
-            pickerView.selectRow(distanceList.count + row, inComponent: 0, animated: false)
-        } else {
-            pickerView.selectRow(stepCountList.count + row, inComponent: 0, animated: false)
+        switch component {
+        case 0:
+            selectedFirstNum = integerNumList[row%100]
+        case 1:
+            if distanceBtn.isSelected == true {
+                selectedSecondNum = underDecimalPointNumList[row%100]
+            } else {
+                selectedSecondNum = underDecimalPointNumList[row%1000]
+            }
+        default:
+            break
         }
-        goal.accept(distanceList[row] + stepCountList[row])
+
+        if distanceBtn.isSelected == true {
+            goal.accept(Int((Float(selectedFirstNum) + Float(selectedSecondNum)/100) * 1000))
+        } else {
+            goal.accept((selectedFirstNum*1000) + selectedSecondNum)
+        }
     }
 }
 
@@ -334,19 +306,12 @@ extension RecordMeasurementViewController: UICollectionViewDelegateFlowLayout {
         }
 }
 
-extension RecordMeasurementViewController: UITableViewDelegate, UITableViewDataSource {
+extension RecordMeasurementViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 10
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
             return 8
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "recordCell", for: indexPath) as? RecordTableViewCell
-        cell?.imgView.image = .init(systemName: "clock.fill")
-        cell?.recordName.text = "김시안"
-        return cell!
     }
 }
