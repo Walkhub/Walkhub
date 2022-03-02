@@ -8,6 +8,7 @@ class UserProfileRealmEntity: Object {
     @Persisted var name: String = ""
     @Persisted var profileImageUrlString: String = ""
     @Persisted var school: String = ""
+    @Persisted var schoolImageUrlString: String = ""
     @Persisted var grade: Int?
     @Persisted var classNum: Int?
     @Persisted var titleBadge: BadgeRealmEntity?
@@ -23,6 +24,7 @@ extension UserProfileRealmEntity {
         self.name = profile.name
         self.profileImageUrlString = profile.profileImageUrl.absoluteString
         self.school = profile.school
+        self.schoolImageUrlString = profile.schoolImageUrl.absoluteString
         self.grade = profile.grade
         self.classNum = profile.classNum
         self.titleBadge = BadgeRealmEntity().then {
@@ -43,6 +45,7 @@ extension UserProfileRealmEntity {
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!,
             school: school,
+            schoolImageUrl: URL(string: schoolImageUrlString)!,
             grade: grade ?? 0,
             classNum: classNum ?? 0,
             titleBadge: titleBadge!.toDomain(),

@@ -107,7 +107,26 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-
+        self.register(FetchWeekStepCountChartsUseCase.self) { resolver in
+            return FetchWeekStepCountChartsUseCase(
+                exerisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchMonthStepCountChartsUseCase.self) { resolver in
+            return FetchMonthStepCountChartsUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchExercisesListUseCase.self) { resolver in
+            return FetchExercisesListUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(StartExerciseUseCase.self) { resolver in
+            return StartExerciseUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
     }
 
 }
