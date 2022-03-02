@@ -159,7 +159,6 @@ class PlayRecordViewController: UIViewController {
         navigationItem.title = "기록측정"
         [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
-        demoData()
         bindViewModel()
         setBtn()
     }
@@ -194,18 +193,6 @@ class PlayRecordViewController: UIViewController {
             self.stopBtn.isHidden = false
             self.lockBtn.isHidden = false
         }).disposed(by: disposeBag)
-    }
-
-    private func demoData() {
-        cheerCommentLabel.text = "김기영님이 응원하셨어요!"
-        currentLabel.text = "2.5km"
-        goalLabel.text = "/7km"
-        progressBar.progress = 0.5
-        stepCountNumLabel.text = "3299"
-        kcalNumLabel.text = "234"
-        speedNumLabel.text = "0.3"
-        hourLabel.text = "12"
-        minuteLabel.text = "30"
     }
 
     private func bindViewModel() {

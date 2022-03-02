@@ -3,8 +3,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 import Service
+import RxFlow
 
-class PlayRecordViewModel: ViewModelType {
+class PlayRecordViewModel: ViewModelType, Stepper {
 
     private let fetchExerciseAnalysisUseCase: FetchExerciseAnalysisUseCase
     private let fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase
@@ -21,6 +22,8 @@ class PlayRecordViewModel: ViewModelType {
     }
 
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
+
     struct Input {
         let getData: Driver<Void>
     }
