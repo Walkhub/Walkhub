@@ -89,7 +89,9 @@ class DefaultExercisesRepository: ExercisesRepository {
                         exercisesId: self.exerciseId!,
                         walkCount: $0.stepCount,
                         distance: Int($0.walkingRunningDistanceAsMeter),
-                        imageUrlString: imageUrlString
+                        calorie: Int($0.burnedKilocalories),
+                        imageUrlString: imageUrlString,
+                        pausedTime: Int($0.wlkingRunningTimeAsSecond)
                     )
                 }
         ).do(onCompleted: {

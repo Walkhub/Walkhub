@@ -22,9 +22,7 @@ public class FetchCalroiesLevelUseCase {
                     .map { level in
                     level.first { data in
                         Int(exerciseRecord.burnedKilocalories) < data.calorie
-                    } ?? level.first {
-                        $0.level == 7
-                    }!
+                    } ?? level.last!
                 })!
             }
     }
