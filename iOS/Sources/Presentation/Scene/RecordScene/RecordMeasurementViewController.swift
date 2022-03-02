@@ -103,6 +103,7 @@ class RecordMeasurementViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
         distanceBtn.isSelected = true
         integerNumPickerView.selectRow(self.integerNumList.count, inComponent: 0, animated: false)
         integerNumPickerView.selectRow(self.underDecimalPointNumList.count, inComponent: 1, animated: false)

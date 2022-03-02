@@ -169,6 +169,9 @@ class PlayRecordViewController: UIViewController {
         setLayoutRound()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
     private func setBtn() {
         lockBtn.rx.tap.subscribe(onNext: {
             self.stopBtn.isSelected = true
