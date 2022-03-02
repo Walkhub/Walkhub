@@ -29,6 +29,8 @@ class HomeViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getMainData: Driver<Void>
+        let moveActivityAnalysis: Driver<Void>
+        let moveRecordMeasurement: Driver<Void>
     }
 
     struct Output {
@@ -47,21 +49,18 @@ class HomeViewModel: ViewModelType, Stepper {
         input.getMainData.asObservable().flatMap {
             self.fetchCalroiesLevelUseCase.excute()
         }.subscribe(onNext: {
-            print("1: \($0)")
             caloriesData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
             self.fetchLiveDailyExerciseRecordUseCase.excute()
         }.subscribe(onNext: {
-            print("2: \($0)")
             mainData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
             self.fetchExercisesAnalysisUseCase.excute()
         }.subscribe(onNext: {
-            print("3: \($0)")
             goalData.accept($0)
         }).disposed(by: disposeBag)
 
@@ -71,6 +70,16 @@ class HomeViewModel: ViewModelType, Stepper {
             print("4: \($0)")
             rankList.accept($0)
         }).disposed(by: disposeBag)
+
+        input.moveActivityAnalysis.asObservable()
+            .map { WalkhubStep.activityAnalysisIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        input.moveRecordMeasurement.asObservable()
+            .map { WalkhubStep.recordMeasurementIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             caloriesData: caloriesData,

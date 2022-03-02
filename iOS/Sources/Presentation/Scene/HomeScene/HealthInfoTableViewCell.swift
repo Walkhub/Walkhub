@@ -53,8 +53,7 @@ class HealthInfoTableViewCell: UITableViewCell {
     }
 
     let imgView = UIImageView().then {
-        $0.layer.cornerRadius = $0.frame.size.height / 2
-        $0.clipsToBounds = true
+        $0.contentMode = .scaleToFill
     }
 
     required init?(coder: NSCoder) {
@@ -65,6 +64,8 @@ class HealthInfoTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .systemBackground
         self.selectionStyle = .none
+        imgView.clipsToBounds = true
+        imgView.layer.cornerRadius = imgView.frame.size.height / 2
         addSubviews()
         makeSubviewConstraints()
     }
@@ -90,8 +91,10 @@ class HealthInfoTableViewCell: UITableViewCell {
             }
         }).disposed(by: disposeBag)
 
-        caloriesData.asObservable().subscribe(onNext: {
-            self.imgView.image = $0.foodImageUrlString.toImage()
+        caloriesData.asObservable().subscribe(onNext: { data  in
+            DispatchQueue.main.async {
+                self.imgView.image = data.foodImageUrlString.toImage()
+            }
         }).disposed(by: disposeBag)
     }
 }
