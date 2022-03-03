@@ -41,6 +41,7 @@ class HomeViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getData.accept(())
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     override func viewDidLayoutSubviews() {

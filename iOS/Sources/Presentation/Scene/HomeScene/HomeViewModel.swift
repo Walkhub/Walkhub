@@ -67,7 +67,6 @@ class HomeViewModel: ViewModelType, Stepper {
         input.getMainData.asObservable().flatMap {
             self.fetchRankPreviewUseCase.excute()
         }.subscribe(onNext: {
-            print("4: \($0)")
             rankList.accept($0)
         }).disposed(by: disposeBag)
 
