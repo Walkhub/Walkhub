@@ -6,11 +6,14 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 class ActivityAnalysisViewController: UIViewController {
 
     var viewModel: ActivityAnalysisViewModel!
     private var disposeBag = DisposeBag()
+    private var goalCount = Int()
+    private var calorie = Int()
 
     private let getData = PublishRelay<Void>()
 
@@ -28,6 +31,7 @@ class ActivityAnalysisViewController: UIViewController {
         $0.layer.shadowOffset = CGSize(width: -3, height: 3)
         $0.layer.shadowRadius = 5
         $0.layer.shadowOpacity = 0.3
+        $0.backgroundColor = .white
     }
 
     private let foodName = UILabel().then {
@@ -228,6 +232,7 @@ class ActivityAnalysisViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
         blueView.roundCorners(cornerRadius: 64, byRoundingCorners: .topRight)
+        imgView.layer.cornerRadius = imgView.frame.width/2
         imgView.layer.shadowPath = UIBezierPath(
             roundedRect: imgView.bounds,
             cornerRadius: imgView.frame.width / 2).cgPath
@@ -235,6 +240,7 @@ class ActivityAnalysisViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getData.accept(())
+        self.tabBarController?.tabBar.isHidden = true
     }
 
     private func bindViewModel() {
@@ -245,44 +251,52 @@ class ActivityAnalysisViewController: UIViewController {
 
         let output = viewModel.transform(input)
 
-        var goalCount = Int()
-        var calorie = Int()
-
-        output.myCalorie.asObservable().subscribe(onNext: {
-            self.imgView.image = $0.foodImageUrlString.toImage()
-            self.foodName.text = $0.foodName
-            self.foodKcalLabel.text = "\($0.calorie)"
-            self.criteriaLabel.text = "\($0.size)"
-            self.commentLabel.text = $0.message
-            self.levelLabel.text = "Lv.\($0.level)"
-            calorie = $0.calorie
+        output.myCalorie.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.imgView.kf.setImage(with: data.foodImageUrlString, options: [
+                    .processor(RoundCornerImageProcessor(cornerRadius: self.imgView.frame.width/2))
+                ])
+                self.foodName.text = data.foodName
+                self.foodKcalLabel.text = "\(data.calorie)"
+                self.criteriaLabel.text = "\(data.size)"
+                self.commentLabel.text = data.message
+                self.levelLabel.text = "Lv.\(data.level)"
+                self.calorie = data.calorie
         }).disposed(by: disposeBag)
 
-        output.exerciseAnalysisData.asObservable().subscribe(onNext: {
-            self.goalStepCountLabel.text = "\($0.dailyWalkCountGoal) 걸음"
-            goalCount = $0.dailyWalkCountGoal
+        output.exerciseAnalysisData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.goalStepCountLabel.text = "/\(data.dailyWalkCountGoal) 걸음"
+                self.goalCount = data.dailyWalkCountGoal
         }).disposed(by: disposeBag)
 
-        output.dailyExerciseData.asObservable().subscribe(onNext: { data in
-            let hour = data.walkingRunningTimeAsSecond / 3600
-            let minute = Int(data.walkingRunningTimeAsSecond) % 3600
-            DispatchQueue.main.async {
+        output.dailyExerciseData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                let minute = data.walkingRunningTimeAsSecond / 60
                 self.currentStepCountsLabel.text = "\(data.stepCount)"
-                self.burnKcalNumLabel.text = "\(data.burnedKilocalories)"
-                self.hourLabel.text = "\(hour)"
-                self.minuteLabel.text = "\(minute * 60)"
-                self.levelProgressBar.progress = Float(Int(data.burnedKilocalories) / calorie)
-                self.stepCountProgressBar.progress = Float(data.stepCount / goalCount)
-            }
+                self.distanceNumLabel.text = String(format: "%.1f", data.walkingRunningDistanceAsMeter / 1000)
+                self.burnKcalNumLabel.text = "\(Int(data.burnedKilocalories))"
+                self.hourLabel.text = "\(Int(minute) / 60)"
+                self.minuteLabel.text = "\(Int(minute) % 60)"
+                self.levelProgressBar.progress = Float(Double(data.burnedKilocalories) / Double(self.calorie))
+                if self.goalCount == 0 {
+                    self.stepCountProgressBar.progress = (Float(data.stepCount) / 10000.0)
+                } else {
+                    self.stepCountProgressBar.progress = (Float(data.stepCount) / Float(self.goalCount))
+                }
         }).disposed(by: disposeBag)
 
-        output.weekCharts.asObservable().subscribe(onNext: {
+        output.weekCharts.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
             self.charts.setWeekCharts(stepCounts: $0.0)
             self.allStepCountNumLabel.text = "\($0.1)"
             self.averageStepNumLabel.text = "\($0.2)"
         }).disposed(by: disposeBag)
 
-        output.monthCharts.asObservable().subscribe(onNext: {
+        output.monthCharts.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
             self.charts.setMothCharts(stepCounts: $0.0)
             self.allStepCountNumLabel.text = "\($0.1)"
             self.averageStepNumLabel.text = "\($0.2)"

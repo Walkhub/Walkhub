@@ -69,6 +69,12 @@ class ActivityAnalysisViewModel: ViewModelType, Stepper {
             exerciseAnalysisData.accept($0)
         }).disposed(by: disposeBag)
 
+        input.getData.asObservable().flatMap {
+            self.fetchWeekStepCountChartsUseCase.excute()
+        }.subscribe(onNext: {
+            weekCharts.accept($0)
+        }).disposed(by: disposeBag)
+
         input.getWeekCharts.asObservable().flatMap {
             self.fetchWeekStepCountChartsUseCase.excute()
         }.subscribe(onNext: {
