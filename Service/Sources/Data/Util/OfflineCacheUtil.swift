@@ -41,7 +41,6 @@ class OfflineCacheUtil<T: Equatable> {
         return local
             .concat(remote)
             .enumerated()
-            .debug()
             .scan(into: (index: -1, element: nil)) { (prevValue, newValue) in
                 if prevValue.index != -1 {
                     if prevValue.element == nil || self.isNeedRefresh(prevValue.element!, newValue.element!) {

@@ -127,6 +127,20 @@ public extension Container {
                 exercisesRepository: resolver.resolve(ExercisesRepository.self)!
             )
         }
+        self.register(FetchMeasuringExerciseUseCase.self) { resolver in
+            return FetchMeasuringExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchRecordExerciseUseCase.self) { resolver in
+            return FetchRecordExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(EndExerciseUseCase.self) { resolver in
+            return EndExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
     }
-
 }
