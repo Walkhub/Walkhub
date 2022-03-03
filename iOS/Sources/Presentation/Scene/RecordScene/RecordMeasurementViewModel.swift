@@ -34,7 +34,7 @@ class RecordMeasurementViewModel: ViewModelType, Stepper {
 
     func transform(_ input: Input) -> Output {
         let exercisesList = PublishRelay<[MeasuredExercise]>()
-        let info = Driver.combineLatest(input.goal, input.goalType)
+        let info = Driver.combineLatest(input.goal.startWith(0), input.goalType)
 
         input.getData.asObservable().flatMap {
             self.fetchExercisesListUseCase.excute()
@@ -42,10 +42,14 @@ class RecordMeasurementViewModel: ViewModelType, Stepper {
             exercisesList.accept($0)
         }).disposed(by: disposeBag)
 
-        input.start.asObservable().withLatestFrom(info).flatMap {
-                self.startExerciseUseCase.excute(goal: $0, goalType: $1)
-                    .andThen(Single.just(WalkhubStep.timerIsRequired))
-            }
+        input.start.asObservable()
+            .throttle(.seconds(1), latest: false, scheduler: MainScheduler.asyncInstance)
+//            .withLatestFrom(info)
+//            .flatMap {
+//                self.startExerciseUseCase.excute(goal: $0, goalType: $1)
+//                    .andThen(Single.just(WalkhubStep.playRecordIsRequired))
+//            }
+            .map { WalkhubStep.playRecordIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
 

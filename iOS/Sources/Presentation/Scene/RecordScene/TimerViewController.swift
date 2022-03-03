@@ -7,8 +7,6 @@ import RxCocoa
 
 class TimerViewController: UIViewController {
 
-    var viewModel: TimerViewModel!
-
     private let move = PublishRelay<Void>()
     private var disposeBag = DisposeBag()
 
@@ -19,7 +17,6 @@ class TimerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        bindViewModel()
         view.backgroundColor = .primary400
     }
 
@@ -42,11 +39,5 @@ class TimerViewController: UIViewController {
         timerLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
         }
-    }
-
-    private func bindViewModel() {
-        let input = TimerViewModel.Input(move: move.asDriver(onErrorJustReturn: ()))
-
-        let output = viewModel.transform(input)
     }
 }
