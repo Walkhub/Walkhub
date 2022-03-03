@@ -144,7 +144,7 @@ class RecordMeasurementViewController: UIViewController {
         output.exercisesList.bind(to: headerView.recordListCollecionView.rx.items(
             cellIdentifier: "locationCell",
             cellType: RecordCollectionViewCell.self)) {_, items, cell in
-                cell.imgView.image = items.imageUrl.toImage()
+                cell.imgView.kf.setImage(with: items.imageUrl)
                 cell.dateLabel.text = items.startAt.toString(dateFormat: "yyyy.MM.dd")
             }.disposed(by: disposeBag)
     }

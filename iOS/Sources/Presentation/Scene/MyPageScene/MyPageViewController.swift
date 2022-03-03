@@ -122,7 +122,6 @@ class MyPageViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .gray50
         bindViewModel()
-        demoData()
         setNavigation()
     }
 
@@ -137,17 +136,17 @@ class MyPageViewController: UIViewController {
         let output = viewModel.transform(input)
 
         output.myProfile.asObservable().subscribe(onNext: {
-            self.profileImgView.image = $0.profileImageUrl.toImage()
+            self.profileImgView.kf.setImage(with: $0.profileImageUrl)
             self.profileName.text = $0.name
             self.schoolName.text = $0.school
             if $0.grade != 0 && $0.classNum != 0 {
                 self.classLabel.text = "\($0.grade)학년 \($0.classNum)반"
             }
-            self.schoolImgView.image = $0.schoolImageUrl.toImage()
-            self.badgeImgView.image = $0.titleBadge.imageUrl.toImage()
+            self.schoolImgView.kf.setImage(with: $0.schoolImageUrl)
+            self.badgeImgView.kf.setImage(with: $0.titleBadge.imageUrl)
             self.badgeLabel.text = $0.titleBadge.name
             self.levelLabel.text = $0.level.name
-            self.levelImgView.image = $0.level.imageUrlString.toImage()
+            self.levelImgView.kf.setImage(with: $0.level.imageUrlString)
         }).disposed(by: disposeBag)
 
         output.dailyExercise.asObservable().subscribe(onNext: {
@@ -156,24 +155,6 @@ class MyPageViewController: UIViewController {
             self.distanceLabel.text = String(format: "%.2f", $0.walkingRunningDistanceAsMeter / 1000)
             self.kcalLabel.text = "\(Int($0.burnedKilocalories))"
         }).disposed(by: disposeBag)
-    }
-
-    private func demoData() {
-        profileImgView.image = .init(systemName: "clock.fill")
-        profileName.text = "김기영"
-        schoolImgView.image = .init(systemName: "clock.fill")
-        schoolName.text = "대덕소프트웨어마이스터고등학교"
-        classLabel.text = "3학년 4반"
-        badgeImgView.image = .init(systemName: "clock.fill")
-        badgeLabel.text = "전교 1등"
-        badgeCommentLabel.text = "최고 배지"
-        levelImgView.image = .init(systemName: "clock.fill")
-        levelLabel.text = "카페 라떼"
-        levelCommentLabel.text = "최고 등급"
-        stepCounLabel.text = "10000"
-        timeLabel.text = "3"
-        distanceLabel.text = "0.43"
-        kcalLabel.text = "3210"
     }
 
     private func setNavigation() {

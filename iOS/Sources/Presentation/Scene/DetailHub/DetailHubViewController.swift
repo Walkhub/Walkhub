@@ -100,7 +100,7 @@ class DetailHubViewController: TabmanViewController {
             cellIdentifier: "searchCell",
             cellType: RankTableViewCell.self)
         ) { _, item, cell in
-            cell.imgView.image = item.profileImageUrl.toImage()
+            cell.imgView.kf.setImage(with: item.profileImageUrl)
             cell.nameLabel.text = item.name
             cell.stepLabel.text = "\(item.walkCount) 걸음"
             cell.rankLabel.text = "\(item.ranking) 등"
