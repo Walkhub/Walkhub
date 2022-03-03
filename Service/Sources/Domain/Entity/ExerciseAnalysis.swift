@@ -5,7 +5,7 @@ public struct ExerciseAnalysis: Equatable {
     public let dailyWalkCountGoal: Int
     public let walkCount: Int
     public let calorie: Double
-    public let distane: Int
+    public let distance: Int
 }
 
 extension ExerciseAnalysis {

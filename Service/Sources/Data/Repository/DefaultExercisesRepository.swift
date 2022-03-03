@@ -58,7 +58,7 @@ class DefaultExercisesRepository: ExercisesRepository {
                 dailyWalkCountGoal: dailyWalkCountGoal,
                 walkCount: $1.stepCount,
                 calorie: $1.burnedKilocalories,
-                distane: Int($1.walkingRunningDistanceAsMeter)
+                distance: Int($1.walkingRunningDistanceAsMeter)
             )
         }
     }
