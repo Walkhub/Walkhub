@@ -38,7 +38,7 @@ class HomeFlow: Flow {
 
     private func navigateToActivityAnalysisScreen() -> FlowContributors {
         let activityAnalysisViewController = container.resolve(ActivityAnalysisViewController.self)!
-        self.rootViewController.pushViewController(activityAnalysisViewController, animated: false)
+        self.rootViewController.pushViewController(activityAnalysisViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: activityAnalysisViewController,
             withNextStepper: activityAnalysisViewController.viewModel
