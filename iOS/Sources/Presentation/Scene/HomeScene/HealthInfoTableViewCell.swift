@@ -5,6 +5,7 @@ import Then
 import RxSwift
 import RxCocoa
 import Service
+import Kingfisher
 
 class HealthInfoTableViewCell: UITableViewCell {
 
@@ -64,8 +65,6 @@ class HealthInfoTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .systemBackground
         self.selectionStyle = .none
-        imgView.clipsToBounds = true
-        imgView.layer.cornerRadius = imgView.frame.size.height / 2
         addSubviews()
         makeSubviewConstraints()
     }
@@ -75,26 +74,27 @@ class HealthInfoTableViewCell: UITableViewCell {
         caloriesData: PublishRelay<CaloriesLevel>,
         exerciseAnalysis: PublishRelay<ExerciseAnalysis>
     ) {
-        dailyExercisesData.asObservable().subscribe(onNext: { data in
-            DispatchQueue.main.async {
-                self.distanceLabel.text = String(format: "%0.2f", data.walkingRunningDistanceAsMeter / 1000 )
-                self.timeLabel.text = "\(Int(data.walkingRunningTimeAsSecond / 60))"
+        dailyExercisesData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.distanceLabel.text = String(format: "%.1f", data.walkingRunningDistanceAsMeter / 1000.0)
+                self.timeLabel.text = "\(Int(data.walkingRunningTimeAsSecond) / 60)"
                 self.burnKcalLabel.text = "\(Int(data.burnedKilocalories))"
                 self.label.text = "\(data.stepCount)"
-            }
         }).disposed(by: disposeBag)
 
-        exerciseAnalysis.asObservable().subscribe(onNext: { data in
-            DispatchQueue.main.async {
-                self.whCircleProgressView.progress = Double(data.walkCount / data.dailyWalkCountGoal)
+        exerciseAnalysis.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                if data.dailyWalkCountGoal == 0 {
+                    self.whCircleProgressView.progress = (Double(data.walkCount) / 10000) * 100.0
+                } else {
+                    self.whCircleProgressView.progress = (Double(data.walkCount) / Double(data.dailyWalkCountGoal)) * 100.0
+                }
                 self.stepLabel.text = "/\(data.dailyWalkCountGoal) 걸음"
-            }
         }).disposed(by: disposeBag)
 
-        caloriesData.asObservable().subscribe(onNext: { data  in
-            DispatchQueue.main.async {
-                self.imgView.image = data.foodImageUrlString.toImage()
-            }
+        caloriesData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.imgView.kf.setImage(with: data.foodImageUrlString)
         }).disposed(by: disposeBag)
     }
 }
