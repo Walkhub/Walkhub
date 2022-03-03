@@ -45,6 +45,7 @@ class ChartView: UIView {
         chartData.setDrawValues(false)
         chartData.barWidth = 0.4
         barChartView.data = chartData
+        chartDataSet.highlightEnabled = false
 
         barChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: days)
         barChartView.xAxis.setLabelCount(days.count, force: false)
