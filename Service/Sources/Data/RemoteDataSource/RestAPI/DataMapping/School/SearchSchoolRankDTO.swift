@@ -21,7 +21,7 @@ extension SearchSchoolRankDTO {
             id: id,
             name: name,
             ranking: ranking,
-            logoImageUrlString: URL(string: logoImageUrlString)!,
+            logoImageUrl: URL(string: logoImageUrlString)!,
             walkCount: walkCount
         )
     }

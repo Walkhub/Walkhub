@@ -94,7 +94,7 @@ class HealthInfoTableViewCell: UITableViewCell {
 
         caloriesData.asObservable().observe(on: MainScheduler.asyncInstance)
             .subscribe(onNext: { data in
-                self.imgView.kf.setImage(with: data.foodImageUrlString)
+                self.imgView.kf.setImage(with: data.foodImageUrl)
         }).disposed(by: disposeBag)
     }
 }

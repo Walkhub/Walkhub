@@ -16,7 +16,7 @@ extension CaloriesLevelRealmEntity {
     func setup(caloriesLevel: CaloriesLevel) {
         self.levelId = caloriesLevel.level
         self.foodName = caloriesLevel.foodName
-        self.foodImageUrlString = caloriesLevel.foodImageUrlString.absoluteString
+        self.foodImageUrlString = caloriesLevel.foodImageUrl.absoluteString
         self.calorie = caloriesLevel.calorie
         self.size = caloriesLevel.size
         self.level = caloriesLevel.level
@@ -28,7 +28,7 @@ extension CaloriesLevelRealmEntity {
     func toDomain() -> CaloriesLevel {
         return .init(
             levelID: levelId,
-            foodImageUrlString: URL(string: foodImageUrlString)!,
+            foodImageUrl: URL(string: foodImageUrlString)!,
             foodName: foodName,
             calorie: calorie,
             size: size,

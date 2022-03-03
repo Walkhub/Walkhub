@@ -44,15 +44,15 @@ class RecordMeasurementViewModel: ViewModelType, Stepper {
 
         input.start.asObservable()
             .throttle(.seconds(1), latest: false, scheduler: MainScheduler.asyncInstance)
-//            .withLatestFrom(info)
-//            .flatMap {
-//                self.startExerciseUseCase.excute(goal: $0, goalType: $1)
-//                    .andThen(Single.just(WalkhubStep.playRecordIsRequired))
-//            }
-            .map { WalkhubStep.playRecordIsRequired }
+            .withLatestFrom(info)
+            .flatMap {
+                self.startExerciseUseCase.excute(goal: $0, goalType: $1)
+                    .andThen(Single.just(WalkhubStep.playRecordIsRequired))
+            }
             .bind(to: steps)
             .disposed(by: disposeBag)
 
         return Output(exercisesList: exercisesList)
     }
 }
+

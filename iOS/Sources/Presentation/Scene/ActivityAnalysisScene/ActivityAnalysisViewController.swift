@@ -253,7 +253,7 @@ class ActivityAnalysisViewController: UIViewController {
 
         output.myCalorie.asObservable().observe(on: MainScheduler.asyncInstance)
             .subscribe(onNext: { data in
-                self.imgView.kf.setImage(with: data.foodImageUrlString, options: [
+                self.imgView.kf.setImage(with: data.foodImageUrl, options: [
                     .processor(RoundCornerImageProcessor(cornerRadius: self.imgView.frame.width/2))
                 ])
                 self.foodName.text = data.foodName

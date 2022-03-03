@@ -146,7 +146,7 @@ class MyPageViewController: UIViewController {
             self.badgeImgView.kf.setImage(with: $0.titleBadge.imageUrl)
             self.badgeLabel.text = $0.titleBadge.name
             self.levelLabel.text = $0.level.name
-            self.levelImgView.kf.setImage(with: $0.level.imageUrlString)
+            self.levelImgView.kf.setImage(with: $0.level.imageUrl)
         }).disposed(by: disposeBag)
 
         output.dailyExercise.asObservable().subscribe(onNext: {

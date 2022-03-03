@@ -127,7 +127,7 @@ class HubViewController: UIViewController {
         }.disposed(by: disposeBag)
 
         output.mySchoolRank.asObservable().subscribe(onNext: {
-            self.schoolImgView.kf.setImage(with: $0.logoImageUrlString)
+            self.schoolImgView.kf.setImage(with: $0.logoImageUrl)
             self.schoolName.text = $0.name
             self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
         }).disposed(by: disposeBag)
@@ -136,7 +136,7 @@ class HubViewController: UIViewController {
             cellIdentifier: "searchCell",
             cellType: RankTableViewCell.self
         )) { _, items, cell in
-            cell.imgView.kf.setImage(with: items.logoImageUrlString)
+            cell.imgView.kf.setImage(with: items.logoImageUrl)
             cell.nameLabel.text = items.name
             cell.rankLabel.text = "\(items.ranking)등"
             cell.stepLabel.text = "총 \(items.walkCount) 걸음"
