@@ -142,5 +142,10 @@ public extension Container {
                 exerciseRepository: resolver.resolve(ExercisesRepository.self)!
             )
         }
+        self.register(FetchMyPageUseCase.self) { resolver in
+            return FetchMyPageUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }

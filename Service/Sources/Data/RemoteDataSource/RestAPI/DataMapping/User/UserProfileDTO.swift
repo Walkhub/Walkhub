@@ -9,7 +9,7 @@ struct UserProfileDTO: Decodable {
         case school = "school_name"
         case schoolImageUrlString = "school_image_url"
         case grade
-        case classNum
+        case classNum = "class_num"
         case titleBadge = "title_badge"
         case level
     }

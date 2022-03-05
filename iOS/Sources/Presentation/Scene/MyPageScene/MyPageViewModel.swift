@@ -3,8 +3,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 import Service
+import RxFlow
 
-class MyPageViewModel: ViewModelType {
+class MyPageViewModel: ViewModelType, Stepper {
 
     private let fetchMyPageUseCase: FetchMyPageUseCase
     private let fetchDailyExerciseUseCase: FetchLiveDailyExerciseRecordUseCase
@@ -18,6 +19,8 @@ class MyPageViewModel: ViewModelType {
     }
 
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
+
     struct Input {
         let getData: Driver<Void>
     }
