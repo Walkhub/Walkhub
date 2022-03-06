@@ -18,8 +18,7 @@ class MyPageViewController: UIViewController {
     }
 
     private let profileImgView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = $0.frame.height / 2
+        $0.contentMode = .scaleToFill
     }
 
     private let profileName = UILabel().then {
@@ -135,6 +134,8 @@ class MyPageViewController: UIViewController {
     }
 
     override func viewDidLayoutSubviews() {
+        profileImgView.layer.cornerRadius = profileImgView.frame.height / 2
+        profileImgView.clipsToBounds = true
         setNavigation()
         addSubviews()
         makeSubviewConstraints()
@@ -234,7 +235,7 @@ extension MyPageViewController {
         }
 
         clockImgView.snp.makeConstraints {
-            $0.top.equalTo(profileName.snp.top).offset(30)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.width.height.equalTo(16)
             $0.leading.equalTo(stepCountImgView.snp.trailing).offset(57)
         }
@@ -245,7 +246,7 @@ extension MyPageViewController {
         }
 
         locationImgView.snp.makeConstraints {
-            $0.top.equalTo(profileName.snp.top).offset(30)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.trailing.equalTo(fireImgView.snp.leading).offset(-57)
             $0.width.height.equalTo(16)
         }
@@ -256,7 +257,7 @@ extension MyPageViewController {
         }
 
         fireImgView.snp.makeConstraints {
-            $0.top.equalTo(profileName.snp.top).offset(30)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.trailing.equalToSuperview().inset(47)
         }
 
