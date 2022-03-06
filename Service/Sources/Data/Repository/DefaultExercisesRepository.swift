@@ -48,20 +48,17 @@ class DefaultExercisesRepository: ExercisesRepository {
 
     func fetchExerciseAnalysis() -> Observable<ExerciseAnalysis> {
         Observable.combineLatest(
-            OfflineCacheUtil<[Int]>()
-                .localData { self.localExercisesDataSource.fetchWalkCountRecordList() }
-                .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map { $0.walkCountList } }
-                .doOnNeedRefresh { self.localExercisesDataSource.storeWalkCountRecordList($0) }
-                .createObservable(),
+           fetchWalkCountListAndDailyWalkCountGoal(),
             fetchLiveDailyExerciseRecord()
         ) {
-            let walkCountList: [Int] = $0.dropLast()+[$1.stepCount]
+            let walkCountList: [Int] = $0.walkCountList.dropLast()+[$1.stepCount]
+            let dailyWalkCountGoal: Int = $0.dailyWalkCountGoal
             return ExerciseAnalysis(
                 walkCountList: walkCountList,
-                dailyWalkCountGoal: 0,
+                dailyWalkCountGoal: dailyWalkCountGoal,
                 walkCount: $1.stepCount,
                 calorie: $1.burnedKilocalories,
-                distane: Int($1.walkingRunningDistanceAsMeter)
+                distance: Int($1.walkingRunningDistanceAsMeter)
             )
         }
     }
@@ -77,6 +74,7 @@ class DefaultExercisesRepository: ExercisesRepository {
     func startMeasuring(goal: Int, goalType: ExerciseGoalType) -> Completable {
         remoteExercisesDataSource.startMeasuring(goal: goal, goalType: goalType)
             .do(onSuccess: { exerciseId in
+                self.localExercisesDataSource.storeRecordExercise(exerciseId, goal, goalType)
                 self.exerciseId = exerciseId
                 self.measuringStartAt = Date()
                 self.coreLocationDataSource.startUpdatingLocation()
@@ -91,12 +89,18 @@ class DefaultExercisesRepository: ExercisesRepository {
                         exercisesId: self.exerciseId!,
                         walkCount: $0.stepCount,
                         distance: Int($0.walkingRunningDistanceAsMeter),
-                        imageUrlString: imageUrlString
+                        calorie: Int($0.burnedKilocalories),
+                        imageUrlString: imageUrlString,
+                        pausedTime: Int($0.wlkingRunningTimeAsSecond)
                     )
                 }
         ).do(onCompleted: {
             self.isMeasuring = false
         })
+    }
+
+    func fetchRecordExercise() -> Single<RecordExercise> {
+        return localExercisesDataSource.fetchRecordExercise()
     }
 
     private func saveUserLocationListDuringMeasuring() -> Completable {
@@ -106,6 +110,20 @@ class DefaultExercisesRepository: ExercisesRepository {
         )
     }
 
+    private func fetchWalkCountListAndDailyWalkCountGoal() -> Observable<ExerciseAnalysisRemotePart> {
+        return OfflineCacheUtil<ExerciseAnalysisRemotePart>()
+            .localData { self.localExercisesDataSource.fetchWalkCountRecordList().map {
+                ExerciseAnalysisRemotePart(
+                    walkCountList: $0,
+                    dailyWalkCountGoal: self.userDefaultsDataSource.dailyWalkCountGoal
+                )
+            } }
+            .remoteData { self.remoteExercisesDataSource.fetchExerciseAnalysis().map {
+                $0.excute()
+            } }
+            .doOnNeedRefresh { self.localExercisesDataSource.storeWalkCountRecordList($0.walkCountList) }
+            .createObservable()
+    }
 }
 
 // MARK: - Fetch Data Form HealthKit

@@ -13,15 +13,14 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
     }
 
     let rankImageView = UIImageView().then {
-        $0.clipsToBounds = true
-        $0.layer.cornerRadius = 24
-        $0.image = .init(systemName: "clear")
-        $0.backgroundColor = .gray300
+        $0.image = .init(named: "startImg")
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
+        rankImageView.clipsToBounds = true
+        rankImageView.layer.cornerRadius = rankImageView.frame.size.height / 2
     }
 
     required init?(coder: NSCoder) {
@@ -41,12 +40,12 @@ class StartExerciseMeasuringTableViewCell: UITableViewCell {
         self.contentView.addSubview(rankImageView)
 
         fastLabel.snp.makeConstraints {
-            $0.bottom.equalTo(contentView.snp.centerY)
+            $0.top.equalToSuperview().inset(24)
             $0.leading.equalToSuperview().inset(24)
         }
 
         recordLabel.snp.makeConstraints {
-            $0.bottom.equalTo(contentView.snp.centerY)
+            $0.top.equalTo(fastLabel.snp.bottom)
             $0.leading.equalToSuperview().inset(24)
             $0.bottom.equalToSuperview().inset(24)
         }

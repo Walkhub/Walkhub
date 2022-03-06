@@ -1,9 +1,9 @@
 import Foundation
 
 public struct SchoolDetails: Equatable {
-    let totalUserCount: Int
-    let weekTotalWalkCount: Int
-    let monthTotalWalkCount: Int
-    let weekRanking: Int
-    let monthRanking: Int
+    public let totalUserCount: Int
+    public let weekTotalWalkCount: Int
+    public let monthTotalWalkCount: Int
+    public let weekRanking: Int
+    public let monthRanking: Int
 }

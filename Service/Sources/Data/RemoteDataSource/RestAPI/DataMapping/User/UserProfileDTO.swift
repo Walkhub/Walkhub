@@ -7,8 +7,9 @@ struct UserProfileDTO: Decodable {
         case name
         case profileImageUrlString = "profile_image_url"
         case school = "school_name"
+        case schoolImageUrlString = "school_image_url"
         case grade
-        case classNum
+        case classNum = "class_num"
         case titleBadge = "title_badge"
         case level
     }
@@ -16,6 +17,7 @@ struct UserProfileDTO: Decodable {
     let name: String
     let profileImageUrlString: String
     let school: String?
+    let schoolImageUrlString: String
     let grade: Int?
     let classNum: Int?
     let titleBadge: BadgeDTO
@@ -30,8 +32,9 @@ extension UserProfileDTO {
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!,
             school: school ?? "",
-            grade: grade,
-            classNum: classNum,
+            schoolImageUrl: URL(string: schoolImageUrlString)!,
+            grade: grade ?? 0,
+            classNum: classNum ?? 0,
             titleBadge: titleBadge.toDomain(),
             level: level.toDomain()
         )

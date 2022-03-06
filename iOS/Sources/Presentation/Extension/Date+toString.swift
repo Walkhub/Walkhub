@@ -1,11 +1,11 @@
 import Foundation
 
 extension Date {
-    func toString() -> String {
+    func toString(dateFormat: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "UTC")
         formatter.timeZone = TimeZone(abbreviation: "KST")
-        formatter.dateFormat = "M.dd"
+        formatter.dateFormat = dateFormat
         return formatter.string(from: self)
     }
 }

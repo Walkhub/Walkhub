@@ -18,7 +18,7 @@ extension MyBadgeDTO {
         return .init(
             id: id,
             name: name,
-            imageUrlString: URL(string: imageUrlString)!,
+            imageUrl: URL(string: imageUrlString)!,
             isMine: isMine
         )
     }
