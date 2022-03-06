@@ -10,15 +10,18 @@ class PlayRecordViewModel: ViewModelType, Stepper {
     private let fetchExerciseAnalysisUseCase: FetchExerciseAnalysisUseCase
     private let fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase
     private let fetchRecordExerciseUseCase: FetchRecordExerciseUseCase
+    private let endExerciseUseCase: EndExerciseUseCase
 
     init(
         fetchExerciseAnalysisUseCase: FetchExerciseAnalysisUseCase,
         fetchMeasuringExerciseUseCase: FetchMeasuringExerciseUseCase,
-        fetchRecordExerciseUseCase: FetchRecordExerciseUseCase
+        fetchRecordExerciseUseCase: FetchRecordExerciseUseCase,
+        endExerciseUseCase: EndExerciseUseCase
     ) {
         self.fetchMeasuringExerciseUseCase = fetchMeasuringExerciseUseCase
         self.fetchExerciseAnalysisUseCase = fetchExerciseAnalysisUseCase
         self.fetchRecordExerciseUseCase = fetchRecordExerciseUseCase
+        self.endExerciseUseCase = endExerciseUseCase
     }
 
     private var disposeBag = DisposeBag()
@@ -26,6 +29,7 @@ class PlayRecordViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
+        let endExercise: Driver<Void>
     }
 
     struct Output {
@@ -55,6 +59,11 @@ class PlayRecordViewModel: ViewModelType, Stepper {
             self.fetchRecordExerciseUseCase.excute()
         }.subscribe(onNext: {
             recordExercise.accept($0)
+        }).disposed(by: disposeBag)
+
+        input.endExercise.asObservable().flatMap {
+            self.endExerciseUseCase.excute()
+        }.subscribe(onNext: { _ in
         }).disposed(by: disposeBag)
 
         return Output(
