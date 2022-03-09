@@ -16,7 +16,7 @@ extension MySchoolRealmEntity {
     func setup(school: MySchool) {
         self.schoolId = school.id
         self.name = school.name
-        self.logoImageUrlString = school.logoImageUrlString.absoluteString
+        self.logoImageUrlString = school.logoImageUrl.absoluteString
         self.grade = school.grade
         self.classNum = school.classNum
         self.compoundKey = compoundKey
@@ -31,7 +31,7 @@ extension MySchoolRealmEntity {
         return .init(
             id: schoolId,
             name: name,
-            logoImageUrlString: URL(string: logoImageUrlString)!,
+            logoImageUrl: URL(string: logoImageUrlString)!,
             grade: grade,
             classNum: classNum
         )

@@ -23,7 +23,7 @@ extension CaloriesLevelDTO {
     func toDomain() -> CaloriesLevel {
         return .init(
             levelID: levelID,
-            foodImageUrlString: URL(string: foodImageUrlString)!,
+            foodImageUrl: URL(string: foodImageUrlString)!,
             foodName: foodName,
             calorie: calorie,
             size: size,

@@ -10,7 +10,7 @@ class DefaultAuthRepository: AuthRepository {
     private let remoteAuthDataSource = RemoteAuthDataSource.shared
     private let keychainDataSource = KeychainDataSource.shared
     private let healthKitDataSource = HealthKitDataSource.shared
-    private let userDefualtDataSource = UserDefaultsDataSource.shared
+    private let userDefaultDataSource = UserDefaultsDataSource.shared
 
     func tokenRefresh() -> Completable {
         remoteAuthDataSource.renewalToken()
@@ -32,7 +32,7 @@ class DefaultAuthRepository: AuthRepository {
                     self.keychainDataSource.registerExpiredAt($0.expiredAt)
                     self.healthKitDataSource.storeUserHeight($0.height)
                     self.healthKitDataSource.storeUserWeight(Double($0.weight))
-                    self.userDefualtDataSource.userSex = Sex(rawValue: $0.sex)!
+                    self.userDefaultDataSource.userSex = Sex(rawValue: $0.sex)!
                 }).asCompletable()
             }
     }

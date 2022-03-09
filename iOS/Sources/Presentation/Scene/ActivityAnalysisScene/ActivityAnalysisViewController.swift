@@ -6,10 +6,16 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 class ActivityAnalysisViewController: UIViewController {
 
+    var viewModel: ActivityAnalysisViewModel!
     private var disposeBag = DisposeBag()
+    private var goalCount = Int()
+    private var calorie = Int()
+
+    private let getData = PublishRelay<Void>()
 
     private let scrollView = UIScrollView()
 
@@ -25,6 +31,7 @@ class ActivityAnalysisViewController: UIViewController {
         $0.layer.shadowOffset = CGSize(width: -3, height: 3)
         $0.layer.shadowRadius = 5
         $0.layer.shadowOpacity = 0.3
+        $0.backgroundColor = .white
     }
 
     private let foodName = UILabel().then {
@@ -217,7 +224,7 @@ class ActivityAnalysisViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.title = "활동분석"
         view.backgroundColor = .gray50
-        demoData()
+        bindViewModel()
         setBtn()
     }
 
@@ -225,35 +232,79 @@ class ActivityAnalysisViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
         blueView.roundCorners(cornerRadius: 64, byRoundingCorners: .topRight)
+        imgView.layer.cornerRadius = imgView.frame.width/2
         imgView.layer.shadowPath = UIBezierPath(
             roundedRect: imgView.bounds,
             cornerRadius: imgView.frame.width / 2).cgPath
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
+        self.tabBarController?.tabBar.isHidden = true
+    }
+
+    private func bindViewModel() {
+        let input = ActivityAnalysisViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            getWeekCharts: weekBtn.rx.tap.asDriver(),
+            getMonthCharts: monthBtn.rx.tap.asDriver())
+
+        let output = viewModel.transform(input)
+
+        output.myCalorie.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.imgView.kf.setImage(with: data.foodImageUrl, options: [
+                    .processor(RoundCornerImageProcessor(cornerRadius: self.imgView.frame.width/2))
+                ])
+                self.foodName.text = data.foodName
+                self.foodKcalLabel.text = "\(data.calorie)"
+                self.criteriaLabel.text = "\(data.size)"
+                self.commentLabel.text = data.message
+                self.levelLabel.text = "Lv.\(data.level)"
+                self.calorie = data.calorie
+        }).disposed(by: disposeBag)
+
+        output.exerciseAnalysisData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.goalStepCountLabel.text = "/\(data.dailyWalkCountGoal) 걸음"
+                self.goalCount = data.dailyWalkCountGoal
+        }).disposed(by: disposeBag)
+
+        output.dailyExerciseData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                let minute = data.walkingRunningTimeAsSecond / 60
+                self.currentStepCountsLabel.text = "\(data.stepCount)"
+                self.distanceNumLabel.text = String(format: "%.1f", data.walkingRunningDistanceAsMeter / 1000)
+                self.burnKcalNumLabel.text = "\(Int(data.burnedKilocalories))"
+                self.hourLabel.text = "\(Int(minute) / 60)"
+                self.minuteLabel.text = "\(Int(minute) % 60)"
+                self.levelProgressBar.progress = Float(Double(data.burnedKilocalories) / Double(self.calorie))
+                if self.goalCount == 0 {
+                    self.stepCountProgressBar.progress = (Float(data.stepCount) / 10000.0)
+                } else {
+                    self.stepCountProgressBar.progress = (Float(data.stepCount) / Float(self.goalCount))
+                }
+        }).disposed(by: disposeBag)
+
+        output.weekCharts.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
+            self.charts.setWeekCharts(stepCounts: $0.0)
+            self.allStepCountNumLabel.text = "\($0.1)"
+            self.averageStepNumLabel.text = "\($0.2)"
+        }).disposed(by: disposeBag)
+
+        output.monthCharts.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
+            self.charts.setMothCharts(stepCounts: $0.0)
+            self.allStepCountNumLabel.text = "\($0.1)"
+            self.averageStepNumLabel.text = "\($0.2)"
+        }).disposed(by: disposeBag)
+    }
 }
 
 extension ActivityAnalysisViewController {
-    private func demoData() {
-        imgView.image = .init(systemName: "clock.fill")
-        imgView.tintColor = .white
-        foodName.text = "카페 라떼"
-        foodKcalLabel.text = "180"
-        criteriaLabel.text = "(355ml 기준)"
-        commentLabel.text = "\"커피 한 잔 할래요~?\""
-        levelLabel.text = "Lv.7"
-        dateLabel.text = "1월 14일(금)"
-        currentStepCountsLabel.text = "6700"
-        goalStepCountLabel.text = "/7000 걸음"
-        burnKcalNumLabel.text = "203"
-        distanceNumLabel.text = "5.24"
-        hourLabel.text = "1"
-        minuteLabel.text = "15"
-        charts.setMothCharts(stepCounts: [5000, 3244, 12321, 4400, 9877, 1233, 8888,
-                                          5000, 3244, 12321, 4400, 9877, 1233, 8888,
-                                          5000, 3244, 12321, 4400, 9877, 1233, 8888,
-                                          5000, 3244, 12321, 4400, 9877, 1233, 8888])
-        allStepCountNumLabel.text = "25382"
-        averageStepNumLabel.text = "3626"
-    }
 
     private func setBtn() {
         weekBtn.rx.tap.subscribe(onNext: {

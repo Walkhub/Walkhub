@@ -39,7 +39,7 @@ class RankPreviewTableViewCell: UITableViewCell {
             cellIdentifier: "rankCell",
             cellType: RankTableViewCell.self
         )) { _, items, cell in
-            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.imgView.kf.setImage(with: items.profileImageUrl)
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "\(items.walkCount) 걸음"
             cell.rankLabel.text = "\(items.ranking)등"

@@ -5,6 +5,7 @@ import Then
 import RxSwift
 import RxCocoa
 import Service
+import Kingfisher
 
 class HealthInfoTableViewCell: UITableViewCell {
 
@@ -20,31 +21,28 @@ class HealthInfoTableViewCell: UITableViewCell {
         )
     }
 
-    let clockLabel = UILabel().then {
+    let burnKcalLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
-    let locationLabel = UILabel().then {
+    let distanceLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
-    let fireLabel = UILabel().then {
+    let timeLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
     let fire = UIImageView().then {
-        $0.image = .init(systemName: "flame.fill")
-        $0.tintColor = .black
+        $0.image = .init(named: "fireImg")
     }
 
-    let location = UIImageView().then {
-        $0.image = .init(systemName: "location.square")
-        $0.tintColor = .black
+    let distance = UIImageView().then {
+        $0.image = .init(named: "distanceImg")
     }
 
     let clock = UIImageView().then {
-        $0.image = .init(systemName: "clock.fill")
-        $0.tintColor = .black
+        $0.image = .init(named: "ClockImg")
     }
 
     let label = UILabel().then {
@@ -56,8 +54,7 @@ class HealthInfoTableViewCell: UITableViewCell {
     }
 
     let imgView = UIImageView().then {
-        $0.clipsToBounds = true
-        $0.backgroundColor = .gray200
+        $0.contentMode = .scaleToFill
     }
 
     required init?(coder: NSCoder) {
@@ -77,24 +74,27 @@ class HealthInfoTableViewCell: UITableViewCell {
         caloriesData: PublishRelay<CaloriesLevel>,
         exerciseAnalysis: PublishRelay<ExerciseAnalysis>
     ) {
-        dailyExercisesData.asObservable().subscribe(onNext: { data in
-            DispatchQueue.main.async {
-                self.clockLabel.text = "\(Int(data.walkingRunningTimeAsSecond / 60))"
-                self.fireLabel.text = "\(-(Int(data.burnedKilocalories)))"
-                self.locationLabel.text = String(format: "%0.2f", data.walkingRunningDistanceAsMeter / 1000 )
+        dailyExercisesData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.distanceLabel.text = String(format: "%.1f", data.walkingRunningDistanceAsMeter / 1000.0)
+                self.timeLabel.text = "\(Int(data.walkingRunningTimeAsSecond) / 60)"
+                self.burnKcalLabel.text = "\(Int(data.burnedKilocalories))"
                 self.label.text = "\(data.stepCount)"
-            }
         }).disposed(by: disposeBag)
 
-        exerciseAnalysis.asObservable().subscribe(onNext: { data in
-            DispatchQueue.main.async {
-                self.whCircleProgressView.progress = Double(data.walkCount / data.dailyWalkCountGoal)
+        exerciseAnalysis.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                if data.dailyWalkCountGoal == 0 {
+                    self.whCircleProgressView.progress = (Double(data.walkCount) / 10000) * 100.0
+                } else {
+                    self.whCircleProgressView.progress = (Double(data.walkCount) / Double(data.dailyWalkCountGoal)) * 100.0
+                }
                 self.stepLabel.text = "/\(data.dailyWalkCountGoal) 걸음"
-            }
         }).disposed(by: disposeBag)
 
-        caloriesData.asObservable().subscribe(onNext: {
-            self.imgView.image = $0.foodImageUrlString.toImage()
+        caloriesData.asObservable().observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: { data in
+                self.imgView.kf.setImage(with: data.foodImageUrl)
         }).disposed(by: disposeBag)
     }
 }
@@ -103,14 +103,13 @@ extension HealthInfoTableViewCell {
 
     private func addSubviews() {
         [whCircleProgressView, label, stepLabel,
-         clock, location, fire, clockLabel, locationLabel, fireLabel]
+         fire, distance, clock, burnKcalLabel, distanceLabel, timeLabel]
             .forEach { self.contentView.addSubview($0)}
         whCircleProgressView.addSubview(imgView)
     }
 
     private func makeSubviewConstraints() {
         whCircleProgressView.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(40)
             $0.left.right.equalToSuperview().inset(64)
             $0.height.equalTo(whCircleProgressView.snp.width)
@@ -118,11 +117,10 @@ extension HealthInfoTableViewCell {
 
         imgView.snp.makeConstraints {
             $0.left.top.right.bottom.equalToSuperview().inset(20)
-            imgView.layer.cornerRadius = imgView.frame.width / 2
         }
 
         label.snp.makeConstraints {
-            $0.top.equalTo(whCircleProgressView.snp.bottom)
+            $0.top.equalTo(imgView.snp.bottom)
             $0.centerX.equalToSuperview()
         }
 
@@ -131,38 +129,37 @@ extension HealthInfoTableViewCell {
             $0.centerX.equalToSuperview()
         }
 
-        clock.snp.makeConstraints {
+        fire.snp.makeConstraints {
             $0.top.equalTo(label.snp.bottom).offset(50)
             $0.leading.equalToSuperview().inset(57)
             $0.width.height.equalTo(16)
         }
 
-        location.snp.makeConstraints {
-            $0.top.equalTo(clock.snp.top)
-            $0.centerX.equalTo(label)
+        distance.snp.makeConstraints {
+            $0.top.equalTo(fire.snp.top)
+            $0.centerX.equalToSuperview()
             $0.width.height.equalTo(16)
         }
 
-        fire.snp.makeConstraints {
-            $0.top.equalTo(clock.snp.top)
+        clock.snp.makeConstraints {
+            $0.top.equalTo(fire.snp.top)
             $0.trailing.equalToSuperview().inset(57)
             $0.width.height.equalTo(16)
         }
 
-        clockLabel.snp.makeConstraints {
-            $0.top.equalTo(clock.snp.bottom).offset(4)
-            $0.centerX.equalTo(clock)
-        }
-
-        locationLabel.snp.makeConstraints {
-            $0.top.equalTo(location.snp.bottom).offset(4)
-            $0.centerX.equalTo(location)
-        }
-
-        fireLabel.snp.makeConstraints {
+        burnKcalLabel.snp.makeConstraints {
             $0.top.equalTo(fire.snp.bottom).offset(4)
             $0.centerX.equalTo(fire)
-            $0.bottom.equalToSuperview().offset(-30)
+        }
+
+        distanceLabel.snp.makeConstraints {
+            $0.top.equalTo(distance.snp.bottom).offset(4)
+            $0.centerX.equalTo(distance)
+        }
+
+        timeLabel.snp.makeConstraints {
+            $0.top.equalTo(clock.snp.bottom).offset(4)
+            $0.centerX.equalTo(clock)
         }
     }
 }

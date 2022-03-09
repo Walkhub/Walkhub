@@ -4,10 +4,15 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class PlayRecordViewController: UIViewController {
 
+    var viewModel: PlayRecordViewModel!
+    var goalType: String = ""
+    var goal: Int = 0
     private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Void>()
 
     private let cheerUpImg = UIImageView().then {
         $0.image = .init(named: "CheerUpImg")
@@ -23,7 +28,6 @@ class PlayRecordViewController: UIViewController {
     }
 
     private let reaminDistanceLabel = UILabel().then {
-        $0.text = "남은 거리"
         $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
@@ -155,7 +159,7 @@ class PlayRecordViewController: UIViewController {
         navigationItem.title = "기록측정"
         [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
-        demoData()
+        bindViewModel()
         setBtn()
     }
 
@@ -165,6 +169,9 @@ class PlayRecordViewController: UIViewController {
         setLayoutRound()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
     private func setBtn() {
         lockBtn.rx.tap.subscribe(onNext: {
             self.stopBtn.isSelected = true
@@ -191,16 +198,42 @@ class PlayRecordViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
 
-    private func demoData() {
-        cheerCommentLabel.text = "김기영님이 응원하셨어요!"
-        currentLabel.text = "2.5km"
-        goalLabel.text = "/7km"
-        progressBar.progress = 0.5
-        stepCountNumLabel.text = "3299"
-        kcalNumLabel.text = "234"
-        speedNumLabel.text = "0.3"
-        hourLabel.text = "12"
-        minuteLabel.text = "30"
+    private func bindViewModel() {
+        let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
+
+        output.recordExercise.asObservable().subscribe(onNext: {
+            self.goalType = $0.goalType.rawValue
+            self.goal = $0.goal
+            if self.goalType == "DISTANCE" {
+                self.goalLabel.text = "/\($0.goal)km"
+                self.reaminDistanceLabel.text = "남은 거리"
+                self.stepCountLabel.text = "걸음수"
+            } else {
+                self.goalLabel.text = "/\($0.goal)보"
+                self.reaminDistanceLabel.text = "남은 걸음"
+                self.stepCountLabel.text = "거리"
+            }
+        }).disposed(by: disposeBag)
+
+        output.dailyExericse.asObservable().subscribe(onNext: {
+            let hour = $0.wlkingRunningTimeAsSecond / 3600
+            let minute = Int($0.wlkingRunningTimeAsSecond) % 3600
+            if self.goalType == "DISTANCE" {
+                self.stepCountNumLabel.text = "\($0.stepCount)"
+                self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
+                self.currentLabel.text = String(format: "%.f", $0.walkingRunningDistanceAsMeter * 1000)
+            } else {
+                self.stepCountNumLabel.text = "\($0.stepCount)"
+                self.progressBar.progress = Float(Int($0.walkingRunningDistanceAsMeter * 1000) / self.goal)
+                self.currentLabel.text = String(format: "%.f", $0.walkingRunningDistanceAsMeter * 1000)
+            }
+            self.kcalNumLabel.text = "\($0.burnedKilocalories)"
+            self.hourLabel.text = "\(hour)"
+            self.minuteLabel.text = "\(minute * 60)"
+            self.speedLabel.text = "\($0.speedAsMeterPerSecond)"
+        }).disposed(by: disposeBag)
     }
 
     private func setLayoutRound() {

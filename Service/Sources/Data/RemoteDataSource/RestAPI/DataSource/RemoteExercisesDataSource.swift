@@ -37,13 +37,17 @@ final class RemoteExercisesDataSource: RestApiRemoteDataSource<ExercisesAPI> {
         exercisesId: Int,
         walkCount: Int,
         distance: Int,
-        imageUrlString: String?
+        calorie: Int,
+        imageUrlString: String?,
+        pausedTime: Int
     ) -> Completable {
         return request(.finishMeasuring(
             exercisesId: exercisesId,
             walkCount: walkCount,
             distance: distance,
-            imageUrlString: imageUrlString
+            calorie: calorie,
+            imageUrlString: imageUrlString,
+            pausedTime: pausedTime
         )).asCompletable()
     }
 

@@ -34,7 +34,7 @@ extension UserAPI: WalkhubAPI {
         case .changeGoalWalkCount:
             return "/goal"
         default:
-            return "/"
+            return ""
         }
     }
 

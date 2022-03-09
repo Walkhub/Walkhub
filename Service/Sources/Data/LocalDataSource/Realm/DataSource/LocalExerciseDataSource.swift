@@ -43,4 +43,36 @@ final class LocalExerciseDataSource {
         realmTask.set(walkCountEntityList)
     }
 
+    func fetchRecordExercise() -> Single<RecordExercise> {
+        return realmTask.fetchObjects(
+            for: RecordExerciseRealmEntity.self
+        ).map { $0.map { $0.toDomain() }.first! }
+    }
+
+    func storeRecordExercise(
+        _ exerciseId: Int,
+        _ goal: Int,
+        _ goalType: ExerciseGoalType
+    ) {
+        let recordExercise = recordExerciseToRecordExerciseRealmEntity(
+            exerciseId,
+            goal,
+            goalType
+        )
+        realmTask.set(recordExercise)
+    }
+
+    private func recordExerciseToRecordExerciseRealmEntity(
+        _ exerciseID: Int,
+        _ goal: Int,
+        _ goalType: ExerciseGoalType
+    ) -> RecordExerciseRealmEntity {
+       let recordExerciseRealmEntity = RecordExerciseRealmEntity()
+        recordExerciseRealmEntity.setup(
+            exerciseID,
+            goal,
+            goalType
+        )
+        return recordExerciseRealmEntity
+    }
 }

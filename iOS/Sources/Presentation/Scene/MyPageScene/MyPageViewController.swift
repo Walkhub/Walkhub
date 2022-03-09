@@ -2,8 +2,15 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class MyPageViewController: UIViewController {
+
+    var viewModel: MyPageViewModel!
+    private var disposeBag = DisposeBag()
+
+    private let getData = PublishRelay<Void>()
 
     private let profileView = UIView().then {
         $0.backgroundColor = .white
@@ -11,8 +18,7 @@ class MyPageViewController: UIViewController {
     }
 
     private let profileImgView = UIImageView().then {
-        $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = $0.frame.height / 2
+        $0.contentMode = .scaleToFill
     }
 
     private let profileName = UILabel().then {
@@ -20,7 +26,7 @@ class MyPageViewController: UIViewController {
     }
 
     private let stepCountImgView = UIImageView().then {
-        $0.image = .init(named: "StepCountImg")
+        $0.image = .init(named: "stepCountImg")
         $0.contentMode = .scaleAspectFit
     }
 
@@ -38,7 +44,7 @@ class MyPageViewController: UIViewController {
     }
 
     private let locationImgView = UIImageView().then {
-        $0.image = .init(named: "DistanceImg")
+        $0.image = .init(named: "distanceImg")
         $0.contentMode = .scaleAspectFit
     }
 
@@ -47,7 +53,7 @@ class MyPageViewController: UIViewController {
     }
 
     private let fireImgView = UIImageView().then {
-        $0.image = .init(named: "FireImg")
+        $0.image = .init(named: "fireImg")
         $0.contentMode = .scaleAspectFit
     }
 
@@ -112,55 +118,73 @@ class MyPageViewController: UIViewController {
         $0.textColor = .gray500
     }
 
+    private let gearBtn = UIBarButtonItem(
+        image: .init(systemName: "gearshape.fill"),
+        style: .plain,
+        target: self,
+        action: nil
+    ).then {
+        $0.tintColor = .black
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        demoData()
-        setNavigation()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
+        profileImgView.layer.cornerRadius = profileImgView.frame.height / 2
+        profileImgView.clipsToBounds = true
+        setNavigation()
         addSubviews()
         makeSubviewConstraints()
     }
 
-    private func demoData() {
-        profileImgView.image = .init(systemName: "clock.fill")
-        profileName.text = "김기영"
-        schoolImgView.image = .init(systemName: "clock.fill")
-        schoolName.text = "대덕소프트웨어마이스터고등학교"
-        classLabel.text = "3학년 4반"
-        badgeImgView.image = .init(systemName: "clock.fill")
-        badgeLabel.text = "전교 1등"
-        badgeCommentLabel.text = "최고 배지"
-        levelImgView.image = .init(systemName: "clock.fill")
-        levelLabel.text = "카페 라떼"
-        levelCommentLabel.text = "최고 등급"
-        stepCounLabel.text = "10000"
-        timeLabel.text = "3"
-        distanceLabel.text = "0.43"
-        kcalLabel.text = "3210"
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
+    }
+
+    private func bindViewModel() {
+        let input = MyPageViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
+
+        output.myProfile.asObservable().subscribe(onNext: {
+            self.profileImgView.kf.setImage(with: $0.profileImageUrl)
+            self.profileName.text = $0.name
+            self.schoolName.text = $0.school
+            if $0.grade != 0 && $0.classNum != 0 {
+                self.classLabel.text = "\($0.grade)학년 \($0.classNum)반"
+            } else {
+                self.classLabel.text = "현재 소속 중인 반이 없습니다."
+            }
+            self.schoolImgView.kf.setImage(with: $0.schoolImageUrl)
+            self.badgeImgView.kf.setImage(with: $0.titleBadge.imageUrl)
+            self.badgeLabel.text = $0.titleBadge.name
+            self.levelLabel.text = $0.level.name
+            self.levelImgView.kf.setImage(with: $0.level.imageUrl)
+        }).disposed(by: disposeBag)
+
+        output.dailyExercise.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
+            self.stepCounLabel.text = "\($0.stepCount)"
+            self.timeLabel.text = "\(Int($0.walkingRunningTimeAsSecond / 60))"
+            self.distanceLabel.text = String(format: "%.2f", $0.walkingRunningDistanceAsMeter / 1000)
+            self.kcalLabel.text = "\(Int($0.burnedKilocalories))"
+        }).disposed(by: disposeBag)
     }
 
     private func setNavigation() {
         let titleLabel = UILabel().then {
-            $0.textColor = .black
             $0.text = "마이페이지"
             $0.font = .notoSansFont(ofSize: 20, family: .medium)
             $0.textAlignment = .left
-            $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        self.navigationItem.titleView = titleLabel
-        guard let containerView = self.navigationItem.titleView?.superview else { return }
 
-        let leftBarItemWidth = self.navigationItem.leftBarButtonItems?.reduce(0, { $0 + $1.width })
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor,
-                                             constant: (leftBarItemWidth ?? 0) + 16),
-            titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor)
-        ])
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
+        self.navigationItem.rightBarButtonItem = gearBtn
     }
 }
 
@@ -211,7 +235,7 @@ extension MyPageViewController {
         }
 
         clockImgView.snp.makeConstraints {
-            $0.top.equalTo(stepCountImgView.snp.top)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.width.height.equalTo(16)
             $0.leading.equalTo(stepCountImgView.snp.trailing).offset(57)
         }
@@ -222,7 +246,7 @@ extension MyPageViewController {
         }
 
         locationImgView.snp.makeConstraints {
-            $0.top.equalTo(stepCountImgView.snp.top)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.trailing.equalTo(fireImgView.snp.leading).offset(-57)
             $0.width.height.equalTo(16)
         }
@@ -233,7 +257,7 @@ extension MyPageViewController {
         }
 
         fireImgView.snp.makeConstraints {
-            $0.top.equalTo(locationImgView.snp.top)
+            $0.top.equalTo(profileName.snp.bottom).offset(30)
             $0.trailing.equalToSuperview().inset(47)
         }
 
@@ -267,8 +291,9 @@ extension MyPageViewController {
         badgeView.snp.makeConstraints {
             $0.top.equalTo(schoolView.snp.bottom).offset(12)
             $0.leading.equalToSuperview().inset(16)
+            $0.trailing.equalTo(levelView.snp.leading).offset(-12)
             $0.height.equalTo(134)
-            $0.width.equalTo(160)
+            $0.width.equalTo(levelView)
         }
 
         badgeImgView.snp.makeConstraints {
@@ -291,7 +316,7 @@ extension MyPageViewController {
             $0.top.equalTo(badgeView.snp.top)
             $0.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(134)
-            $0.width.equalTo(160)
+            $0.width.equalTo(badgeView)
         }
 
         levelImgView.snp.makeConstraints {
