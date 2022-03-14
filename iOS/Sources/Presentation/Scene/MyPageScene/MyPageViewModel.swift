@@ -7,11 +7,11 @@ import RxFlow
 
 class MyPageViewModel: ViewModelType, Stepper {
 
-    private let fetchMyPageUseCase: FetchMyPageUseCase
+    private let fetchMyPageUseCase: FetchProfileUseCase
     private let fetchDailyExerciseUseCase: FetchLiveDailyExerciseRecordUseCase
 
     init(
-        fetchMyPageUseCase: FetchMyPageUseCase,
+        fetchMyPageUseCase: FetchProfileUseCase,
         fetchDailyExerciseUseCase: FetchLiveDailyExerciseRecordUseCase
     ) {
         self.fetchMyPageUseCase = fetchMyPageUseCase

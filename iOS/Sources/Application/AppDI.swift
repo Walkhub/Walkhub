@@ -48,7 +48,7 @@ extension Container {
         }
         self.register(MyPageViewModel.self) { resolver in
             MyPageViewModel(
-                fetchMyPageUseCase: resolver.resolve(FetchMyPageUseCase.self)!,
+                fetchMyPageUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 fetchDailyExerciseUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!
             )
         }
