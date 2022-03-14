@@ -13,6 +13,7 @@ class PlayRecordViewController: UIViewController {
     var goal: Int = 0
     private var disposeBag = DisposeBag()
     private let getData = PublishRelay<Void>()
+    private let endExercise = PublishRelay<Void>()
 
     private let cheerUpImg = UIImageView().then {
         $0.image = .init(named: "CheerUpImg")
@@ -25,6 +26,12 @@ class PlayRecordViewController: UIViewController {
 
     private let whiteView = UIView().then {
         $0.backgroundColor = .white
+    }
+
+    private let remainLabel = UILabel().then {
+        $0.text = "남은 거리"
+        $0.font = .notoSansFont(ofSize: 14, family: .medium)
+        $0.textColor = .gray800
     }
 
     private let reaminDistanceLabel = UILabel().then {
@@ -68,7 +75,7 @@ class PlayRecordViewController: UIViewController {
     }
 
     private let kcalLabel = UILabel().then {
-        $0.text = "걸음수"
+        $0.text = "칼로리"
         $0.font = .notoSansFont(ofSize: 14, family: .medium)
     }
 
@@ -159,7 +166,8 @@ class PlayRecordViewController: UIViewController {
         navigationItem.title = "기록측정"
         [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
-        bindViewModel()
+//        bindViewModel()
+        demoData()
         setBtn()
     }
 
@@ -171,7 +179,13 @@ class PlayRecordViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
+        getData.accept(())
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        endExercise.accept(())
+    }
+
     private func setBtn() {
         lockBtn.rx.tap.subscribe(onNext: {
             self.stopBtn.isSelected = true
@@ -198,8 +212,19 @@ class PlayRecordViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
 
+    private func demoData() {
+        cheerUpImg.isHidden = true
+        reaminDistanceLabel.text = "/0km"
+        currentLabel.text = "0km"
+        stepCountNumLabel.text = "0"
+        kcalNumLabel.text = "0"
+        speedNumLabel.text = "0.0"
+        hourLabel.text = "0"
+        minuteLabel.text = "0"
+    }
     private func bindViewModel() {
-        let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+        let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()),
+                                              endExercise: endExercise.asDriver(onErrorJustReturn: ()))
 
         let output = viewModel.transform(input)
 
@@ -254,7 +279,7 @@ extension PlayRecordViewController {
         [cheerUpImg, cheerCommentLabel, whiteView, blackView, stopCommentLabel]
             .forEach { view.addSubview($0) }
 
-        [reaminDistanceLabel, currentLabel, goalLabel, progressBackView, progressBar,
+        [remainLabel, reaminDistanceLabel, currentLabel, goalLabel, progressBackView, progressBar,
         stepCountLabel, stepCountNumLabel, kcalLabel, kcalNumLabel, kcalUnitLabel,
          speedLabel, speedNumLabel, speedUnitLabel, line1, line2, timeLabel, hourLabel,
          hLabel, minuteLabel, mLabel, stopBtn, lockBtn, replayBtn, resetBtn]
@@ -278,13 +303,18 @@ extension PlayRecordViewController {
             $0.leading.trailing.bottom.equalToSuperview()
         }
 
-        reaminDistanceLabel.snp.makeConstraints {
+        remainLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(33)
             $0.leading.equalToSuperview().inset(39)
         }
 
+        reaminDistanceLabel.snp.makeConstraints {
+            $0.top.equalTo(remainLabel.snp.bottom)
+            $0.leading.equalTo(currentLabel.snp.trailing).offset(4)
+        }
+
         currentLabel.snp.makeConstraints {
-            $0.top.equalTo(reaminDistanceLabel.snp.bottom)
+            $0.bottom.equalTo(reaminDistanceLabel.snp.bottom).offset(3)
             $0.leading.equalToSuperview().inset(39)
         }
 
