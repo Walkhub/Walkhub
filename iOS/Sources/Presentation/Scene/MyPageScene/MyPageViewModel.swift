@@ -23,6 +23,7 @@ class MyPageViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
+        let navigateToSettingScene: Driver<Void>
     }
 
     struct Output {
@@ -45,6 +46,11 @@ class MyPageViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {
             dailyExercise.accept($0)
         }).disposed(by: disposeBag)
+
+        input.navigateToSettingScene.asObservable()
+            .map { WalkhubStep.settingIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(myProfile: myProfile, dailyExercise: dailyExercise)
     }
