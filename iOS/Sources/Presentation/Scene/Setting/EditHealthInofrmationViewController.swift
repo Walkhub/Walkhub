@@ -4,10 +4,14 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class EditHealthInofrmationViewController: UIViewController {
 
+    var viewModel: EditHealthInformationViewModel!
     private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Void>()
+    private let sex = PublishRelay<Sex>()
 
     private let heightView = UIView().then {
         $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
@@ -66,6 +70,7 @@ class EditHealthInofrmationViewController: UIViewController {
         $0.setTitleColor(.white, for: .normal)
         $0.setTitle("수정 완료", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
+        $0.layer.cornerRadius = 12
     }
 
     override func viewDidLoad() {
@@ -79,16 +84,50 @@ class EditHealthInofrmationViewController: UIViewController {
         makeSubviewConstraints()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        bindViewModel()
+    }
+
     private func setBtn() {
         maleBtn.rx.tap.subscribe(onNext: {
             self.maleBtn.isSelected = true
             self.femaleBtn.isSelected = false
+            self.sex.accept(.man)
         }).disposed(by: disposeBag)
 
         femaleBtn.rx.tap.subscribe(onNext: {
             self.femaleBtn.isSelected = true
             self.maleBtn.isSelected = false
+            self.sex.accept(.female)
         }).disposed(by: disposeBag)
+    }
+
+    private func bindViewModel() {
+        let input = EditHealthInformationViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            height: heightTextField.rx.text.orEmpty.asDriver(),
+            weight: weightTextField.rx.text.orEmpty.asDriver(),
+            sex: sex.asDriver(onErrorJustReturn: .noAnswer),
+            postData: doneBtn.rx.tap.asDriver())
+
+        let output = viewModel.transform(input)
+
+        output.healthData.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
+                self.heightTextField.text = "\($0.height)"
+                self.weightTextField.text = "\($0.weight)"
+                if $0.sex == "MALE" {
+                    self.maleBtn.isEnabled = true
+                    self.femaleBtn.isEnabled = false
+                } else if $0.sex == "FEMALE" {
+                    self.maleBtn.isEnabled = false
+                    self.femaleBtn.isEnabled = true
+                } else {
+                    self.maleBtn.isEnabled = false
+                    self.femaleBtn.isEnabled = false
+                }
+            }).disposed(by: disposeBag)
     }
 }
 
@@ -151,7 +190,7 @@ extension EditHealthInofrmationViewController {
         }
 
         doneBtn.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.bottom.equalToSuperview().inset(16)
             $0.height.equalTo(52)
         }
     }
