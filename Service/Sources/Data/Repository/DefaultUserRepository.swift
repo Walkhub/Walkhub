@@ -46,8 +46,12 @@ class DefaultUserRepository: UserRepository {
             profileImageUrlString: profileImageUrlString
         )
     }
-    func writeHealth(height: Float, weight: Int) -> Single<Void> {
-        return remoteUserDataSource.writeHealth(height: height, weight: weight)
+    func setHealthInformation(height: Float, weight: Int, sex: Sex) -> Completable{
+        return remoteUserDataSource.setHealthInformation(
+            height: height,
+            weight: weight,
+            sex: sex
+        )
     }
 
     func joinClass(
@@ -68,5 +72,9 @@ class DefaultUserRepository: UserRepository {
 
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
         return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
+    }
+
+    func fetchUserHealth() -> Single<UserHealth> {
+        return remoteUserDataSource.fetchUserHeaelth()
     }
 }

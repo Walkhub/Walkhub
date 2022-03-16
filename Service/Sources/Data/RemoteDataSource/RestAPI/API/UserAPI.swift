@@ -7,10 +7,11 @@ enum UserAPI {
     case fetchProfile(userID: Int)
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrlString: String)
-    case setHealthInformation(height: Float, weight: Int)
+    case setHealthInformation(height: Float, weight: Int, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
+    case fetchHealthInformation
 }
 
 extension UserAPI: WalkhubAPI {
@@ -33,6 +34,8 @@ extension UserAPI: WalkhubAPI {
             return "/school"
         case .changeGoalWalkCount:
             return "/goal"
+        case .fetchHealthInformation:
+            return "/health"
         default:
             return ""
         }
@@ -58,11 +61,12 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setHealthInformation(let height, let weight):
+        case .setHealthInformation(let height, let weight, let sex):
             return .requestParameters(
                 parameters: [
                     "height": height,
-                    "weight": weight
+                    "weight": weight,
+                    "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )

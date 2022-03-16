@@ -45,14 +45,16 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         )).asCompletable()
     }
 
-    func writeHealth(
+    func setHealthInformation(
         height: Float,
-        weight: Int
-    ) -> Single<Void> {
+        weight: Int,
+        sex: Sex
+    ) -> Completable {
         return request(.setHealthInformation(
             height: height,
-            weight: weight
-        )).map { _ in () }
+            weight: weight,
+            sex: sex
+        )).asCompletable()
     }
 
     func joinClass(
@@ -75,6 +77,12 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
         return request(.changeGoalWalkCount(goalWalkCount: goalWalkCount))
             .map { _ in () }
+    }
+
+    func fetchUserHeaelth() -> Single<UserHealth> {
+        return request(.fetchHealthInformation)
+            .map(UserHealthDTO.self)
+            .map { $0.toDomain() }
     }
 
 }

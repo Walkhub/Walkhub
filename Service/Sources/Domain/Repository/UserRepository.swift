@@ -7,8 +7,9 @@ protocol UserRepository {
     func fetchProfile(userID: Int) -> Observable<UserProfile>
     func fetchMyProfile() -> Observable<UserProfile>
     func changeProfile(name: String, profileImageUrlString: String) -> Completable
-    func writeHealth(height: Float, weight: Int) -> Single<Void>
+    func setHealthInformation(height: Float, weight: Int, sex: Sex) -> Completable
     func joinClass(sectionId: Int, classCode: String, num: Int) -> Single<Void>
     func setSchoolInformation(schoolId: Int) -> Completable
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void>
+    func fetchUserHealth() -> Single<UserHealth>
 }
