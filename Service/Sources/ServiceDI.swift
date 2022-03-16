@@ -147,5 +147,15 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(FetchHealthInformationUseCase.self) { resolver in
+            return FetchHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(EditHealthInformationUseCase.self) { resolver in
+            return EditHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }
