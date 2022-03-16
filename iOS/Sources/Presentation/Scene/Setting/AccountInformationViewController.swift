@@ -2,8 +2,12 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
 
 class AccountInformationViewController: UIViewController {
+
+    var viewModel: AccountInformationViewModel!
 
     private let line = UIView().then {
         $0.backgroundColor = .gray200
