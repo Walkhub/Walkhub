@@ -66,6 +66,21 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
+        self.register(EditProfileViewModel.self) { resolver in
+            EditProfileViewModel(
+                fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
+                editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
+                editSchoolUseCase: resolver.resolve(EditSchoolUseCase.self)!,
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!,
+                postImageUseCase: resolver.resolve(PostImageUseCase.self)!
+            )
+        }
+        self.register(EditHealthInformationViewModel.self) { resolver in
+            EditHealthInformationViewModel(
+                fetchHealthInformationUseCase: resolver.resolve(FetchHealthInformationUseCase.self)!,
+                editHealthInformationUseCase: resolver.resolve(EditHealthInformationUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -112,6 +127,26 @@ extension Container {
         }
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
+        }
+        self.register(EditProfileViewController.self) { resolver in
+            return EditProfileViewController().then {
+                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
+            }
+        }
+        self.register(EditHealthInofrmationViewController.self) { resolver in
+            return EditHealthInofrmationViewController().then {
+                $0.viewModel = resolver.resolve(EditHealthInformationViewModel.self)!
+            }
+        }
+        self.register(SettingViewController.self) { resolver in
+            return SettingViewController().then {
+                $0.viewModel = resolver.resolve(SettingViewModel.self)!
+            }
+        }
+        self.register(AccountInformationViewController.self) { resolver in
+            return AccountInformationViewController().then {
+                $0.viewModel = resolver.resolve(AccountInformationViewModel.self)!
+            }
         }
     }
 
