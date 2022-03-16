@@ -2,9 +2,10 @@ import Foundation
 
 import RxSwift
 import RxCocoa
+import RxFlow
 import Service
 
-class EditProfileViewModel: ViewModelType {
+class EditProfileViewModel: ViewModelType, Stepper {
 
     private let fetchProfileUseCase: FetchProfileUseCase
     private let editProfileUseCase: EditProfileUseCase
@@ -27,6 +28,7 @@ class EditProfileViewModel: ViewModelType {
     }
 
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
 
     struct Input {
         let getData: Driver<Void>

@@ -13,6 +13,7 @@ class EditProfileViewController: UIViewController {
     private let getData = PublishRelay<Void>()
     private let image = PublishRelay<[Data]>()
     private var disposeBag = DisposeBag()
+    private var profileName: String = ""
 
     private let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 이름 검색하기"
@@ -86,6 +87,7 @@ class EditProfileViewController: UIViewController {
         $0.setTitle("수정 완료", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.setBackgroundColor(.primary400, for: .normal)
+        $0.layer.cornerRadius = 12
     }
 
     override func viewDidLoad() {
@@ -94,7 +96,6 @@ class EditProfileViewController: UIViewController {
         nameTextField.delegate = self
         searchController.searchBar.delegate = self
         bindViewModel()
-        demoData()
         setBtn()
     }
 
@@ -109,12 +110,7 @@ class EditProfileViewController: UIViewController {
         schoolListTableView.isHidden = true
         alertBackView.isHidden = true
         alert.isHidden = true
-    }
-
-    private func demoData() {
-        nameTextField.text = "김기영"
-        schoolLabel.text = "대덕소프트웨어마이스터고등학교"
-        gradeClassLabel.text = "2학년 1반"
+        editBtn.isEnabled = false
     }
 
     private func bindViewModel() {
@@ -131,6 +127,7 @@ class EditProfileViewController: UIViewController {
         output.schoolInfo.asObservable().subscribe(onNext: {
             self.schoolLabel.text = $0.name
             self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
+            self.editBtn.isEnabled = true
         }).disposed(by: disposeBag)
 
         output.searchSchool.bind(to: schoolListTableView.rx.items(
@@ -138,19 +135,20 @@ class EditProfileViewController: UIViewController {
             cellType: SchoolListTableViewCell.self
         )
         ) {_, items, cell in
-            cell.logoImgView.image = items.logoImageUrlString.toImage()
+            cell.logoImgView.kf.setImage(with: items.logoImageUrl)
             cell.schoolNameLabel.text = items.name
         }.disposed(by: disposeBag)
 
         output.profile.asObservable().subscribe(onNext: {
+            self.profileName = $0.name
             self.nameTextField.text = $0.name
             self.schoolLabel.text = $0.school
             if $0.grade ?? 0 != 0 && (($0.classNum ?? 0) != 0) {
-                self.gradeClassLabel.text = "\($0.grade ?? 0)학년 \($0.classNum ?? 0)반"
+                self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
             } else {
                 self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
             }
-            self.profileImgView.image = $0.profileImageUrl.toImage()
+            self.profileImgView.kf.setImage(with: $0.profileImageUrl)
         }).disposed(by: disposeBag)
     }
 
@@ -239,7 +237,7 @@ extension EditProfileViewController {
         }
 
         editBtn.snp.makeConstraints {
-            $0.leading.trailing.bottom.equalToSuperview()
+            $0.leading.trailing.bottom.equalToSuperview().inset(16)
             $0.height.equalTo(52)
         }
 
@@ -275,6 +273,7 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
             let profileImages = [profileImage.jpegData(compressionQuality: 1.0)!]
             image.accept(profileImages)
         }
+        editBtn.isEnabled = true
 
         imagePickerView.dismiss(animated: true, completion: nil)
     }
@@ -283,6 +282,9 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.isEnabled = false
+        if profileName != textField.text {
+            editBtn.isEnabled = true
+        }
     }
 }
 
