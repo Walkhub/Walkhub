@@ -5,6 +5,8 @@ import Then
 
 class SettingViewController: UIViewController {
 
+    var viewModel: SettingViewModel!
+
     private let line1 = UIView().then {
         $0.backgroundColor = .gray200
     }
@@ -37,7 +39,7 @@ class SettingViewController: UIViewController {
     }
 
     private let editNotificationBtn = UIButton(type: .system).then {
-        $0.setTitle("프로필 수정", for: .normal)
+        $0.setTitle("알림 수정", for: .normal)
         $0.setTitleColor(.gray800, for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
         $0.contentHorizontalAlignment = .left
@@ -87,6 +89,16 @@ class SettingViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
+    }
+
+    private func bindViewModel() {
+        let input = SettingViewModel.Input(
+            navigateToEditProfileScene: editProfileBtn.rx.tap.asDriver(),
+            navigateToEditHealthInformationScene: editHealthInormationBtn.rx.tap.asDriver(),
+            navigateToAccountInformationScene: editLoginInformationBtn.rx.tap.asDriver()
+        )
+
+        _ = viewModel.transform(input)
     }
 }
 
