@@ -38,4 +38,10 @@ enum WalkhubStep: Step {
     // Record
     case playRecordIsRequired
     case timerIsRequired
+
+    // Setting
+    case settingIsRequired
+    case editProfileIsRequired
+    case editHealthInformationIsRequired
+    case accountInformationIsRequired
 }
