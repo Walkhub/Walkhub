@@ -38,11 +38,11 @@ class SearchSchoolViewModel: ViewModelType, Stepper {
             .map { index -> (Int, String) in
                 let value = schoolList.value
                 return (value[index.row].id, value[index.row].name)
-            }.flatMap {
-                Single.just(WalkhubStep.backEidtProfileScene(
+            }.map {
+                WalkhubStep.backEidtProfileScene(
                     schoolId: $0,
                     schoolName: $1
-                ))
+                )
             }.bind(to: steps)
             .disposed(by: disposeBag)
 
