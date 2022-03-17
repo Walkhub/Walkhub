@@ -77,6 +77,7 @@ class EditHealthInofrmationViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.title = "건강정보 수정"
         setBtn()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
