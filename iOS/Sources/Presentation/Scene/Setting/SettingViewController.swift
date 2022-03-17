@@ -84,6 +84,7 @@ class SettingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
