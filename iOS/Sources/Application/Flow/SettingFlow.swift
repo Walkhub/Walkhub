@@ -25,6 +25,8 @@ class SettingFlow: Flow {
             return navigateToEditHealthInformationScene()
         case .accountInformationIsRequired:
             return navigateToAccountInformationScene()
+        case .backEidtProfileScene(let schoolId, let schoolName):
+            return navigateToPopEditProfileScene(schoolId: schoolId, schoolName: schoolName)
         default:
             return .none
         }
@@ -63,6 +65,21 @@ class SettingFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: accountInformationViewController,
             withNextStepper: accountInformationViewController.viewModel
+        ))
+    }
+
+    private func navigateToPopEditProfileScene(
+        schoolId: Int,
+        schoolName: String
+    ) -> FlowContributors {
+        let editProfileViewController = container.resolve(EditProfileViewController.self)!
+        editProfileViewController.schoolId.accept(schoolId)
+        editProfileViewController.schoolLabel.text = schoolName
+        editProfileViewController.gradeClassLabel.text = "현재 소속 중인 반이 없어요."
+        self.rootViewController.popViewController(animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: editProfileViewController,
+            withNextStepper: editProfileViewController.viewModel
         ))
     }
 }
