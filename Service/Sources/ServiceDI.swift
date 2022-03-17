@@ -157,5 +157,25 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(EditProfileUseCase.self) { resolver in
+            return EditProfileUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(SearchSchoolUseCase.self) { resolver in
+            return SearchSchoolUseCase(
+                schoolRespository: resolver.resolve(SchoolRepository.self)!
+            )
+        }
+        self.register(PostImageUseCase.self) { resolver in
+            return PostImageUseCase(
+                imageRepository: resolver.resolve(ImageRepository.self)!
+            )
+        }
+        self.register(EditSchoolUseCase.self) { resolver in
+            return EditSchoolUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }
