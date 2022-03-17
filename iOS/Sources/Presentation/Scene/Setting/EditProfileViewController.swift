@@ -8,16 +8,13 @@ import RxCocoa
 class EditProfileViewController: UIViewController {
 
     var viewModel: EditProfileViewModel!
+    let schoolId = PublishRelay<Int>()
     private let imagePickerView = UIImagePickerController()
 
     private let getData = PublishRelay<Void>()
     private let image = PublishRelay<[Data]>()
     private var disposeBag = DisposeBag()
     private var profileName: String = ""
-
-    private let searchController = UISearchController(searchResultsController: nil).then {
-        $0.searchBar.placeholder = "학교 이름 검색하기"
-    }
 
     private let alertBackView = UIView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
@@ -68,11 +65,11 @@ class EditProfileViewController: UIViewController {
         $0.layer.borderWidth = 1
     }
 
-    private let schoolLabel = UILabel().then {
+    let schoolLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
-    private let gradeClassLabel = UILabel().then {
+    let gradeClassLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray800
     }
@@ -94,7 +91,6 @@ class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         imagePickerView.delegate = self
         nameTextField.delegate = self
-        searchController.searchBar.delegate = self
         bindViewModel()
         setBtn()
     }
@@ -118,9 +114,9 @@ class EditProfileViewController: UIViewController {
             getData: getData.asDriver(onErrorJustReturn: ()),
             profileImage: image.asDriver(onErrorJustReturn: []),
             name: nameTextField.rx.text.orEmpty.asDriver(),
-            search: (navigationItem.searchController?.searchBar.searchTextField.rx.text.orEmpty.asDriver())!,
-            cellTap: schoolListTableView.rx.itemSelected.asSignal(),
-            buttonDidTap: editBtn.rx.tap.asDriver())
+            buttonDidTap: editBtn.rx.tap.asDriver(),
+            schoolId: schoolId.asDriver(onErrorJustReturn: 0)
+        )
 
         let output = viewModel.transform(input)
 
@@ -160,15 +156,6 @@ class EditProfileViewController: UIViewController {
         editNameBtn.rx.tap.subscribe(onNext: {
             self.nameTextField.isEnabled = true
             self.nameTextField.becomeFirstResponder()
-        }).disposed(by: disposeBag)
-
-        editSchoolInformationBtn.rx.tap.subscribe(onNext: {
-            self.navigationItem.searchController = self.searchController
-            Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
-                .subscribe(onNext: { _ in
-                    self.searchController.searchBar.searchTextField.becomeFirstResponder()
-                }).disposed(by: self.disposeBag)
-            self.schoolListTableView.isHidden = false
         }).disposed(by: disposeBag)
     }
 }
@@ -288,9 +275,3 @@ extension EditProfileViewController: UITextFieldDelegate {
     }
 }
 
-extension EditProfileViewController: UISearchBarDelegate {
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        schoolListTableView.isHidden = true
-        self.navigationItem.searchController = nil
-    }
-}
