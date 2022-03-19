@@ -91,7 +91,6 @@ class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         imagePickerView.delegate = self
         nameTextField.delegate = self
-        bindViewModel()
         setBtn()
     }
 
@@ -107,45 +106,6 @@ class EditProfileViewController: UIViewController {
         alertBackView.isHidden = true
         alert.isHidden = true
         editBtn.isEnabled = false
-    }
-
-    private func bindViewModel() {
-        let input = EditProfileViewModel.Input(
-            getData: getData.asDriver(onErrorJustReturn: ()),
-            profileImage: image.asDriver(onErrorJustReturn: []),
-            name: nameTextField.rx.text.orEmpty.asDriver(),
-            buttonDidTap: editBtn.rx.tap.asDriver(),
-            schoolId: schoolId.asDriver(onErrorJustReturn: 0)
-        )
-
-        let output = viewModel.transform(input)
-
-        output.schoolInfo.asObservable().subscribe(onNext: {
-            self.schoolLabel.text = $0.name
-            self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
-            self.editBtn.isEnabled = true
-        }).disposed(by: disposeBag)
-
-        output.searchSchool.bind(to: schoolListTableView.rx.items(
-            cellIdentifier: "cell",
-            cellType: SchoolListTableViewCell.self
-        )
-        ) {_, items, cell in
-            cell.logoImgView.kf.setImage(with: items.logoImageUrl)
-            cell.schoolNameLabel.text = items.name
-        }.disposed(by: disposeBag)
-
-        output.profile.asObservable().subscribe(onNext: {
-            self.profileName = $0.name
-            self.nameTextField.text = $0.name
-            self.schoolLabel.text = $0.school
-            if $0.grade ?? 0 != 0 && (($0.classNum ?? 0) != 0) {
-                self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
-            } else {
-                self.gradeClassLabel.text = "현재 소속 중인 반이 없어요"
-            }
-            self.profileImgView.kf.setImage(with: $0.profileImageUrl)
-        }).disposed(by: disposeBag)
     }
 
     private func setBtn() {

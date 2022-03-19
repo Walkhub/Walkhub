@@ -11,20 +11,24 @@ class EditProfileViewModel: ViewModelType, Stepper {
     private let editProfileUseCase: EditProfileUseCase
     private let editSchoolUseCase: EditSchoolUseCase
     private let postImageUseCase: PostImageUseCase
+    private let searchSchoolUseCase: SearchSchoolUseCase
 
     init(
         fetchProfileUseCase: FetchProfileUseCase,
         editProfileUseCase: EditProfileUseCase,
         editSchoolUseCase: EditSchoolUseCase,
-        postImageUseCase: PostImageUseCase
+        postImageUseCase: PostImageUseCase,
+        searchSchoolUseCase: SearchSchoolUseCase
     ) {
         self.fetchProfileUseCase = fetchProfileUseCase
         self.editProfileUseCase = editProfileUseCase
         self.editSchoolUseCase = editSchoolUseCase
         self.postImageUseCase = postImageUseCase
+        self.searchSchoolUseCase = searchSchoolUseCase
     }
 
     private var disposeBag = DisposeBag()
+    private var schoolId = Int()
     var steps = PublishRelay<Step>()
 
     struct Input {
@@ -32,7 +36,8 @@ class EditProfileViewModel: ViewModelType, Stepper {
         let profileImage: Driver<[Data]>
         let name: Driver<String>
         let buttonDidTap: Driver<Void>
-        let schoolId: Driver<Int>
+        let search: Driver<String>
+        let cellTap: Driver<IndexPath>
     }
 
     struct Output {
@@ -67,9 +72,14 @@ class EditProfileViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {_ in
         }).disposed(by: disposeBag)
 
-        input.buttonDidTap.asObservable().withLatestFrom(input.schoolId).flatMap {
+        input.buttonDidTap.asObservable().withLatestFrom(self.schoolId).flatMap {
             self.editSchoolUseCase.excute(schoolId: $0)
         }.subscribe(onNext: { _ in
+        }).disposed(by: disposeBag)
+
+        input.cellTap.asObservable().subscribe(onNext: { index in
+            let value = searchSchool.value
+            self.schoolId = value[index.row].id
         }).disposed(by: disposeBag)
 
         return Output(

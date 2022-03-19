@@ -7,10 +7,9 @@ import RxCocoa
 
 class SearchSchoolViewController: UIViewController {
 
-    var viewModel: SearchSchoolViewModel!
     private var disposeBag = DisposeBag()
 
-    private let searchController = UISearchController(searchResultsController: nil).then {
+    let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 이름 검색하기"
     }
 
@@ -35,20 +34,4 @@ class SearchSchoolViewController: UIViewController {
         self.navigationItem.searchController = searchController
     }
 
-    private func bind() {
-        let input = SearchSchoolViewModel.Input(
-            search: (self.navigationItem.searchController?.searchBar.searchTextField.rx.text.orEmpty.asDriver())!,
-            cellTap: schoolTableView.rx.itemSelected.asDriver()
-        )
-
-        let output = viewModel.transform(input)
-
-        output.schoolList.bind(to: schoolTableView.rx.items(
-            cellIdentifier: "cell",
-            cellType: SchoolListTableViewCell.self
-        )) { _, item, cell in
-            cell.logoImgView.kf.setImage(with: item.logoImageUrl)
-            cell.schoolNameLabel.text = item.name
-        }.disposed(by: disposeBag)
-    }
 }
