@@ -13,6 +13,7 @@ class SettingProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
     }
 
     private func bind() {
