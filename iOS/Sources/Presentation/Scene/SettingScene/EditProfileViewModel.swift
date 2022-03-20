@@ -72,15 +72,18 @@ class EditProfileViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {_ in
         }).disposed(by: disposeBag)
 
-        input.buttonDidTap.asObservable().withLatestFrom(self.schoolId).flatMap {
-            self.editSchoolUseCase.excute(schoolId: $0)
+        input.buttonDidTap.asObservable().flatMap {
+            self.editSchoolUseCase.excute(schoolId: self.schoolId)
         }.subscribe(onNext: { _ in
         }).disposed(by: disposeBag)
 
-        input.cellTap.asObservable().subscribe(onNext: { index in
-            let value = searchSchool.value
-            self.schoolId = value[index.row].id
-        }).disposed(by: disposeBag)
+        input.cellTap.asObservable()
+            .map { index -> Step in
+                let value = searchSchool.value
+                self.schoolId = value[index.row].id
+                return WalkhubStep.backEditProfileScene
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             searchSchool: searchSchool,

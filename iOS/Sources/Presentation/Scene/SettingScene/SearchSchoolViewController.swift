@@ -7,13 +7,11 @@ import RxCocoa
 
 class SearchSchoolViewController: UIViewController {
 
-    private var disposeBag = DisposeBag()
-
     let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 이름 검색하기"
     }
 
-    private let schoolTableView = UITableView().then {
+    let schoolTableView = UITableView().then {
         $0.register(SchoolListTableViewCell.self, forCellReuseIdentifier: "cell")
     }
 

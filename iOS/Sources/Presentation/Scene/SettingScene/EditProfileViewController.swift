@@ -8,11 +8,10 @@ import RxCocoa
 class EditProfileViewController: UIViewController {
 
     var viewModel: EditProfileViewModel!
-    let schoolId = PublishRelay<Int>()
-    private let imagePickerView = UIImagePickerController()
+    let getData = PublishRelay<Void>()
+    let image = PublishRelay<[Data]>()
 
-    private let getData = PublishRelay<Void>()
-    private let image = PublishRelay<[Data]>()
+    private let imagePickerView = UIImagePickerController()
     private var disposeBag = DisposeBag()
     private var profileName: String = ""
 
@@ -27,12 +26,7 @@ class EditProfileViewController: UIViewController {
             ok: "변경하기")
     }
 
-    private let schoolListTableView = UITableView().then {
-        $0.separatorStyle = .singleLine
-        $0.register(SchoolListTableViewCell.self, forCellReuseIdentifier: "cell")
-    }
-
-    private let profileImgView = UIImageView().then {
+    let profileImgView = UIImageView().then {
         $0.contentMode = .scaleToFill
         $0.backgroundColor = .colorE0E0E0
     }
@@ -49,7 +43,7 @@ class EditProfileViewController: UIViewController {
         $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
     }
 
-    private let nameTextField = UITextField().then {
+    let nameTextField = UITextField().then {
         $0.isEnabled = false
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
@@ -79,7 +73,7 @@ class EditProfileViewController: UIViewController {
         $0.setImage(.init(named: "editImg"), for: .normal)
     }
 
-    private let editBtn = UIButton(type: .system).then {
+    let editBtn = UIButton(type: .system).then {
         $0.setBackgroundColor(.colorE0E0E0, for: .disabled)
         $0.setTitle("수정 완료", for: .normal)
         $0.setTitleColor(.white, for: .normal)
@@ -102,7 +96,6 @@ class EditProfileViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        schoolListTableView.isHidden = true
         alertBackView.isHidden = true
         alert.isHidden = true
         editBtn.isEnabled = false
@@ -124,7 +117,7 @@ class EditProfileViewController: UIViewController {
 extension EditProfileViewController {
     private func addSubviews() {
         [profileImgView, editProfileImageBtn, nameView,
-         schoolInformationView, editBtn, alertBackView, alert, schoolListTableView]
+         schoolInformationView, editBtn, alertBackView, alert]
             .forEach { view.addSubview($0) }
 
         [nameTextField, editNameBtn].forEach { nameView.addSubview($0) }
@@ -196,10 +189,6 @@ extension EditProfileViewController {
             $0.center.equalToSuperview()
             $0.width.equalTo(296)
             $0.height.equalTo(148)
-        }
-
-        schoolListTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
         }
     }
 }

@@ -44,5 +44,5 @@ enum WalkhubStep: Step {
     case editProfileIsRequired
     case editHealthInformationIsRequired
     case accountInformationIsRequired
-    case backEidtProfileScene(schoolId: Int, schoolName: String)
+    case backEditProfileScene
 }
