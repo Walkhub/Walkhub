@@ -68,7 +68,7 @@ class EditProfileViewController: UIViewController {
         $0.textColor = .gray800
     }
 
-    private let editSchoolInformationBtn = UIButton(type: .system).then {
+    let editSchoolInformationBtn = UIButton(type: .system).then {
         $0.tintColor = .black
         $0.setImage(.init(named: "editImg"), for: .normal)
     }

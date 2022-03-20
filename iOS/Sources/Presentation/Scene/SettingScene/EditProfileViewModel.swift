@@ -36,6 +36,7 @@ class EditProfileViewModel: ViewModelType, Stepper {
         let profileImage: Driver<[Data]>
         let name: Driver<String>
         let buttonDidTap: Driver<Void>
+        let searchSchoolButton: Driver<Void>
         let search: Driver<String>
         let cellTap: Driver<IndexPath>
     }
@@ -76,6 +77,11 @@ class EditProfileViewModel: ViewModelType, Stepper {
             self.editSchoolUseCase.excute(schoolId: self.schoolId)
         }.subscribe(onNext: { _ in
         }).disposed(by: disposeBag)
+
+        input.searchSchoolButton.asObservable()
+            .map { WalkhubStep.searchSchoolIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         input.cellTap.asObservable()
             .map { index -> Step in

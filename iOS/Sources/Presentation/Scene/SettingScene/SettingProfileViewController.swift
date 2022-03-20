@@ -22,6 +22,7 @@ class SettingProfileViewController: UIViewController {
             profileImage: editProfileViewController.image.asDriver(onErrorJustReturn: []),
             name: editProfileViewController.nameTextField.rx.text.orEmpty.asDriver(),
             buttonDidTap: editProfileViewController.editBtn.rx.tap.asDriver(),
+            searchSchoolButton: editProfileViewController.editSchoolInformationBtn.rx.tap.asDriver(),
             search: (searchSchoolViewController.navigationItem.searchController?.searchBar.searchTextField.rx.text.orEmpty.asDriver())!,
             cellTap: searchSchoolViewController.schoolTableView.rx.itemSelected.asDriver()
         )

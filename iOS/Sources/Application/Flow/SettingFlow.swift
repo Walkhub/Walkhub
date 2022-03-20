@@ -27,6 +27,8 @@ class SettingFlow: Flow {
             return navigateToAccountInformationScene()
         case .backEditProfileScene:
             return navigateToBackEditProfileScene()
+        case .searchSchoolIsRequired:
+            return navigateToSearchSchoolScene()
         default:
             return .none
         }
