@@ -29,6 +29,7 @@ class EditProfileViewModel: ViewModelType, Stepper {
 
     private var disposeBag = DisposeBag()
     private var schoolId = Int()
+    private var imageString = String()
     var steps = PublishRelay<Step>()
 
     struct Input {
@@ -51,7 +52,6 @@ class EditProfileViewModel: ViewModelType, Stepper {
         let searchSchool = BehaviorRelay<[SearchSchool]>(value: [])
         let schoolInfo = PublishRelay<SearchSchool>()
         let profile = PublishRelay<UserProfile>()
-        var imageString = String()
 
         input.getData.asObservable().flatMap {
             self.fetchProfileUseCase.excute()
@@ -62,13 +62,13 @@ class EditProfileViewModel: ViewModelType, Stepper {
         input.profileImage.asObservable().flatMap {
             self.postImageUseCase.excute(images: $0)
         }.subscribe(onNext: { data in
-            imageString = (data.first?.absoluteString)!
+            self.imageString = (data.first?.absoluteString)!
         }).disposed(by: disposeBag)
 
         input.buttonDidTap.asObservable().withLatestFrom(input.name).flatMap {
             self.editProfileUseCase.excute(
                 name: $0,
-                profileImageUrlString: imageString
+                profileImageUrlString: self.imageString
             )
         }.subscribe(onNext: {_ in
         }).disposed(by: disposeBag)
