@@ -72,8 +72,8 @@ extension Container {
                 editHealthInformationUseCase: resolver.resolve(EditHealthInformationUseCase.self)!
             )
         }
-        self.register(EditProfileViewModel.self) { resolver in
-            EditProfileViewModel(
+        self.register(SettingProfileViewModel.self) { resolver in
+            SettingProfileViewModel(
                 fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
                 editSchoolUseCase: resolver.resolve(EditSchoolUseCase.self)!,
@@ -133,11 +133,6 @@ extension Container {
                 $0.viewModel = resolver.resolve(EditHealthInformationViewModel.self)!
             }
         }
-        self.register(SettingViewController.self) { resolver in
-            return SettingViewController().then {
-                $0.viewModel = resolver.resolve(SettingViewModel.self)!
-            }
-        }
         self.register(AccountInformationViewController.self) { resolver in
             return AccountInformationViewController().then {
                 $0.viewModel = resolver.resolve(AccountInformationViewModel.self)!
@@ -145,8 +140,17 @@ extension Container {
         }
         self.register(SettingProfileViewController.self) { resolver in
             return SettingProfileViewController().then {
-                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
+                $0.viewModel = resolver.resolve(SettingProfileViewModel.self)!
             }
+        }
+        self.register(SettingViewController.self) { _ in
+            return SettingViewController()
+        }
+        self.register(EditProfileViewController.self) { _ in
+            return EditProfileViewController()
+        }
+        self.register(SearchSchoolViewController.self) { _ in
+            return SearchSchoolViewController()
         }
     }
 }
