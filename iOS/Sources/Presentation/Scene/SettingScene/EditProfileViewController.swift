@@ -7,7 +7,6 @@ import RxCocoa
 
 class EditProfileViewController: UIViewController {
 
-    var viewModel: EditProfileViewModel!
     let getData = PublishRelay<Void>()
     let image = PublishRelay<[Data]>()
 
@@ -19,7 +18,7 @@ class EditProfileViewController: UIViewController {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
     }
 
-    private let alert = CustomAlert().then {
+    let alert = CustomAlert().then {
         $0.setup(
             title: "학교 변경 시 기존 소속 중인 반에서\n자동 탈퇴됩니다.",
             cancel: "안하기",
@@ -78,7 +77,6 @@ class EditProfileViewController: UIViewController {
         $0.setTitle("수정 완료", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.setBackgroundColor(.primary400, for: .normal)
-        $0.layer.cornerRadius = 12
     }
 
     override func viewDidLoad() {
@@ -93,6 +91,8 @@ class EditProfileViewController: UIViewController {
         makeSubviewConstraints()
         profileImgView.layer.cornerRadius = profileImgView.frame.size.height / 2
         editProfileImageBtn.layer.cornerRadius = editProfileImageBtn.frame.size.height / 2
+        editBtn.layer.cornerRadius = 12
+        editBtn.clipsToBounds = true
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -70,7 +70,6 @@ class EditHealthInofrmationViewController: UIViewController {
         $0.setTitleColor(.white, for: .normal)
         $0.setTitle("수정 완료", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
-        $0.layer.cornerRadius = 12
     }
 
     override func viewDidLoad() {
@@ -83,10 +82,13 @@ class EditHealthInofrmationViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
+        doneBtn.layer.cornerRadius = 12
+        doneBtn.clipsToBounds = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
         bindViewModel()
+        doneBtn.isEnabled = false
     }
 
     private func setBtn() {
