@@ -121,7 +121,7 @@ class MyPageViewController: UIViewController {
     private let gearBtn = UIBarButtonItem(
         image: .init(systemName: "gearshape.fill"),
         style: .plain,
-        target: self,
+        target: MyPageViewController.self,
         action: nil
     ).then {
         $0.tintColor = .black
@@ -143,12 +143,13 @@ class MyPageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getData.accept(())
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     private func bindViewModel() {
         let input = MyPageViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
-            navigateToSettingScene: gearBtn.rx.tap.asDriver()
+            gearButtonDidTap: gearBtn.rx.tap.asDriver()
         )
 
         let output = viewModel.transform(input)
