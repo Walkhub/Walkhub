@@ -1,4 +1,3 @@
-
 import UIKit
 
 import RxFlow
@@ -11,7 +10,11 @@ class SettingFlow: Flow {
         return rootViewController
     }
 
-    private let rootViewController = UINavigationController()
+    private let rootViewController: SettingViewController
+
+    init() {
+        self.rootViewController = container.resolve(SettingViewController.self)!
+    }
 
     func navigate(to step: Step) -> FlowContributors {
         guard let step = step as? WalkhubStep else { return .none }
@@ -35,26 +38,22 @@ class SettingFlow: Flow {
     }
 
     private func navigateToSettingScene() -> FlowContributors {
-        let settingViewController = container.resolve(SettingViewController.self)!
-        self.rootViewController.pushViewController(settingViewController, animated: true)
-        return .one(flowContributor: .contribute(
-            withNextPresentable: settingViewController,
-            withNextStepper: settingViewController.viewModel
-        ))
+        return .one(flowContributor: .contribute(withNext: rootViewController))
     }
 
     private func navigateToEditProfileScene() -> FlowContributors {
         let editProfileViewController = container.resolve(EditProfileViewController.self)!
-        self.rootViewController.pushViewController(editProfileViewController, animated: true)
+        let settingProfileViewController = container.resolve(SettingProfileViewController.self)!
+        self.rootViewController.navigationController?.pushViewController(editProfileViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: editProfileViewController,
-            withNextStepper: editProfileViewController.viewModel
+            withNextStepper: settingProfileViewController.viewModel
         ))
     }
 
     private func navigateToEditHealthInformationScene() -> FlowContributors {
         let editHealthInformationViewController = container.resolve(EditHealthInofrmationViewController.self)!
-        self.rootViewController.pushViewController(editHealthInformationViewController, animated: true)
+        self.rootViewController.navigationController?.pushViewController(editHealthInformationViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: editHealthInformationViewController,
             withNextStepper: editHealthInformationViewController.viewModel
@@ -63,7 +62,7 @@ class SettingFlow: Flow {
 
     private func navigateToAccountInformationScene() -> FlowContributors {
         let accountInformationViewController = container.resolve(AccountInformationViewController.self)!
-        self.rootViewController.pushViewController(accountInformationViewController, animated: true)
+        self.rootViewController.navigationController?.pushViewController(accountInformationViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: accountInformationViewController,
             withNextStepper: accountInformationViewController.viewModel
@@ -71,9 +70,10 @@ class SettingFlow: Flow {
     }
 
     private func navigateToSearchSchoolScene() -> FlowContributors {
+        let editProfileViewController = container.resolve(EditProfileViewController.self)!
         let searchSchoolViewController = container.resolve(SearchSchoolViewController.self)!
         let settingProfileViewController = container.resolve(SettingProfileViewController.self)!
-        self.rootViewController.pushViewController(searchSchoolViewController, animated: true)
+        editProfileViewController.navigationController?.pushViewController(searchSchoolViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: searchSchoolViewController,
             withNextStepper: settingProfileViewController.viewModel
