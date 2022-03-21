@@ -17,14 +17,14 @@ class CustomAlert: UIView {
         $0.textAlignment = .center
     }
 
-    private let cancelBtn = UIButton(type: .system).then {
+    let cancelBtn = UIButton(type: .system).then {
         $0.setBackgroundColor(.gray100, for: .normal)
         $0.setTitleColor(.color616161, for: .normal)
         $0.layer.cornerRadius = 12
         $0.clipsToBounds = true
     }
 
-    private let okBtn = UIButton(type: .system).then {
+    let okBtn = UIButton(type: .system).then {
         $0.setBackgroundColor(.primary400, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 12
