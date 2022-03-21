@@ -5,7 +5,7 @@ import RxCocoa
 
 class SettingProfileViewController: UIViewController {
 
-    var viewModel: EditProfileViewModel!
+    var viewModel: SettingProfileViewModel!
     private var disposeBag = DisposeBag()
 
     private let editProfileViewController = EditProfileViewController()
@@ -17,11 +17,11 @@ class SettingProfileViewController: UIViewController {
     }
 
     private func bind() {
-        let input = EditProfileViewModel.Input(
+        let input = SettingProfileViewModel.Input(
             getData: editProfileViewController.getData.asDriver(onErrorJustReturn: ()),
             profileImage: editProfileViewController.image.asDriver(onErrorJustReturn: []),
             name: editProfileViewController.nameTextField.rx.text.orEmpty.asDriver(),
-            buttonDidTap: editProfileViewController.editBtn.rx.tap.asDriver(),
+            buttonDidTap: editProfileViewController.alert.okBtn.rx.tap.asDriver(),
             searchSchoolButton: editProfileViewController.editSchoolInformationBtn.rx.tap.asDriver(),
             search: (searchSchoolViewController.navigationItem.searchController?.searchBar.searchTextField.rx.text.orEmpty.asDriver())!,
             cellTap: searchSchoolViewController.schoolTableView.rx.itemSelected.asDriver()
