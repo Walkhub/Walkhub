@@ -2,10 +2,14 @@ import UIKit
 
 import SnapKit
 import Then
+import RxSwift
+import RxCocoa
+import RxFlow
 
-class SettingViewController: UIViewController {
+class SettingViewController: UIViewController, Stepper {
 
-    var viewModel: SettingViewModel!
+    var steps = PublishRelay<Step>()
+    private var disposeBag = DisposeBag()
 
     private let line1 = UIView().then {
         $0.backgroundColor = .gray200
@@ -84,7 +88,8 @@ class SettingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        bindViewModel()
+        view.backgroundColor = .white
+        setBtn()
     }
 
     override func viewDidLayoutSubviews() {
@@ -92,14 +97,20 @@ class SettingViewController: UIViewController {
         makeSubviewConstraints()
     }
 
-    private func bindViewModel() {
-        let input = SettingViewModel.Input(
-            navigateToEditProfileScene: editProfileBtn.rx.tap.asDriver(),
-            navigateToEditHealthInformationScene: editHealthInormationBtn.rx.tap.asDriver(),
-            navigateToAccountInformationScene: editLoginInformationBtn.rx.tap.asDriver()
-        )
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
 
-        _ = viewModel.transform(input)
+    private func setBtn() {
+        editProfileBtn.rx.tap
+            .map { WalkhubStep.editProfileIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        editHealthInormationBtn.rx.tap
+            .map { WalkhubStep.editHealthInformationIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
     }
 }
 
