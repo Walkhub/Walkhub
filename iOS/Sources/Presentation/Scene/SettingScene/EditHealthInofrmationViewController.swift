@@ -121,14 +121,14 @@ class EditHealthInofrmationViewController: UIViewController {
                 self.heightTextField.text = "\($0.height)"
                 self.weightTextField.text = "\($0.weight)"
                 if $0.sex == "MALE" {
-                    self.maleBtn.isEnabled = true
-                    self.femaleBtn.isEnabled = false
+                    self.maleBtn.isSelected = true
+                    self.femaleBtn.isSelected = false
                 } else if $0.sex == "FEMALE" {
-                    self.maleBtn.isEnabled = false
-                    self.femaleBtn.isEnabled = true
+                    self.maleBtn.isSelected = false
+                    self.femaleBtn.isSelected = true
                 } else {
-                    self.maleBtn.isEnabled = false
-                    self.femaleBtn.isEnabled = false
+                    self.maleBtn.isSelected = false
+                    self.femaleBtn.isSelected = false
                 }
             }).disposed(by: disposeBag)
     }
