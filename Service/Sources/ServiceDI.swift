@@ -177,5 +177,15 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(NotificationOnUseCase.self) { resolver in
+            return NotificationOnUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(NotificationOffUseCase.self) { resolver in
+            return NotificationOffUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
     }
 }

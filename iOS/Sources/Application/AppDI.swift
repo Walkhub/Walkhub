@@ -81,6 +81,12 @@ extension Container {
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
+        self.register(EditNotificationViewModel.self) { resolver in
+            EditNotificationViewModel(
+                notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
+                notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -151,6 +157,11 @@ extension Container {
         }
         self.register(SearchSchoolViewController.self) { _ in
             return SearchSchoolViewController()
+        }
+        self.register(EditNotificationViewController.self) { resolver in
+            return EditNotificationViewController().then {
+                $0.viewModel = resolver.resolve(EditNotificationViewModel.self)!
+            }
         }
     }
 }

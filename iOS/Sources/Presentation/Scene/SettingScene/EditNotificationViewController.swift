@@ -5,6 +5,8 @@ import Then
 
 class EditNotificationViewController: UIViewController {
 
+    var viewModel: EditNotificationViewModel!
+
     private let line1 = UIView().then {
         $0.backgroundColor = .gray200
     }
@@ -97,11 +99,24 @@ class EditNotificationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
     }
 
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
+    }
+
+    private func bind() {
+        let input = EditNotificationViewModel.Input(
+            challengeNotification: recommendChallengeSwitches.rx.isOn.asDriver(),
+            challengeSuccess: goalChallengeSwitches.rx.isOn.asDriver(),
+            challegeExpiration: endChallengeSwitches.rx.isOn.asDriver(),
+            notification: notificationSwitches.rx.isOn.asDriver(),
+            cheeringNotification: getCheerSwitches.rx.isOn.asDriver()
+        )
+
+        _ = viewModel.transform(input)
     }
 }
 

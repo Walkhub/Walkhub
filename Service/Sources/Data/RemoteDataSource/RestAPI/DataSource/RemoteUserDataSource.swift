@@ -84,5 +84,4 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map(UserHealthDTO.self)
             .map { $0.toDomain() }
     }
-
 }

@@ -20,4 +20,13 @@ final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAP
             .map { _ in () }
     }
 
+    func notificationOn(type: NotificationType) -> Completable {
+        return request(.notificationOn(type: type))
+            .asCompletable()
+    }
+
+    func notificationOff(type: NotificationType) -> Completable {
+        return request(.notificationOff(type: type))
+            .asCompletable()
+    }
 }
