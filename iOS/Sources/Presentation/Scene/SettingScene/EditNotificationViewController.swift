@@ -107,6 +107,24 @@ class EditNotificationViewController: UIViewController {
         makeSubviewConstraints()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        let userDefaults = UserDefaults.standard
+        recommendChallengeSwitches.isOn = userDefaults.bool(forKey: "challenge")
+        goalChallengeSwitches.isOn = userDefaults.bool(forKey: "goalChallenge")
+        endChallengeSwitches.isOn = userDefaults.bool(forKey: "endChallenge")
+        notificationSwitches.isOn = userDefaults.bool(forKey: "notification")
+        getCheerSwitches.isOn = userDefaults.bool(forKey: "getCheer")
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(recommendChallengeSwitches.isOn, forKey: "challenge")
+        userDefaults.set(goalChallengeSwitches.isOn, forKey: "goalChallenge")
+        userDefaults.set(endChallengeSwitches.isOn, forKey: "endChallenge")
+        userDefaults.set(notificationSwitches.isOn, forKey: "notificaiton")
+        userDefaults.set(getCheerSwitches.isOn, forKey: "getCheer")
+    }
+
     private func bind() {
         let input = EditNotificationViewModel.Input(
             challengeNotification: recommendChallengeSwitches.rx.isOn.asDriver(),

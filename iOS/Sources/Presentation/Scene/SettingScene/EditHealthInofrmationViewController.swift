@@ -123,12 +123,15 @@ class EditHealthInofrmationViewController: UIViewController {
                 if $0.sex == "MALE" {
                     self.maleBtn.isSelected = true
                     self.femaleBtn.isSelected = false
+                    self.sex.accept(.man)
                 } else if $0.sex == "FEMALE" {
                     self.maleBtn.isSelected = false
                     self.femaleBtn.isSelected = true
+                    self.sex.accept(.female)
                 } else {
                     self.maleBtn.isSelected = false
                     self.femaleBtn.isSelected = false
+                    self.sex.accept(.noAnswer)
                 }
             }).disposed(by: disposeBag)
     }

@@ -222,9 +222,12 @@ class PlayRecordViewController: UIViewController {
         hourLabel.text = "0"
         minuteLabel.text = "0"
     }
+
     private func bindViewModel() {
-        let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()),
-                                              endExercise: endExercise.asDriver(onErrorJustReturn: ()))
+        let input = PlayRecordViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            endExercise: endExercise.asDriver(onErrorJustReturn: ())
+        )
 
         let output = viewModel.transform(input)
 
