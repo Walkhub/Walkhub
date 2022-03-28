@@ -26,16 +26,14 @@ extension UserAPI: WalkhubAPI {
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
-        case .setHealthInformation:
-            return "/healths"
+        case .setHealthInformation, .fetchHealthInformation:
+            return "/health"
         case .joinClass(let sectionId, _, _):
             return "/classes/\(sectionId)"
         case .setSchoolInformation:
             return "/school"
         case .changeGoalWalkCount:
             return "/goal"
-        case .fetchHealthInformation:
-            return "/health"
         default:
             return ""
         }
