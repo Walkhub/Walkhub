@@ -11,9 +11,9 @@ public class SearchSchoolRankUseCase {
     }
 
     public func excute(
-        name: String,
+        name: String?,
         dateType: DateType
-    ) -> Single<[SearchSchoolRank]> {
+    ) -> Single<[School]> {
         return rankRepository.searchSchool(
             name: name,
             dateType: dateType

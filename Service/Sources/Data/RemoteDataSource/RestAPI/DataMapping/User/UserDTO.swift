@@ -13,8 +13,8 @@ struct UserDTO: Decodable {
     }
     let userID: Int
     let name: String
-    let grade: Int
-    let classNum: Int
+    let grade: Int?
+    let classNum: Int?
     let ranking: Int
     let profileImageUrlString: String
     let walkCount: Int
@@ -27,8 +27,8 @@ extension UserDTO {
             userID: userID,
             name: name,
             ranking: ranking,
-            grade: grade,
-            classNum: classNum,
+            grade: grade ?? 0,
+            classNum: classNum ?? 0,
             profileImageUrl: URL(string: profileImageUrlString)!,
             walkCount: walkCount
         )
