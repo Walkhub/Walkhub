@@ -7,21 +7,25 @@ struct ChallengeDTO: Decodable {
         case name
         case start = "start_at"
         case end = "end_at"
-        case imageUrlString = "image_url"
-        case userScope = "user_scope"
+        case goal
         case goalScope = "goal_scope"
         case goalType = "goal_type"
+        case award
         case writer
+        case participantCount = "participant_count"
+        case participantList = "participant_list"
     }
     let id: Int
     let name: String
     let start: String
     let end: String
-    let imageUrlString: String?
-    let userScope: String
+    let goal: Int
     let goalScope: String
     let goalType: String
+    let award: String
     let writer: WriterDTO
+    let participantCount: Int
+    let participantList: [ChallengeParticipantDTO]
 }
 
 // MARK: - Mappings to Domain
@@ -30,13 +34,15 @@ extension ChallengeDTO {
         return .init(
             id: id,
             name: name,
-            start: start.toDateWithTime(),
-            end: end.toDateWithTime(),
-            imageUrl: URL(string: imageUrlString ?? ""),
-            userScope: GroupScope(rawValue: userScope)!,
+            start: start.toDate(),
+            end: end.toDate(),
+            goal: goal,
             goalScope: ChallengeGoalScope(rawValue: goalScope)!,
             goalType: ExerciseGoalType(rawValue: goalType)!,
-            writer: writer.toDomain()
+            award: award,
+            writer: writer.toDomain(),
+            participantCount: participantCount,
+            participantList: participantList.map { $0.toDomain() }
         )
     }
 }
