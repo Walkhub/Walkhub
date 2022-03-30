@@ -10,11 +10,13 @@ class ChallengeRealmEntity: Object {
     @Persisted var name: String = ""
     @Persisted var startAt: String = ""
     @Persisted var endAt: String = ""
-    @Persisted var imageUrlString: String? = ""
-    @Persisted var userScope: String = ""
+    @Persisted var goal: Int = 0
     @Persisted var goalScope: String = ""
     @Persisted var goalType: String = ""
+    @Persisted var award: String = ""
     @Persisted var writer: WriterRealmEntity?
+    @Persisted var participantCount: Int = 0
+    @Persisted var participantList: List<ChallengeParticipantRealmEntity> = List<ChallengeParticipantRealmEntity>()
     @Persisted var isJoined: Bool = false
 }
 
@@ -24,37 +26,41 @@ extension ChallengeRealmEntity {
     func setup(challenge: Challenge, isJoined: Bool) {
         self.id = challenge.id
         self.name = challenge.name
-        self.startAt = challenge.start.toDateWithTimeString()
-        self.endAt = challenge.end.toDateWithTimeString()
-        self.imageUrlString = challenge.imageUrl?.absoluteString
-        self.userScope = challenge.userScope.rawValue
+        self.startAt = challenge.start.toDateString()
+        self.endAt = challenge.end.toDateString()
+        self.goal = challenge.goal
         self.goalScope = challenge.goalScope.rawValue
-        self.goalType = challenge.goalType.rawValue
+        self.award = challenge.award
         self.writer = WriterRealmEntity().then {
             $0.setup(writer: challenge.writer)
         }
+        self.participantCount = challenge.participantCount
+        self.participantList.append(objectsIn: challenge.participantList.map { participant in
+            ChallengeParticipantRealmEntity().then { $0.setup(participant: participant) }
+        })
         self.isJoined = isJoined
     }
 
     private func compoundKeyValue() -> String {
         return "\(id)\(isJoined)"
     }
-
 }
 
 // MARK: - Mappings to Domain
 extension ChallengeRealmEntity {
     func toDomain() -> Challenge {
         return .init(
-            id: id,
-            name: name,
-            start: startAt.toDateWithTime(),
-            end: endAt.toDateWithTime(),
-            imageUrl: URL(string: imageUrlString ?? ""),
-            userScope: GroupScope(rawValue: userScope)!,
-            goalScope: ChallengeGoalScope(rawValue: goalScope)!,
-            goalType: ExerciseGoalType(rawValue: goalType)!,
-            writer: writer!.toDomain()
+            id: self.id,
+            name: self.name,
+            start: self.startAt.toDate(),
+            end: self.endAt.toDate(),
+            goal: self.goal,
+            goalScope: ChallengeGoalScope(rawValue: self.goalScope)!,
+            goalType: ExerciseGoalType(rawValue: self.goalType)!,
+            award: self.award,
+            writer: (self.writer?.toDomain())!,
+            participantCount: self.participantCount,
+            participantList: self.participantList.map { $0.toDomain() }
         )
     }
 }
