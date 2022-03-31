@@ -1,11 +1,3 @@
-//
-//  EmptyTableViewCell.swift
-//  Walkhub
-//
-//  Created by kimsian on 2022/02/27.
-//  Copyright © 2022 com.walkhub. All rights reserved.
-//
-
 import UIKit
 
 class EmptyChallengeTableViewCell: UITableViewCell {
