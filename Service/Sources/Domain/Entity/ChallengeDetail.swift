@@ -11,8 +11,10 @@ public struct ChallengeDetail: Equatable {
     public let imageUrl: URL
     public let start: Date
     public let end: Date
+    public let successStandard: Int
     public let count: Int
     public let isMine: Bool
     public let isParticipated: Bool
+    public let participantList: [ChallengeParticipant]
     public let writer: Writer
 }
