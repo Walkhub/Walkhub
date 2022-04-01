@@ -31,8 +31,8 @@ public extension Container {
         self.register(SigninUseCase.self) { resolver in
             return SigninUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
-        self.register(SingupUseCase.self) { resolver in
-            return SingupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        self.register(SignupUseCase.self) { resolver in
+            return SignupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
         self.register(VerificationPhoneUseCase.self) { resolver in
             return VerificationPhoneUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
@@ -145,6 +145,16 @@ public extension Container {
         self.register(FetchMyPageUseCase.self) { resolver in
             return FetchMyPageUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(CheckVerificationCodeUseCase.self) { resolver in
+            return CheckVerificationCodeUseCase(
+                authRepository: resolver.resolve(AuthRepository.self)!
+            )
+        }
+        self.register(CheckAccountIdUseCase.self) { resolver in
+            return CheckAccountIdUseCase(
+                authRepository: resolver.resolve(AuthRepository.self)!
             )
         }
     }
