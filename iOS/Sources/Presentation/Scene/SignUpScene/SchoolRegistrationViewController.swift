@@ -6,7 +6,9 @@ import RxSwift
 
 class SchoolRegistrationViewController: UIViewController {
 
+    var viewModel: SchoolRegistrationViewModel!
     var disposeBag = DisposeBag()
+    let schoolId = PublishRelay<Int>()
 
     private let searchTableView = UITableView().then {
         $0.backgroundColor = .white
@@ -27,7 +29,12 @@ class SchoolRegistrationViewController: UIViewController {
         $0.progress = 0.64
     }
 
-    private let searchBtn = UIBarButtonItem(image: .init(systemName: "arrow.backward"), style: .plain, target: self, action: nil)
+    private let searchBtn = UIBarButtonItem(
+        image: .init(systemName: "arrow.backward"),
+        style: .plain,
+        target: SchoolRegistrationViewController.self,
+        action: nil
+    )
 
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
@@ -75,12 +82,17 @@ class SchoolRegistrationViewController: UIViewController {
         setTextField()
         addSubviews()
         makeSubviewConstraints()
+        bind()
         searchSchoolTextField.delegate = self
         schoolNameSearchBar.searchBar.delegate = self
     }
 
     override func viewDidLayoutSubviews() {
         continueBtn.layer.masksToBounds = true
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        searchTableView.isHidden = true
     }
 
     private func setNavigation() {
@@ -94,6 +106,27 @@ class SchoolRegistrationViewController: UIViewController {
         .map { $0 != "" }
         .bind(to: continueBtn.rx.isEnabled)
         .disposed(by: disposeBag)
+    }
+
+    private func bind() {
+        let input = SchoolRegistrationViewModel.Input(
+            searchSchool: schoolNameSearchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            cellTap: searchTableView.rx.itemSelected.asDriver()
+        )
+
+        let output = viewModel.transform(input)
+
+        output.schoolList.bind(to: searchTableView.rx.items(
+            cellIdentifier: "schoolRegistrationCell",
+            cellType: SchoolRegistrationTableViewCell.self
+        )) { _, items, cell in
+            cell.schoolLogoImageView.kf.setImage(with: items.logoImageUrl)
+            cell.schoolNameLabel.text = items.name
+        }.disposed(by: disposeBag)
+
+        output.schoolId
+            .bind(to: self.schoolId)
+            .disposed(by: disposeBag)
     }
 }
 
