@@ -6,6 +6,8 @@ import RxSwift
 
 class AuthenticationNumberViewController: UIViewController {
 
+    let phoneNumber = PublishRelay<String>()
+    var viewModel: AuthenticationNumberViewModel!
     var disposeBag = DisposeBag()
 
     private let timerLabel = UILabel().then {
@@ -108,7 +110,7 @@ class AuthenticationNumberViewController: UIViewController {
         $0.text = "전화번호 인증"
     }
 
-    private let authenticationNumberTextField = UITextField().then {
+    let authenticationNumberTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -128,6 +130,7 @@ class AuthenticationNumberViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
         setBtn()
+        bind()
         checkBtn.isSelected = false
         authenticationNumberTextField.inputAccessoryView = accessoryView
     }
@@ -192,6 +195,16 @@ class AuthenticationNumberViewController: UIViewController {
         navigationItem.leftBarButtonItem = backBtn
         self.navigationItem.searchController = nil
         self.navigationItem.leftBarButtonItem = backBtn
+    }
+
+    private func bind() {
+        let input = AuthenticationNumberViewModel.Input(
+            phoneNumber: phoneNumber.asDriver(onErrorJustReturn: ""),
+            authenticationNumber: authenticationNumberTextField.rx.text.orEmpty.asDriver(),
+            continueButtonDidTap: continueBtn.rx.tap.asDriver()
+        )
+
+        _ = viewModel.transform(input)
     }
 }
 
