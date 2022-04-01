@@ -55,4 +55,3 @@ class RecordMeasurementViewModel: ViewModelType, Stepper {
         return Output(exercisesList: exercisesList)
     }
 }
-

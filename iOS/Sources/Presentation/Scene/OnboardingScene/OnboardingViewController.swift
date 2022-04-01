@@ -59,7 +59,7 @@ class OnboardingViewController: UIViewController, Stepper {
     private func setButtonsAction() {
 
         signupButton.rx.tap
-            .map { WalkhubStep.signupIsRequired }
+            .map { WalkhubStep.enterNameIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
 
