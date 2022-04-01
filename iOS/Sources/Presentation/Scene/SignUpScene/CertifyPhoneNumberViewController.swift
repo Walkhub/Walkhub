@@ -6,6 +6,7 @@ import RxSwift
 
 class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
 
+    var viewModel: CertifyPhoneNumberViewModel!
     var disposeBag = DisposeBag()
 
     enum PhoneNumberRange {
@@ -58,7 +59,7 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
 
     private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
 
-    private let phoneNumberTextField = UITextField().then {
+    let phoneNumberTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -104,6 +105,7 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         setNavigation()
         setTextField()
+        bind()
         phoneNumberTextField.inputAccessoryView = accessoryView
     }
 
@@ -116,6 +118,14 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
         navigationItem.leftBarButtonItem = backBtn
     }
 
+    private func bind() {
+        let input = CertifyPhoneNumberViewModel.Input(
+            phoneNumber: phoneNumberTextField.rx.text.orEmpty.asDriver(),
+            continueButtonDidTap: continueBtn.rx.tap.asDriver()
+        )
+
+        _ = viewModel.transform(input)
+    }
 }
 
 extension CertifyPhoneNumberViewController {
