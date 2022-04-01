@@ -66,6 +66,26 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
+        self.register(SignUpViewModel.self) { resolver in
+            SignUpViewModel(
+                signupUseCase: resolver.resolve(SignupUseCase.self)!
+            )
+        }
+        self.register(CertifyPhoneNumberViewModel.self) { resolver in
+            CertifyPhoneNumberViewModel(
+                verificationPhoneUseCase: resolver.resolve(VerificationPhoneUseCase.self)!
+            )
+        }
+        self.register(AuthenticationNumberViewModel.self) { resolver in
+            AuthenticationNumberViewModel(
+                checkVerificationCodeUseCase: resolver.resolve(CheckVerificationCodeUseCase.self)!
+            )
+        }
+        self.register(IDViewModel.self) { resolver in
+            IDViewModel(
+                checkAccountIdUseCase: resolver.resolve(CheckAccountIdUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -112,6 +132,26 @@ extension Container {
         }
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
+        }
+        self.register(SignUpViewController.self) { resolver in
+            return SignUpViewController().then {
+                $0.viewModel = resolver.resolve(SignUpViewModel.self)!
+            }
+        }
+        self.register(AuthenticationNumberViewController.self) { resolver in
+            return AuthenticationNumberViewController().then {
+                $0.viewModel = resolver.resolve(AuthenticationNumberViewModel.self)!
+            }
+        }
+        self.register(CertifyPhoneNumberViewController.self) { resolver in
+            return CertifyPhoneNumberViewController().then {
+                $0.viewModel = resolver.resolve(CertifyPhoneNumberViewModel.self)!
+            }
+        }
+        self.register(IDViewController.self) { resolver in
+            return IDViewController().then {
+                $0.viewModel = resolver.resolve(IDViewModel.self)!
+            }
         }
     }
 
