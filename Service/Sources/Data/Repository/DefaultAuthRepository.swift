@@ -43,11 +43,10 @@ class DefaultAuthRepository: AuthRepository {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float,
-        weight: Int,
-        birthday: String,
+        height: Float?,
+        weight: Int?,
         sex: Sex,
-        schoolId: String
+        schoolId: Int
     ) -> Completable {
         return remoteAuthDataSource.signup(
             id: id,
@@ -57,7 +56,6 @@ class DefaultAuthRepository: AuthRepository {
             authCode: authCode,
             height: height,
             weight: weight,
-            birthday: birthday,
             sex: sex,
             schoolId: schoolId
         )
@@ -69,6 +67,16 @@ class DefaultAuthRepository: AuthRepository {
         )
     }
 
+    func checkVerificationCode(verificationCode: String, phoneNumber: String) -> Completable {
+        return remoteAuthDataSource.checkVerificationCode(
+            verificationCode: verificationCode,
+            phoneNumber: phoneNumber
+        )
+    }
+
+    func checkAccountId(accountId: String) -> Completable {
+        return remoteAuthDataSource.checkAccountId(accountId: accountId)
+    }
 }
 
 extension DefaultAuthRepository {

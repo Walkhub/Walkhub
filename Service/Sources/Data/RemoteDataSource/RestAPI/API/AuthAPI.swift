@@ -5,10 +5,12 @@ import Moya
 enum AuthAPI {
     case signin(id: String, password: String, deviceToken: String)
     case signup(id: String, password: String, name: String, phoneNumber: String, authCode: String,
-                height: Float, weight: Int, birthday: String, sex: Sex, schoolId: String)
+                height: Float?, weight: Int?, sex: Sex, schoolId: Int)
     case verificationPhone(phoneNumber: String)
+    case checkVerificationCode(verificationCode: String, phoneNumber: String)
     case renewalToken
     case findID(phoneNumber: String)
+    case checkAccountId(accountId: String)
 }
 
 extension AuthAPI: WalkhubAPI {
@@ -27,6 +29,10 @@ extension AuthAPI: WalkhubAPI {
             return "verification-codes"
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
+        case .checkVerificationCode:
+            return "/verification-codes"
+        case .checkAccountId:
+            return "/account-id"
         }
     }
 
@@ -38,6 +44,8 @@ extension AuthAPI: WalkhubAPI {
             return .patch
         case .findID:
             return .get
+        default:
+            return .head
         }
     }
 
@@ -53,7 +61,7 @@ extension AuthAPI: WalkhubAPI {
                 encoding: JSONEncoding.default
             )
         case .signup(let id, let password, let name, let phoneNumber, let authCode,
-                     let height, let weight, let birthday, let sex, let schoolId):
+                     let height, let weight, let sex, let schoolId):
             return .requestParameters(
                 parameters: [
                     "account_id": id,
@@ -63,7 +71,6 @@ extension AuthAPI: WalkhubAPI {
                     "auth_code": authCode,
                     "height": height,
                     "weight": weight,
-                    "birthday": birthday,
                     "sex": sex.rawValue,
                     "school_id": schoolId
                 ],
@@ -75,6 +82,20 @@ extension AuthAPI: WalkhubAPI {
                     "phone_number": phoneNumber
                 ],
                 encoding: JSONEncoding.default)
+        case .checkVerificationCode(let verificationCode, let phoneNumber):
+            return .requestParameters(
+                parameters: [
+                    "phone_number": phoneNumber,
+                    "auth_code": verificationCode
+                ],
+                encoding: JSONEncoding.default)
+        case .checkAccountId(let accountId):
+            return .requestParameters(
+                parameters: [
+                    "account_id": accountId
+                ],
+                encoding: JSONEncoding.default
+            )
         default:
             return .requestPlain
         }

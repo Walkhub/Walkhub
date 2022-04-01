@@ -29,11 +29,10 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float,
-        weight: Int,
-        birthday: String,
+        height: Float?,
+        weight: Int?,
         sex: Sex,
-        schoolId: String
+        schoolId: Int
     ) -> Completable {
         return request(.signup(
             id: id,
@@ -43,7 +42,6 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             authCode: authCode,
             height: height,
             weight: weight,
-            birthday: birthday,
             sex: sex,
             schoolId: schoolId
         )).asCompletable()
@@ -63,5 +61,17 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         return request(.findID(phoneNumber: phoneNumber))
             .map(UserIdDTO.self)
             .map { $0.toDomain() }
+    }
+
+    func checkVerificationCode(verificationCode: String, phoneNumber: String) -> Completable {
+        return request(.checkVerificationCode(
+            verificationCode: verificationCode,
+            phoneNumber: phoneNumber
+        )).asCompletable()
+    }
+
+    func checkAccountId(accountId: String) -> Completable {
+        return request(.checkAccountId(accountId: accountId))
+            .asCompletable()
     }
 }
