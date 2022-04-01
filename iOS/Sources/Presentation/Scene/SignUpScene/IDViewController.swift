@@ -6,6 +6,7 @@ import SnapKit
 
 class IDViewController: UIViewController {
 
+    var viewModel: IDViewModel!
     var disposeBag = DisposeBag()
 
     enum IDRange {
@@ -61,7 +62,7 @@ class IDViewController: UIViewController {
 
     private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
 
-    private let idTextField = UITextField().then {
+    let idTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -78,6 +79,7 @@ class IDViewController: UIViewController {
         makeSubviewConstraints()
         setNavigation()
         setTextField()
+        bind()
         idTextField.inputAccessoryView = accessoryView
     }
 
@@ -110,6 +112,15 @@ class IDViewController: UIViewController {
                 }
             })
             .disposed(by: disposeBag)
+    }
+
+    private func bind() {
+        let input = IDViewModel.Input(
+            id: idTextField.rx.text.orEmpty.asDriver(),
+            continueButtonDidTap: continueBtn.rx.tap.asDriver()
+        )
+
+        _ = viewModel.transform(input)
     }
 }
 
