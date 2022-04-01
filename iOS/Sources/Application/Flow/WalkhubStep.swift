@@ -13,13 +13,24 @@ enum WalkhubStep: Step {
 
     // Onboarding
     case onboardingIsRequired
-    case signupIsRequired
 
     // Login
     case loginIsRequired
     case userIsLoggedIn
     case findIdIsRequired
     case changePasswordIsRequired
+
+    // Signup
+    case enterNameIsRequired
+    case certigyPhoneNumberIsRequired
+    case authenticationNumberIsRequired(phoneNumber: String)
+    case enterIdRequired
+    case passwordIsRequired
+    case setSchoolIsRequired
+    case agreeIsRequired
+    case enterHealthInfoIsRequired
+    case personalInfoPolicyIsRequired
+    case serviceUseTermsIsRequired
 
     // Home
     case homeIsRequired
