@@ -121,7 +121,7 @@ class MyPageViewController: UIViewController {
     private let gearBtn = UIBarButtonItem(
         image: .init(systemName: "gearshape.fill"),
         style: .plain,
-        target: self,
+        target: MyPageViewController.self,
         action: nil
     ).then {
         $0.tintColor = .black
