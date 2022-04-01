@@ -3,10 +3,12 @@ import UIKit
 import SnapKit
 import RxCocoa
 import RxSwift
+import Service
 
 class EnterHealthInformationViewController: UIViewController {
 
     var disposeBag = DisposeBag()
+    let sex = PublishRelay<Sex>()
 
     private let enterHealthInformationLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
@@ -25,12 +27,12 @@ class EnterHealthInformationViewController: UIViewController {
         $0.textColor = .gray600
     }
 
-    private let doLaterBtn = UIBarButtonItem().then {
+    let doLaterBtn = UIBarButtonItem().then {
         $0.title = "나중에 하기"
         $0.tintColor = .gray900
     }
 
-    private let heightTextField = UITextField().then {
+    let heightTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -42,7 +44,7 @@ class EnterHealthInformationViewController: UIViewController {
         $0.keyboardType = .numberPad
     }
 
-    private let weightTextField = UITextField().then {
+    let weightTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -84,7 +86,7 @@ class EnterHealthInformationViewController: UIViewController {
         $0.setBackgroundColor(.gray50, for: .normal)
     }
 
-    private let completeBtn = UIButton(type: .system).then {
+    var completeBtn = UIButton(type: .system).then {
         $0.setTitle("완료하기", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
         $0.setTitleColor(.white, for: .normal)

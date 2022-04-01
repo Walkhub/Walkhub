@@ -3,10 +3,12 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import RxFlow
 
-class AgreeTermsViewController: UIViewController {
+class AgreeTermsViewController: UIViewController, Stepper {
 
     var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
 
     private let allAgreeView = UIView().then {
         $0.backgroundColor = .gray50
