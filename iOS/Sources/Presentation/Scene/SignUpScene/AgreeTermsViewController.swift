@@ -7,6 +7,16 @@ import RxFlow
 
 class AgreeTermsViewController: UIViewController, Stepper {
 
+    var viewModel: AgreeTermsViewModel!
+
+    private let enterNameViewController = EnterNameViewController()
+    private let certifyPhoneNumberViewController = CertifyPhoneNumberViewController()
+    private let authenticationNumberViewController = AuthenticationNumberViewController()
+    private let idViewController = IDViewController()
+    private let enterPasswordViewController = EnterPasswordViewController()
+    private let schoolRegistrationViewController = SchoolRegistrationViewController()
+    private let enterHealthInformationViewController = EnterHealthInformationViewController()
+
     var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
 
@@ -92,7 +102,7 @@ class AgreeTermsViewController: UIViewController, Stepper {
         $0.text = "서비스 이용 약관에 동의해주세요."
     }
 
-    private let completeBtn = UIButton(type: .system).then {
+    let completeBtn = UIButton(type: .system).then {
         $0.setTitle("회원가입 완료하기", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
         $0.setTitleColor(.white, for: .normal)
@@ -103,10 +113,9 @@ class AgreeTermsViewController: UIViewController, Stepper {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setNavigation()
         setBtn()
+        bind()
         allAgreeBtn.isSelected = false
         termsBtn.isSelected = false
         personalInformationBtn.isSelected = false
@@ -115,44 +124,63 @@ class AgreeTermsViewController: UIViewController, Stepper {
 
     override func viewDidLayoutSubviews() {
         completeBtn.layer.masksToBounds = true
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
+    private func bind() {
+        let input = AgreeTermsViewModel.Input(
+            id: idViewController.idTextField.rx.text.orEmpty.asDriver(),
+            password: enterPasswordViewController.pwTextField.rx.text.orEmpty.asDriver(),
+            name: enterNameViewController.nameTextField.rx.text.orEmpty.asDriver(),
+            phoneNumber: certifyPhoneNumberViewController.phoneNumberTextField.rx.text.orEmpty.asDriver(),
+            authCode: authenticationNumberViewController.authenticationNumberTextField.rx.text.orEmpty.asDriver(),
+            schoolId: schoolRegistrationViewController.schoolId.asDriver(onErrorJustReturn: 0),
+            signupButtonDidTap: completeBtn.rx.tap.asDriver(),
+            signinButtonDidTap: enterHealthInformationViewController.completeBtn.rx.tap.asDriver()
+        )
+        _ = viewModel.transform(input)
     }
 
     private func setBtn() {
-        allAgreeBtn.rx.tap.subscribe(onNext: {
-            if self.allAgreeBtn.isSelected {
-                self.allAgreeBtn.isSelected = false
-                self.termsBtn.isSelected = false
-                self.personalInformationBtn.isSelected = false
-                self.completeBtn.isEnabled = false
-            } else {
-                self.allAgreeBtn.isSelected = true
-                self.termsBtn.isSelected = true
-                self.personalInformationBtn.isSelected = true
-                self.completeBtn.isEnabled = true
-            }
-        }).disposed(by: disposeBag)
+        allAgreeBtn.rx.tap
+            .subscribe(onNext: {
+                if self.allAgreeBtn.isSelected {
+                    self.allAgreeBtn.isSelected = false
+                    self.termsBtn.isSelected = false
+                    self.personalInformationBtn.isSelected = false
+                } else {
+                    self.allAgreeBtn.isSelected = true
+                    self.termsBtn.isSelected = true
+                    self.personalInformationBtn.isSelected = true
+                }
+            }).disposed(by: disposeBag)
 
-        termsBtn.rx.tap.subscribe(onNext: {
-            if self.termsBtn.isSelected {
-                self.termsBtn.isSelected = false
-            } else {
-                self.termsBtn.isSelected = true
-                self.allAgreeBtn.isSelected = false
-            }
-        }).disposed(by: disposeBag)
+        termsBtn.rx.tap
+            .subscribe(onNext: {
+                if self.termsBtn.isSelected {
+                    self.termsBtn.isSelected = false
+                } else {
+                    self.termsBtn.isSelected = true
+                }
+            }).disposed(by: disposeBag)
 
-        personalInformationBtn.rx.tap.subscribe(onNext: {
-            if self.personalInformationBtn.isSelected {
-                self.personalInformationBtn.isSelected = false
-            } else {
-                self.personalInformationBtn.isSelected = true
-                self.allAgreeBtn.isSelected = false
-            }
-        }).disposed(by: disposeBag)
+        personalInformationBtn.rx.tap
+            .subscribe(onNext: {
+                if self.personalInformationBtn.isSelected {
+                    self.personalInformationBtn.isSelected = false
+                } else {
+                    self.personalInformationBtn.isSelected = true
+                }
+            }).disposed(by: disposeBag)
+
+        if termsBtn.isSelected && personalInformationBtn.isSelected {
+            allAgreeBtn.isSelected = true
+        }
     }
 
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
 }
 
