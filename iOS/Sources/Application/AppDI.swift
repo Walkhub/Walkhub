@@ -1,3 +1,5 @@
+// swiftlint:disable function_body_length
+
 import Foundation
 
 import Service
@@ -66,9 +68,10 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
-        self.register(SignUpViewModel.self) { resolver in
-            SignUpViewModel(
-                signupUseCase: resolver.resolve(SignupUseCase.self)!
+        self.register(AgreeTermsViewModel.self) { resolver in
+            AgreeTermsViewModel(
+                signupUseCase: resolver.resolve(SignupUseCase.self)!,
+                signinUseCase: resolver.resolve(SigninUseCase.self)!
             )
         }
         self.register(CertifyPhoneNumberViewModel.self) { resolver in
@@ -84,6 +87,11 @@ extension Container {
         self.register(IDViewModel.self) { resolver in
             IDViewModel(
                 checkAccountIdUseCase: resolver.resolve(CheckAccountIdUseCase.self)!
+            )
+        }
+        self.register(EnterHealthInformationViewModel.self) { resolver in
+            EnterHealthInformationViewModel(
+                setHealthInformationUseCase: resolver.resolve(SetHealthInformationUseCase.self)!
             )
         }
     }
@@ -133,9 +141,9 @@ extension Container {
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
         }
-        self.register(SignUpViewController.self) { resolver in
-            return SignUpViewController().then {
-                $0.viewModel = resolver.resolve(SignUpViewModel.self)!
+        self.register(AgreeTermsViewController.self) { resolver in
+            return AgreeTermsViewController().then {
+                $0.viewModel = resolver.resolve(AgreeTermsViewModel.self)!
             }
         }
         self.register(AuthenticationNumberViewController.self) { resolver in
@@ -148,11 +156,18 @@ extension Container {
                 $0.viewModel = resolver.resolve(CertifyPhoneNumberViewModel.self)!
             }
         }
+        self.register(EnterHealthInformationViewController.self) { resolver in
+            return EnterHealthInformationViewController().then {
+                $0.viewModel = resolver.resolve(EnterHealthInformationViewModel.self)!
+            }
+        }
+        self.register(EnterNameViewController.self) { _ in
+            return EnterNameViewController()
+        }
         self.register(IDViewController.self) { resolver in
             return IDViewController().then {
                 $0.viewModel = resolver.resolve(IDViewModel.self)!
             }
         }
     }
-
 }
