@@ -15,7 +15,7 @@ struct UserSinginResponseDTO: Decodable {
     let expiredAt: String
     let refreshToken: String
     let authority: String
-    let height: Double
-    let weight: Int
+    let height: Double?
+    let weight: Int?
     let sex: String
 }
