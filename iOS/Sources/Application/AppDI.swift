@@ -29,6 +29,18 @@ extension Container {
                 searchSchoolRankUseCase: resolver.resolve(SearchSchoolRankUseCase.self)!
             )
         }
+        self.register(ChallengeViewModel.self) { resolver in
+            ChallengeViewModel(
+                fetchChallengesListUseCase: resolver.resolve(FetchChallengesListUseCase.self)!,
+                fetchJoinedChallengesUseCase: resolver.resolve(FetchJoinedChallengesUseCase.self)!
+            )
+        }
+        self.register(DetailedChallengeViewModel.self) { resolver in
+            DetailedChallengeViewModel(
+                fetchChallengeDetailUseCase: resolver.resolve(FetchChallengeDetailUseCase.self)!,
+                joinChallengeUseCase: resolver.resolve(JoinChallengesUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -46,6 +58,16 @@ extension Container {
         self.register(HubViewController.self) { resolver in
             return HubViewController().then {
                 $0.viewModel = resolver.resolve(HubViewModel.self)!
+            }
+        }
+        self.register(ChallengeViewController.self) { resolver in
+            return ChallengeViewController().then {
+                $0.viewModel = resolver.resolve(ChallengeViewModel.self)!
+            }
+        }
+        self.register(DetailedChallengeViewController.self) { resolver in
+            return DetailedChallengeViewController().then {
+                $0.viewModel = resolver.resolve(DetailedChallengeViewModel.self)!
             }
         }
     }

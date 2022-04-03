@@ -21,6 +21,7 @@ public extension Container {
         self.register(RankRepository.self) { _ in DefaultRankRepository() }
         self.register(SchoolRepository.self) { _ in DefaultSchoolRepository() }
         self.register(UserRepository.self) { _ in DefaultUserRepository() }
+        self.register(ChallengeRepository.self) { _ in DefaultChallengeRepository() }
     }
 
     private func registerUseCases() {
@@ -107,7 +108,21 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-
+        self.register(FetchChallengesListUseCase.self) { resolver in
+            return FetchChallengesListUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchJoinedChallengesUseCase.self) { resolver in
+            return FetchJoinedChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(JoinChallengesUseCase.self) { resolver in
+            return JoinChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
     }
 
 }
