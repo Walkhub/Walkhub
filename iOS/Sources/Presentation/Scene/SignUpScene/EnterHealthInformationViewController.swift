@@ -7,8 +7,9 @@ import Service
 
 class EnterHealthInformationViewController: UIViewController {
 
-    var disposeBag = DisposeBag()
-    let sex = PublishRelay<Sex>()
+    var viewModel: EnterHealthInformationViewModel!
+    private var disposeBag = DisposeBag()
+    private let sex = PublishRelay<Sex>()
 
     private let enterHealthInformationLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
@@ -97,10 +98,9 @@ class EnterHealthInformationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setBtn()
         setNavigation()
+        bind()
         completeBtn.isEnabled = false
     }
 
@@ -109,6 +109,8 @@ class EnterHealthInformationViewController: UIViewController {
     }
 
     override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
         completeBtn.layer.masksToBounds = true
         maleBtn.layer.masksToBounds = true
         femaleBtn.layer.masksToBounds = true
@@ -123,10 +125,12 @@ class EnterHealthInformationViewController: UIViewController {
             if self.maleBtn.isSelected {
                 self.maleBtn.isSelected = false
                 self.completeBtn.isEnabled = false
+                self.sex.accept(.man)
             } else {
                 self.maleBtn.isSelected = true
                 self.femaleBtn.isSelected = false
                 self.completeBtn.isEnabled = true
+                self.sex.accept(.noAnswer)
             }
         }).disposed(by: disposeBag)
 
@@ -134,10 +138,12 @@ class EnterHealthInformationViewController: UIViewController {
             if self.femaleBtn.isSelected {
                 self.femaleBtn.isSelected = false
                 self.completeBtn.isEnabled = false
+                self.sex.accept(.female)
             } else {
                 self.maleBtn.isSelected = false
                 self.femaleBtn.isSelected = true
                 self.completeBtn.isEnabled = true
+                self.sex.accept(.noAnswer)
             }
         }).disposed(by: disposeBag)
 
@@ -147,8 +153,21 @@ class EnterHealthInformationViewController: UIViewController {
         weightTextField.rx.text.orEmpty.map { $0 != "" }
         .bind(to: completeBtn.rx.isEnabled).disposed(by: disposeBag)
     }
+
+    private func bind() {
+        let input = EnterHealthInformationViewModel.Input(
+            height: heightTextField.rx.text.orEmpty.asDriver(),
+            weight: weightTextField.rx.text.orEmpty.asDriver(),
+            sex: sex.asDriver(onErrorJustReturn: .noAnswer),
+            completeButtonDidTap: completeBtn.rx.tap.asDriver(),
+            doLaterButtonDidTap: doLaterBtn.rx.tap.asDriver()
+        )
+
+        _ = viewModel.transform(input)
+    }
 }
 
+// MARK: Layout
 extension EnterHealthInformationViewController {
     private func addSubviews() {
         [enterHealthInformationLabel,
