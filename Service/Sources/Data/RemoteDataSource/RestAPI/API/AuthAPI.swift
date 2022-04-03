@@ -58,7 +58,7 @@ extension AuthAPI: WalkhubAPI {
                     "password": password,
                     "device_token": deviceToken
                 ],
-                encoding: JSONEncoding.default
+                encoding: JSONEncoding.prettyPrinted
             )
         case .signup(let id, let password, let name, let phoneNumber, let authCode,
                      let height, let weight, let sex, let schoolId):
@@ -88,13 +88,14 @@ extension AuthAPI: WalkhubAPI {
                     "phone_number": phoneNumber,
                     "auth_code": verificationCode
                 ],
-                encoding: JSONEncoding.default)
+                encoding: URLEncoding.queryString
+            )
         case .checkAccountId(let accountId):
             return .requestParameters(
                 parameters: [
                     "account_id": accountId
                 ],
-                encoding: JSONEncoding.default
+                encoding: URLEncoding.queryString
             )
         default:
             return .requestPlain
