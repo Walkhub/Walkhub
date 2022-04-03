@@ -1,32 +1,15 @@
 import UIKit
 
-import Then
 import SnapKit
+import Then
 import RxSwift
+import RxCocoa
+import AnyFormatKit
 
-class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
+class CertifyPhoneNumberViewController: UIViewController {
 
     var viewModel: CertifyPhoneNumberViewModel!
     var disposeBag = DisposeBag()
-
-    enum PhoneNumberRange {
-        case over
-        case under
-        case normal
-    }
-
-    private func checkPhoneNumber(_ name: String) -> PhoneNumberRange {
-        if name.count > 10 {
-            let index = name.index(name.startIndex, offsetBy: 11)
-            self.phoneNumberTextField.text = String(name[..<index])
-
-            return .over
-        } else if name.count < 11 && name.count > 0 {
-            return .under
-        } else {
-            return .normal
-        }
-    }
 
     private let phoneNumberProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
@@ -45,6 +28,8 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
 
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.text = "올바른 전화번호를 입력해주세요."
+        $0.textColor = .red
     }
 
     private let backBtn = UIBarButtonItem().then {
@@ -77,35 +62,12 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
         $0.textColor = .gray600
     }
 
-    private func setTextField() {
-        phoneNumberTextField.rx.text.orEmpty
-            .map(checkPhoneNumber(_:))
-            .subscribe(onNext: { phoneNumber in
-                switch phoneNumber {
-                case .over:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
-                    self.continueBtn.isEnabled = true
-
-                case .under:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "올바른 전화번호를 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .normal:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
-                    self.continueBtn.isEnabled = false
-                }
-            })
-            .disposed(by: disposeBag)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
         setTextField()
         bind()
+        view.backgroundColor = .white
         phoneNumberTextField.inputAccessoryView = accessoryView
     }
 
@@ -114,8 +76,35 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
         makeSubviewConstraints()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        self.infoLabel.isHidden = true
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
+    }
+
+    private func setTextField() {
+        phoneNumberTextField.keyboardType = .phonePad
+        phoneNumberTextField.rx.text.orEmpty
+            .subscribe(onNext: {
+                self.phoneNumberTextField.text = $0.prettyPhoneNumber()
+                self.infoLabel.isHidden = self.isValidPhone(phone: $0)
+                self.continueBtn.isEnabled = self.isValidPhone(phone: $0)
+            }).disposed(by: disposeBag)
+    }
+
+    private func isValidPhone(phone: String?) -> Bool {
+        guard phone != nil else { return false }
+        let str = phone?.replacingOccurrences(of: " ", with: "")
+
+        let phoneRegEx = "^010([0-9]{4})([0-9]{4})"
+        let pred = NSPredicate(format: "SELF MATCHES %@", phoneRegEx)
+        return pred.evaluate(with: str)
     }
 
     private func bind() {
@@ -128,6 +117,7 @@ class CertifyPhoneNumberViewController: UIViewController, UITextFieldDelegate {
     }
 }
 
+// MARK: Layout
 extension CertifyPhoneNumberViewController {
     private func addSubviews() {
         accessoryView.addSubview(continueBtn)
