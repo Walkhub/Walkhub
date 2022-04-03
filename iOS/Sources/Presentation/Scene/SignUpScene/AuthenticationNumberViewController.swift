@@ -1,8 +1,9 @@
 import UIKit
 
 import SnapKit
-import RxCocoa
+import Then
 import RxSwift
+import RxCocoa
 
 class AuthenticationNumberViewController: UIViewController {
 
@@ -67,28 +68,6 @@ class AuthenticationNumberViewController: UIViewController {
         }
     }
 
-    enum AuthenticationNumberRange {
-        case over
-        case under
-        case normal
-        case middle
-    }
-
-    private func authenticationNumber(_ name: String) -> AuthenticationNumberRange {
-        if name.count > 5 {
-            let index = name.index(name.startIndex, offsetBy: 6)
-            self.authenticationNumberTextField.text = String(name[..<index])
-
-            return .over
-        } else if name.count < 1 {
-            return .under
-        } else if name.count < 5 && name.count > 0 {
-            return .middle
-        } else {
-            return .normal
-        }
-    }
-
     private let authenticationNumberProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
         $0.progressTintColor = .primary400
@@ -98,11 +77,6 @@ class AuthenticationNumberViewController: UIViewController {
 
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
-    }
-
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
     }
 
     private let authenticationNumberLabel = UILabel().then {
@@ -127,8 +101,6 @@ class AuthenticationNumberViewController: UIViewController {
         super.viewDidLoad()
         setNavigation()
         setTextField()
-        addSubviews()
-        makeSubviewConstraints()
         setBtn()
         bind()
         checkBtn.isSelected = false
@@ -137,6 +109,16 @@ class AuthenticationNumberViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getSetTime()
+    }
+
+    override func viewDidLayoutSubviews() {
+        continueBtn.layer.masksToBounds = true
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 
     private func setBtn() {
@@ -158,43 +140,22 @@ class AuthenticationNumberViewController: UIViewController {
             .disposed(by: disposeBag)
 
         authenticationNumberTextField.rx.text.orEmpty
-            .map(authenticationNumber(_:))
-            .subscribe(onNext: { authenticationNumber in
-                switch authenticationNumber {
-                case .over:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "인증번호 5자리를 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .under:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
-                    self.continueBtn.isEnabled = false
-
-                case .middle:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "인증번호 5자리를 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .normal:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
+            .subscribe(onNext: {
+                if $0.count == 5 {
+                    self.infoLabel.isHidden = true
                     self.continueBtn.isEnabled = true
+                } else {
+                    self.infoLabel.isHidden = false
+                    self.continueBtn.isEnabled = false
                 }
-            })
-            .disposed(by: disposeBag)
-    }
-
-    override func viewDidLayoutSubviews() {
-        continueBtn.layer.masksToBounds = true
+            }).disposed(by: disposeBag)
     }
 
     private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
 
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
         self.navigationItem.searchController = nil
-        self.navigationItem.leftBarButtonItem = backBtn
     }
 
     private func bind() {
@@ -208,6 +169,7 @@ class AuthenticationNumberViewController: UIViewController {
     }
 }
 
+// MARK: Layout
 extension AuthenticationNumberViewController {
     private func addSubviews() {
         accessoryView.addSubview(continueBtn)
