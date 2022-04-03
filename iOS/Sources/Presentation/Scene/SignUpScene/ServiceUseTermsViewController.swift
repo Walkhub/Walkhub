@@ -1,8 +1,14 @@
 import UIKit
 
+import SnapKit
 import Then
+import RxSwift
+import RxCocoa
+import RxFlow
 
-class ServiceUseTermsViewController: UIViewController {
+class ServiceUseTermsViewController: UIViewController, Stepper {
+
+    var steps = PublishRelay<Step>()
 
     private let serviceUseTermsLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
@@ -14,24 +20,22 @@ class ServiceUseTermsViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.textColor = .gray900
     }
-
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setNavigation()
     }
 
+    override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
 }
 
+// MARK: Layout
 extension ServiceUseTermsViewController {
 
     private func addSubviews() {

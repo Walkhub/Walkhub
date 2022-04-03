@@ -40,11 +40,6 @@ class SchoolRegistrationViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
 
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
-    }
-
     private let schoolRegistrationLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "학교 등록"
@@ -80,14 +75,14 @@ class SchoolRegistrationViewController: UIViewController {
         super.viewDidLoad()
         setNavigation()
         setTextField()
-        addSubviews()
-        makeSubviewConstraints()
         bind()
         searchSchoolTextField.delegate = self
         schoolNameSearchBar.searchBar.delegate = self
     }
 
     override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
         continueBtn.layer.masksToBounds = true
     }
 
@@ -96,9 +91,8 @@ class SchoolRegistrationViewController: UIViewController {
     }
 
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
         self.navigationItem.searchController = nil
-        self.navigationItem.leftBarButtonItem = backBtn
     }
 
     private func setTextField() {
@@ -111,7 +105,8 @@ class SchoolRegistrationViewController: UIViewController {
     private func bind() {
         let input = SchoolRegistrationViewModel.Input(
             searchSchool: schoolNameSearchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
-            cellTap: searchTableView.rx.itemSelected.asDriver()
+            cellTap: searchTableView.rx.itemSelected.asDriver(),
+            continueButtonDidTap: continueBtn.rx.tap.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -151,6 +146,7 @@ extension SchoolRegistrationViewController: UISearchBarDelegate {
     }
 }
 
+// MARK: Layout
 extension SchoolRegistrationViewController {
     private func addSubviews() {
         [schoolRegistrationLabel,

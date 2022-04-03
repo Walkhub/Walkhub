@@ -16,6 +16,7 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
     struct Input {
         let searchSchool: Driver<String>
         let cellTap: Driver<IndexPath>
+        let continueButtonDidTap: Driver<Void>
     }
 
     struct Output {
@@ -45,6 +46,12 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
                 let value = schoolList.value
                 schoolId.accept(value[index.row].id)
             }).disposed(by: disposeBag)
+
+        input.continueButtonDidTap
+            .asObservable()
+            .map { WalkhubStep.setSchoolIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(schoolList: schoolList, schoolId: schoolId)
     }
