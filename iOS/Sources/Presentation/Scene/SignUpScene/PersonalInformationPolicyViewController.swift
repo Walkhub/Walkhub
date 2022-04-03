@@ -15,23 +15,22 @@ class PersonalInformationPolicyViewController: UIViewController {
         $0.textColor = .gray900
     }
 
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setNavigation()
     }
 
+    override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
 }
 
+// MARK: Layout
 extension PersonalInformationPolicyViewController {
 
     private func addSubviews() {
