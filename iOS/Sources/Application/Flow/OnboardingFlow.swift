@@ -22,6 +22,8 @@ class OnboardingFlow: Flow {
             return navigationToLoginScreen()
         case .userIsLoggedIn:
             return navigationToSignupScreen()
+        case .enterNameIsRequired:
+            return navigationToEnterNameScren()
         default:
             return .none
         }
@@ -46,7 +48,7 @@ class OnboardingFlow: Flow {
         ))
     }
 
-    private func navigationToSignupScrenn() -> FlowContributors {
+    private func navigationToEnterNameScren() -> FlowContributors {
         let signupFlow = SignupFlow()
 
         Flows.use(signupFlow, when: .created) { [weak self] root in

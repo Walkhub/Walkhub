@@ -1,7 +1,6 @@
 import Foundation
 
 import RxFlow
-import UIKit
 
 class SignupFlow: Flow {
 
@@ -12,12 +11,9 @@ class SignupFlow: Flow {
     }
 
     private let rootViewController: EnterNameViewController
-    private let signupViewController: SignUpViewController
-    private let navigationController = UINavigationController()
 
     init() {
         self.rootViewController = container.resolve(EnterNameViewController.self)!
-        self.signupViewController = container.resolve(SignUpViewController.self)!
     }
 
     func navigate(to step: Step) -> FlowContributors {
@@ -30,6 +26,8 @@ class SignupFlow: Flow {
             return navigateToCertifyPhoneNumScene()
         case .authenticationNumberIsRequired(let phoneNumber):
             return navigateToAuthenticationNumberScene(phoneNumber: phoneNumber)
+        case .passwordIsRequired:
+            return navigateToEnterPasswordScene()
         case .enterIdRequired:
             return navigateToIdScene()
         case .setSchoolIsRequired:
@@ -53,67 +51,84 @@ class SignupFlow: Flow {
 
     private func navigateToCertifyPhoneNumScene() -> FlowContributors {
         let certifyPhoneNumberViewController = container.resolve(CertifyPhoneNumberViewController.self)!
-        self.navigationController.pushViewController(
+        self.rootViewController.navigationController?.pushViewController(
             certifyPhoneNumberViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
             withNextPresentable: certifyPhoneNumberViewController,
-            withNextStepper: signupViewController.viewModel
+            withNextStepper: certifyPhoneNumberViewController.viewModel
         ))
     }
 
     private func navigateToAuthenticationNumberScene(phoneNumber: String) -> FlowContributors {
         let auththenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
+        let certifyPhoneNumberViewController = container.resolve(CertifyPhoneNumberViewController.self)!
         auththenicationNumberViewController.phoneNumber.accept(phoneNumber)
-        self.navigationController.pushViewController(
+        certifyPhoneNumberViewController.navigationController?.pushViewController(
             auththenicationNumberViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
             withNextPresentable: auththenicationNumberViewController,
-            withNextStepper: signupViewController.viewModel
+            withNextStepper: auththenicationNumberViewController.viewModel
         ))
     }
 
     private func navigateToIdScene() -> FlowContributors {
         let idViewController = container.resolve(IDViewController.self)!
-        self.navigationController.pushViewController(
+        let authenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
+        authenicationNumberViewController.navigationController?.pushViewController(
             idViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
             withNextPresentable: idViewController,
-            withNextStepper: signupViewController.viewModel
+            withNextStepper: idViewController.viewModel
         ))
     }
 
+    private func navigateToEnterPasswordScene() -> FlowContributors {
+        let enterPasswordViewController = container.resolve(EnterPasswordViewController.self)!
+        let idViewController = container.resolve(IDViewController.self)!
+        idViewController.navigationController?.pushViewController(
+            enterPasswordViewController,
+            animated: true
+        )
+        return .one(flowContributor: .contribute(
+            withNext: enterPasswordViewController
+        ))
+    }
     private func navigateToSearchSchoolScene() -> FlowContributors {
         let searchSchoolViewController = container.resolve(SchoolRegistrationViewController.self)!
-        self.navigationController.pushViewController(
+        let enterPasswordViewController = container.resolve(EnterPasswordViewController.self)!
+        enterPasswordViewController.navigationController?.pushViewController(
             searchSchoolViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
             withNextPresentable: searchSchoolViewController,
-            withNextStepper: signupViewController.viewModel
+            withNextStepper: searchSchoolViewController.viewModel
         ))
     }
 
     private func navigateToAgreeTermsScene() -> FlowContributors {
         let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
-        self.navigationController.pushViewController(
+        let searchSchoolViewController = container.resolve(SchoolRegistrationViewController.self)!
+        searchSchoolViewController.navigationController?.pushViewController(
             agreeTermsViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
-            withNext: agreeTermsViewController
+            withNextPresentable: agreeTermsViewController,
+            withNextStepper: agreeTermsViewController.viewModel
         ))
     }
 
     private func navigateToServiceUseTermsScene() -> FlowContributors {
         let serviceUseTermsViewController = container.resolve(ServiceUseTermsViewController.self)!
-        self.navigationController.pushViewController(
+        let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
+        agreeTermsViewController.navigationController?.pushViewController(
             serviceUseTermsViewController,
             animated: true
         )
@@ -123,14 +138,15 @@ class SignupFlow: Flow {
     }
 
     private func navigateToEnterHealthInfoScene() -> FlowContributors {
-        let enterHealthInfoViewController = container.resolve(EnterNameViewController.self)!
-        self.navigationController.pushViewController(
+        let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
+        let enterHealthInfoViewController = container.resolve(EnterHealthInformationViewController.self)!
+        agreeTermsViewController.navigationController?.pushViewController(
             enterHealthInfoViewController,
             animated: true
         )
         return .one(flowContributor: .contribute(
             withNextPresentable: enterHealthInfoViewController,
-            withNextStepper: signupViewController.viewModel
+            withNextStepper: enterHealthInfoViewController.viewModel
         ))
     }
 }
