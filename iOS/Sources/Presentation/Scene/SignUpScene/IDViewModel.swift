@@ -2,8 +2,8 @@ import Foundation
 
 import RxSwift
 import RxCocoa
-import Service
 import RxFlow
+import Service
 
 class IDViewModel: ViewModelType, Stepper {
 
@@ -13,8 +13,8 @@ class IDViewModel: ViewModelType, Stepper {
         self.checkAccountIdUseCase = checkAccountIdUseCase
     }
 
-    var steps = PublishRelay<Step>()
     private var disposeBag = DisposeBag()
+    var steps = PublishRelay<Step>()
 
     struct Input {
         let id: Driver<String>
@@ -30,12 +30,13 @@ class IDViewModel: ViewModelType, Stepper {
             .asObservable()
             .withLatestFrom(input.id)
             .flatMap {
-                self.checkAccountIdUseCase.excute(accountId: $0)
+                return self.checkAccountIdUseCase.excute(accountId: $0)
                     .andThen(Single.just(WalkhubStep.passwordIsRequired))
                     .catchAndReturn(WalkhubStep.loaf(
                         "이미 존재하는 아이디에요.",
-                        state: .error,
-                        location: .bottom))
+                        state: .info,
+                        location: .bottom
+                    ))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 

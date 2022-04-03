@@ -9,28 +9,6 @@ class IDViewController: UIViewController {
     var viewModel: IDViewModel!
     var disposeBag = DisposeBag()
 
-    enum IDRange {
-        case over
-        case under
-        case normal
-        case middle
-    }
-
-    private func checkId(_ name: String) -> IDRange {
-        if name.count > 30 {
-            let index = name.index(name.startIndex, offsetBy: 31)
-            self.idTextField.text = String(name[..<index])
-
-            return .over
-        } else if name.count < 5 && name.count > 0 {
-            return .under
-        } else if name.count < 2 {
-            return .middle
-        } else {
-            return .normal
-        }
-    }
-
     private let idProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
         $0.progressTintColor = .primary400
@@ -39,12 +17,9 @@ class IDViewController: UIViewController {
     }
 
     private let infoLabel = UILabel().then {
+        $0.text = "새로운 아이디를 입력해주세요."
+        $0.textColor = .red
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
-    }
-
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
     }
 
     private let idLabel = UILabel().then {
@@ -75,43 +50,40 @@ class IDViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setNavigation()
         setTextField()
         bind()
         idTextField.inputAccessoryView = accessoryView
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        continueBtn.isEnabled = false
+        infoLabel.isHidden = true
+    }
+    override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
 
     private func setTextField() {
         idTextField.rx.text.orEmpty
-            .map(checkId(_:))
-            .subscribe(onNext: { identity in
-                switch identity {
-                case .over:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "아이디는 5~30자 내로 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .under:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "아이디는 5~30자 내로 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .normal:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
+            .subscribe(onNext: {
+                if $0.count >= 5 && $0.count < 31 {
+                    self.infoLabel.isHidden = true
                     self.continueBtn.isEnabled = true
-
-                case .middle:
-                    self.continueBtn.isEnabled = false
+                } else {
+                    self.infoLabel.isHidden = false
+                    self.infoLabel.isHidden = false
                 }
-            })
-            .disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
 
     private func bind() {
@@ -119,11 +91,11 @@ class IDViewController: UIViewController {
             id: idTextField.rx.text.orEmpty.asDriver(),
             continueButtonDidTap: continueBtn.rx.tap.asDriver()
         )
-
         _ = viewModel.transform(input)
     }
 }
 
+// MARK: Layout
 extension IDViewController {
     private func addSubviews() {
         accessoryView.addSubview(continueBtn)
