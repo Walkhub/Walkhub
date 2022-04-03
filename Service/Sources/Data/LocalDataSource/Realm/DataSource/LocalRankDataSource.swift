@@ -77,7 +77,7 @@ extension LocalRankDataSource {
                filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMySchoolRank = true"
                ),
-               sortProperty: "rank"
+               sortProperty: "ranking"
         )
     }
 
@@ -168,7 +168,7 @@ extension LocalRankDataSource {
                filter: QueryFilter.string(
                 query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = false"
                ),
-               sortProperty: "rank"
+               sortProperty: "ranking"
         )
     }
 
