@@ -22,7 +22,7 @@ extension AuthAPI: WalkhubAPI {
         case .signin, .renewalToken:
             return "/token"
         case .signup:
-            return "/"
+            return ""
         case .verificationPhone:
             return "verification-codes"
         case .findID(let phoneNum):
