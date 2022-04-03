@@ -1,34 +1,15 @@
 import UIKit
 
 import Then
-import RxSwift
 import SnapKit
+import RxSwift
+import RxCocoa
+import RxFlow
 
-class EnterPasswordViewController: UIViewController {
+class EnterPasswordViewController: UIViewController, Stepper {
 
-    var disposeBag = DisposeBag()
-
-    enum PWRange {
-        case over
-        case under
-        case normal
-        case middle
-    }
-
-    private func checkPW(_ password: String) -> PWRange {
-        if password.count > 30 {
-            let index = password.index(password.startIndex, offsetBy: 31)
-            self.pwTextField.text = String(password[..<index])
-
-            return .over
-        } else if password.count < 8 && password.count > 1 {
-            return .under
-        } else if password.count < 2 {
-            return .middle
-        } else {
-            return .normal
-        }
-    }
+    var steps = PublishRelay<Step>()
+    private var disposeBag = DisposeBag()
 
     private let pwProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
@@ -39,15 +20,10 @@ class EnterPasswordViewController: UIViewController {
 
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
-    }
-
-    private let secondInfoLabel = UILabel().then {
-        $0.font = .notoSansFont(ofSize: 14, family: .regular)
-    }
-
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
+        $0.text = """
+비밀번호는 8~30자 내로
+특수문자를 1개 이상 포함하여 입력해주세요.
+"""
     }
 
     private let pwLabel = UILabel().then {
@@ -65,7 +41,7 @@ class EnterPasswordViewController: UIViewController {
 
     private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
 
-let pwTextField = UITextField().then {
+    let pwTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -80,15 +56,47 @@ let pwTextField = UITextField().then {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addSubviews()
-        makeSubviewConstraints()
         setNavigation()
         setTextField()
         pwTextField.inputAccessoryView = accessoryView
     }
 
+    override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        infoLabel.isHidden = true
+        continueBtn.isEnabled = false
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
+    }
+
+    private func setTextField() {
+        pwTextField.rx.text.orEmpty
+            .map { $0 != "" }
+            .bind(to: continueBtn.rx.isEnabled)
+            .disposed(by: disposeBag)
+
+        pwTextField.rx.text.orEmpty
+            .subscribe(onNext: {
+                self.infoLabel.isHidden = self.isVaildTest(str: $0)
+                self.continueBtn.isEnabled = self.isVaildTest(str: $0)
+            }).disposed(by: disposeBag)
+    }
+
+    private func setButton() {
+        continueBtn.rx.tap
+            .map { WalkhubStep.setSchoolIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
     }
 
     private func isVaildTest(str: String?) -> Bool {
@@ -100,48 +108,13 @@ let pwTextField = UITextField().then {
         return pred.evaluate(with: "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}")
     }
 
-    private func setTextField() {
-        pwTextField.rx.text.orEmpty
-            .map { $0 != "" }
-            .bind(to: continueBtn.rx.isEnabled)
-            .disposed(by: disposeBag)
-
-        pwTextField.rx.text.orEmpty
-            .map(checkPW(_:))
-            .subscribe(onNext: { bbbb in
-                switch bbbb {
-                case .over:
-                    self.infoLabel.textColor = .red
-                    self.secondInfoLabel.textColor = .red
-                    self.infoLabel.text = "비밀번호는 8~30자 내로"
-                    self.secondInfoLabel.text = "특수문자를 1개 이상 포함하여 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .under:
-                    self.infoLabel.textColor = .red
-                    self.secondInfoLabel.textColor = .red
-                    self.infoLabel.text = "비밀번호는 8~30자 내로"
-                    self.secondInfoLabel.text = "특수문자를 1개 이상 포함하여 입력해주세요."
-                    self.continueBtn.isEnabled = false
-
-                case .normal:
-                    self.infoLabel.textColor = .green
-                    self.infoLabel.text = ""
-                    self.secondInfoLabel.text = ""
-                    self.continueBtn.isEnabled = true
-
-                case .middle:
-                    self.continueBtn.isEnabled = false
-                }
-            })
-            .disposed(by: disposeBag)
-    }
 }
 
+// MARK: Layout
 extension EnterPasswordViewController {
     private func addSubviews() {
         accessoryView.addSubview(continueBtn)
-        [pwLabel, pwTextField, infoLabel, secondInfoLabel, pwProgressBar]
+        [pwLabel, pwTextField, infoLabel, pwProgressBar]
             .forEach { view.addSubview($0) }
     }
     private func makeSubviewConstraints() {
@@ -166,11 +139,6 @@ extension EnterPasswordViewController {
 
         infoLabel.snp.makeConstraints {
             $0.top.equalTo(pwTextField.snp.bottom).offset(8)
-            $0.leading.equalToSuperview().inset(16)
-        }
-
-        secondInfoLabel.snp.makeConstraints {
-            $0.top.equalTo(infoLabel.snp.bottom).offset(1)
             $0.leading.equalToSuperview().inset(16)
         }
 
