@@ -15,18 +15,15 @@ class IDViewController: UIViewController {
         $0.trackTintColor = .gray400
         $0.progress = 0.32
     }
-
     private let infoLabel = UILabel().then {
         $0.text = "새로운 아이디를 입력해주세요."
         $0.textColor = .red
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
-
     private let idLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "아이디"
     }
-
     private let continueBtn = UIButton(type: .system).then {
         $0.setTitle("계속하기", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
@@ -34,9 +31,12 @@ class IDViewController: UIViewController {
         $0.setBackgroundColor(.primary400, for: .normal)
         $0.setBackgroundColor(.gray300, for: .disabled)
     }
-
-    private let accessoryView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: UIScreen.main.bounds.width, height: 72.0))
-
+    private let accessoryView = UIView(frame: CGRect(
+        x: 0.0,
+        y: 0.0,
+        width: UIScreen.main.bounds.width,
+        height: 72.0
+    ))
     let idTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
@@ -108,28 +108,25 @@ extension IDViewController {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
-
         idTextField.snp.makeConstraints {
             $0.top.equalTo(idLabel.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(52)
             $0.centerX.equalToSuperview()
         }
-
         continueBtn.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
             $0.height.equalTo(56)
             $0.bottom.equalToSuperview()
         }
-
         infoLabel.snp.makeConstraints {
             $0.top.equalTo(idTextField.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
-
         idProgressBar.snp.makeConstraints {
             $0.top.equalToSuperview().inset(90)
             $0.trailing.leading.equalToSuperview()
         }
     }
+
 }

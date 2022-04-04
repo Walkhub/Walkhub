@@ -15,23 +15,19 @@ class EnterNameViewController: UIViewController, Stepper {
         $0.textColor = .red
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
-
     private let afterSignUpLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "회원가입하고"
     }
-
     private let walkTogetherLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "친구들과 함께 걷기"
     }
-
     private let enterNameLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.text = "먼저 본인의 이름을 입력해주세요."
         $0.textColor = .gray600
     }
-
     let nameTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
@@ -42,7 +38,6 @@ class EnterNameViewController: UIViewController, Stepper {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.addLeftPadding()
     }
-
     private let continueBtn = UIButton(type: .system).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setTitle("계속하기", for: .normal)
@@ -107,37 +102,34 @@ extension EnterNameViewController {
     }
 
     private func makeSubviewConstraints() {
+
         afterSignUpLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
-
         walkTogetherLabel.snp.makeConstraints {
             $0.top.equalTo(afterSignUpLabel.snp.bottom).offset(1)
             $0.leading.equalToSuperview().inset(16)
         }
-
         enterNameLabel.snp.makeConstraints {
             $0.top.equalTo(walkTogetherLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().inset(16)
         }
-
         nameTextField.snp.makeConstraints {
             $0.top.equalTo(enterNameLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(52)
         }
-
         continueBtn.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.height.equalTo(52)
             $0.bottom.leading.trailing.equalToSuperview().inset(16)
         }
-
         infoLabel.snp.makeConstraints {
             $0.top.equalTo(nameTextField.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
     }
+
 }

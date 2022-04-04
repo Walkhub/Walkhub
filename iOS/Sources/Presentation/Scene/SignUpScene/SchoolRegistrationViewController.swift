@@ -15,42 +15,35 @@ class SchoolRegistrationViewController: UIViewController {
         $0.isHidden = true
         $0.register(SchoolRegistrationTableViewCell.self, forCellReuseIdentifier: "schoolRegistrationCell")
     }
-
     private let schoolNameSearchBar = UISearchController().then {
         $0.searchBar.placeholder = "학교 이름으로 검색하기"
         $0.searchBar.showsCancelButton = false
         $0.searchBar.setImage(UIImage(), for: UISearchBar.Icon.search, state: .normal)
     }
-
     private let schoolResistrationProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
         $0.progressTintColor = .primary400
         $0.trackTintColor = .gray400
         $0.progress = 0.64
     }
-
     private let searchBtn = UIBarButtonItem(
         image: .init(systemName: "arrow.backward"),
         style: .plain,
         target: SchoolRegistrationViewController.self,
         action: nil
     )
-
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
-
     private let schoolRegistrationLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "학교 등록"
     }
-
     private let belongSchoolLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.text = "현재 소속 중인 학교를 등록해주세요."
         $0.textColor = .gray600
     }
-
     private let searchSchoolTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
@@ -61,7 +54,6 @@ class SchoolRegistrationViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.addLeftPadding()
     }
-
     private let continueBtn = UIButton(type: .system).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setTitle("계속하기", for: .normal)
@@ -160,42 +152,38 @@ extension SchoolRegistrationViewController {
     }
 
     private func makeSubviewConstraints() {
+
         schoolRegistrationLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
-
         belongSchoolLabel.snp.makeConstraints {
             $0.top.equalTo(schoolRegistrationLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().inset(16)
         }
-
         searchSchoolTextField.snp.makeConstraints {
             $0.top.equalTo(belongSchoolLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(52)
         }
-
         continueBtn.snp.makeConstraints {
             $0.leading.equalToSuperview().inset(16)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(52)
             $0.bottom.equalToSuperview().inset(30)
         }
-
         infoLabel.snp.makeConstraints {
             $0.top.equalTo(searchSchoolTextField.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
-
         schoolResistrationProgressBar.snp.makeConstraints {
             $0.top.equalToSuperview().inset(90)
             $0.trailing.leading.equalToSuperview()
         }
-
         searchTableView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
     }
+
 }

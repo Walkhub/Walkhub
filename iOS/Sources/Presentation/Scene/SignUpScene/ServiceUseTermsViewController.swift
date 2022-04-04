@@ -14,12 +14,12 @@ class ServiceUseTermsViewController: UIViewController, Stepper {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .gray600
     }
-
     private let serviceUseTermsTitleLabel = UILabel().then {
         $0.text = "서비스 이용약관"
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.textColor = .gray900
     }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
@@ -49,10 +49,10 @@ extension ServiceUseTermsViewController {
             $0.top.equalToSuperview().inset(148)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
-
         serviceUseTermsTitleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
     }
+
 }
