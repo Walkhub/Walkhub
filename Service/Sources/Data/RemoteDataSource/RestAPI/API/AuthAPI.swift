@@ -26,7 +26,7 @@ extension AuthAPI: WalkhubAPI {
         case .signup:
             return "/"
         case .verificationPhone:
-            return "verification-codes"
+            return "/verification-codes"
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
         case .checkVerificationCode:
@@ -81,19 +81,20 @@ extension AuthAPI: WalkhubAPI {
                 parameters: [
                     "phone_number": phoneNumber
                 ],
-                encoding: JSONEncoding.default)
+                encoding: JSONEncoding.default
+            )
         case .checkVerificationCode(let verificationCode, let phoneNumber):
             return .requestParameters(
                 parameters: [
-                    "phone_number": phoneNumber,
-                    "auth_code": verificationCode
+                    "phoneNumber": phoneNumber,
+                    "authCode": verificationCode
                 ],
                 encoding: URLEncoding.queryString
             )
         case .checkAccountId(let accountId):
             return .requestParameters(
                 parameters: [
-                    "account_id": accountId
+                    "accountId": accountId
                 ],
                 encoding: URLEncoding.queryString
             )

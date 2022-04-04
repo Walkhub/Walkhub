@@ -84,7 +84,8 @@ extension UserAPI: WalkhubAPI {
                     "class_code": classCode,
                     "number": num
                 ],
-                encoding: JSONEncoding.prettyPrinted)
+                encoding: JSONEncoding.prettyPrinted
+            )
         case .changeGoalWalkCount(let goalWalkCount):
             return .requestParameters(
                 parameters: [
