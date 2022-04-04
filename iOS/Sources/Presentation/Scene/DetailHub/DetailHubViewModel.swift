@@ -36,15 +36,17 @@ class DetailHubViewModel: ViewModelType {
 
     struct Output {
         let searchUserList: PublishRelay<[User]>
-        let myRank: PublishRelay<(User, Int?)>
-        let userList: PublishRelay<[User]>
+        let myRank: PublishRelay<(RankedUser, Int?)>
+        let userList: PublishRelay<[RankedUser]>
+        let defaultUserList: PublishRelay<[RankedUser]>
         let schoolDetails: PublishRelay<SchoolDetails>
     }
 
     func transform(_ input: Input) -> Output {
         let searchUserList = PublishRelay<[User]>()
-        let myRank = PublishRelay<(User, Int?)>()
-        let userList = PublishRelay<[User]>()
+        let myRank = PublishRelay<(RankedUser, Int?)>()
+        let userList = PublishRelay<[RankedUser]>()
+        let defaultUserList = PublishRelay<[RankedUser]>()
         let schoolDetails = PublishRelay<SchoolDetails>()
 
         let info = Driver.combineLatest(input.name, input.schoolId, input.dateType)
@@ -76,7 +78,7 @@ class DetailHubViewModel: ViewModelType {
                 input.dateType.asObservable().withLatestFrom(anotherSchoolType).flatMap {
                     self.fetchUserRankUseCase.excute(schoolId: $0, dateType: $1)
                 }.subscribe(onNext: {
-                    userList.accept($0)
+                    defaultUserList.accept($0)
                 }).disposed(by: self.disposeBag)
             }
         }).disposed(by: disposeBag)
@@ -91,6 +93,7 @@ class DetailHubViewModel: ViewModelType {
             searchUserList: searchUserList,
             myRank: myRank,
             userList: userList,
+            defaultUserList: defaultUserList,
             schoolDetails: schoolDetails
         )
     }

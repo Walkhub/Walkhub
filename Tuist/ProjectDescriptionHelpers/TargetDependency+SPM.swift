@@ -21,6 +21,7 @@ public extension TargetDependency.SPM {
     static let DropDown = TargetDependency.package(product: "DropDown")
     static let Tabman = TargetDependency.package(product: "Tabman")
     static let Loaf = TargetDependency.package(product: "Loaf")
+    static let Kingfisher = TargetDependency.package(product: "Kingfisher")
 }
 
 public extension Package {
@@ -82,4 +83,7 @@ public extension Package {
         url: "https://github.com/schmidyy/Loaf.git",
         requirement: .upToNextMajor(from: "0.7.0")
     )
+    static let Kingfisher = Package.remote(
+        url: "https://github.com/onevcat/Kingfisher",
+        requirement: .upToNextMajor(from: "7.2.0"))
 }

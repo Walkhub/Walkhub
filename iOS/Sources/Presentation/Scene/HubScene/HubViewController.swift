@@ -5,6 +5,7 @@ import Then
 import RxSwift
 import RxCocoa
 import Service
+import Kingfisher
 
 class HubViewController: UIViewController {
 
@@ -109,7 +110,7 @@ class HubViewController: UIViewController {
             cellIdentifier: "schoolRankCell",
             cellType: RankTableViewCell.self)
         ) { _, items, cell in
-            cell.imgView.image = items.logoImageUrl.toImage()
+            cell.imgView.kf.setImage(with: items.logoImageUrl)
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.studentsCount)"
             cell.rankLabel.text = "\(items.ranking)등"
@@ -126,7 +127,7 @@ class HubViewController: UIViewController {
         }.disposed(by: disposeBag)
 
         output.mySchoolRank.asObservable().subscribe(onNext: {
-            self.schoolImgView.image = $0.logoImageUrlString.toImage()
+            self.schoolImgView.kf.setImage(with: $0.logoImageUrl)
             self.schoolName.text = $0.name
             self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
         }).disposed(by: disposeBag)
@@ -135,7 +136,7 @@ class HubViewController: UIViewController {
             cellIdentifier: "searchCell",
             cellType: RankTableViewCell.self
         )) { _, items, cell in
-            cell.imgView.image = items.logoImageUrlString.toImage()
+            cell.imgView.kf.setImage(with: items.logoImageUrl)
             cell.nameLabel.text = items.name
             cell.rankLabel.text = "\(items.ranking)등"
             cell.stepLabel.text = "총 \(items.walkCount) 걸음"

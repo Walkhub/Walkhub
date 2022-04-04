@@ -12,6 +12,8 @@ class HomeViewController: UIViewController {
     private var disposeBag = DisposeBag()
 
     private let getData = PublishRelay<Void>()
+    private let moveAcitivityAnalysis = PublishRelay<Void>()
+    private let moveRecordMeasurement = PublishRelay<Void>()
 
     private let healthInfoTableViewCell = HealthInfoTableViewCell()
     private let startRecordTalbeViewCell = StartExerciseMeasuringTableViewCell()
@@ -39,6 +41,7 @@ class HomeViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getData.accept(())
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     override func viewDidLayoutSubviews() {
@@ -58,7 +61,9 @@ class HomeViewController: UIViewController {
 
     private func bindViewModel() {
         let input = HomeViewModel.Input(
-            getMainData: getData.asDriver(onErrorJustReturn: ())
+            getMainData: getData.asDriver(onErrorJustReturn: ()),
+            moveActivityAnalysis: moveAcitivityAnalysis.asDriver(onErrorJustReturn: ()),
+            moveRecordMeasurement: moveRecordMeasurement.asDriver(onErrorJustReturn: ())
         )
 
         let output = viewModel.transform(input)
@@ -78,7 +83,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            return 380
+            return 400
         case 1:
             return 96
         default:
@@ -105,6 +110,14 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
             } else {
                 return seeMoreRankTableViewCell
             }
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            moveAcitivityAnalysis.accept(())
+        } else if indexPath.section == 1 {
+            moveRecordMeasurement.accept(())
         }
     }
 }

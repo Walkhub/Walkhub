@@ -29,20 +29,22 @@ class HomeViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getMainData: Driver<Void>
+        let moveActivityAnalysis: Driver<Void>
+        let moveRecordMeasurement: Driver<Void>
     }
 
     struct Output {
         let caloriesData: PublishRelay<CaloriesLevel>
         let mainData: PublishRelay<DailyExerciseRecord>
         let goalData: PublishRelay<ExerciseAnalysis>
-        let rankList: PublishRelay<[User]>
+        let rankList: PublishRelay<[RankedUser]>
     }
 
     func transform(_ input: Input) -> Output {
         let caloriesData = PublishRelay<CaloriesLevel>()
         let mainData = PublishRelay<DailyExerciseRecord>()
         let goalData = PublishRelay<ExerciseAnalysis>()
-        let rankList = PublishRelay<[User]>()
+        let rankList = PublishRelay<[RankedUser]>()
 
         input.getMainData.asObservable().flatMap {
             self.fetchCalroiesLevelUseCase.excute()
@@ -52,8 +54,8 @@ class HomeViewModel: ViewModelType, Stepper {
 
         input.getMainData.asObservable().flatMap {
             self.fetchLiveDailyExerciseRecordUseCase.excute()
-        }.subscribe(onNext: { data in
-            mainData.accept(data)
+        }.subscribe(onNext: {
+            mainData.accept($0)
         }).disposed(by: disposeBag)
 
         input.getMainData.asObservable().flatMap {
@@ -67,6 +69,16 @@ class HomeViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {
             rankList.accept($0)
         }).disposed(by: disposeBag)
+
+        input.moveActivityAnalysis.asObservable()
+            .map { WalkhubStep.activityAnalysisIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        input.moveRecordMeasurement.asObservable()
+            .map { WalkhubStep.recordMeasurementIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             caloriesData: caloriesData,

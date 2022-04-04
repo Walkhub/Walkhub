@@ -20,7 +20,7 @@ extension MySchoolDTO {
         return .init(
             id: id,
             name: name,
-            logoImageUrlString: URL(string: logoImageUrlString)!,
+            logoImageUrl: URL(string: logoImageUrlString)!,
             grade: grade,
             classNum: classNum
         )

@@ -17,4 +17,12 @@ final class UserDefaultsDataSource {
         }
     }
 
+    var dailyWalkCountGoal: Int {
+        get {
+            return userDefaults.integer(forKey: "dailyWalkCountGoal")
+        }
+        set {
+            userDefaults.set(newValue, forKey: "dailyWalkCountGoal")
+        }
+    }
 }

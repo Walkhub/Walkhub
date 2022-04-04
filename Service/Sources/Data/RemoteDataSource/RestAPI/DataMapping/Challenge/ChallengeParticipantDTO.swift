@@ -18,7 +18,7 @@ extension ChallengeParticipantDTO {
         return .init(
             id: id,
             name: name,
-            profileImageUrlString: URL(string: profileImageUrlString)!
+            profileImageUrl: URL(string: profileImageUrlString)!
         )
     }
 }

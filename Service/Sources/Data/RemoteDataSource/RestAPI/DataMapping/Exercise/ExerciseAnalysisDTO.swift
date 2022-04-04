@@ -24,7 +24,7 @@ extension ExerciseAnalysisDTO {
             dailyWalkCountGoal: dailyWalkCountGoal,
             walkCount: walkCount ?? 0,
             calorie: calorie ?? 0,
-            distane: distance ?? 0
+            distance: distance ?? 0
         )
     }
 }

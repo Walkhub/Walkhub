@@ -10,7 +10,7 @@ class LevelRealmEntity: Object {
 extension LevelRealmEntity {
     func setup(level: Level) {
         self.name = level.name
-        self.imageUrlString = level.imageUrlString.absoluteString
+        self.imageUrlString = level.imageUrl.absoluteString
     }
 }
 
@@ -18,7 +18,7 @@ extension LevelRealmEntity {
     func toDomain() -> Level {
         return .init(
             name: name,
-            imageUrlString: URL(string: imageUrlString)!
+            imageUrl: URL(string: imageUrlString)!
         )
     }
 }

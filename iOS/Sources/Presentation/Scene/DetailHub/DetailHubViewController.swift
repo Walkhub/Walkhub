@@ -13,7 +13,7 @@ class DetailHubViewController: TabmanViewController {
 
     private var rankVC: RankViewController!
     private var informationVC: InformationViewController!
-    private var viewModel: DetailHubViewModel!
+    var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
 
@@ -42,6 +42,7 @@ class DetailHubViewController: TabmanViewController {
         super.viewDidLoad()
         addViewController()
         setTopTabbar()
+        bindViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +100,7 @@ class DetailHubViewController: TabmanViewController {
             cellIdentifier: "searchCell",
             cellType: RankTableViewCell.self)
         ) { _, item, cell in
-            cell.imgView.image = item.profileImageUrl.toImage()
+            cell.imgView.kf.setImage(with: item.profileImageUrl)
             cell.nameLabel.text = item.name
             cell.stepLabel.text = "\(item.walkCount) 걸음"
             cell.rankLabel.text = "\(item.ranking) 등"
@@ -121,6 +122,10 @@ class DetailHubViewController: TabmanViewController {
 
         output.userList.asObservable().subscribe(onNext: {
             self.rankVC.userList.accept($0)
+        }).disposed(by: disposeBag)
+
+        output.defaultUserList.asObservable().subscribe(onNext: {
+            self.rankVC.defaultUserList.accept($0)
         }).disposed(by: disposeBag)
 
         output.schoolDetails.asObservable().subscribe(onNext: {

@@ -12,8 +12,9 @@ class RankViewController: UIViewController {
 
     internal let scope = PublishRelay<GroupScope>()
     internal let dateType = PublishRelay<DateType>()
-    internal let myRank = PublishRelay<(User, Int?)>()
-    internal let userList = PublishRelay<[User]>()
+    internal let myRank = PublishRelay<(RankedUser, Int?)>()
+    internal let userList = PublishRelay<[RankedUser]>()
+    internal let defaultUserList = PublishRelay<[RankedUser]>()
     internal let isMySchool = PublishRelay<Bool>()
 
     private let mySchoolHeaderView = RankHeaderView().then {
@@ -132,7 +133,7 @@ class RankViewController: UIViewController {
 
     private func bindViewModel() {
         myRank.asObservable().subscribe(onNext: { rank, num in
-            self.mySchoolHeaderView.imgView.image = rank.profileImageUrl.toImage()
+            self.mySchoolHeaderView.imgView.kf.setImage(with: rank.profileImageUrl)
             self.mySchoolHeaderView.nameLabel.text = rank.name
             self.mySchoolHeaderView.stepCountLabel.text = "\(rank.walkCount) 걸음"
             self.mySchoolHeaderView.rankLabel.text = "\(rank.ranking)등"
@@ -145,7 +146,7 @@ class RankViewController: UIViewController {
                 self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
                 self.mySchoolHeaderView.progressBar.progress = 1
             }
-            self.imgView.image = rank.profileImageUrl.toImage()
+            self.imgView.kf.setImage(with: rank.profileImageUrl)
             self.nameLabel.text = rank.name
             self.stepCountLabel.text = "\(rank.walkCount) 걸음"
             self.rankLabel.text = "\(rank.ranking)등"
@@ -169,7 +170,7 @@ class RankViewController: UIViewController {
             cellIdentifier: "rankCell",
             cellType: RankTableViewCell.self)
         ) { _, items, cell in
-            cell.imgView.image = items.profileImageUrl.toImage()
+            cell.imgView.kf.setImage(with: items.profileImageUrl)
             cell.nameLabel.text = items.name
             cell.rankLabel.text = "\(items.ranking)등"
             cell.stepLabel.text = "\(items.walkCount) 걸음"

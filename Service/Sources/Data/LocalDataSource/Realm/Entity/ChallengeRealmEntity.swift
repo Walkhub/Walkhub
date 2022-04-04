@@ -10,7 +10,7 @@ class ChallengeRealmEntity: Object {
     @Persisted var name: String = ""
     @Persisted var startAt: String = ""
     @Persisted var endAt: String = ""
-    @Persisted var imageUrlString: String = ""
+    @Persisted var imageUrlString: String? = ""
     @Persisted var userScope: String = ""
     @Persisted var goalScope: String = ""
     @Persisted var goalType: String = ""
@@ -26,7 +26,7 @@ extension ChallengeRealmEntity {
         self.name = challenge.name
         self.startAt = challenge.start.toDateWithTimeString()
         self.endAt = challenge.end.toDateWithTimeString()
-        self.imageUrlString = challenge.imageUrl.absoluteString
+        self.imageUrlString = challenge.imageUrl?.absoluteString
         self.userScope = challenge.userScope.rawValue
         self.goalScope = challenge.goalScope.rawValue
         self.goalType = challenge.goalType.rawValue
@@ -50,7 +50,7 @@ extension ChallengeRealmEntity {
             name: name,
             start: startAt.toDateWithTime(),
             end: endAt.toDateWithTime(),
-            imageUrl: URL(string: imageUrlString)!,
+            imageUrl: URL(string: imageUrlString ?? ""),
             userScope: GroupScope(rawValue: userScope)!,
             goalScope: ChallengeGoalScope(rawValue: goalScope)!,
             goalType: ExerciseGoalType(rawValue: goalType)!,

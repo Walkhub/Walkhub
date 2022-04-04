@@ -18,6 +18,10 @@ class HomeFlow: Flow {
         switch step {
         case .homeIsRequired:
             return navigateToHomeScreen()
+        case .activityAnalysisIsRequired:
+            return navigateToActivityAnalysisScreen()
+        case .recordMeasurementIsRequired:
+            return navigateToRecordMeasurementScreen()
         default:
             return .none
         }
@@ -29,6 +33,28 @@ class HomeFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: homeViewController,
             withNextStepper: homeViewController.viewModel
+        ))
+    }
+
+    private func navigateToActivityAnalysisScreen() -> FlowContributors {
+        let activityAnalysisViewController = container.resolve(ActivityAnalysisViewController.self)!
+        self.rootViewController.pushViewController(activityAnalysisViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: activityAnalysisViewController,
+            withNextStepper: activityAnalysisViewController.viewModel
+        ))
+    }
+
+    private func navigateToRecordMeasurementScreen() -> FlowContributors {
+        let recordFlow = RecordFlow()
+
+        Flows.use(recordFlow, when: .created) { [weak self] root in
+            self?.rootViewController.pushViewController(root, animated: true)
+        }
+
+        return .one(flowContributor: .contribute(
+            withNextPresentable: recordFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.recordMeasurementIsRequired)
         ))
     }
 

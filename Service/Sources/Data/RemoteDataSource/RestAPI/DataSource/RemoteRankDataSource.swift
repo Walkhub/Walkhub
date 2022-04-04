@@ -33,9 +33,9 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
     func fetchUserRank(
         schoolId: Int,
         dateType: DateType
-    ) -> Single<[User]> {
+    ) -> Single<[RankedUser]> {
         return request(.fetchUserRank(schoolId: schoolId, dateType: dateType))
-            .map(UserListDTO.self)
+            .map(DefaultSchoolUserRankListDTO.self)
             .map { $0.toDomain() }
     }
 
