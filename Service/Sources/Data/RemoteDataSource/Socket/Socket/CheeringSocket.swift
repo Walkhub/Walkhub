@@ -26,8 +26,10 @@ extension CheeringSocket: WalkhubSocket {
 
     var event: String {
         switch self {
-        case .cheering, .observingCheer:
+        case .cheering:
             return "cheering"
+        case .observingCheer:
+            return "new_cheering"
         }
     }
 

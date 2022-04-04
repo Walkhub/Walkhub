@@ -3,14 +3,23 @@ import Foundation
 import RxSwift
 import SocketIO
 
-final class RemoteSocketDataSource: SocketRemoteDataSource<CheeringSocket> {
+final class RemoteCheeringDataSource: SocketRemoteDataSource<CheeringSocket> {
 
-    static let shared = RemoteSocketDataSource()
+    static let shared = RemoteCheeringDataSource()
 
     private override init() { }
 
     func cheering(userID: Int) {
         emit(.cheering(userID: userID))
+    }
+
+    func observingCheering() -> Observable<String> {
+        on(.observingCheer)
+            .map {
+                guard let data = $0 as? [[String: String]],
+                      let message = data.last?["message"] else { return "" }
+                return message
+            }
     }
 
 }
