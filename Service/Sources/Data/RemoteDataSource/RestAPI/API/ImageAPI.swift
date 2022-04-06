@@ -13,7 +13,7 @@ extension ImageAPI: WalkhubAPI {
     }
 
     var urlPath: String {
-        return "/"
+        return ""
     }
 
     var method: Moya.Method {

@@ -12,11 +12,13 @@ public class EditProfileUseCase {
 
     public func excute(
         name: String,
-        profileImageUrlString: String
+        profileImageUrlString: String,
+        schoolId: Int
     ) -> Completable {
         return userRepository.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString
+            profileImageUrlString: profileImageUrlString,
+            schoolId: schoolId
         )
     }
 }

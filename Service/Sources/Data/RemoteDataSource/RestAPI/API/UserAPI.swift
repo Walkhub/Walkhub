@@ -6,7 +6,7 @@ enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
-    case changeProfile(name: String, profileImageUrlString: String)
+    case changeProfile(name: String, profileImageUrlString: String, schoolId: Int)
     case setHealthInformation(height: Float, weight: Int, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
@@ -30,8 +30,6 @@ extension UserAPI: WalkhubAPI {
             return "/health"
         case .joinClass(let sectionId, _, _):
             return "/classes/\(sectionId)"
-        case .setSchoolInformation:
-            return "/school"
         case .changeGoalWalkCount:
             return "/goal"
         default:
@@ -51,11 +49,12 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrlString):
+        case .changeProfile(let name, let profileImageUrlString, let schoolId):
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "profile_image_url": profileImageUrlString
+                    "profile_image_url": profileImageUrlString,
+                    "school_id": schoolId
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
@@ -65,13 +64,6 @@ extension UserAPI: WalkhubAPI {
                     "height": height,
                     "weight": weight,
                     "sex": sex.rawValue
-                ],
-                encoding: JSONEncoding.prettyPrinted
-            )
-        case .setSchoolInformation(let schoolId):
-            return .requestParameters(
-                parameters: [
-                    "school_id": schoolId
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
@@ -94,7 +86,7 @@ extension UserAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .changeProfile, .changePassword, .setSchoolInformation, .setHealthInformation:
+        case .changeProfile, .changePassword, .setHealthInformation:
             return .patch
         case .joinClass:
             return .post
@@ -118,11 +110,6 @@ extension UserAPI: WalkhubAPI {
                 403: .inaccessibleClass,
                 404: .undefinededClass,
                 409: .alreadyJoinedClass
-            ]
-        case .setSchoolInformation:
-            return [
-                401: .unauthorization,
-                404: .undefinededSchool
             ]
         default:
             return [

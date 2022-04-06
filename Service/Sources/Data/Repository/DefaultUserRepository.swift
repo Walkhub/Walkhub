@@ -39,13 +39,16 @@ class DefaultUserRepository: UserRepository {
 
     func changeProfile(
         name: String,
-        profileImageUrlString: String
+        profileImageUrlString: String,
+        schoolId: Int
     ) -> Completable {
         return remoteUserDataSource.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString
+            profileImageUrlString: profileImageUrlString,
+            schoolId: schoolId
         )
     }
+
     func setHealthInformation(height: Float, weight: Int, sex: Sex) -> Completable{
         return remoteUserDataSource.setHealthInformation(
             height: height,
@@ -64,10 +67,6 @@ class DefaultUserRepository: UserRepository {
             classCode: grade,
             num: classNum
         )
-    }
-
-    func setSchoolInformation(schoolId: Int) -> Completable {
-        return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
     }
 
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {

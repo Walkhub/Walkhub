@@ -37,11 +37,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
 
     func changeProfile(
         name: String,
-        profileImageUrlString: String
+        profileImageUrlString: String,
+        schoolId: Int
     ) -> Completable {
         return request(.changeProfile(
             name: name,
-            profileImageUrlString: profileImageUrlString
+            profileImageUrlString: profileImageUrlString,
+            schoolId: schoolId
         )).asCompletable()
     }
 
@@ -67,11 +69,6 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             classCode: classCode,
             num: num
         )).map { _ in () }
-    }
-
-    func setSchoolInformation(schoolId: Int) -> Completable {
-        return request(.setSchoolInformation(schoolId: schoolId))
-            .asCompletable()
     }
 
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
