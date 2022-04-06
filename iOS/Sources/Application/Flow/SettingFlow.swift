@@ -32,6 +32,8 @@ class SettingFlow: Flow {
             return navigateToBackEditProfileScene()
         case .searchSchoolIsRequired:
             return navigateToSearchSchoolScene()
+        case .backToSettingScene:
+            return backToSettingScene()
         default:
             return .none
         }
@@ -43,17 +45,19 @@ class SettingFlow: Flow {
 
     private func navigateToEditProfileScene() -> FlowContributors {
         let editProfileViewController = container.resolve(EditProfileViewController.self)!
-        let settingProfileViewController = container.resolve(SettingProfileViewController.self)!
         self.rootViewController.navigationController?.pushViewController(editProfileViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: editProfileViewController,
-            withNextStepper: settingProfileViewController.viewModel
+            withNextStepper: editProfileViewController.viewModel
         ))
     }
 
     private func navigateToEditHealthInformationScene() -> FlowContributors {
         let editHealthInformationViewController = container.resolve(EditHealthInofrmationViewController.self)!
-        self.rootViewController.navigationController?.pushViewController(editHealthInformationViewController, animated: true)
+        self.rootViewController.navigationController?.pushViewController(
+            editHealthInformationViewController,
+            animated: true
+        )
         return .one(flowContributor: .contribute(
             withNextPresentable: editHealthInformationViewController,
             withNextStepper: editHealthInformationViewController.viewModel
@@ -62,7 +66,10 @@ class SettingFlow: Flow {
 
     private func navigateToAccountInformationScene() -> FlowContributors {
         let accountInformationViewController = container.resolve(AccountInformationViewController.self)!
-        self.rootViewController.navigationController?.pushViewController(accountInformationViewController, animated: true)
+        self.rootViewController.navigationController?.pushViewController(
+            accountInformationViewController,
+            animated: true
+        )
         return .one(flowContributor: .contribute(
             withNextPresentable: accountInformationViewController,
             withNextStepper: accountInformationViewController.viewModel
@@ -72,22 +79,24 @@ class SettingFlow: Flow {
     private func navigateToSearchSchoolScene() -> FlowContributors {
         let editProfileViewController = container.resolve(EditProfileViewController.self)!
         let searchSchoolViewController = container.resolve(SearchSchoolViewController.self)!
-        let settingProfileViewController = container.resolve(SettingProfileViewController.self)!
-        editProfileViewController.navigationController?.pushViewController(searchSchoolViewController, animated: true)
+        rootViewController.navigationController?.pushViewController(searchSchoolViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: searchSchoolViewController,
-            withNextStepper: settingProfileViewController.viewModel
+            withNextStepper: editProfileViewController.viewModel
         ))
     }
 
     private func navigateToBackEditProfileScene() -> FlowContributors {
         let editProfileViewController = container.resolve(EditProfileViewController.self)!
-        let settingProfileViewController = container.resolve(SettingProfileViewController.self)!
-        let searchSchoolViewController = SearchSchoolViewController()
-        searchSchoolViewController.navigationController?.popViewController(animated: true)
+        rootViewController.navigationController?.popViewController(animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: editProfileViewController,
-            withNextStepper: settingProfileViewController.viewModel
+            withNextStepper: editProfileViewController.viewModel
         ))
+    }
+
+    private func backToSettingScene() -> FlowContributors {
+        rootViewController.navigationController?.popViewController(animated: true)
+        return .one(flowContributor: .contribute(withNext: rootViewController))
     }
 }
