@@ -9,20 +9,17 @@ class SettingProfileViewModel: ViewModelType, Stepper {
 
     private let fetchProfileUseCase: FetchProfileUseCase
     private let editProfileUseCase: EditProfileUseCase
-    private let editSchoolUseCase: EditSchoolUseCase
     private let postImageUseCase: PostImageUseCase
     private let searchSchoolUseCase: SearchSchoolUseCase
 
     init(
         fetchProfileUseCase: FetchProfileUseCase,
         editProfileUseCase: EditProfileUseCase,
-        editSchoolUseCase: EditSchoolUseCase,
         postImageUseCase: PostImageUseCase,
         searchSchoolUseCase: SearchSchoolUseCase
     ) {
         self.fetchProfileUseCase = fetchProfileUseCase
         self.editProfileUseCase = editProfileUseCase
-        self.editSchoolUseCase = editSchoolUseCase
         self.postImageUseCase = postImageUseCase
         self.searchSchoolUseCase = searchSchoolUseCase
     }
@@ -58,6 +55,7 @@ class SettingProfileViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {
             profile.accept($0)
             self.imageString = $0.profileImageUrl.absoluteString
+            self.schoolId = $0.schoolId
         }).disposed(by: disposeBag)
 
         input.profileImage.asObservable().flatMap {
@@ -66,18 +64,16 @@ class SettingProfileViewModel: ViewModelType, Stepper {
             self.imageString = (data.first?.absoluteString)!
         }).disposed(by: disposeBag)
 
-        input.buttonDidTap.asObservable().withLatestFrom(input.name).flatMap {
-            self.editProfileUseCase.excute(
-                name: $0,
-                profileImageUrlString: self.imageString
-            )
-        }.subscribe(onNext: {_ in
-        }).disposed(by: disposeBag)
-
-        input.buttonDidTap.asObservable().flatMap {
-            self.editSchoolUseCase.excute(schoolId: self.schoolId)
-        }.subscribe(onNext: { _ in
-        }).disposed(by: disposeBag)
+        input.buttonDidTap.asObservable()
+            .withLatestFrom(input.name)
+            .flatMap {
+                self.editProfileUseCase.excute(
+                    name: $0,
+                    profileImageUrlString: self.imageString,
+                    schoolId: self.schoolId
+                ).andThen(Single.just(WalkhubStep.backToSettingScene))
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
 
         input.searchSchoolButton.asObservable()
             .map { WalkhubStep.searchSchoolIsRequired }

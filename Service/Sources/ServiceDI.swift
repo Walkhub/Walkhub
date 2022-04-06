@@ -172,11 +172,6 @@ public extension Container {
                 imageRepository: resolver.resolve(ImageRepository.self)!
             )
         }
-        self.register(EditSchoolUseCase.self) { resolver in
-            return EditSchoolUseCase(
-                userRepository: resolver.resolve(UserRepository.self)!
-            )
-        }
         self.register(NotificationOnUseCase.self) { resolver in
             return NotificationOnUseCase(
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
