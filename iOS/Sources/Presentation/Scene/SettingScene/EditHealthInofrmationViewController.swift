@@ -75,6 +75,7 @@ class EditHealthInofrmationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "건강정보 수정"
+        view.backgroundColor = .white
         setBtn()
         bindViewModel()
     }
