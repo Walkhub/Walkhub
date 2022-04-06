@@ -7,8 +7,10 @@ import RxCocoa
 
 class SearchSchoolViewController: UIViewController {
 
-    let searchController = UISearchController(searchResultsController: nil).then {
-        $0.searchBar.placeholder = "학교 이름 검색하기"
+    private var disposeBag = DisposeBag()
+
+    let searchBar = UISearchBar().then {
+        $0.placeholder = "학교 이름 검색하기"
     }
 
     let schoolTableView = UITableView().then {
@@ -17,6 +19,7 @@ class SearchSchoolViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
     }
 
     override func viewDidLayoutSubviews() {
@@ -29,7 +32,9 @@ class SearchSchoolViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationItem.searchController = searchController
+        super.viewWillAppear(animated)
+        self.navigationItem.titleView = searchBar
+        self.searchBar.searchTextField.becomeFirstResponder()
     }
 
 }

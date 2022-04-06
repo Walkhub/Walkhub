@@ -7,12 +7,14 @@ import RxCocoa
 
 class EditProfileViewController: UIViewController {
 
+    var viewModel: SettingProfileViewModel!
     let getData = PublishRelay<Void>()
     let image = PublishRelay<[Data]>()
 
     private let imagePickerView = UIImagePickerController()
+    private let searchSchoolViewController = SearchSchoolViewController()
     private var disposeBag = DisposeBag()
-    private var profileName: String = ""
+    private let profileName = PublishRelay<String>()
 
     private let alertBackView = UIView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
@@ -84,21 +86,28 @@ class EditProfileViewController: UIViewController {
         imagePickerView.delegate = self
         nameTextField.delegate = self
         setBtn()
+        bind()
     }
 
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
         profileImgView.layer.cornerRadius = profileImgView.frame.size.height / 2
+        profileImgView.clipsToBounds = true
         editProfileImageBtn.layer.cornerRadius = editProfileImageBtn.frame.size.height / 2
         editBtn.layer.cornerRadius = 12
         editBtn.clipsToBounds = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
         alertBackView.isHidden = true
         alert.isHidden = true
         editBtn.isEnabled = false
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
 
     private func setBtn() {
@@ -110,6 +119,48 @@ class EditProfileViewController: UIViewController {
             self.nameTextField.isEnabled = true
             self.nameTextField.becomeFirstResponder()
         }).disposed(by: disposeBag)
+    }
+
+    private func bind() {
+
+        let input = SettingProfileViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            profileImage: image.asDriver(onErrorJustReturn: []),
+            name: profileName.asDriver(onErrorJustReturn: ""),
+            buttonDidTap: editBtn.rx.tap.asDriver(),
+            searchSchoolButton: editSchoolInformationBtn.rx.tap.asDriver(),
+            search: searchSchoolViewController.searchBar.rx.text.orEmpty.asDriver(),
+            cellTap: searchSchoolViewController.schoolTableView.rx.itemSelected.asDriver()
+        )
+
+        let output = viewModel.transform(input)
+
+        output.profile.asObservable()
+            .subscribe(onNext: {
+                self.profileName.accept($0.name)
+                self.nameTextField.text = $0.name
+                self.profileImgView.kf.setImage(with: $0.profileImageUrl)
+                self.schoolLabel.text = $0.school
+                if $0.grade != 0 && $0.classNum != 0 {
+                    self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
+                } else {
+                    self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
+                }
+            }).disposed(by: disposeBag)
+
+        output.searchSchool.bind(to: searchSchoolViewController.schoolTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: SchoolListTableViewCell.self
+        )) { _, items, cell in
+            cell.logoImgView.kf.setImage(with: items.logoImageUrl)
+            cell.schoolNameLabel.text = items.name
+        }.disposed(by: disposeBag)
+
+        output.schoolInfo.asObservable()
+            .subscribe(onNext: {
+                self.schoolLabel.text = $0.name
+                self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
+            }).disposed(by: disposeBag)
     }
 }
 
@@ -218,8 +269,7 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.isEnabled = false
-        if profileName != textField.text {
-            editBtn.isEnabled = true
-        }
+        editBtn.isEnabled = true
+        profileName.accept(textField.text ?? "")
     }
 }
