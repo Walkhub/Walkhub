@@ -76,7 +76,6 @@ extension Container {
             SettingProfileViewModel(
                 fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
-                editSchoolUseCase: resolver.resolve(EditSchoolUseCase.self)!,
                 postImageUseCase: resolver.resolve(PostImageUseCase.self)!,
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
@@ -144,16 +143,18 @@ extension Container {
                 $0.viewModel = resolver.resolve(AccountInformationViewModel.self)!
             }
         }
-        self.register(SettingProfileViewController.self) { resolver in
-            return SettingProfileViewController().then {
+        self.register(EditProfileViewController.self) { resolver in
+            return EditProfileViewController().then {
                 $0.viewModel = resolver.resolve(SettingProfileViewModel.self)!
             }
         }
         self.register(SettingViewController.self) { _ in
             return SettingViewController()
         }
-        self.register(EditProfileViewController.self) { _ in
-            return EditProfileViewController()
+        self.register(EditProfileViewController.self) { resolver in
+            return EditProfileViewController().then {
+                $0.viewModel = resolver.resolve(SettingProfileViewModel.self)!
+            }
         }
         self.register(SearchSchoolViewController.self) { _ in
             return SearchSchoolViewController()
