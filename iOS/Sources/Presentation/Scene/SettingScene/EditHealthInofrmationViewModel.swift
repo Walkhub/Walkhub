@@ -35,6 +35,7 @@ class EditHealthInformationViewModel: ViewModelType, Stepper {
 
     func transform(_ input: Input) -> Output {
         let healthData = PublishRelay<UserHealth>()
+        let info = Driver.combineLatest(input.height, input.weight, input.sex)
 
         input.getData.asObservable().flatMap {
             self.fetchHealthInformationUseCase.excute()
@@ -42,19 +43,19 @@ class EditHealthInformationViewModel: ViewModelType, Stepper {
             healthData.accept($0)
         }).disposed(by: disposeBag)
 
-        input.postData.asObservable().flatMap {
-            Observable.zip(
-                input.height.asObservable(),
-                input.weight.asObservable(),
-                input.sex.asObservable()
-            ) { (height: $0, weight: $1, sex: $2) }
-        }.flatMap {
-            self.editHealthInformationUseCase.excute(
-                height: Float($0.height) ?? 0.0,
-                weight: Int($0.weight) ?? 0,
-                sex: $0.sex
-            )
-        }.subscribe(onNext: { _ in
+        input.postData.asObservable()
+            .withLatestFrom(info)
+            .flatMap {
+                self.editHealthInformationUseCase.excute(
+                    height: Double($0),
+                    weight: Int(Double($1) ?? 0.0),
+                    sex: $2
+                ).andThen(Single.just(WalkhubStep.backToSettingScene))
+            }.subscribe(onNext: {
+                self.steps.accept($0)
+            }).disposed(by: disposeBag)
+
+        steps.asObservable().subscribe(onNext: { _ in
         }).disposed(by: disposeBag)
 
         return Output(healthData: healthData)

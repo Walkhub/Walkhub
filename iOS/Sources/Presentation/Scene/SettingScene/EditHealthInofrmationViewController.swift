@@ -12,6 +12,8 @@ class EditHealthInofrmationViewController: UIViewController {
     private var disposeBag = DisposeBag()
     private let getData = PublishRelay<Void>()
     private let sex = PublishRelay<Sex>()
+    private let height = PublishRelay<String>()
+    private let weight = PublishRelay<String>()
 
     private let heightView = UIView().then {
         $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
@@ -69,6 +71,7 @@ class EditHealthInofrmationViewController: UIViewController {
         $0.setBackgroundColor(.primary400, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.setTitle("수정 완료", for: .normal)
+        $0.setBackgroundColor(.colorE0E0E0, for: .disabled)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
     }
 
@@ -77,6 +80,7 @@ class EditHealthInofrmationViewController: UIViewController {
         self.navigationItem.title = "건강정보 수정"
         view.backgroundColor = .white
         setBtn()
+        setTextField()
         bindViewModel()
     }
 
@@ -88,29 +92,64 @@ class EditHealthInofrmationViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        bindViewModel()
+        getData.accept(())
         doneBtn.isEnabled = false
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
 
     private func setBtn() {
         maleBtn.rx.tap.subscribe(onNext: {
-            self.maleBtn.isSelected = true
-            self.femaleBtn.isSelected = false
-            self.sex.accept(.man)
+            if self.maleBtn.isSelected {
+                self.maleBtn.isSelected = false
+                self.doneBtn.isEnabled = false
+                self.sex.accept(.noAnswer)
+            } else {
+                self.maleBtn.isSelected = true
+                self.femaleBtn.isSelected = false
+                self.doneBtn.isEnabled = true
+                self.sex.accept(.man)
+            }
         }).disposed(by: disposeBag)
 
         femaleBtn.rx.tap.subscribe(onNext: {
-            self.femaleBtn.isSelected = true
-            self.maleBtn.isSelected = false
-            self.sex.accept(.female)
+            if self.femaleBtn.isSelected {
+                self.femaleBtn.isSelected = false
+                self.doneBtn.isEnabled = false
+                self.sex.accept(.noAnswer)
+            } else {
+                self.femaleBtn.isSelected = true
+                self.maleBtn.isSelected = false
+                self.doneBtn.isEnabled = true
+                self.sex.accept(.female)
+            }
         }).disposed(by: disposeBag)
+
+        if !maleBtn.isSelected && !femaleBtn.isSelected {
+            doneBtn.isEnabled = false
+        }
+    }
+
+    private func setTextField() {
+        heightTextField.delegate = self
+        weightTextField.delegate = self
+        heightTextField.keyboardType = .numbersAndPunctuation
+        weightTextField.keyboardType = .numbersAndPunctuation
+
+        height.bind(to: heightTextField.rx.text.orEmpty)
+            .disposed(by: disposeBag)
+
+        weight.bind(to: weightTextField.rx.text.orEmpty)
+            .disposed(by: disposeBag)
     }
 
     private func bindViewModel() {
         let input = EditHealthInformationViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
-            height: heightTextField.rx.text.orEmpty.asDriver(),
-            weight: weightTextField.rx.text.orEmpty.asDriver(),
+            height: height.asDriver(onErrorJustReturn: ""),
+            weight: weight.asDriver(onErrorJustReturn: ""),
             sex: sex.asDriver(onErrorJustReturn: .noAnswer),
             postData: doneBtn.rx.tap.asDriver())
 
@@ -119,13 +158,15 @@ class EditHealthInofrmationViewController: UIViewController {
         output.healthData.asObservable()
             .observe(on: MainScheduler.asyncInstance)
             .subscribe(onNext: {
+                self.height.accept(String($0.height))
+                self.weight.accept(String($0.weight))
                 self.heightTextField.text = "\($0.height)"
                 self.weightTextField.text = "\($0.weight)"
-                if $0.sex == "MALE" {
+                if $0.sex == .man {
                     self.maleBtn.isSelected = true
                     self.femaleBtn.isSelected = false
                     self.sex.accept(.man)
-                } else if $0.sex == "FEMALE" {
+                } else if $0.sex == .female {
                     self.maleBtn.isSelected = false
                     self.femaleBtn.isSelected = true
                     self.sex.accept(.female)
@@ -135,6 +176,12 @@ class EditHealthInofrmationViewController: UIViewController {
                     self.sex.accept(.noAnswer)
                 }
             }).disposed(by: disposeBag)
+    }
+}
+
+extension EditHealthInofrmationViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        doneBtn.isEnabled = true
     }
 }
 
@@ -185,14 +232,15 @@ extension EditHealthInofrmationViewController {
         maleBtn.snp.makeConstraints {
             $0.top.equalTo(weightView.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(20)
-            $0.width.equalTo(160)
+            $0.width.greaterThanOrEqualTo(160)
+            $0.trailing.equalTo(femaleBtn.snp.leading).offset(-8)
             $0.height.equalTo(52)
         }
 
         femaleBtn.snp.makeConstraints {
             $0.top.equalTo(weightView.snp.bottom).offset(20)
             $0.trailing.equalToSuperview().inset(20)
-            $0.width.equalTo(160)
+            $0.width.equalTo(maleBtn)
             $0.height.equalTo(52)
         }
 
