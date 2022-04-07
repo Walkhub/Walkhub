@@ -11,8 +11,8 @@ public class EditHealthInformationUseCase {
     }
 
     public func excute(
-        height: Float,
-        weight: Int,
+        height: Double?,
+        weight: Int?,
         sex: Sex
     ) -> Completable {
         return userRepository.setHealthInformation(
