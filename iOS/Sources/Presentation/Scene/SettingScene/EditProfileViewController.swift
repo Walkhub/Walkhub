@@ -83,6 +83,7 @@ class EditProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         imagePickerView.delegate = self
         nameTextField.delegate = self
         setBtn()
