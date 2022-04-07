@@ -7,7 +7,7 @@ enum UserAPI {
     case fetchProfile(userID: Int)
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrlString: String, schoolId: Int)
-    case setHealthInformation(height: Float, weight: Int, sex: Sex)
+    case setHealthInformation(height: Double, weight: Int, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
@@ -59,6 +59,7 @@ extension UserAPI: WalkhubAPI {
                 encoding: JSONEncoding.prettyPrinted
             )
         case .setHealthInformation(let height, let weight, let sex):
+            print(height, weight, sex.rawValue)
             return .requestParameters(
                 parameters: [
                     "height": height,
@@ -73,13 +74,15 @@ extension UserAPI: WalkhubAPI {
                     "class_code": classCode,
                     "number": num
                 ],
-                encoding: JSONEncoding.prettyPrinted)
+                encoding: JSONEncoding.prettyPrinted
+            )
         case .changeGoalWalkCount(let goalWalkCount):
             return .requestParameters(
                 parameters: [
                     "daily_walk_count_goal": goalWalkCount
                 ],
-                encoding: JSONEncoding.prettyPrinted)
+                encoding: JSONEncoding.prettyPrinted
+            )
         default: return .requestPlain
         }
     }
@@ -118,3 +121,4 @@ extension UserAPI: WalkhubAPI {
         }
     }
 }
+// 356 1436 2315 13

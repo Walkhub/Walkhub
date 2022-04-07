@@ -1,7 +1,7 @@
 import Foundation
 
 public struct UserHealth: Equatable {
-    public let height: Float
-    public let weight: Int
-    public let sex: String
+    public var height: Float
+    public var weight: Int
+    public var sex: Sex
 }

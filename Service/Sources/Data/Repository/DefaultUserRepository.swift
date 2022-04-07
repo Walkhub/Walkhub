@@ -49,10 +49,14 @@ class DefaultUserRepository: UserRepository {
         )
     }
 
-    func setHealthInformation(height: Float, weight: Int, sex: Sex) -> Completable{
+    func setHealthInformation(
+        height: Double?,
+        weight: Int?,
+        sex: Sex
+    ) -> Completable {
         return remoteUserDataSource.setHealthInformation(
-            height: height,
-            weight: weight,
+            height: height ?? 0.0,
+            weight: weight ?? 0,
             sex: sex
         )
     }

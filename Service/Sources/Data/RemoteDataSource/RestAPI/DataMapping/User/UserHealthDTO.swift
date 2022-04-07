@@ -11,7 +11,7 @@ extension UserHealthDTO {
         return .init(
             height: height ?? 0,
             weight: weight ?? 0,
-            sex: sex
+            sex: Sex(rawValue: sex) ?? .noAnswer
         )
     }
 }
