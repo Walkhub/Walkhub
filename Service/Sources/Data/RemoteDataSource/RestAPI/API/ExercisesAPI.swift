@@ -6,7 +6,7 @@ enum ExercisesAPI {
     case fetchExerciseAnalysis
     case fetchMeasuredExercises
     case startMeasuring(goal: Int, goalType: ExerciseGoalType)
-    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, imageUrlString: String?)
+    case finishMeasuring(exercisesId: Int, walkCount: Int, distance: Int, calorie: Int, imageUrlString: String?, pausedTime: Int)
     case saveLocations(exercisesId: Int, locationList: [UserLocation])
     case saveDailyExsercises(date: Date, distance: Double, walkCount: Int, calorie: Double)
 }
@@ -23,14 +23,12 @@ extension ExercisesAPI: WalkhubAPI {
             return "/analysis"
         case .fetchMeasuredExercises:
             return "/lists"
-        case .startMeasuring:
-            return "/"
-        case .finishMeasuring(let exercisesId, _, _, _):
+        case .finishMeasuring(let exercisesId, _, _, _, _, _):
             return "/\(exercisesId)"
         case .saveLocations(let exercisesId, _):
             return "/locations/\(exercisesId)"
-        case .saveDailyExsercises:
-            return "/"
+        default:
+            return ""
         }
     }
 
@@ -57,12 +55,14 @@ extension ExercisesAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .finishMeasuring(_, let walkCount, let distance, let imageUrlString):
+        case .finishMeasuring(_, let walkCount, let distance, let calorie, let imageUrlString, let pausedTime):
             return .requestParameters(
                 parameters: [
                     "walk_count": walkCount,
                     "distance": distance,
-                    "image_url": imageUrlString ?? NSNull()
+                    "calorie": calorie,
+                    "image_url": imageUrlString ?? NSNull(),
+                    "paused_time": pausedTime
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )

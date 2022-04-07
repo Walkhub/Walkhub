@@ -108,6 +108,7 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
+<<<<<<< HEAD
         self.register(FetchChallengesListUseCase.self) { resolver in
             return FetchChallengesListUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
@@ -121,8 +122,47 @@ public extension Container {
         self.register(JoinChallengesUseCase.self) { resolver in
             return JoinChallengesUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
+=======
+        self.register(FetchWeekStepCountChartsUseCase.self) { resolver in
+            return FetchWeekStepCountChartsUseCase(
+                exerisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchMonthStepCountChartsUseCase.self) { resolver in
+            return FetchMonthStepCountChartsUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchExercisesListUseCase.self) { resolver in
+            return FetchExercisesListUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(StartExerciseUseCase.self) { resolver in
+            return StartExerciseUseCase(
+                exercisesRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchMeasuringExerciseUseCase.self) { resolver in
+            return FetchMeasuringExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchRecordExerciseUseCase.self) { resolver in
+            return FetchRecordExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(EndExerciseUseCase.self) { resolver in
+            return EndExerciseUseCase(
+                exerciseRepository: resolver.resolve(ExercisesRepository.self)!
+            )
+        }
+        self.register(FetchMyPageUseCase.self) { resolver in
+            return FetchMyPageUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+>>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
             )
         }
     }
-
 }

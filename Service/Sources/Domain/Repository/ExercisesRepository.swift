@@ -10,4 +10,5 @@ protocol ExercisesRepository {
     func fetchMeasuredExercises() -> Observable<[MeasuredExercise]>
     func startMeasuring(goal: Int, goalType: ExerciseGoalType) -> Completable
     func finishMeasuring(imageUrlString: String?) -> Completable
+    func fetchRecordExercise() -> Single<RecordExercise>
 }

@@ -13,7 +13,7 @@ extension LevelDTO {
     func toDomain() -> Level {
         return .init(
             name: name,
-            imageUrlString: URL(string: imageUrlString)!
+            imageUrl: URL(string: imageUrlString)!
             )
     }
 }

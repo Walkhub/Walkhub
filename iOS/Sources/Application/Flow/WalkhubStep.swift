@@ -23,6 +23,8 @@ enum WalkhubStep: Step {
 
     // Home
     case homeIsRequired
+    case activityAnalysisIsRequired
+    case recordMeasurementIsRequired
 
     // Hub
     case hubIsRequired
@@ -33,4 +35,7 @@ enum WalkhubStep: Step {
     // Profile
     case profileIsRequired
 
+    // Record
+    case playRecordIsRequired
+    case timerIsRequired
 }

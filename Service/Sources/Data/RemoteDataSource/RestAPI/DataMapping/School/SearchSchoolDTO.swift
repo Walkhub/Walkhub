@@ -16,7 +16,7 @@ extension SearchSchoolDTO {
         return .init(
             id: id,
             name: name,
-            logoImageUrlString: URL(string: logoImageUrlString)!
+            logoImageUrl: URL(string: logoImageUrlString)!
         )
     }
 }

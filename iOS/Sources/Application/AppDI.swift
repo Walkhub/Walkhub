@@ -29,6 +29,7 @@ extension Container {
                 searchSchoolRankUseCase: resolver.resolve(SearchSchoolRankUseCase.self)!
             )
         }
+<<<<<<< HEAD
         self.register(ChallengeViewModel.self) { resolver in
             ChallengeViewModel(
                 fetchChallengesListUseCase: resolver.resolve(FetchChallengesListUseCase.self)!,
@@ -39,6 +40,43 @@ extension Container {
             DetailedChallengeViewModel(
                 fetchChallengeDetailUseCase: resolver.resolve(FetchChallengeDetailUseCase.self)!,
                 joinChallengeUseCase: resolver.resolve(JoinChallengesUseCase.self)!
+=======
+        self.register(DetailHubViewModel.self) { resolver in
+            DetailHubViewModel(
+                searchUserUseCase: resolver.resolve(SearchUserUseCase.self)!,
+                fetchUserSchoolRankUseCase: resolver.resolve(FetchUserSchoolRankUseCase.self)!,
+                fetchUserRankUseCase: resolver.resolve(FetchUserRankUseCase.self)!,
+                fetchSchoolDetailsUseCase: resolver.resolve(FetchSchoolDetailsUseCase.self)!
+            )
+        }
+        self.register(ActivityAnalysisViewModel.self) { resolver in
+            ActivityAnalysisViewModel(
+                fetchCaloriesLevelUseCase: resolver.resolve(FetchCalroiesLevelUseCase.self)!,
+                fetchLiveDailyExerciseRecordUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!,
+                fetchExerciseAnalysisUseCase: resolver.resolve(FetchExerciseAnalysisUseCase.self)!,
+                fetchWeekStepCountChartsUseCase: resolver.resolve(FetchWeekStepCountChartsUseCase.self)!,
+                fetchMonthStepCountChartsUseCase: resolver.resolve(FetchMonthStepCountChartsUseCase.self)!
+            )
+        }
+        self.register(MyPageViewModel.self) { resolver in
+            MyPageViewModel(
+                fetchMyPageUseCase: resolver.resolve(FetchMyPageUseCase.self)!,
+                fetchDailyExerciseUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!
+            )
+        }
+        self.register(PlayRecordViewModel.self) { resolver in
+            PlayRecordViewModel(
+                fetchExerciseAnalysisUseCase: resolver.resolve(FetchExerciseAnalysisUseCase.self)!,
+                fetchMeasuringExerciseUseCase: resolver.resolve(FetchMeasuringExerciseUseCase.self)!,
+                fetchRecordExerciseUseCase: resolver.resolve(FetchRecordExerciseUseCase.self)!,
+                endExerciseUseCase: resolver.resolve(EndExerciseUseCase.self)!
+            )
+        }
+        self.register(RecordMeasurementViewModel.self) { resolver in
+            RecordMeasurementViewModel(
+                fetchExercisesListUseCase: resolver.resolve(FetchExercisesListUseCase.self)!,
+                startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
+>>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
             )
         }
     }
@@ -60,6 +98,7 @@ extension Container {
                 $0.viewModel = resolver.resolve(HubViewModel.self)!
             }
         }
+<<<<<<< HEAD
         self.register(ChallengeViewController.self) { resolver in
             return ChallengeViewController().then {
                 $0.viewModel = resolver.resolve(ChallengeViewModel.self)!
@@ -70,6 +109,36 @@ extension Container {
                 $0.viewModel = resolver.resolve(DetailedChallengeViewModel.self)!
             }
         }
+=======
+        self.register(DetailHubViewController.self) { resolver in
+            return DetailHubViewController().then {
+                $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
+            }
+        }
+        self.register(ActivityAnalysisViewController.self) { resolver  in
+            return ActivityAnalysisViewController().then {
+                $0.viewModel = resolver.resolve(ActivityAnalysisViewModel.self)!
+            }
+        }
+        self.register(MyPageViewController.self) { resolver in
+            return MyPageViewController().then {
+                $0.viewModel = resolver.resolve(MyPageViewModel.self)!
+            }
+        }
+        self.register(PlayRecordViewController.self) { resolver in
+            return PlayRecordViewController().then {
+                $0.viewModel = resolver.resolve(PlayRecordViewModel.self)!
+            }
+        }
+        self.register(RecordMeasurementViewController.self) { resolver in
+            return RecordMeasurementViewController().then {
+                $0.viewModel = resolver.resolve(RecordMeasurementViewModel.self)!
+            }
+        }
+        self.register(TimerViewController.self) { _ in
+            return TimerViewController()
+        }
+>>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
     }
 
 }
