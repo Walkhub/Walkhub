@@ -66,32 +66,30 @@ class SchoolRegistrationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
-        setTextField()
         bind()
         searchSchoolTextField.delegate = self
         schoolNameSearchBar.searchBar.delegate = self
     }
 
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
         continueBtn.layer.masksToBounds = true
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         searchTableView.isHidden = true
+        continueBtn.isEnabled = false
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 
     private func setNavigation() {
         navigationController?.navigationBar.setBackButtonToArrow()
         self.navigationItem.searchController = nil
-    }
-
-    private func setTextField() {
-        searchSchoolTextField.rx.text.orEmpty
-        .map { $0 != "" }
-        .bind(to: continueBtn.rx.isEnabled)
-        .disposed(by: disposeBag)
     }
 
     private func bind() {
@@ -111,9 +109,19 @@ class SchoolRegistrationViewController: UIViewController {
             cell.schoolNameLabel.text = items.name
         }.disposed(by: disposeBag)
 
-        output.schoolId
-            .bind(to: self.schoolId)
-            .disposed(by: disposeBag)
+        output.schoolId.asObservable()
+            .subscribe(onNext: {
+                self.schoolId.accept($0)
+                self.navigationItem.searchController = nil
+            }).disposed(by: disposeBag)
+
+        output.schoolInfo.asObservable()
+            .observe(on: MainScheduler.asyncInstance)
+            .subscribe(onNext: {
+                self.searchTableView.isHidden = true
+                self.searchSchoolTextField.text = $0.name
+                self.continueBtn.isEnabled = true
+            }).disposed(by: disposeBag)
     }
 }
 
@@ -124,7 +132,7 @@ extension SchoolRegistrationViewController: UITextFieldDelegate {
             .subscribe(onNext: {_ in
                 self.schoolNameSearchBar.searchBar.searchTextField.becomeFirstResponder()
             }).disposed(by: disposeBag)
-        searchTableView.isHidden = false
+        self.searchTableView.isHidden = false
         return true
     }
 }
@@ -182,7 +190,8 @@ extension SchoolRegistrationViewController {
             $0.trailing.leading.equalToSuperview()
         }
         searchTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.topMargin.equalToSuperview()
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 

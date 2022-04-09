@@ -22,6 +22,7 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
     struct Output {
         let schoolList: BehaviorRelay<[SearchSchool]>
         let schoolId: PublishRelay<Int>
+        let schoolInfo: PublishRelay<SearchSchool>
     }
 
     var steps = PublishRelay<Step>()
@@ -29,12 +30,15 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
 
     func transform(_ input: Input) -> Output {
         let schoolList = BehaviorRelay<[SearchSchool]>(value: [])
+        let schoolInfo = PublishRelay<SearchSchool>()
         let schoolId = PublishRelay<Int>()
 
         input.searchSchool
             .asObservable()
-            .withLatestFrom(input.searchSchool)
-            .flatMap {
+            .debounce(
+                .milliseconds(200),
+                scheduler: MainScheduler.asyncInstance
+            ).flatMap {
                 self.searchSchoolUseCase.excute(name: $0)
             }.subscribe(onNext: {
                 schoolList.accept($0)
@@ -45,6 +49,7 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
             .subscribe(onNext: { index in
                 let value = schoolList.value
                 schoolId.accept(value[index.row].id)
+                schoolInfo.accept(value[index.row])
             }).disposed(by: disposeBag)
 
         input.continueButtonDidTap
@@ -53,6 +58,6 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
             .bind(to: steps)
             .disposed(by: disposeBag)
 
-        return Output(schoolList: schoolList, schoolId: schoolId)
+        return Output(schoolList: schoolList, schoolId: schoolId, schoolInfo: schoolInfo)
     }
 }
