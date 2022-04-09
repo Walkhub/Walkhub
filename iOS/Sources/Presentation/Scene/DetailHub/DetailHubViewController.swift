@@ -11,8 +11,8 @@ class DetailHubViewController: TabmanViewController {
 
     private var viewController = [UIViewController]()
 
-    private var rankVC: RankViewController!
-    private var informationVC: InformationViewController!
+    var rankVC: RankViewController!
+    var informationVC: InformationViewController!
     var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
