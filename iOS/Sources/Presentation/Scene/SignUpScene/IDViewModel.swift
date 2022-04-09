@@ -30,11 +30,11 @@ class IDViewModel: ViewModelType, Stepper {
             .asObservable()
             .withLatestFrom(input.id)
             .flatMap {
-                return self.checkAccountIdUseCase.excute(accountId: $0)
+                self.checkAccountIdUseCase.excute(accountId: $0)
                     .andThen(Single.just(WalkhubStep.passwordIsRequired))
                     .catchAndReturn(WalkhubStep.loaf(
                         "이미 존재하는 아이디에요.",
-                        state: .info,
+                        state: .error,
                         location: .bottom
                     ))
             }.bind(to: steps)

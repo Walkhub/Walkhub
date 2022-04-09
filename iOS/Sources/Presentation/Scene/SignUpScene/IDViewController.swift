@@ -1,8 +1,9 @@
 import UIKit
 
+import SnapKit
 import Then
 import RxSwift
-import SnapKit
+import RxCocoa
 
 class IDViewController: UIViewController {
 
@@ -50,17 +51,20 @@ class IDViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setNavigation()
         setTextField()
         bind()
         idTextField.inputAccessoryView = accessoryView
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         continueBtn.isEnabled = false
         infoLabel.isHidden = true
     }
+
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
     }
@@ -76,13 +80,8 @@ class IDViewController: UIViewController {
     private func setTextField() {
         idTextField.rx.text.orEmpty
             .subscribe(onNext: {
-                if $0.count >= 5 && $0.count < 31 {
-                    self.infoLabel.isHidden = true
-                    self.continueBtn.isEnabled = true
-                } else {
-                    self.infoLabel.isHidden = false
-                    self.infoLabel.isHidden = false
-                }
+                self.infoLabel.isHidden = $0.count > 4 && $0.count < 31
+                self.continueBtn.isEnabled = $0.count > 4 && $0.count < 31
             }).disposed(by: disposeBag)
     }
 
