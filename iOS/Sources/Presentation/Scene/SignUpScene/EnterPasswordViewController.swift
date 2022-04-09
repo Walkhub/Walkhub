@@ -19,10 +19,12 @@ class EnterPasswordViewController: UIViewController, Stepper {
     }
     private let infoLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.numberOfLines = 2
         $0.text = """
 비밀번호는 8~30자 내로
 특수문자를 1개 이상 포함하여 입력해주세요.
 """
+        $0.textColor = .red
     }
     private let pwLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
@@ -58,15 +60,18 @@ class EnterPasswordViewController: UIViewController, Stepper {
         super.viewDidLoad()
         setNavigation()
         setTextField()
+        setButton()
+        view.backgroundColor = .white
         pwTextField.inputAccessoryView = accessoryView
     }
 
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         infoLabel.isHidden = true
         continueBtn.isEnabled = false
     }
@@ -102,10 +107,10 @@ class EnterPasswordViewController: UIViewController, Stepper {
     private func isVaildTest(str: String?) -> Bool {
         guard str != nil else { return false }
 
-        let strRegEx = "[0-9]{3}"
+        let strRegEx = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}"
         let pred = NSPredicate(format: "SELF MATCHES %@", strRegEx)
 
-        return pred.evaluate(with: "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}")
+        return pred.evaluate(with: str)
     }
 
 }
