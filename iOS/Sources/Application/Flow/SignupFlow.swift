@@ -1,5 +1,6 @@
 import Foundation
 
+import Loaf
 import RxFlow
 
 class SignupFlow: Flow {
@@ -38,6 +39,8 @@ class SignupFlow: Flow {
             return navigateToServiceUseTermsScene()
         case .enterHealthInfoIsRequired:
             return navigateToEnterHealthInfoScene()
+        case .loaf(let message, let state, let location):
+            return showLoaf(message, state: state, location: location)
         default:
             return .none
         }
@@ -62,10 +65,10 @@ class SignupFlow: Flow {
     }
 
     private func navigateToAuthenticationNumberScene(phoneNumber: String) -> FlowContributors {
-        let auththenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
         let certifyPhoneNumberViewController = container.resolve(CertifyPhoneNumberViewController.self)!
-        auththenicationNumberViewController.phoneNumber.accept(phoneNumber)
-        certifyPhoneNumberViewController.navigationController?.pushViewController(
+        let auththenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
+        auththenicationNumberViewController.phoneNumber = phoneNumber
+        rootViewController.navigationController?.pushViewController(
             auththenicationNumberViewController,
             animated: true
         )
@@ -77,8 +80,7 @@ class SignupFlow: Flow {
 
     private func navigateToIdScene() -> FlowContributors {
         let idViewController = container.resolve(IDViewController.self)!
-        let authenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
-        authenicationNumberViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             idViewController,
             animated: true
         )
@@ -90,8 +92,7 @@ class SignupFlow: Flow {
 
     private func navigateToEnterPasswordScene() -> FlowContributors {
         let enterPasswordViewController = container.resolve(EnterPasswordViewController.self)!
-        let idViewController = container.resolve(IDViewController.self)!
-        idViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             enterPasswordViewController,
             animated: true
         )
@@ -101,8 +102,7 @@ class SignupFlow: Flow {
     }
     private func navigateToSearchSchoolScene() -> FlowContributors {
         let searchSchoolViewController = container.resolve(SchoolRegistrationViewController.self)!
-        let enterPasswordViewController = container.resolve(EnterPasswordViewController.self)!
-        enterPasswordViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             searchSchoolViewController,
             animated: true
         )
@@ -114,8 +114,7 @@ class SignupFlow: Flow {
 
     private func navigateToAgreeTermsScene() -> FlowContributors {
         let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
-        let searchSchoolViewController = container.resolve(SchoolRegistrationViewController.self)!
-        searchSchoolViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             agreeTermsViewController,
             animated: true
         )
@@ -127,8 +126,7 @@ class SignupFlow: Flow {
 
     private func navigateToServiceUseTermsScene() -> FlowContributors {
         let serviceUseTermsViewController = container.resolve(ServiceUseTermsViewController.self)!
-        let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
-        agreeTermsViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             serviceUseTermsViewController,
             animated: true
         )
@@ -138,9 +136,8 @@ class SignupFlow: Flow {
     }
 
     private func navigateToEnterHealthInfoScene() -> FlowContributors {
-        let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
         let enterHealthInfoViewController = container.resolve(EnterHealthInformationViewController.self)!
-        agreeTermsViewController.navigationController?.pushViewController(
+        rootViewController.navigationController?.pushViewController(
             enterHealthInfoViewController,
             animated: true
         )
@@ -148,5 +145,14 @@ class SignupFlow: Flow {
             withNextPresentable: enterHealthInfoViewController,
             withNextStepper: enterHealthInfoViewController.viewModel
         ))
+    }
+
+    private func showLoaf(
+        _ message: String,
+        state: Loaf.State,
+        location: Loaf.Location
+    ) -> FlowContributors {
+        Loaf(message, state: state, location: location, sender: self.rootViewController).show()
+        return .none
     }
 }
