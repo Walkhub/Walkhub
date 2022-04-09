@@ -5,42 +5,60 @@ import RxCocoa
 import RxFlow
 import Service
 
-class AuthenticationNumberViewModel: ViewModelType, Stepper {
+class AuthenicationNumberViewModel: ViewModelType, Stepper {
 
     private let checkVerificationCodeUseCase: CheckVerificationCodeUseCase
+    private let verificationPhoneUseCase: VerificationPhoneUseCase
 
-    init(checkVerificationCodeUseCase: CheckVerificationCodeUseCase) {
+    init(
+        checkVerificationCodeUseCase: CheckVerificationCodeUseCase,
+        verificationPhoneUseCase: VerificationPhoneUseCase
+    ) {
         self.checkVerificationCodeUseCase = checkVerificationCodeUseCase
+        self.verificationPhoneUseCase = verificationPhoneUseCase
     }
 
-    private var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
+    private var disposeBag = DisposeBag()
 
     struct Input {
         let phoneNumber: Driver<String>
-        let authenticationNumber: Driver<String>
+        let authCode: Driver<String>
         let continueButtonDidTap: Driver<Void>
+        let checkButtonDidTap: Driver<Void>
     }
 
     struct Output {
     }
 
     func transform(_ input: Input) -> Output {
+        let info = Driver.combineLatest(input.phoneNumber, input.authCode)
 
         input.continueButtonDidTap
             .asObservable()
-            .flatMap {
-                Observable.zip(
-                    input.phoneNumber.asObservable(),
-                    input.authenticationNumber.asObservable()
-                ) { (phoneNumber: $0, authenticationNumber: $1) }
-            }.flatMap {
-                self.checkVerificationCodeUseCase.excute(
-                    verificationCode: $0.authenticationNumber,
-                    phoneNumber: $0.phoneNumber
+            .withLatestFrom(info)
+            .flatMap { data -> Single<Step> in
+                print(data.self)
+                return self.checkVerificationCodeUseCase.excute(
+                    verificationCode: data.1,
+                    phoneNumber: data.0
                 ).andThen(Single.just(WalkhubStep.enterIdRequired))
+                    .catchAndReturn(WalkhubStep.loaf(
+                        "인증번호가 일치하지 않습니다.",
+                        state: .error,
+                        location: .top
+                    ))
             }.bind(to: steps)
             .disposed(by: disposeBag)
+
+        input.checkButtonDidTap
+            .asObservable()
+            .withLatestFrom(input.phoneNumber)
+            .flatMap {
+                self.verificationPhoneUseCase.excute(phoneNumber: $0)
+            }.subscribe(onNext: { _ in
+            }).disposed(by: disposeBag)
+
         return Output()
     }
 }

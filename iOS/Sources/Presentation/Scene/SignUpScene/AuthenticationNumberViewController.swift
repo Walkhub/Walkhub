@@ -7,21 +7,23 @@ import RxCocoa
 
 class AuthenticationNumberViewController: UIViewController {
 
-    let phoneNumber = PublishRelay<String>()
-    var viewModel: AuthenticationNumberViewModel!
-    var disposeBag = DisposeBag()
-    var limitTime: Int = 300
+    var phoneNumber = String()
+    var viewModel: AuthenicationNumberViewModel!
+
+    private var disposeBag = DisposeBag()
+    private let phoneNumberRelay = PublishRelay<String>()
+    private var isRunningTimer: Bool = false
 
     private let timerLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .primary400
     }
-    private let checkBtn = UIButton().then {
+    let checkBtn = UIButton().then {
         $0.setImage(UIImage.init(systemName: "square"), for: .normal)
         $0.tintColor = .gray600
-        $0.setImage(UIImage.init(systemName: "checkmark.square"), for: .selected)
+        $0.setImage(UIImage.init(systemName: "checkmark.square"), for: .disabled)
     }
-    private let continueBtn = UIButton(type: .system).then {
+    let continueBtn = UIButton(type: .system).then {
         $0.setTitle("계속하기", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
         $0.setTitleColor(.white, for: .normal)
@@ -68,19 +70,22 @@ class AuthenticationNumberViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigation()
+        view.backgroundColor = .white
+        bind()
         setTextField()
         setBtn()
-        bind()
-        checkBtn.isSelected = false
-        authenticationNumberTextField.inputAccessoryView = accessoryView
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        getSetTime()
+        super.viewWillAppear(true)
+        checkBtn.isEnabled = true
+        phoneNumberRelay.accept(phoneNumber)
+        setTime()
+        setNavigation()
     }
 
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         continueBtn.layer.masksToBounds = true
         addSubviews()
         makeSubviewConstraints()
@@ -92,22 +97,12 @@ class AuthenticationNumberViewController: UIViewController {
 
     private func setBtn() {
         checkBtn.rx.tap.subscribe(onNext: {
-            self.checkBtn.isSelected = true
+            self.checkBtn.isEnabled = false
+            self.setTime()
         }).disposed(by: disposeBag)
-
-        continueBtn.rx.tap
-            .bind {
-                print("clicked")
-            }
-            .disposed(by: disposeBag)
     }
 
     private func setTextField() {
-        authenticationNumberTextField.rx.text.orEmpty
-            .map { $0 != "" }
-            .bind(to: continueBtn.rx.isEnabled)
-            .disposed(by: disposeBag)
-
         authenticationNumberTextField.rx.text.orEmpty
             .subscribe(onNext: {
                 if $0.count == 5 {
@@ -118,6 +113,10 @@ class AuthenticationNumberViewController: UIViewController {
                     self.continueBtn.isEnabled = false
                 }
             }).disposed(by: disposeBag)
+
+        authenticationNumberTextField.inputAccessoryView = accessoryView
+
+        authenticationNumberTextField.keyboardType = .asciiCapable
     }
 
     private func setNavigation() {
@@ -125,34 +124,32 @@ class AuthenticationNumberViewController: UIViewController {
         self.navigationItem.searchController = nil
     }
 
-    @objc private func getSetTime() {
-        secToTime(sec: limitTime)
-        limitTime -= 1
-    }
+    private func setTime() {
+        var timerValue = 300
+        isRunningTimer = true
 
-    private func secToTime(sec: Int) {
-        let minute = (sec % 3600) / 60
-        let second = (sec % 3600) % 60
+        let driver = Driver<Int>.interval(.seconds(1))
+            .map { _ in return 1 }
 
-        if second < 10 {
-            timerLabel.text = String(minute) + ":" + "0"+String(second)
-        } else {
-            timerLabel.text = String(minute) + ":" + String(second)
-        }
-
-        if limitTime != 0 {
-            perform(#selector(getSetTime), with: nil, afterDelay: 1.0)
-        } else if limitTime == 0 {
-            timerLabel.textColor = .red
-            endTimer.isHidden = false
-        }
+        driver.asObservable()
+            .subscribe(onNext: { value in
+                if self.isRunningTimer {
+                    timerValue -= value
+                    self.timerLabel.text = "\(timerValue / 60) : \(String(format: "%0d", timerValue % 60))"
+                } else if timerValue == 0 {
+                    self.timerLabel.textColor = .red
+                    self.endTimer.isHidden = false
+                    self.isRunningTimer = false
+                }
+            }).disposed(by: disposeBag)
     }
 
     private func bind() {
-        let input = AuthenticationNumberViewModel.Input(
-            phoneNumber: phoneNumber.asDriver(onErrorJustReturn: ""),
-            authenticationNumber: authenticationNumberTextField.rx.text.orEmpty.asDriver(),
-            continueButtonDidTap: continueBtn.rx.tap.asDriver()
+        let input = AuthenicationNumberViewModel.Input(
+            phoneNumber: phoneNumberRelay.asDriver(onErrorJustReturn: ""),
+            authCode: authenticationNumberTextField.rx.text.orEmpty.asDriver(),
+            continueButtonDidTap: continueBtn.rx.tap.asDriver(),
+            checkButtonDidTap: checkBtn.rx.tap.asDriver()
         )
 
         _ = viewModel.transform(input)
@@ -211,5 +208,4 @@ extension AuthenticationNumberViewController {
             $0.leading.equalToSuperview().inset(16)
         }
     }
-
 }
