@@ -37,9 +37,8 @@ class AuthenicationNumberViewModel: ViewModelType, Stepper {
         input.continueButtonDidTap
             .asObservable()
             .withLatestFrom(info)
-            .flatMap { data -> Single<Step> in
-                print(data.self)
-                return self.checkVerificationCodeUseCase.excute(
+            .flatMap {
+                self.checkVerificationCodeUseCase.excute(
                     verificationCode: data.1,
                     phoneNumber: data.0
                 ).andThen(Single.just(WalkhubStep.enterIdRequired))
