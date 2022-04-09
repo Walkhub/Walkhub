@@ -9,11 +9,14 @@ class CertifyPhoneNumberViewModel: ViewModelType, Stepper {
 
     private let verificationPhoneUseCase: VerificationPhoneUseCase
 
-    init(verificationPhoneUseCase: VerificationPhoneUseCase) {
+    init(
+        verificationPhoneUseCase: VerificationPhoneUseCase
+    ) {
         self.verificationPhoneUseCase = verificationPhoneUseCase
     }
 
     var steps = PublishRelay<Step>()
+    var phoneNumber = String()
     private var disposeBag = DisposeBag()
 
     struct Input {
@@ -26,12 +29,16 @@ class CertifyPhoneNumberViewModel: ViewModelType, Stepper {
 
     func transform(_ input: Input) -> Output {
 
+        input.phoneNumber.asObservable()
+            .subscribe(onNext: {
+                self.phoneNumber = $0.components(separatedBy: [" "]).joined()
+            }).disposed(by: disposeBag)
+
         input.continueButtonDidTap
             .asObservable()
-            .withLatestFrom(input.phoneNumber)
             .flatMap {
-                self.verificationPhoneUseCase.excute(phoneNumber: $0)
-                    .andThen(Single.just(WalkhubStep.authenticationNumberIsRequired(phoneNumber: $0)))
+                self.verificationPhoneUseCase.excute(phoneNumber: self.phoneNumber)
+                    .andThen(Single.just(WalkhubStep.authenticationNumberIsRequired(phoneNumber: self.phoneNumber)))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 

@@ -4,12 +4,13 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
-import AnyFormatKit
 
 class CertifyPhoneNumberViewController: UIViewController {
 
+    var authenticationNumberViewController: AuthenticationNumberViewController!
     var viewModel: CertifyPhoneNumberViewModel!
-    var disposeBag = DisposeBag()
+
+    private var disposeBag = DisposeBag()
 
     private let phoneNumberProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
@@ -57,20 +58,21 @@ class CertifyPhoneNumberViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigation()
         setTextField()
         bind()
         view.backgroundColor = .white
-        phoneNumberTextField.inputAccessoryView = accessoryView
     }
 
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
+        phoneNumberTextField.inputAccessoryView = accessoryView
     }
 
     override func viewWillAppear(_ animated: Bool) {
         self.infoLabel.isHidden = true
+        setNavigation()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
