@@ -25,12 +25,10 @@ extension AuthAPI: WalkhubAPI {
             return "/token"
         case .signup:
             return "/"
-        case .verificationPhone:
+        case .verificationPhone, .checkVerificationCode:
             return "/verification-codes"
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
-        case .checkVerificationCode:
-            return "/verification-codes"
         case .checkAccountId:
             return "/account-id"
         }
