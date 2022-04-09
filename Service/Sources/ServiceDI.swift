@@ -71,7 +71,11 @@ public extension Container {
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
-
+        self.register(SearchSchoolUseCase.self) { resolver in
+            return SearchSchoolUseCase(
+                schoolRepository: resolver.resolve(SchoolRepository.self)!
+            )
+        }
         self.register(FetchRankPreviewUseCase.self) { resolver in
             return FetchRankPreviewUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!

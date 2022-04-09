@@ -99,6 +99,7 @@ class EnterHealthInformationViewController: UIViewController {
     }
 
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
         completeBtn.layer.masksToBounds = true
