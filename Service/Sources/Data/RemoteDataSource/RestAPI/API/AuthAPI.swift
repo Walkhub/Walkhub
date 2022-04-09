@@ -24,7 +24,7 @@ extension AuthAPI: WalkhubAPI {
         case .signin, .renewalToken:
             return "/token"
         case .signup:
-            return "/"
+            return ""
         case .verificationPhone, .checkVerificationCode:
             return "/verification-codes"
         case .findID(let phoneNum):
@@ -67,8 +67,8 @@ extension AuthAPI: WalkhubAPI {
                     "name": name,
                     "phone_number": phoneNumber,
                     "auth_code": authCode,
-                    "height": height,
-                    "weight": weight,
+                    "height": height ?? 0.0,
+                    "weight": weight ?? 0,
                     "sex": sex.rawValue,
                     "school_id": schoolId
                 ],
