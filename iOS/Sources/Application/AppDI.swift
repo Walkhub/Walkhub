@@ -79,11 +79,6 @@ extension Container {
                 verificationPhoneUseCase: resolver.resolve(VerificationPhoneUseCase.self)!
             )
         }
-        self.register(AuthenticationNumberViewModel.self) { resolver in
-            AuthenticationNumberViewModel(
-                checkVerificationCodeUseCase: resolver.resolve(CheckVerificationCodeUseCase.self)!
-            )
-        }
         self.register(IDViewModel.self) { resolver in
             IDViewModel(
                 checkAccountIdUseCase: resolver.resolve(CheckAccountIdUseCase.self)!
@@ -92,6 +87,17 @@ extension Container {
         self.register(EnterHealthInformationViewModel.self) { resolver in
             EnterHealthInformationViewModel(
                 setHealthInformationUseCase: resolver.resolve(SetHealthInformationUseCase.self)!
+            )
+        }
+        self.register(AuthenicationNumberViewModel.self) { resolver in
+            AuthenicationNumberViewModel(
+                checkVerificationCodeUseCase: resolver.resolve(CheckVerificationCodeUseCase.self)!,
+                verificationPhoneUseCase: resolver.resolve(VerificationPhoneUseCase.self)!
+            )
+        }
+        self.register(SchoolRegistrationViewModel.self) { resolver in
+            SchoolRegistrationViewModel(
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
     }
@@ -116,6 +122,8 @@ extension Container {
         self.register(DetailHubViewController.self) { resolver in
             return DetailHubViewController().then {
                 $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
+                $0.rankVC = resolver.resolve(RankViewController.self)!
+                $0.informationVC = resolver.resolve(InformationViewController.self)!
             }
         }
         self.register(ActivityAnalysisViewController.self) { resolver  in
@@ -146,15 +154,14 @@ extension Container {
                 $0.viewModel = resolver.resolve(AgreeTermsViewModel.self)!
             }
         }
-        self.register(AuthenticationNumberViewController.self) { resolver in
-            return AuthenticationNumberViewController().then {
-                $0.viewModel = resolver.resolve(AuthenticationNumberViewModel.self)!
-            }
-        }
         self.register(CertifyPhoneNumberViewController.self) { resolver in
             return CertifyPhoneNumberViewController().then {
                 $0.viewModel = resolver.resolve(CertifyPhoneNumberViewModel.self)!
+                $0.authenticationNumberViewController = resolver.resolve(AuthenticationNumberViewController.self)!
             }
+        }
+        self.register(AuthenticationNumberViewController.self) { _ in
+            return AuthenticationNumberViewController()
         }
         self.register(EnterHealthInformationViewController.self) { resolver in
             return EnterHealthInformationViewController().then {
@@ -167,6 +174,19 @@ extension Container {
         self.register(IDViewController.self) { resolver in
             return IDViewController().then {
                 $0.viewModel = resolver.resolve(IDViewModel.self)!
+            }
+        }
+        self.register(AuthenticationNumberViewController.self) { resolver in
+            return AuthenticationNumberViewController().then {
+                $0.viewModel = resolver.resolve(AuthenicationNumberViewModel.self)!
+            }
+        }
+        self.register(EnterPasswordViewController.self) { _ in
+            return EnterPasswordViewController()
+        }
+        self.register(SchoolRegistrationViewController.self) { resolver in
+            return SchoolRegistrationViewController().then {
+                $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
             }
         }
     }
