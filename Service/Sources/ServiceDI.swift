@@ -161,5 +161,10 @@ public extension Container {
                 authRepository: resolver.resolve(AuthRepository.self)!
             )
         }
+        self.register(SetHealthInformationUseCase.self) { resolver in
+            return SetHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }
