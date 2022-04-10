@@ -8,6 +8,13 @@ import RxFlow
 
 class EnterPasswordViewController: UIViewController, Stepper {
 
+    var name = String()
+    var phoneNumber = String()
+    var authCode = String()
+    var id = String()
+
+    private let passwordRelay = PublishRelay<String>()
+    private var password = String()
     var steps = PublishRelay<Step>()
     private var disposeBag = DisposeBag()
 
@@ -95,11 +102,26 @@ class EnterPasswordViewController: UIViewController, Stepper {
                 self.infoLabel.isHidden = self.isVaildTest(str: $0)
                 self.continueBtn.isEnabled = self.isVaildTest(str: $0)
             }).disposed(by: disposeBag)
+
+        pwTextField.rx.text.orEmpty
+            .bind(to: passwordRelay)
+            .disposed(by: disposeBag)
+
+        passwordRelay.asObservable()
+            .subscribe(onNext: {
+                self.password = $0
+            }).disposed(by: disposeBag)
     }
 
     private func setButton() {
         continueBtn.rx.tap
-            .map { WalkhubStep.setSchoolIsRequired }
+            .map { WalkhubStep.setSchoolIsRequired(
+                name: self.name,
+                phoneNumber: self.phoneNumber,
+                authCode: self.authCode,
+                id: self.id,
+                password: self.password
+            ) }
             .bind(to: steps)
             .disposed(by: disposeBag)
     }
