@@ -23,24 +23,26 @@ class SignupFlow: Flow {
         switch step {
         case .enterNameIsRequired:
             return navigateToEnterNameScene()
-        case .certigyPhoneNumberIsRequired:
-            return navigateToCertifyPhoneNumScene()
-        case .authenticationNumberIsRequired(let phoneNumber):
-            return navigateToAuthenticationNumberScene(phoneNumber: phoneNumber)
-        case .passwordIsRequired:
-            return navigateToEnterPasswordScene()
-        case .enterIdRequired:
-            return navigateToIdScene()
-        case .setSchoolIsRequired:
-            return navigateToSearchSchoolScene()
-        case .agreeIsRequired:
-            return navigateToAgreeTermsScene()
+        case .certigyPhoneNumberIsRequired(let name):
+            return navigateToCertifyPhoneNumScene(name)
+        case .authenticationNumberIsRequired(let name, let phoneNumber):
+            return navigateToAuthenticationNumberScene(name, phoneNumber)
+        case .passwordIsRequired(let name, let phoneNumber, let authCode, let id):
+            return navigateToEnterPasswordScene(name, phoneNumber, authCode, id)
+        case .enterIdRequired(let name, let phoneNumber, let authCode):
+            return navigateToIdScene(name, phoneNumber, authCode)
+        case .setSchoolIsRequired(let name, let phoneNumber, let authCode, let id, let password):
+            return navigateToSearchSchoolScene(name, phoneNumber, authCode, id, password)
+        case .agreeIsRequired(let name, let phoneNumber, let authCode, let id, let password, let schoolid):
+            return navigateToAgreeTermsScene(name, phoneNumber, authCode, id, password, schoolid)
         case .serviceUseTermsIsRequired:
             return navigateToServiceUseTermsScene()
         case .enterHealthInfoIsRequired:
             return navigateToEnterHealthInfoScene()
         case .loaf(let message, let state, let location):
             return showLoaf(message, state: state, location: location)
+        case .tabsIsRequired:
+            return navigateToHomeScene()
         default:
             return .none
         }
@@ -52,8 +54,9 @@ class SignupFlow: Flow {
         ))
     }
 
-    private func navigateToCertifyPhoneNumScene() -> FlowContributors {
+    private func navigateToCertifyPhoneNumScene(_ name: String) -> FlowContributors {
         let certifyPhoneNumberViewController = container.resolve(CertifyPhoneNumberViewController.self)!
+        certifyPhoneNumberViewController.name = name
         self.rootViewController.navigationController?.pushViewController(
             certifyPhoneNumberViewController,
             animated: true
@@ -64,9 +67,9 @@ class SignupFlow: Flow {
         ))
     }
 
-    private func navigateToAuthenticationNumberScene(phoneNumber: String) -> FlowContributors {
-        let certifyPhoneNumberViewController = container.resolve(CertifyPhoneNumberViewController.self)!
+    private func navigateToAuthenticationNumberScene(_ name: String, _ phoneNumber: String) -> FlowContributors {
         let auththenicationNumberViewController = container.resolve(AuthenticationNumberViewController.self)!
+        auththenicationNumberViewController.name = name
         auththenicationNumberViewController.phoneNumber = phoneNumber
         rootViewController.navigationController?.pushViewController(
             auththenicationNumberViewController,
@@ -78,8 +81,11 @@ class SignupFlow: Flow {
         ))
     }
 
-    private func navigateToIdScene() -> FlowContributors {
+    private func navigateToIdScene(_ name: String, _ phoneNumber: String, _ authCode: String) -> FlowContributors {
         let idViewController = container.resolve(IDViewController.self)!
+        idViewController.name = name
+        idViewController.phoneNumber = phoneNumber
+        idViewController.authCode = authCode
         rootViewController.navigationController?.pushViewController(
             idViewController,
             animated: true
@@ -90,8 +96,17 @@ class SignupFlow: Flow {
         ))
     }
 
-    private func navigateToEnterPasswordScene() -> FlowContributors {
+    private func navigateToEnterPasswordScene(
+        _ name: String,
+        _ phoneNumber: String,
+        _ authCode: String,
+        _ id: String
+    ) -> FlowContributors {
         let enterPasswordViewController = container.resolve(EnterPasswordViewController.self)!
+        enterPasswordViewController.name = name
+        enterPasswordViewController.phoneNumber = phoneNumber
+        enterPasswordViewController.authCode = authCode
+        enterPasswordViewController.id = id
         rootViewController.navigationController?.pushViewController(
             enterPasswordViewController,
             animated: true
@@ -100,8 +115,19 @@ class SignupFlow: Flow {
             withNext: enterPasswordViewController
         ))
     }
-    private func navigateToSearchSchoolScene() -> FlowContributors {
+    private func navigateToSearchSchoolScene(
+        _ name: String,
+        _ phoneNumber: String,
+        _ authCode: String,
+        _ id: String,
+        _ password: String
+    ) -> FlowContributors {
         let searchSchoolViewController = container.resolve(SchoolRegistrationViewController.self)!
+        searchSchoolViewController.name = name
+        searchSchoolViewController.phoneNumber = phoneNumber
+        searchSchoolViewController.authCode = authCode
+        searchSchoolViewController.id = id
+        searchSchoolViewController.password = password
         rootViewController.navigationController?.pushViewController(
             searchSchoolViewController,
             animated: true
@@ -112,8 +138,21 @@ class SignupFlow: Flow {
         ))
     }
 
-    private func navigateToAgreeTermsScene() -> FlowContributors {
+    private func navigateToAgreeTermsScene(
+        _ name: String,
+        _ phoneNumber: String,
+        _ authCode: String,
+        _ id: String,
+        _ password: String,
+        _ schoolId: Int
+    ) -> FlowContributors {
         let agreeTermsViewController = container.resolve(AgreeTermsViewController.self)!
+        agreeTermsViewController.name = name
+        agreeTermsViewController.phoneNumber = phoneNumber
+        agreeTermsViewController.authCode = authCode
+        agreeTermsViewController.id = id
+        agreeTermsViewController.password = password
+        agreeTermsViewController.schoolId = schoolId
         rootViewController.navigationController?.pushViewController(
             agreeTermsViewController,
             animated: true
@@ -145,6 +184,23 @@ class SignupFlow: Flow {
             withNextPresentable: enterHealthInfoViewController,
             withNextStepper: enterHealthInfoViewController.viewModel
         ))
+    }
+
+    private func navigateToHomeScene() -> FlowContributors {
+        let tabsFlow = TabsFlow()
+
+        Flows.use(tabsFlow, when: .created) { [weak self] root in
+            root.modalPresentationStyle = .fullScreen
+            root.modalTransitionStyle = .coverVertical
+            DispatchQueue.main.async {
+                self?.rootViewController.present(root, animated: true)
+                Loaf("회원가입 성공!", state: .success, location: .bottom, sender: root).show()
+            }
+        }
+        return .one(flowContributor: .contribute(
+            withNextPresentable: tabsFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.tabsIsRequired))
+        )
     }
 
     private func showLoaf(
