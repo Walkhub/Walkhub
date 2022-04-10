@@ -10,6 +10,9 @@ class EnterNameViewController: UIViewController, Stepper {
     var steps = PublishRelay<Step>()
     var disposeBag = DisposeBag()
 
+    private let nameRelay = PublishRelay<String>()
+    private var name = String()
+
     private let infoLabel = UILabel().then {
         $0.text = "이름은 10글자 내로 입력해주세요."
         $0.textColor = .red
@@ -84,16 +87,24 @@ class EnterNameViewController: UIViewController, Stepper {
                     self.continueBtn.isEnabled = false
                 }
             }).disposed(by: disposeBag)
+
+        nameTextField.rx.text.orEmpty
+            .bind(to: nameRelay)
+            .disposed(by: disposeBag)
+
+        nameRelay.asObservable()
+            .subscribe(onNext: {
+                self.name = $0
+            }).disposed(by: disposeBag)
     }
 
     private func setButton() {
         continueBtn.rx.tap
-            .map { WalkhubStep.certigyPhoneNumberIsRequired }
+            .map { WalkhubStep.certigyPhoneNumberIsRequired(name: self.name) }
             .bind(to: steps)
             .disposed(by: disposeBag)
     }
 }
-
 // MARK: Layout
 extension EnterNameViewController {
     private func addSubviews() {
