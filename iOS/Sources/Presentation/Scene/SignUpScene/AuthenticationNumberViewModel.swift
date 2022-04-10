@@ -22,7 +22,8 @@ class AuthenicationNumberViewModel: ViewModelType, Stepper {
     private var disposeBag = DisposeBag()
 
     struct Input {
-        let phoneNumber: Driver<String>
+        let name: String
+        let phoneNumber: String
         let authCode: Driver<String>
         let continueButtonDidTap: Driver<Void>
         let checkButtonDidTap: Driver<Void>
@@ -32,16 +33,19 @@ class AuthenicationNumberViewModel: ViewModelType, Stepper {
     }
 
     func transform(_ input: Input) -> Output {
-        let info = Driver.combineLatest(input.phoneNumber, input.authCode)
 
         input.continueButtonDidTap
             .asObservable()
-            .withLatestFrom(info)
+            .withLatestFrom(input.authCode)
             .flatMap {
                 self.checkVerificationCodeUseCase.excute(
-                    verificationCode: data.1,
-                    phoneNumber: data.0
-                ).andThen(Single.just(WalkhubStep.enterIdRequired))
+                    verificationCode: $0,
+                    phoneNumber: input.phoneNumber
+                ).andThen(Single.just(WalkhubStep.enterIdRequired(
+                    name: input.name,
+                    phoneNumber: input.phoneNumber,
+                    authCode: $0
+                )))
                     .catchAndReturn(WalkhubStep.loaf(
                         "인증번호가 일치하지 않습니다.",
                         state: .error,
@@ -52,9 +56,8 @@ class AuthenicationNumberViewModel: ViewModelType, Stepper {
 
         input.checkButtonDidTap
             .asObservable()
-            .withLatestFrom(input.phoneNumber)
             .flatMap {
-                self.verificationPhoneUseCase.excute(phoneNumber: $0)
+                self.verificationPhoneUseCase.excute(phoneNumber: input.phoneNumber)
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
 

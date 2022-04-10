@@ -7,12 +7,13 @@ import RxCocoa
 
 class AuthenticationNumberViewController: UIViewController {
 
+    var name = String()
     var phoneNumber = String()
     var viewModel: AuthenicationNumberViewModel!
 
     private var disposeBag = DisposeBag()
-    private let phoneNumberRelay = PublishRelay<String>()
     private var isRunningTimer: Bool = false
+    private var timerValue = 300
 
     private let timerLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
@@ -79,7 +80,7 @@ class AuthenticationNumberViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         checkBtn.isEnabled = true
-        phoneNumberRelay.accept(phoneNumber)
+        self.isRunningTimer = true
         setTime()
         setNavigation()
     }
@@ -98,7 +99,7 @@ class AuthenticationNumberViewController: UIViewController {
     private func setBtn() {
         checkBtn.rx.tap.subscribe(onNext: {
             self.checkBtn.isEnabled = false
-            self.setTime()
+            self.timerValue = 300
         }).disposed(by: disposeBag)
     }
 
@@ -125,18 +126,15 @@ class AuthenticationNumberViewController: UIViewController {
     }
 
     private func setTime() {
-        var timerValue = 300
-        isRunningTimer = true
-
         let driver = Driver<Int>.interval(.seconds(1))
             .map { _ in return 1 }
 
         driver.asObservable()
             .subscribe(onNext: { value in
                 if self.isRunningTimer {
-                    timerValue -= value
-                    self.timerLabel.text = "\(timerValue / 60) : \(String(format: "%0d", timerValue % 60))"
-                } else if timerValue == 0 {
+                    self.timerValue -= value
+                    self.timerLabel.text = "\(self.timerValue / 60) : \(String(format: "%02d", self.timerValue % 60))"
+                } else if self.timerValue == 0 {
                     self.timerLabel.textColor = .red
                     self.endTimer.isHidden = false
                     self.isRunningTimer = false
@@ -146,7 +144,8 @@ class AuthenticationNumberViewController: UIViewController {
 
     private func bind() {
         let input = AuthenicationNumberViewModel.Input(
-            phoneNumber: phoneNumberRelay.asDriver(onErrorJustReturn: ""),
+            name: name,
+            phoneNumber: phoneNumber,
             authCode: authenticationNumberTextField.rx.text.orEmpty.asDriver(),
             continueButtonDidTap: continueBtn.rx.tap.asDriver(),
             checkButtonDidTap: checkBtn.rx.tap.asDriver()
