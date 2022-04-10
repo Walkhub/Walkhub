@@ -7,7 +7,7 @@ enum UserAPI {
     case fetchProfile(userID: Int)
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
-    case setHealthInformation(height: Float, weight: Int, sex: Sex)
+    case setHealthInformation(height: Double?, weight: Int?, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
@@ -27,7 +27,7 @@ extension UserAPI: WalkhubAPI {
         case .fetchProfile(let userID):
             return "/\(userID)"
         case .setHealthInformation:
-            return "/healths"
+            return "/health"
         case .joinClass(let sectionId, _, _):
             return "/classes/\(sectionId)"
         case .setSchoolInformation:

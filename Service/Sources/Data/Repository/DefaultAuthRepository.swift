@@ -46,9 +46,6 @@ class DefaultAuthRepository: AuthRepository {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float?,
-        weight: Int?,
-        sex: Sex,
         schoolId: Int
     ) -> Completable {
         return remoteAuthDataSource.signup(
@@ -57,11 +54,11 @@ class DefaultAuthRepository: AuthRepository {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            height: height,
-            weight: weight,
-            sex: sex,
             schoolId: schoolId
-        )
+        ).asCompletable()
+            .do(onError: {
+                print($0)
+            })
     }
 
     func verificationPhone(phoneNumber: String) -> Completable {

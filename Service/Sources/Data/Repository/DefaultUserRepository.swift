@@ -48,8 +48,11 @@ class DefaultUserRepository: UserRepository {
             sex: sex
         )
     }
-    func setHealthInformation(height: Float, weight: Int, sex: Sex) -> Completable {
+    func setHealthInformation(height: Double?, weight: Int?, sex: Sex) -> Completable {
         return remoteUserDataSource.setHealthInformation(height: height, weight: weight, sex: sex)
+            .do(onError: {
+                print($0)
+            })
     }
 
     func joinClass(

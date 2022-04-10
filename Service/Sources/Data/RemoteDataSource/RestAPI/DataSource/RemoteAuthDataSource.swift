@@ -29,22 +29,16 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float?,
-        weight: Int?,
-        sex: Sex,
         schoolId: Int
-    ) -> Completable {
+    ) -> Single<UserSinginResponseDTO> {
         return request(.signup(
             id: id,
             password: password,
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            height: height,
-            weight: weight,
-            sex: sex,
             schoolId: schoolId
-        )).asCompletable()
+        )).map(UserSinginResponseDTO.self)
     }
 
     func verificationPhone(phoneNumber: String) -> Completable {

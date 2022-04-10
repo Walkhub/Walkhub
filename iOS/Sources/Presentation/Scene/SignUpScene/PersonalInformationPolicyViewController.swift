@@ -17,6 +17,7 @@ class PersonalInformationPolicyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigation()
+        view.backgroundColor = .white
     }
 
     override func viewDidLayoutSubviews() {

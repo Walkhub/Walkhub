@@ -48,8 +48,8 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     }
 
     func setHealthInformation(
-        height: Float,
-        weight: Int,
+        height: Double?,
+        weight: Int?,
         sex: Sex
     ) -> Completable {
         return request(.setHealthInformation(

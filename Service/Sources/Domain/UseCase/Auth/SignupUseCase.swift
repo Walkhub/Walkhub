@@ -18,9 +18,6 @@ public class SignupUseCase {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float?,
-        weight: Int?,
-        sex: Sex,
         schoolId: Int
     ) -> Completable {
         authRepository.signup(
@@ -29,9 +26,6 @@ public class SignupUseCase {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            height: height,
-            weight: weight,
-            sex: sex,
             schoolId: schoolId
         )
     }
