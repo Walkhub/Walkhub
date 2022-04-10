@@ -22,6 +22,7 @@ class CertifyPhoneNumberViewModel: ViewModelType, Stepper {
     struct Input {
         let phoneNumber: Driver<String>
         let continueButtonDidTap: Driver<Void>
+        let name: String
     }
 
     struct Output {
@@ -38,7 +39,10 @@ class CertifyPhoneNumberViewModel: ViewModelType, Stepper {
             .asObservable()
             .flatMap {
                 self.verificationPhoneUseCase.excute(phoneNumber: self.phoneNumber)
-                    .andThen(Single.just(WalkhubStep.authenticationNumberIsRequired(phoneNumber: self.phoneNumber)))
+                    .andThen(Single.just(WalkhubStep.authenticationNumberIsRequired(
+                        name: input.name,
+                        phoneNumber: self.phoneNumber
+                    )))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 

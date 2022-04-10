@@ -9,6 +9,7 @@ class CertifyPhoneNumberViewController: UIViewController {
 
     var authenticationNumberViewController: AuthenticationNumberViewController!
     var viewModel: CertifyPhoneNumberViewModel!
+    var name = String()
 
     private var disposeBag = DisposeBag()
 
@@ -105,7 +106,8 @@ class CertifyPhoneNumberViewController: UIViewController {
     private func bind() {
         let input = CertifyPhoneNumberViewModel.Input(
             phoneNumber: phoneNumberTextField.rx.text.orEmpty.asDriver(),
-            continueButtonDidTap: continueBtn.rx.tap.asDriver()
+            continueButtonDidTap: continueBtn.rx.tap.asDriver(),
+            name: name
         )
 
         _ = viewModel.transform(input)

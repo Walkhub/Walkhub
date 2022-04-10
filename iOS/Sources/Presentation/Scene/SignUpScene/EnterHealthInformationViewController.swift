@@ -59,7 +59,7 @@ class EnterHealthInformationViewController: UIViewController {
         $0.text = "kg"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
-    private let maleBtn = UIButton(type: .system).then {
+    private let maleBtn = UIButton().then {
         $0.setTitle("남성", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.setTitleColor(.gray800, for: .normal)
@@ -68,7 +68,7 @@ class EnterHealthInformationViewController: UIViewController {
         $0.setBackgroundColor(.primary400, for: .selected)
         $0.setBackgroundColor(.gray50, for: .normal)
     }
-    private let femaleBtn = UIButton(type: .system).then {
+    private let femaleBtn = UIButton().then {
         $0.setTitle("여성", for: .normal)
         $0.titleLabel?.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.setTitleColor(.gray800, for: .normal)
@@ -91,11 +91,8 @@ class EnterHealthInformationViewController: UIViewController {
         setBtn()
         setNavigation()
         bind()
+        view.backgroundColor = .white
         completeBtn.isEnabled = false
-    }
-
-    private func setNavigation() {
-        navigationItem.rightBarButtonItem = doLaterBtn
     }
 
     override func viewDidLayoutSubviews() {
@@ -109,6 +106,10 @@ class EnterHealthInformationViewController: UIViewController {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+
+    private func setNavigation() {
+        navigationItem.rightBarButtonItem = doLaterBtn
     }
 
     private func setBtn() {
