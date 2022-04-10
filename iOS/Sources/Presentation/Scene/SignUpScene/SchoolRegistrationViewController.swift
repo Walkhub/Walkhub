@@ -6,9 +6,15 @@ import RxSwift
 
 class SchoolRegistrationViewController: UIViewController {
 
+    var name = String()
+    var phoneNumber = String()
+    var authCode = String()
+    var id = String()
+    var password = String()
+
     var viewModel: SchoolRegistrationViewModel!
-    var disposeBag = DisposeBag()
-    let schoolId = PublishRelay<Int>()
+    private var disposeBag = DisposeBag()
+    private let schoolId = PublishRelay<Int>()
 
     private let searchTableView = UITableView().then {
         $0.backgroundColor = .white
@@ -69,6 +75,7 @@ class SchoolRegistrationViewController: UIViewController {
         bind()
         searchSchoolTextField.delegate = self
         schoolNameSearchBar.searchBar.delegate = self
+        view.backgroundColor = .white
     }
 
     override func viewDidLayoutSubviews() {
@@ -94,6 +101,11 @@ class SchoolRegistrationViewController: UIViewController {
 
     private func bind() {
         let input = SchoolRegistrationViewModel.Input(
+            name: name,
+            phoneNumber: phoneNumber,
+            authCode: authCode,
+            id: id,
+            password: password,
             searchSchool: schoolNameSearchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             cellTap: searchTableView.rx.itemSelected.asDriver(),
             continueButtonDidTap: continueBtn.rx.tap.asDriver()

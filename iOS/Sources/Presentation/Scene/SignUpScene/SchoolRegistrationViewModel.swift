@@ -14,6 +14,11 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
     }
 
     struct Input {
+        let name: String
+        let phoneNumber: String
+        let authCode: String
+        let id: String
+        let password: String
         let searchSchool: Driver<String>
         let cellTap: Driver<IndexPath>
         let continueButtonDidTap: Driver<Void>
@@ -27,6 +32,7 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
 
     var steps = PublishRelay<Step>()
     private let disposeBag = DisposeBag()
+    private var schoolId = Int()
 
     func transform(_ input: Input) -> Output {
         let schoolList = BehaviorRelay<[SearchSchool]>(value: [])
@@ -50,12 +56,19 @@ class SchoolRegistrationViewModel: ViewModelType, Stepper {
                 let value = schoolList.value
                 schoolId.accept(value[index.row].id)
                 schoolInfo.accept(value[index.row])
+                self.schoolId = value[index.row].id
             }).disposed(by: disposeBag)
 
         input.continueButtonDidTap
             .asObservable()
-            .map { WalkhubStep.setSchoolIsRequired }
-            .bind(to: steps)
+            .map { WalkhubStep.agreeIsRequired(
+                name: input.name,
+                phoneNumber: input.phoneNumber,
+                authCode: input.authCode,
+                id: input.id,
+                password: input.password,
+                schoolId: self.schoolId
+            )}.bind(to: steps)
             .disposed(by: disposeBag)
 
         return Output(schoolList: schoolList, schoolId: schoolId, schoolInfo: schoolInfo)
