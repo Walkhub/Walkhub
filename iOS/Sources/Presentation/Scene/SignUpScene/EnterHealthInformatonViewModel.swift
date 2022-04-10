@@ -28,27 +28,28 @@ class EnterHealthInformationViewModel: ViewModelType, Stepper {
     }
 
     func transform(_ input: Input) -> Output {
+        let info = Driver.combineLatest(input.height, input.weight, input.sex)
 
         input.completeButtonDidTap
             .asObservable()
+            .withLatestFrom(info)
             .flatMap {
-                Observable.zip(
-                    input.height.asObservable(),
-                    input.weight.asObservable(),
-                    input.sex.asObservable()
-                ) { (height: $0, weight: $1, sex: $2) }
-            }.flatMap {
-                self.setHealthInformationUseCase.excute(
-                    height: Float($0.height) ?? 0.0,
-                    weight: Int($0.weight) ?? 0,
-                    sex: $0.sex
-                ).andThen(Single.just(WalkhubStep.homeIsRequired))
-            }.bind(to: steps)
-            .disposed(by: disposeBag)
+                return self.setHealthInformationUseCase.excute(
+                    height: Double($0),
+                    weight: Int(Double($1) ?? 1),
+                    sex: $2
+                ).andThen(Single.just(WalkhubStep.tabsIsRequired))
+            }.subscribe(onNext: {
+                self.steps.accept($0)
+            }).disposed(by: disposeBag)
+
+        steps.asObservable()
+            .subscribe(onNext: { _ in
+            }).disposed(by: disposeBag)
 
         input.doLaterButtonDidTap
             .asObservable()
-            .map { WalkhubStep.homeIsRequired }
+            .map { WalkhubStep.tabsIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
 
