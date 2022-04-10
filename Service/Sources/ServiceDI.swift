@@ -108,7 +108,6 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-<<<<<<< HEAD
         self.register(FetchChallengesListUseCase.self) { resolver in
             return FetchChallengesListUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
@@ -122,7 +121,8 @@ public extension Container {
         self.register(JoinChallengesUseCase.self) { resolver in
             return JoinChallengesUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
-=======
+                )
+            }
         self.register(FetchWeekStepCountChartsUseCase.self) { resolver in
             return FetchWeekStepCountChartsUseCase(
                 exerisesRepository: resolver.resolve(ExercisesRepository.self)!
@@ -161,7 +161,26 @@ public extension Container {
         self.register(FetchMyPageUseCase.self) { resolver in
             return FetchMyPageUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
->>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
+            )
+        }
+        self.register(FetchJoinedChallengesUseCase.self) { resolver in
+            return FetchJoinedChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchChallengesListUseCase.self) { resolver in
+            return FetchChallengesListUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(JoinChallengesUseCase.self) { resolver in
+            return JoinChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchChallengeDetailUseCase.self) { resolver in
+            return FetchChallengeDetailUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
             )
         }
     }

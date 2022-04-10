@@ -29,7 +29,6 @@ extension Container {
                 searchSchoolRankUseCase: resolver.resolve(SearchSchoolRankUseCase.self)!
             )
         }
-<<<<<<< HEAD
         self.register(ChallengeViewModel.self) { resolver in
             ChallengeViewModel(
                 fetchChallengesListUseCase: resolver.resolve(FetchChallengesListUseCase.self)!,
@@ -39,8 +38,8 @@ extension Container {
         self.register(DetailedChallengeViewModel.self) { resolver in
             DetailedChallengeViewModel(
                 fetchChallengeDetailUseCase: resolver.resolve(FetchChallengeDetailUseCase.self)!,
-                joinChallengeUseCase: resolver.resolve(JoinChallengesUseCase.self)!
-=======
+                joinChallengeUseCase: resolver.resolve(JoinChallengesUseCase.self)!)
+                }
         self.register(DetailHubViewModel.self) { resolver in
             DetailHubViewModel(
                 searchUserUseCase: resolver.resolve(SearchUserUseCase.self)!,
@@ -76,7 +75,6 @@ extension Container {
             RecordMeasurementViewModel(
                 fetchExercisesListUseCase: resolver.resolve(FetchExercisesListUseCase.self)!,
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
->>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
             )
         }
     }
@@ -98,7 +96,6 @@ extension Container {
                 $0.viewModel = resolver.resolve(HubViewModel.self)!
             }
         }
-<<<<<<< HEAD
         self.register(ChallengeViewController.self) { resolver in
             return ChallengeViewController().then {
                 $0.viewModel = resolver.resolve(ChallengeViewModel.self)!
@@ -109,7 +106,6 @@ extension Container {
                 $0.viewModel = resolver.resolve(DetailedChallengeViewModel.self)!
             }
         }
-=======
         self.register(DetailHubViewController.self) { resolver in
             return DetailHubViewController().then {
                 $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
@@ -138,7 +134,5 @@ extension Container {
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
         }
->>>>>>> 07dc225a332434bf8a0cc87cea45687ee1aa6a68
     }
-
 }
