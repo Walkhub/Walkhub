@@ -70,8 +70,7 @@ extension Container {
         }
         self.register(AgreeTermsViewModel.self) { resolver in
             AgreeTermsViewModel(
-                signupUseCase: resolver.resolve(SignupUseCase.self)!,
-                signinUseCase: resolver.resolve(SigninUseCase.self)!
+                signupUseCase: resolver.resolve(SignupUseCase.self)!
             )
         }
         self.register(CertifyPhoneNumberViewModel.self) { resolver in
