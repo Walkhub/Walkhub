@@ -7,8 +7,11 @@ import RxCocoa
 
 class IDViewController: UIViewController {
 
+    var name = String()
+    var phoneNumber = String()
+    var authCode = String()
     var viewModel: IDViewModel!
-    var disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
 
     private let idProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
@@ -87,6 +90,9 @@ class IDViewController: UIViewController {
 
     private func bind() {
         let input = IDViewModel.Input(
+            name: name,
+            phoneNumber: phoneNumber,
+            authCode: authCode,
             id: idTextField.rx.text.orEmpty.asDriver(),
             continueButtonDidTap: continueBtn.rx.tap.asDriver()
         )

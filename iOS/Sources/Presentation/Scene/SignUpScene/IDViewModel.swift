@@ -17,6 +17,9 @@ class IDViewModel: ViewModelType, Stepper {
     var steps = PublishRelay<Step>()
 
     struct Input {
+        let name: String
+        let phoneNumber: String
+        let authCode: String
         let id: Driver<String>
         let continueButtonDidTap: Driver<Void>
     }
@@ -31,7 +34,12 @@ class IDViewModel: ViewModelType, Stepper {
             .withLatestFrom(input.id)
             .flatMap {
                 self.checkAccountIdUseCase.excute(accountId: $0)
-                    .andThen(Single.just(WalkhubStep.passwordIsRequired))
+                    .andThen(Single.just(WalkhubStep.passwordIsRequired(
+                        name: input.name,
+                        phoneNumber: input.phoneNumber,
+                        authCode: input.authCode,
+                        id: $0
+                    )))
                     .catchAndReturn(WalkhubStep.loaf(
                         "이미 존재하는 아이디에요.",
                         state: .error,
