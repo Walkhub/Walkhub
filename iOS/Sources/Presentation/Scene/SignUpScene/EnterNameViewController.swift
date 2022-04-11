@@ -3,56 +3,35 @@ import UIKit
 import SnapKit
 import RxCocoa
 import RxSwift
+import RxFlow
 
-class SignUpViewController: UIViewController {
+class EnterNameViewController: UIViewController, Stepper {
 
+    var steps = PublishRelay<Step>()
     var disposeBag = DisposeBag()
 
-    enum NameRange {
-        case over
-        case under
-        case normal
-    }
-
-    private func checkName(_ name: String) -> NameRange {
-        if name.count > 10 {
-            let index = name.index(name.startIndex, offsetBy: 11)
-            self.nameTextField.text = String(name[..<index])
-
-            return .over
-        }
-        if name.count < 2 {
-            return .under
-        }
-        return .normal
-    }
+    private let nameRelay = PublishRelay<String>()
+    private var name = String()
 
     private let infoLabel = UILabel().then {
+        $0.text = "이름은 10글자 내로 입력해주세요."
+        $0.textColor = .red
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
-
-    private let closeBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "xmark")
-        $0.tintColor = .gray500
-    }
-
     private let afterSignUpLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "회원가입하고"
     }
-
     private let walkTogetherLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.text = "친구들과 함께 걷기"
     }
-
     private let enterNameLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.text = "먼저 본인의 이름을 입력해주세요."
         $0.textColor = .gray600
     }
-
-    private let nameTextField = UITextField().then {
+    let nameTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
@@ -62,7 +41,6 @@ class SignUpViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.addLeftPadding()
     }
-
     private let continueBtn = UIButton(type: .system).then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setTitle("계속하기", for: .normal)
@@ -74,97 +52,95 @@ class SignUpViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNavigation()
         setTextField()
-        addSubviews()
-        makeSubviewConstraints()
+        setButton()
+        view.backgroundColor = .white
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        infoLabel.isHidden = true
+        setNavigation()
     }
 
     override func viewDidLayoutSubviews() {
+        addSubviews()
+        makeSubviewConstraints()
         continueBtn.layer.masksToBounds = true
-    }
-
-    private func setNavigation() {
-        navigationItem.leftBarButtonItem = closeBtn
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
 
+    private func setNavigation() {
+        self.navigationController?.navigationBar.setBackButtonToX()
+    }
+
     private func setTextField() {
         nameTextField.rx.text.orEmpty
-        .map { $0 != "" }
-        .bind(to: continueBtn.rx.isEnabled)
-        .disposed(by: disposeBag)
+            .subscribe(onNext: {
+                if $0.count >= 2 && $0.count < 11 {
+                    self.infoLabel.isHidden = true
+                    self.continueBtn.isEnabled = true
+                } else {
+                    self.infoLabel.isHidden = false
+                    self.continueBtn.isEnabled = false
+                }
+            }).disposed(by: disposeBag)
 
         nameTextField.rx.text.orEmpty
-            .map(checkName(_:))
-            .subscribe(onNext: { name in
-                switch name {
-                case .over:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = "이름은 10자 내로 입력해주세요."
-                    //                    self.nameTextField.resignFirstResponder()
-                    self.continueBtn.isUserInteractionEnabled = false
-                    self.continueBtn.isEnabled = false
+            .bind(to: nameRelay)
+            .disposed(by: disposeBag)
 
-                case .under:
-                    self.infoLabel.textColor = .red
-                    self.infoLabel.text = ""
-                    self.continueBtn.isUserInteractionEnabled = true
-                    self.continueBtn.isEnabled = false
+        nameRelay.asObservable()
+            .subscribe(onNext: {
+                self.name = $0
+            }).disposed(by: disposeBag)
+    }
 
-                case .normal:
-                    self.infoLabel.textColor = .green
-                    self.infoLabel.text = ""
-                    self.continueBtn.isUserInteractionEnabled = true
-                    self.continueBtn.isEnabled = true
-                }
-            })
+    private func setButton() {
+        continueBtn.rx.tap
+            .map { WalkhubStep.certigyPhoneNumberIsRequired(name: self.name) }
+            .bind(to: steps)
             .disposed(by: disposeBag)
     }
 }
-
-extension SignUpViewController {
+// MARK: Layout
+extension EnterNameViewController {
     private func addSubviews() {
         [afterSignUpLabel, walkTogetherLabel, enterNameLabel, nameTextField, continueBtn, infoLabel]
             .forEach { view.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
+
         afterSignUpLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
-
         walkTogetherLabel.snp.makeConstraints {
             $0.top.equalTo(afterSignUpLabel.snp.bottom).offset(1)
             $0.leading.equalToSuperview().inset(16)
         }
-
         enterNameLabel.snp.makeConstraints {
             $0.top.equalTo(walkTogetherLabel.snp.bottom).offset(12)
             $0.leading.equalToSuperview().inset(16)
         }
-
         nameTextField.snp.makeConstraints {
             $0.top.equalTo(enterNameLabel.snp.bottom).offset(20)
             $0.centerX.equalToSuperview()
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(52)
         }
-
         continueBtn.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(16)
             $0.centerX.equalToSuperview()
             $0.height.equalTo(52)
-            $0.bottom.equalToSuperview().inset(30)
+            $0.bottom.leading.trailing.equalToSuperview().inset(16)
         }
-
         infoLabel.snp.makeConstraints {
             $0.top.equalTo(nameTextField.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
     }
+
 }

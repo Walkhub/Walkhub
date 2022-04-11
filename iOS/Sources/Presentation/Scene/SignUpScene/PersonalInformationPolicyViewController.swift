@@ -8,30 +8,29 @@ class PersonalInformationPolicyViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .gray600
     }
-
     private let personalInformationPolicyTitleLabel = UILabel().then {
         $0.text = "개인정보 취급방침"
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
         $0.textColor = .gray900
     }
 
-    private let backBtn = UIBarButtonItem().then {
-        $0.image = .init(systemName: "arrow.backward")
-        $0.tintColor = .gray500
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        setNavigation()
+        view.backgroundColor = .white
+    }
+
+    override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
-        setNavigation()
     }
 
     private func setNavigation() {
-        navigationItem.leftBarButtonItem = backBtn
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
 }
 
+// MARK: Layout
 extension PersonalInformationPolicyViewController {
 
     private func addSubviews() {
@@ -44,10 +43,10 @@ extension PersonalInformationPolicyViewController {
             $0.top.equalToSuperview().inset(148)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
-
         personalInformationPolicyTitleLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
     }
+
 }

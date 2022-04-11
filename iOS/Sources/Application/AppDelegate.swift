@@ -2,6 +2,7 @@ import UIKit
 
 import BackgroundTasks
 import Firebase
+import FirebaseMessaging
 import Swinject
 import Service
 
