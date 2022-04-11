@@ -15,7 +15,7 @@ class ChallengeViewController: UIViewController {
     private var challengeList = [Challenge]()
 
     private let challengeTableView = UITableView(frame: .zero, style: .insetGrouped).then {
-        $0.backgroundColor = .clear
+        $0.backgroundColor = .gray50
         $0.register(ParticipatingChallengeTableViewCell.self, forCellReuseIdentifier: "participatingChallengeCell")
         $0.register(WholeChallengeTableViewCell.self, forCellReuseIdentifier: "wholeChallengeCell")
     }

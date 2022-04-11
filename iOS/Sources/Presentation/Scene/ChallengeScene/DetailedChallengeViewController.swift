@@ -204,27 +204,27 @@ class DetailedChallengeViewController: UIViewController {
         challengeTextView.isScrollEnabled = false
     }
 
-//    private func bindViewModel() {
-//        let input = DetailedChallengeViewModel.Input(
-//            challengeId: challengeId.asDriver(onErrorJustReturn: 0),
-//            joinButtonDidTap: participateBtn.rx.tap.asDriver())
-//
-//        let output = viewModel.transform(input)
-//
-//        output.detailChallenge.asObservable()
-//            .subscribe(onNext: {
-//                self.challengeTitleLabel.text = $0.name
-//                self.organizerLable.text = $0.name
-//                self.dateLabel.text = "\($0.start.challengeToString()) ~ \($0.end.challengeToString())"
-//                if ($0.goalType == "DISTANCE") {
-//                    self.targetDistanceLabel.text = "기간 내 \($0.goal)km 달성"
-//                } else {
-//                    self.targetDistanceLabel.text = "기간 내 \($0.goal)걸음 달성"
-//                }
-//                self.purposeLabel.text = $0.award
-//                self.challengeTextView.text = $0.content
-//            }).disposed(by: disposeBag)
-//    }
+    private func bindViewModel() {
+        let input = DetailedChallengeViewModel.Input(
+            challengeId: challengeId.asDriver(onErrorJustReturn: 0),
+            joinButtonDidTap: participateBtn.rx.tap.asDriver())
+
+        let output = viewModel.transform(input)
+
+        output.detailChallenge.asObservable()
+            .subscribe(onNext: {
+                self.challengeTitleLabel.text = $0.name
+                self.organizerLable.text = $0.name
+                self.dateLabel.text = "\($0.start.challengeToString()) ~ \($0.end.challengeToString())"
+                if ($0.goalType == "DISTANCE") {
+                    self.targetDistanceLabel.text = "기간 내 \($0.goal)km 달성"
+                } else {
+                    self.targetDistanceLabel.text = "기간 내 \($0.goal)걸음 달성"
+                }
+                self.purposeLabel.text = $0.award
+                self.challengeTextView.text = $0.content
+            }).disposed(by: disposeBag)
+    }
 }
 
 extension DetailedChallengeViewController {
