@@ -11,8 +11,8 @@ struct MySchoolDTO: Decodable {
     let id: Int
     let name: String
     let logoImageUrlString: String
-    let grade: Int
-    let classNum: Int
+    let grade: Int?
+    let classNum: Int?
 }
 
 extension MySchoolDTO {
@@ -21,8 +21,8 @@ extension MySchoolDTO {
             id: id,
             name: name,
             logoImageUrl: URL(string: logoImageUrlString)!,
-            grade: grade,
-            classNum: classNum
+            grade: grade ?? 0,
+            classNum: classNum ?? 0
         )
     }
 }

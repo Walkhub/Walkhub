@@ -29,21 +29,30 @@ class HubViewModel: ViewModelType, Stepper {
     struct Output {
         let mySchoolRank: PublishRelay<MySchool>
         let schoolRank: PublishRelay<[School]>
-        let searchSchoolRankList: PublishRelay<[SearchSchoolRank]>
+        let searchSchoolRankList: PublishRelay<[School]>
     }
 
     func transform(_ input: Input) -> Output {
         let mySchoolRank = PublishRelay<MySchool>()
         let schoolRank = PublishRelay<[School]>()
-        let searchSchoolRankList = PublishRelay<[SearchSchoolRank]>()
+        let searchSchoolRankList = PublishRelay<[School]>()
         let info = Driver.combineLatest(input.name, input.dateType)
 
-        input.dateType.asObservable().withLatestFrom(input.dateType).flatMap {
+        input.dateType.asObservable()
+            .withLatestFrom(input.dateType)
+            .flatMap {
             self.fetchSchoolUseCase.excute(dateType: $0)
         }.subscribe(onNext: {
-            mySchoolRank.accept($0.mySchoolRank)
-            schoolRank.accept($0.schoolList)
+            mySchoolRank.accept($0)
         }).disposed(by: disposeBag)
+
+        input.dateType.asObservable()
+            .withLatestFrom(input.dateType)
+            .flatMap {
+                self.searchSchoolRankUseCase.excute(name: nil, dateType: $0)
+            }.subscribe(onNext: {
+                schoolRank.accept($0)
+            }).disposed(by: disposeBag)
 
         input.name.asObservable().withLatestFrom(info).flatMap {
             self.searchSchoolRankUseCase.excute(name: $0, dateType: $1)
