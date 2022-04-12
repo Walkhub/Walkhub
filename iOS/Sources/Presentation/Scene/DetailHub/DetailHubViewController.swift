@@ -46,6 +46,7 @@ class DetailHubViewController: TabmanViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
         searchTableView.isHidden = true
         setNavigation()
     }
