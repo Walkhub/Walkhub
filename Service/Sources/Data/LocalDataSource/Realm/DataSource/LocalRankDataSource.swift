@@ -17,7 +17,7 @@ final class LocalRankDataSource {
         return Single.zip(
             fetchMyRank(scope: scope, dateType: dateType),
             fetchUserRankList(scope: scope, dateType: dateType)
-        ) { self.generateUserRank(myRank: $0, list: $1) }
+        ) { self.generateUserRank(isJoinedClass: false, myRank: $0, list: $1) }
     }
 
     func storeUserRank(
@@ -178,10 +178,12 @@ extension LocalRankDataSource {
     }
 
     private func generateUserRank(
+        isJoinedClass: Bool,
         myRank: PersonRankRealmEntity,
         list: [PersonRankRealmEntity]
     ) -> UserRank {
         return .init(
+            isJoinedClass: isJoinedClass,
             myRank: myRank.toDomain(),
             rankList: list.map { $0.toDomain() }
         )
