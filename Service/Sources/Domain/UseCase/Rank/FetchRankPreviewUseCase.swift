@@ -12,7 +12,7 @@ public class FetchRankPreviewUseCase {
 
     public func excute() -> Observable<[RankedUser]> {
         rankRepository.fetchUserSchoolRank(scope: .school, dateType: .day)
-            .map { $0.rankList[0...3] }
+            .map { $0.rankList[0..<3] }
             .map { Array($0) }
     }
 
