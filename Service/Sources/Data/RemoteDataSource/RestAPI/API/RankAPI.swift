@@ -40,7 +40,7 @@ extension RankAPI: WalkhubAPI {
         case .fetchSchoolRank(let dateType):
             return .requestParameters(
                 parameters: [
-                    "dateType": dateType.rawValue
+                    "schoolDateType": dateType.rawValue
                 ],
                 encoding: URLEncoding.queryString
             )
@@ -48,7 +48,9 @@ extension RankAPI: WalkhubAPI {
             return .requestParameters(
                 parameters: [
                     "name": name,
-                    "dateType": dateType.rawValue
+                    "sort": Sort.rank.rawValue,
+                    "scope": GroupScope.all.rawValue,
+                    "schoolDateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
         case .fetchUserSchoolRank(let scope, let dateType):
