@@ -56,8 +56,8 @@ class HubViewController: UIViewController {
     }
 
     private let dropDownBtn = DropDownButton().then {
-        $0.setTitle(" 어제\t", for: .normal)
-        $0.arr = ["어제", "이번주", "이번달"]
+        $0.setTitle("이번주\t", for: .normal)
+        $0.arr = ["최근 일주일", "최근 한 달"]
     }
 
     private let rankTableView = UITableView().then {
@@ -84,18 +84,12 @@ class HubViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        self.tabBarController?.tabBar.isHidden = true
-    }
-
     private func setDropDown() {
         dropDownBtn.dropDown.selectionAction = { row, item in
             self.dropDownBtn.setTitle(" \(item)\t", for: .normal)
             self.dropDownBtn.dropDown.clearSelection()
             switch row {
             case 0:
-                self.dateType.accept(.day)
-            case 1:
                 self.dateType.accept(.week)
             default:
                 self.dateType.accept(.month)
