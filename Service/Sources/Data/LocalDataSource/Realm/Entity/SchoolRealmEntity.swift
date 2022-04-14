@@ -9,9 +9,9 @@ class SchoolRealmEntity: Object {
     @Persisted var schoolId: Int = 0
     @Persisted var name: String = ""
     @Persisted var rank: Int = 0
-    @Persisted var studentsCount: Int = 0
     @Persisted var logoImageUrlString: String = ""
     @Persisted var walkCount: Int = 0
+    @Persisted var userCount: Int = 0
 
 }
 
@@ -24,6 +24,7 @@ extension SchoolRealmEntity {
         self.rank = school.ranking
         self.logoImageUrlString = school.logoImageUrl.absoluteString
         self.walkCount = school.walkCount
+        self.userCount = school.userCount
         self.compoundKey = compoundKeyValue()
     }
 
@@ -40,9 +41,9 @@ extension SchoolRealmEntity {
             schoolId: schoolId,
             name: name,
             ranking: rank,
-            studentsCount: studentsCount,
             logoImageUrl: URL(string: logoImageUrlString)!,
-            walkCount: walkCount
+            walkCount: walkCount,
+            userCount: userCount
         )
     }
 }

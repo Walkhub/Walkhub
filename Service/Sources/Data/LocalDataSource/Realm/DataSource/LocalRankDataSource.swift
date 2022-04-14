@@ -10,18 +10,6 @@ final class LocalRankDataSource {
 
     private init() { }
 
-    func fetchSchoolRank(dateType: DateType) -> Single<SchoolRank> {
-        return Single.zip(
-            fetchMySchoolRank(dateType: dateType),
-            fetchSchoolRankList(dateType: dateType)
-        ) { self.generateSchoolRank(mySchoolRank: $0, list: $1) }
-    }
-
-    func storeSchoolRank(schoolRank: SchoolRank, dateType: DateType) {
-        storeMySchoolRank(school: schoolRank.mySchoolRank, dateType: dateType)
-        storeSchoolRankList(rankList: schoolRank.schoolList, dateType: dateType)
-    }
-
     func fetchUserRank(
         scope: GroupScope,
         dateType: DateType
@@ -54,16 +42,16 @@ final class LocalRankDataSource {
 // MARK: School Rank
 extension LocalRankDataSource {
 
-    private func fetchMySchoolRank(dateType: DateType) -> Single<MySchoolRankRealmEntity> {
+    func fetchMySchoolRank(dateType: DateType) -> Single<MySchool> {
         return realmTask.fetchObjects(
             for: MySchoolRankRealmEntity.self,
                filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)'"
                )
-        ).map { $0.first! }
+        ).map { $0.first!.toDomain() }
     }
 
-    private func storeMySchoolRank(school: MySchool, dateType: DateType) {
+    func storeMySchoolRank(school: MySchool, dateType: DateType) {
         let mySchoolRank = mySchoolToSchoolRankRealmEntity(
             school: school,
             dateType: dateType
@@ -71,17 +59,22 @@ extension LocalRankDataSource {
         realmTask.set(mySchoolRank)
     }
 
-    private func fetchSchoolRankList(dateType: DateType) -> Single<[SchoolRankRealmEntity]> {
+    func fetchSchoolRankList(dateType: DateType) -> Single<[SchoolRealmEntity]> {
         return realmTask.fetchObjects(
-            for: SchoolRankRealmEntity.self,
-               filter: QueryFilter.string(
+            for: SchoolRealmEntity.self,
+            filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMySchoolRank = true"
+<<<<<<< HEAD
                ),
                sortProperty: "ranking"
+=======
+            ),
+            sortProperty: "rank"
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         )
     }
 
-    private func storeSchoolRankList(rankList: [School], dateType: DateType) {
+    func storeSchoolRankList(rankList: [School], dateType: DateType) {
         let schoolRankList = rankList.map {
             return schoolToSchoolRankRealmEntity(
                 school: $0,
@@ -116,16 +109,6 @@ extension LocalRankDataSource {
             dateType: dateType
         )
         return mySchoolRankRealmEntity
-    }
-
-    private func generateSchoolRank(
-        mySchoolRank: MySchoolRankRealmEntity,
-        list: [SchoolRankRealmEntity]
-    ) -> SchoolRank {
-        return .init(
-            mySchoolRank: mySchoolRank.toDomain(),
-            schoolList: list.map { $0.toDomain() }
-        )
     }
 
 }

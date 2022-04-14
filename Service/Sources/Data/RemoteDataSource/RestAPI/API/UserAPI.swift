@@ -7,10 +7,11 @@ enum UserAPI {
     case fetchProfile(userID: Int)
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
-    case setHealthInformation(height: Float, weight: Int)
+    case setHealthInformation(height: Double?, weight: Int?, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
+    case checkClassCode(code: String)
 }
 
 extension UserAPI: WalkhubAPI {
@@ -26,13 +27,15 @@ extension UserAPI: WalkhubAPI {
         case .fetchProfile(let userID):
             return "/\(userID)"
         case .setHealthInformation:
-            return "/healths"
+            return "/health"
         case .joinClass(let sectionId, _, _):
             return "/classes/\(sectionId)"
         case .setSchoolInformation:
             return "/school"
         case .changeGoalWalkCount:
             return "/goal"
+        case .checkClassCode:
+            return "/classes"
         default:
             return ""
         }
@@ -59,11 +62,12 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .setHealthInformation(let height, let weight):
+        case .setHealthInformation(let height, let weight, let sex):
             return .requestParameters(
                 parameters: [
                     "height": height,
-                    "weight": weight
+                    "weight": weight,
+                    "sex": sex.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
@@ -80,13 +84,22 @@ extension UserAPI: WalkhubAPI {
                     "class_code": classCode,
                     "number": num
                 ],
-                encoding: JSONEncoding.prettyPrinted)
+                encoding: JSONEncoding.prettyPrinted
+            )
         case .changeGoalWalkCount(let goalWalkCount):
             return .requestParameters(
                 parameters: [
                     "daily_walk_count_goal": goalWalkCount
                 ],
-                encoding: JSONEncoding.prettyPrinted)
+                encoding: JSONEncoding.prettyPrinted
+            )
+        case .checkClassCode(let code):
+            return .requestParameters(
+                parameters: [
+                    "code": code
+                ],
+                encoding: URLEncoding.queryString
+            )
         default: return .requestPlain
         }
     }
@@ -97,6 +110,8 @@ extension UserAPI: WalkhubAPI {
             return .patch
         case .joinClass:
             return .post
+        case .checkClassCode:
+            return .head
         default:
             return .get
         }

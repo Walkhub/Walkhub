@@ -6,16 +6,16 @@ struct SchoolDTO: Decodable {
         case schoolId = "school_id"
         case name
         case ranking
-        case studentsCount = "student_count"
         case logoImageUrlString = "logo_image_url"
         case walkCount = "walk_count"
+        case userCount = "user_count"
     }
     let schoolId: Int
     let name: String
     let ranking: Int
-    let studentsCount: Int
     let logoImageUrlString: String
     let walkCount: Int
+    let userCount: Int
 }
 
 // MARK: - Mappings to Domain
@@ -25,9 +25,9 @@ extension SchoolDTO {
             schoolId: schoolId,
             name: name,
             ranking: ranking,
-            studentsCount: studentsCount,
             logoImageUrl: URL(string: logoImageUrlString)!,
-            walkCount: walkCount
+            walkCount: walkCount,
+            userCount: userCount
         )
     }
 }

@@ -27,6 +27,7 @@ class DefaultAuthRepository: AuthRepository {
                     password: password,
                     deviceToken: deviceToken
                 ).do(onSuccess: {
+                    print($0)
                     self.keychainDataSource.registerAccessToken($0.accessToken)
                     self.keychainDataSource.registerRefreshToken($0.refreshToken)
                     self.keychainDataSource.registerExpiredAt($0.expiredAt)
@@ -36,6 +37,8 @@ class DefaultAuthRepository: AuthRepository {
                     self.healthKitDataSource.storeUserHeight($0.height ?? 0)
                     self.healthKitDataSource.storeUserWeight(Double($0.weight ?? 0))
                     self.userDefaultDataSource.userSex = Sex(rawValue: $0.sex)!
+                }, onError: {
+                    print($0)
                 }).asCompletable()
             }
     }
@@ -46,11 +49,7 @@ class DefaultAuthRepository: AuthRepository {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float,
-        weight: Int,
-        birthday: String,
-        sex: Sex,
-        schoolId: String
+        schoolId: Int
     ) -> Completable {
         return remoteAuthDataSource.signup(
             id: id,
@@ -58,12 +57,11 @@ class DefaultAuthRepository: AuthRepository {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            height: height,
-            weight: weight,
-            birthday: birthday,
-            sex: sex,
             schoolId: schoolId
-        )
+        ).asCompletable()
+            .do(onError: {
+                print($0)
+            })
     }
 
     func verificationPhone(phoneNumber: String) -> Completable {
@@ -72,6 +70,16 @@ class DefaultAuthRepository: AuthRepository {
         )
     }
 
+    func checkVerificationCode(verificationCode: String, phoneNumber: String) -> Completable {
+        return remoteAuthDataSource.checkVerificationCode(
+            verificationCode: verificationCode,
+            phoneNumber: phoneNumber
+        )
+    }
+
+    func checkAccountId(accountId: String) -> Completable {
+        return remoteAuthDataSource.checkAccountId(accountId: accountId)
+    }
 }
 
 extension DefaultAuthRepository {

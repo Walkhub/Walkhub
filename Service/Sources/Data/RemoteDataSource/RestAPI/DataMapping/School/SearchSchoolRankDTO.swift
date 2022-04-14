@@ -7,22 +7,25 @@ struct SearchSchoolRankDTO: Decodable {
         case ranking
         case logoImageUrlString = "logo_image_url"
         case walkCount = "walk_count"
+        case userCount = "user_count"
     }
     let id: Int
     let name: String
     let ranking: Int
     let logoImageUrlString: String
     let walkCount: Int
+    let userCount: Int
 }
 
 extension SearchSchoolRankDTO {
-    func toDomain() -> SearchSchoolRank {
+    func toDomain() -> School {
         return .init(
-            id: id,
+            schoolId: id,
             name: name,
             ranking: ranking,
             logoImageUrl: URL(string: logoImageUrlString)!,
-            walkCount: walkCount
+            walkCount: walkCount,
+            userCount: userCount
         )
     }
 }

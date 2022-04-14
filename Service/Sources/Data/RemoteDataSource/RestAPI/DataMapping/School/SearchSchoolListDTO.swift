@@ -2,7 +2,7 @@ import Foundation
 
 struct SearchSchoolListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case list = "school_list"
+        case list = "search_school_list"
     }
     let list: [SearchSchoolDTO]
 }

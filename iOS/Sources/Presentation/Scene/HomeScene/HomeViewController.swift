@@ -4,7 +4,6 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
-import CoreGraphics
 
 class HomeViewController: UIViewController {
 

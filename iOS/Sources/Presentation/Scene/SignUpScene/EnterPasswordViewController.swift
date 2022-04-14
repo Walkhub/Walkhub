@@ -1,32 +1,41 @@
 import UIKit
 
-import SnapKit
 import Then
+import SnapKit
 import RxSwift
 import RxCocoa
+import RxFlow
 
-class IDViewController: UIViewController {
+class EnterPasswordViewController: UIViewController, Stepper {
 
     var name = String()
     var phoneNumber = String()
     var authCode = String()
-    var viewModel: IDViewModel!
+    var id = String()
+
+    private let passwordRelay = PublishRelay<String>()
+    private var password = String()
+    var steps = PublishRelay<Step>()
     private var disposeBag = DisposeBag()
 
-    private let idProgressBar = UIProgressView().then {
+    private let pwProgressBar = UIProgressView().then {
         $0.progressViewStyle = .bar
         $0.progressTintColor = .primary400
         $0.trackTintColor = .gray400
-        $0.progress = 0.32
+        $0.progress = 0.48
     }
     private let infoLabel = UILabel().then {
-        $0.text = "새로운 아이디를 입력해주세요."
-        $0.textColor = .red
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.numberOfLines = 2
+        $0.text = """
+비밀번호는 8~30자 내로
+특수문자를 1개 이상 포함하여 입력해주세요.
+"""
+        $0.textColor = .red
     }
-    private let idLabel = UILabel().then {
+    private let pwLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
-        $0.text = "아이디"
+        $0.text = "비밀번호"
     }
     private let continueBtn = UIButton(type: .system).then {
         $0.setTitle("계속하기", for: .normal)
@@ -41,29 +50,26 @@ class IDViewController: UIViewController {
         width: UIScreen.main.bounds.width,
         height: 72.0
     ))
-    let idTextField = UITextField().then {
+    let pwTextField = UITextField().then {
         $0.borderStyle = .roundedRect
         $0.layer.borderWidth = 1
         $0.layer.cornerRadius = 10
         $0.layer.borderColor = UIColor.gray400.cgColor
         $0.borderStyle = UITextField.BorderStyle.none
-        $0.placeholder = "아이디(5~30자)"
+        $0.placeholder = "비밀번호(8~30자,특수문자 1개 이상)"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.addLeftPadding()
+        $0.isSecureTextEntry = true
+        $0.keyboardType = .alphabet
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         setNavigation()
         setTextField()
-        bind()
-        idTextField.inputAccessoryView = accessoryView
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        continueBtn.isEnabled = false
-        infoLabel.isHidden = true
+        setButton()
+        view.backgroundColor = .white
+        pwTextField.inputAccessoryView = accessoryView
     }
 
     override func viewDidLayoutSubviews() {
@@ -72,8 +78,13 @@ class IDViewController: UIViewController {
         makeSubviewConstraints()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        infoLabel.isHidden = true
+        continueBtn.isEnabled = false
+    }
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+        view.endEditing(true)
     }
 
     private func setNavigation() {
@@ -81,40 +92,66 @@ class IDViewController: UIViewController {
     }
 
     private func setTextField() {
-        idTextField.rx.text.orEmpty
+        pwTextField.rx.text.orEmpty
+            .map { $0 != "" }
+            .bind(to: continueBtn.rx.isEnabled)
+            .disposed(by: disposeBag)
+
+        pwTextField.rx.text.orEmpty
             .subscribe(onNext: {
-                self.infoLabel.isHidden = $0.count > 4 && $0.count < 31
-                self.continueBtn.isEnabled = $0.count > 4 && $0.count < 31
+                self.infoLabel.isHidden = self.isVaildTest(str: $0)
+                self.continueBtn.isEnabled = self.isVaildTest(str: $0)
+            }).disposed(by: disposeBag)
+
+        pwTextField.rx.text.orEmpty
+            .bind(to: passwordRelay)
+            .disposed(by: disposeBag)
+
+        passwordRelay.asObservable()
+            .subscribe(onNext: {
+                self.password = $0
             }).disposed(by: disposeBag)
     }
 
-    private func bind() {
-        let input = IDViewModel.Input(
-            name: name,
-            phoneNumber: phoneNumber,
-            authCode: authCode,
-            id: idTextField.rx.text.orEmpty.asDriver(),
-            continueButtonDidTap: continueBtn.rx.tap.asDriver()
-        )
-        _ = viewModel.transform(input)
+    private func setButton() {
+        continueBtn.rx.tap
+            .map { WalkhubStep.setSchoolIsRequired(
+                name: self.name,
+                phoneNumber: self.phoneNumber,
+                authCode: self.authCode,
+                id: self.id,
+                password: self.password
+            ) }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
     }
+
+    private func isVaildTest(str: String?) -> Bool {
+        guard str != nil else { return false }
+
+        let strRegEx = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}"
+        let pred = NSPredicate(format: "SELF MATCHES %@", strRegEx)
+
+        return pred.evaluate(with: str)
+    }
+
 }
 
 // MARK: Layout
-extension IDViewController {
+extension EnterPasswordViewController {
     private func addSubviews() {
         accessoryView.addSubview(continueBtn)
-        [idLabel, idTextField, infoLabel, idProgressBar]
+        [pwLabel, pwTextField, infoLabel, pwProgressBar]
             .forEach { view.addSubview($0) }
     }
     private func makeSubviewConstraints() {
 
-        idLabel.snp.makeConstraints {
+        pwLabel.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.leading.equalToSuperview().inset(16)
         }
-        idTextField.snp.makeConstraints {
-            $0.top.equalTo(idLabel.snp.bottom).offset(20)
+        pwTextField.snp.makeConstraints {
+            $0.top.equalTo(pwLabel.snp.bottom).offset(20)
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(52)
             $0.centerX.equalToSuperview()
@@ -125,10 +162,10 @@ extension IDViewController {
             $0.bottom.equalToSuperview()
         }
         infoLabel.snp.makeConstraints {
-            $0.top.equalTo(idTextField.snp.bottom).offset(8)
+            $0.top.equalTo(pwTextField.snp.bottom).offset(8)
             $0.leading.equalToSuperview().inset(16)
         }
-        idProgressBar.snp.makeConstraints {
+        pwProgressBar.snp.makeConstraints {
             $0.top.equalToSuperview().inset(90)
             $0.trailing.leading.equalToSuperview()
         }

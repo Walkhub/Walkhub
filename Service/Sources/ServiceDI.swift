@@ -32,8 +32,8 @@ public extension Container {
         self.register(SigninUseCase.self) { resolver in
             return SigninUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
-        self.register(SingupUseCase.self) { resolver in
-            return SingupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
+        self.register(SignupUseCase.self) { resolver in
+            return SignupUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
         }
         self.register(VerificationPhoneUseCase.self) { resolver in
             return VerificationPhoneUseCase(authRepository: resolver.resolve(AuthRepository.self)!)
@@ -72,7 +72,11 @@ public extension Container {
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
-
+        self.register(SearchSchoolUseCase.self) { resolver in
+            return SearchSchoolUseCase(
+                schoolRepository: resolver.resolve(SchoolRepository.self)!
+            )
+        }
         self.register(FetchRankPreviewUseCase.self) { resolver in
             return FetchRankPreviewUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!
@@ -163,6 +167,7 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+<<<<<<< HEAD
         self.register(FetchJoinedChallengesUseCase.self) { resolver in
             return FetchJoinedChallengesUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
@@ -181,6 +186,21 @@ public extension Container {
         self.register(FetchChallengeDetailUseCase.self) { resolver in
             return FetchChallengeDetailUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
+=======
+        self.register(CheckVerificationCodeUseCase.self) { resolver in
+            return CheckVerificationCodeUseCase(
+                authRepository: resolver.resolve(AuthRepository.self)!
+            )
+        }
+        self.register(CheckAccountIdUseCase.self) { resolver in
+            return CheckAccountIdUseCase(
+                authRepository: resolver.resolve(AuthRepository.self)!
+            )
+        }
+        self.register(SetHealthInformationUseCase.self) { resolver in
+            return SetHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             )
         }
     }

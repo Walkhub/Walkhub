@@ -22,6 +22,8 @@ class OnboardingFlow: Flow {
             return navigationToLoginScreen()
         case .userIsLoggedIn:
             return navigationToSignupScreen()
+        case .enterNameIsRequired:
+            return navigationToEnterNameScren()
         default:
             return .none
         }
@@ -43,6 +45,18 @@ class OnboardingFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: loginFlow,
             withNextStepper: OneStepper(withSingleStep: WalkhubStep.loginIsRequired)
+        ))
+    }
+
+    private func navigationToEnterNameScren() -> FlowContributors {
+        let signupFlow = SignupFlow()
+
+        Flows.use(signupFlow, when: .created) { [weak self] root in
+            self?.rootViewController.pushViewController(root, animated: true)
+        }
+        return .one(flowContributor: .contribute(
+            withNextPresentable: signupFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.enterNameIsRequired)
         ))
     }
 

@@ -11,8 +11,8 @@ class DetailHubViewController: TabmanViewController {
 
     private var viewController = [UIViewController]()
 
-    private var rankVC: RankViewController!
-    private var informationVC: InformationViewController!
+    var rankVC: RankViewController!
+    var informationVC: InformationViewController!
     var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
@@ -25,7 +25,7 @@ class DetailHubViewController: TabmanViewController {
     private let searchBtn = UIBarButtonItem(
         image: .init(systemName: "magnifyingglass"),
         style: .plain,
-        target: self,
+        target: DetailHubViewController.self,
         action: nil).then {
             $0.tintColor = .black
         }

@@ -7,15 +7,15 @@ class DefaultRankRepository: RankRepository {
     private let remoteRankDataSource = RemoteRankDataSource.shared
     private let localRankDataSource = LocalRankDataSource.shared
 
-    func fetchSchoolRank(dateType: DateType) -> Observable<SchoolRank> {
-        return OfflineCacheUtil<SchoolRank>()
-            .localData { self.localRankDataSource.fetchSchoolRank(dateType: dateType) }
+    func fetchSchoolRank(dateType: DateType) -> Observable<MySchool> {
+        return OfflineCacheUtil<MySchool>()
+            .localData { self.localRankDataSource.fetchMySchoolRank(dateType: dateType) }
             .remoteData { self.remoteRankDataSource.fetchSchoolRank(dateType: dateType) }
-            .doOnNeedRefresh { self.localRankDataSource.storeSchoolRank(schoolRank: $0, dateType: dateType) }
+            .doOnNeedRefresh { self.localRankDataSource.storeMySchoolRank(school: $0, dateType: dateType)}
             .createObservable()
     }
 
-    func searchSchool(name: String, dateType: DateType) -> Single<[SearchSchoolRank]> {
+    func searchSchool(name: String?, dateType: DateType) -> Single<[School]> {
         return remoteRankDataSource.searchSchool(name: name, dateType: dateType)
     }
 

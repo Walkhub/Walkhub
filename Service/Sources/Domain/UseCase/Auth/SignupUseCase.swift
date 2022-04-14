@@ -4,7 +4,7 @@ import Foundation
 
 import RxSwift
 
-public class SingupUseCase {
+public class SignupUseCase {
 
     private let authRepository: AuthRepository
 
@@ -18,11 +18,7 @@ public class SingupUseCase {
         name: String,
         phoneNumber: String,
         authCode: String,
-        height: Float,
-        weight: Int,
-        birthday: String,
-        sex: Sex,
-        schoolId: String
+        schoolId: Int
     ) -> Completable {
         authRepository.signup(
             id: id,
@@ -30,10 +26,6 @@ public class SingupUseCase {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            height: height,
-            weight: weight,
-            birthday: birthday,
-            sex: sex,
             schoolId: schoolId
         )
     }

@@ -4,11 +4,12 @@ import Moya
 
 enum AuthAPI {
     case signin(id: String, password: String, deviceToken: String)
-    case signup(id: String, password: String, name: String, phoneNumber: String, authCode: String,
-                height: Float, weight: Int, birthday: String, sex: Sex, schoolId: String)
+    case signup(id: String, password: String, name: String, phoneNumber: String, authCode: String, schoolId: Int)
     case verificationPhone(phoneNumber: String)
+    case checkVerificationCode(verificationCode: String, phoneNumber: String)
     case renewalToken
     case findID(phoneNumber: String)
+    case checkAccountId(accountId: String)
 }
 
 extension AuthAPI: WalkhubAPI {
@@ -23,10 +24,17 @@ extension AuthAPI: WalkhubAPI {
             return "/token"
         case .signup:
             return ""
+<<<<<<< HEAD
         case .verificationPhone:
             return "verification-codes"
+=======
+        case .verificationPhone, .checkVerificationCode:
+            return "/verification-codes"
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
+        case .checkAccountId:
+            return "/account-id"
         }
     }
 
@@ -38,6 +46,8 @@ extension AuthAPI: WalkhubAPI {
             return .patch
         case .findID:
             return .get
+        default:
+            return .head
         }
     }
 
@@ -52,20 +62,18 @@ extension AuthAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.default
             )
-        case .signup(let id, let password, let name, let phoneNumber, let authCode,
-                     let height, let weight, let birthday, let sex, let schoolId):
+        case .signup(let id, let password, let name, let phoneNumber, let authCode, let schoolId):
             return .requestParameters(
                 parameters: [
                     "account_id": id,
                     "password": password,
                     "name": name,
                     "phone_number": phoneNumber,
-                    "auth_code": authCode,
-                    "height": height,
-                    "weight": weight,
-                    "birthday": birthday,
-                    "sex": sex.rawValue,
-                    "school_id": schoolId
+                    "height": 0.0,
+                    "weight": nil,
+                    "sex": Sex.noAnswer.rawValue,
+                    "school_id": schoolId,
+                    "auth_code": authCode
                 ],
                 encoding: JSONEncoding.default
             )
@@ -74,7 +82,23 @@ extension AuthAPI: WalkhubAPI {
                 parameters: [
                     "phone_number": phoneNumber
                 ],
-                encoding: JSONEncoding.default)
+                encoding: JSONEncoding.default
+            )
+        case .checkVerificationCode(let verificationCode, let phoneNumber):
+            return .requestParameters(
+                parameters: [
+                    "phoneNumber": phoneNumber,
+                    "authCode": verificationCode
+                ],
+                encoding: URLEncoding.queryString
+            )
+        case .checkAccountId(let accountId):
+            return .requestParameters(
+                parameters: [
+                    "accountId": accountId
+                ],
+                encoding: URLEncoding.queryString
+            )
         default:
             return .requestPlain
         }
