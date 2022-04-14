@@ -166,7 +166,7 @@ class PlayRecordViewController: UIViewController {
         navigationItem.title = "기록측정"
         [blackView, stopCommentLabel, replayBtn, resetBtn]
             .forEach { $0.isHidden = true }
-//        bindViewModel()
+        bindViewModel()
         demoData()
         setBtn()
     }
@@ -236,8 +236,8 @@ class PlayRecordViewController: UIViewController {
                 self.reaminDistanceLabel.text = "남은 거리"
                 self.stepCountLabel.text = "걸음수"
             } else {
-                self.goalLabel.text = "/\($0.goal)보"
-                self.reaminDistanceLabel.text = "남은 걸음"
+//                self.goalLabel.text = "/\($0.goal)보"
+//                self.reaminDistanceLabel.text = "남은 걸음"
                 self.stepCountLabel.text = "거리"
             }
         }).disposed(by: disposeBag)
