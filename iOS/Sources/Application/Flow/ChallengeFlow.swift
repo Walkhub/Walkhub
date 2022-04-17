@@ -25,6 +25,7 @@ class ChallengeFlow: Flow {
 
     private func navigateToChallengeScreen() -> FlowContributors {
         let challengeViewController = conatinor.resolve(ChallengeViewController.self)!
+        self.rootViewController.pushViewController(challengeViewController, animated: false)
         return .one(flowContributor: .contribute(
             withNextPresentable: challengeViewController,
             withNextStepper: challengeViewController.viewModel
