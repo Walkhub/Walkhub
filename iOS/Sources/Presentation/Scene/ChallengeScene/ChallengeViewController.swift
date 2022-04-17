@@ -27,10 +27,11 @@ class ChallengeViewController: UIViewController {
         challengeTableView.dataSource = self
         challengeTableView.delegate = self
         setNavigation()
+        bindViewModel()
     }
 
-    private func setNavigation() {
-        self.navigationItem.title = "챌린지"
+    override func viewWillAppear(_ animated: Bool) {
+        getData.accept(())
     }
 
     override func viewDidLayoutSubviews() {
@@ -39,6 +40,10 @@ class ChallengeViewController: UIViewController {
         challengeTableView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+    }
+
+    private func setNavigation() {
+        self.navigationItem.title = "챌린지"
     }
 
     private func bindViewModel() {
@@ -67,9 +72,10 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "participatingChallengeCell", for: indexPath) as? ParticipatingChallengeTableViewCell
             return cell!
-
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "wholeChallengeCell", for: indexPath) as? WholeChallengeTableViewCell
+            cell?.challengeTitleLabel.text = challengeList[indexPath.row].name
+            cell?.schoolLogoImageView.kf.setImage(with: challengeList[indexPath.row].writer.profileImageUrl)
             return cell!
         }
     }
