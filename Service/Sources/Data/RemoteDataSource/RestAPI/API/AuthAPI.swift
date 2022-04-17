@@ -24,13 +24,8 @@ extension AuthAPI: WalkhubAPI {
             return "/token"
         case .signup:
             return ""
-<<<<<<< HEAD
-        case .verificationPhone:
-            return "verification-codes"
-=======
         case .verificationPhone, .checkVerificationCode:
             return "/verification-codes"
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         case .findID(let phoneNum):
             return "/accounts/\(phoneNum)"
         case .checkAccountId:
