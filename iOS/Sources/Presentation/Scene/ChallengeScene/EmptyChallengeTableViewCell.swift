@@ -2,7 +2,7 @@ import UIKit
 
 class EmptyChallengeTableViewCell: UITableViewCell {
 
-    private let emptyChallengeLabel = UILabel().then {
+    let emptyChallengeLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.text = "참여 중인 챌린지가 없어요."
         $0.textColor = .gray700

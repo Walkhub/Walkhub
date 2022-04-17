@@ -10,7 +10,6 @@ class ParticipatingChallengeTableViewCell: UITableViewCell {
         $0.progressViewStyle = .default
         $0.progressTintColor = .primary400
         $0.trackTintColor = .gray50
-        $0.progress = 0.5
     }
 
     let challengeTitleLabel = UILabel().then {
@@ -29,7 +28,6 @@ class ParticipatingChallengeTableViewCell: UITableViewCell {
     }
 
     let schoolLogoImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
         $0.tintColor = .gray800
         $0.layer.cornerRadius = $0.frame.width / 2
     }
@@ -53,17 +51,9 @@ class ParticipatingChallengeTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         addSubviews()
         makeSubviewConstraints()
-        demoData()
         // Configure the view for the selected state
     }
 
-    func demoData() {
-        challengeTitleLabel.text = "정기챌린지 - 대전 함께 걷기"
-        organizerLable.text = "대전광역시체육회"
-        dateLabel.text = "2022/02/16 ~ 2022/03/02"
-        presentStepCountLabel.text = "현재 67321 걸음"
-        stepCountLabel.text = "100000 걸음"
-    }
 }
 
 extension ParticipatingChallengeTableViewCell {

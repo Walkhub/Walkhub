@@ -2,7 +2,7 @@ import UIKit
 
 class DisableChallengeTableViewCell: UITableViewCell {
 
-    private let disableChallengeLabel = UILabel().then {
+    let disableChallengeLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .gray700
         $0.text = "참여 할 수 있는 챌린지가 없어요."

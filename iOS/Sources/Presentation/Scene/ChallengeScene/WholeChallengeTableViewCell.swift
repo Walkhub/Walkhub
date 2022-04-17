@@ -2,70 +2,64 @@ import UIKit
 
 class WholeChallengeTableViewCell: UITableViewCell {
 
-    private let challengeView = UIView().then {
+    let challengeView = UIView().then {
         $0.backgroundColor = .white
     }
 
-    private let challengeTitleLabel = UILabel().then {
+    let challengeTitleLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
         $0.textColor = .gray900
     }
 
-    private let organizerLable = UILabel().then {
+    let organizerLable = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .medium)
         $0.textColor = .gray800
     }
 
-    private let dateLabel = UILabel().then {
+    let dateLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray700
     }
 
-    private let schoolLogoImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let schoolLogoImageView = UIImageView().then {
         $0.tintColor = .gray800
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
-    private let pointImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let pointImageView = UIImageView().then {
         $0.tintColor = .gray800
     }
 
-    private let dotImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let dotImageView = UIImageView().then {
         $0.tintColor = .gray800
     }
 
-    private let targetDistanceLabel = UILabel().then {
+    let targetDistanceLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .medium)
         $0.textColor = .gray800
     }
 
-    private let purposeLabel = UILabel().then {
+    let purposeLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray800
     }
 
-    private let profileImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let profileImageView = UIImageView().then {
         $0.tintColor = .gray800
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
-    private let secondProfileImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let secondProfileImageView = UIImageView().then {
         $0.tintColor = .gray600
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
-    private let thirdProfileImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+    let thirdProfileImageView = UIImageView().then {
         $0.tintColor = .gray400
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
-    private let participantsLabel = UILabel().then {
+    let participantsLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray700
     }
@@ -79,16 +73,6 @@ class WholeChallengeTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         addSubviews()
         makeSubviewConstraints()
-        demoData()
-    }
-
-    func demoData() {
-        challengeTitleLabel.text = "2학년 체육 수행평가"
-        organizerLable.text = "서무성"
-        dateLabel.text = "2022/03/02 ~ 2022/03/31"
-        targetDistanceLabel.text = "기간 내 20km 달성"
-        purposeLabel.text = "체육 수행평가 성적"
-        participantsLabel.text = "최민준,김수완,수준호 외 21명 참여 중입니다."
     }
 }
 
