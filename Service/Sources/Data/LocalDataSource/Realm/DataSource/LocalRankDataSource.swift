@@ -64,13 +64,8 @@ extension LocalRankDataSource {
             for: SchoolRealmEntity.self,
             filter: QueryFilter.string(
                 query: "dateType = '\(dateType.rawValue)' AND isMySchoolRank = true"
-<<<<<<< HEAD
                ),
                sortProperty: "ranking"
-=======
-            ),
-            sortProperty: "rank"
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         )
     }
 
