@@ -167,7 +167,6 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
-<<<<<<< HEAD
         self.register(FetchJoinedChallengesUseCase.self) { resolver in
             return FetchJoinedChallengesUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
@@ -186,7 +185,8 @@ public extension Container {
         self.register(FetchChallengeDetailUseCase.self) { resolver in
             return FetchChallengeDetailUseCase(
                 challengeRepository: resolver.resolve(ChallengeRepository.self)!
-=======
+                )
+        }
         self.register(CheckVerificationCodeUseCase.self) { resolver in
             return CheckVerificationCodeUseCase(
                 authRepository: resolver.resolve(AuthRepository.self)!
@@ -200,7 +200,6 @@ public extension Container {
         self.register(SetHealthInformationUseCase.self) { resolver in
             return SetHealthInformationUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             )
         }
     }
