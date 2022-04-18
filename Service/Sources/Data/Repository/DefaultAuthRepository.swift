@@ -55,10 +55,16 @@ class DefaultAuthRepository: AuthRepository {
             phoneNumber: phoneNumber,
             authCode: authCode,
             schoolId: schoolId
-        ).asCompletable()
-            .do(onError: {
-                print($0)
-            })
+        ).do(onSuccess: {
+            self.keychainDataSource.registerAccessToken($0.accessToken)
+            self.keychainDataSource.registerRefreshToken($0.refreshToken)
+            self.keychainDataSource.registerExpiredAt($0.expiredAt)
+            self.healthKitDataSource.storeUserHeight($0.height ?? 0)
+            self.healthKitDataSource.storeUserWeight(Double($0.weight ?? 0))
+            self.userDefaultDataSource.userSex = Sex(rawValue: $0.sex)!
+        }, onError: {
+            print($0)
+        }).asCompletable()
     }
 
     func verificationPhone(phoneNumber: String) -> Completable {
