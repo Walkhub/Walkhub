@@ -48,23 +48,28 @@ class DefaultAuthRepository: AuthRepository {
         authCode: String,
         schoolId: Int
     ) -> Completable {
-        return remoteAuthDataSource.signup(
-            id: id,
-            password: password,
-            name: name,
-            phoneNumber: phoneNumber,
-            authCode: authCode,
-            schoolId: schoolId
-        ).do(onSuccess: {
-            self.keychainDataSource.registerAccessToken($0.accessToken)
-            self.keychainDataSource.registerRefreshToken($0.refreshToken)
-            self.keychainDataSource.registerExpiredAt($0.expiredAt)
-            self.healthKitDataSource.storeUserHeight($0.height ?? 0)
-            self.healthKitDataSource.storeUserWeight(Double($0.weight ?? 0))
-            self.userDefaultDataSource.userSex = Sex(rawValue: $0.sex)!
-        }, onError: {
-            print($0)
-        }).asCompletable()
+        return fetchDeviceToken()
+            .flatMapCompletable { deviceToken in
+                return self.remoteAuthDataSource.signup(
+                    id: id,
+                    password: password,
+                    name: name,
+                    phoneNumber: phoneNumber,
+                    authCode: authCode,
+                    schoolId: schoolId,
+                    deviceToken: deviceToken
+                ).do(onSuccess: {
+                    print($0)
+                    self.keychainDataSource.registerAccessToken($0.accessToken)
+                    self.keychainDataSource.registerRefreshToken($0.refreshToken)
+                    self.keychainDataSource.registerExpiredAt($0.expiredAt)
+                    self.healthKitDataSource.storeUserHeight($0.height ?? 0)
+                    self.healthKitDataSource.storeUserWeight(Double($0.weight ?? 0))
+                    self.userDefaultDataSource.userSex = Sex(rawValue: $0.sex)!
+                }, onError: {
+                    print($0)
+                }).asCompletable()
+            }
     }
 
     func verificationPhone(phoneNumber: String) -> Completable {
