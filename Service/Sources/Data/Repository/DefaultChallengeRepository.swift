@@ -27,8 +27,8 @@ class DefaultChallengeRepository: ChallengeRepository {
         remoteChallengesDataSource.fetchParticipantsChallengesList(challengeId: challengeId)
     }
 
-    func fetchJoinedChallenges() -> Observable<[Challenge]> {
-        OfflineCacheUtil<[Challenge]>()
+    func fetchJoinedChallenges() -> Observable<[JoinedChallenge]> {
+        OfflineCacheUtil<[JoinedChallenge]>()
             .localData { self.localChallengeDataSource.fetchJoinedChallengeList() }
             .remoteData { self.remoteChallengesDataSource.fetchJoinedChallenges() }
             .doOnNeedRefresh { self.localChallengeDataSource.storeJoinedChallengeList(challengeList: $0) }

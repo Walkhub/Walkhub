@@ -7,6 +7,6 @@ protocol ChallengeRepository {
     func fetchChallengeDetail(challengeId: Int) -> Single<ChallengeDetail>
     func joinChallenges(challengeId: Int) -> Completable
     func fetchParticipantsChallengesList(challengeId: Int) -> Single<ChallengeParticipantList>
-    func fetchJoinedChallenges() -> Observable<[Challenge]>
+    func fetchJoinedChallenges() -> Observable<[JoinedChallenge]>
     func fetchEndChallengList() -> Single<[Challenge]>
 }
