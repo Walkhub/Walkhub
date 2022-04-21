@@ -10,7 +10,7 @@ public class FetchJoinedChallengesUseCase {
         self.challengeRepository = challengeRepository
     }
 
-    public func excute() -> Observable<[Challenge]> {
+    public func excute() -> Observable<[JoinedChallenge]> {
         return self.challengeRepository.fetchJoinedChallenges()
     }
 
