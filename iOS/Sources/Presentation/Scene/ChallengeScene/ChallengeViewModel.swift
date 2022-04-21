@@ -27,12 +27,12 @@ class ChallengeViewModel: ViewModelType, Stepper {
     }
 
     struct Output {
-        let joinedChallengeList: PublishRelay<[Challenge]>
+        let joinedChallengeList: PublishRelay<[JoinedChallenge]>
         let challengList: PublishRelay<[Challenge]>
     }
 
     func transform(_ input: Input) -> Output {
-        let joinedChallengeList = PublishRelay<[Challenge]>()
+        let joinedChallengeList = PublishRelay<[JoinedChallenge]>()
         let challengeList = PublishRelay<[Challenge]>()
 
         input.getData.asObservable().flatMap {
