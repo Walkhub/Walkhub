@@ -81,19 +81,19 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
                 withIdentifier: "participatingChallengeCell",
                 for: indexPath
             ) as? ParticipatingChallengeTableViewCell
-            cell?.challengeTitleLabel.text = challengeList[indexPath.row].name
-            cell?.organizerLable.text = challengeList[indexPath.row].writer.name
-            cell?.dateLabel.text = "\(challengeList[indexPath.row].start) ~ \(challengeList[indexPath.row].end)"
-            cell?.schoolLogoImageView.kf.setImage(with: challengeList[indexPath.row].writer.profileImageUrl)
-            if (challengeList[indexPath.row].goalType.rawValue == "DISTANCE") {
-                cell?.presentStepCountLabel.text = "현재 \(challengeList[indexPath.row].goal)km"
+            cell?.challengeTitleLabel.text = joinedChallengeList[indexPath.row].name
+            cell?.organizerLable.text = joinedChallengeList[indexPath.row].writer.name
+            cell?.dateLabel.text = "\(joinedChallengeList[indexPath.row].start) ~ \(joinedChallengeList[indexPath.row].end)"
+            cell?.schoolLogoImageView.kf.setImage(with: joinedChallengeList[indexPath.row].writer.profileImageUrl)
+            if (joinedChallengeList[indexPath.row].goalType.rawValue == "DISTANCE") {
+                cell?.presentStepCountLabel.text = "현재 \(joinedChallengeList[indexPath.row].goal)km"
             } else {
-                cell?.presentStepCountLabel.text = "현재 \(challengeList[indexPath.row].goal)걸음"
+                cell?.presentStepCountLabel.text = "현재 \(joinedChallengeList[indexPath.row].goal)걸음"
             }
-            if (challengeList[indexPath.row].goalType.rawValue == "DISTANCE") {
-                cell?.stepCountLabel.text = "\(challengeList[indexPath.row].goal)km"
+            if (joinedChallengeList[indexPath.row].goalType.rawValue == "DISTANCE") {
+                cell?.stepCountLabel.text = "\(joinedChallengeList[indexPath.row].goal)km"
             } else {
-                cell?.stepCountLabel.text = "\(challengeList[indexPath.row].goal)걸음"
+                cell?.stepCountLabel.text = "\(joinedChallengeList[indexPath.row].goal)걸음"
             }
 
             return cell!
@@ -103,7 +103,22 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
                 for: indexPath
             ) as? WholeChallengeTableViewCell
             cell?.challengeTitleLabel.text = challengeList[indexPath.row].name
+            cell?.organizerLable.text = challengeList[indexPath.row].writer.name
             cell?.schoolLogoImageView.kf.setImage(with: challengeList[indexPath.row].writer.profileImageUrl)
+            cell?.dateLabel.text = "\(challengeList[indexPath.row].start) ~ \(challengeList[indexPath.row].end)"
+            if challengeList[indexPath.row].goalScope.rawValue == "DAY" {
+                if challengeList[indexPath.row].goalType.rawValue == "DISTANCE" {
+                    cell?.targetDistanceLabel.text = "하루 한 번 \(challengeList[indexPath.row].goal)km 달성"
+                } else {
+                    cell?.targetDistanceLabel.text = "하루 한 번 \(challengeList[indexPath.row].goal)걸음 달성"
+                }
+            } else {
+                if challengeList[indexPath.row].goalType.rawValue == "DISTANCE" {
+                    cell?.targetDistanceLabel.text = "기간 내 \(challengeList[indexPath.row].goal)km 달성"
+                } else {
+                    cell?.targetDistanceLabel.text = "기간 내 \(challengeList[indexPath.row].goal)걸음 달성"
+                }
+            }
             return cell!
         }
     }
