@@ -3,16 +3,19 @@ import Foundation
 import RxSwift
 
 public class ChangePasswordUseCase {
-    private let userRepository: UserRepository
+    private let userRepositroy: UserRepository
 
     init(userRepository: UserRepository) {
-        self.userRepository = userRepository
+        self.userRepositroy = userRepository
     }
 
     public func excute(
         password: String,
         newPassword: String
     ) -> Completable {
-        return userRepository.changePassword(password: password, newPassword: newPassword)
+        return userRepositroy.changePassword(
+            password: password,
+            newPassword: newPassword
+        )
     }
 }
