@@ -9,6 +9,11 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
 
     private override init() { }
 
+    func checkPassword(currentPw: String) -> Completable {
+        return request(.checkPassword(currentPw: currentPw))
+            .asCompletable()
+    }
+
     func changePassword(
         accountID: String,
         phoneNumber: String,

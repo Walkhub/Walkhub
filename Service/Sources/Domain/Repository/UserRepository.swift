@@ -3,6 +3,7 @@ import Foundation
 import RxSwift
 
 protocol UserRepository {
+    func checkPassword(currentPw: String) -> Completable
     func changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String) -> Single<Void>
     func fetchProfile(userID: Int) -> Observable<UserProfile>
     func fetchMyProfile() -> Observable<UserProfile>

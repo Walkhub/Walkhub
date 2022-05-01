@@ -3,6 +3,7 @@ import Foundation
 import Moya
 
 enum UserAPI {
+    case checkPassword(currentPw: String)
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
@@ -22,6 +23,8 @@ extension UserAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
+        case .checkPassword:
+            return "/verification-password"
         case .changePassword:
             return "/password"
         case .fetchProfile(let userID):
@@ -39,6 +42,13 @@ extension UserAPI: WalkhubAPI {
 
     var task: Task {
         switch self {
+        case .checkPassword(let currentPw):
+            return .requestParameters(
+                parameters: [
+                    "password": currentPw
+                ],
+                encoding: JSONEncoding.default
+            )
         case .changePassword(let accountID, let phoneNumber, let authCode, let newPassword):
             return .requestParameters(
                 parameters: [

@@ -7,6 +7,10 @@ class DefaultUserRepository: UserRepository {
     private let remoteUserDataSource = RemoteUserDataSource.shared
     private let localUserDataSource = LocalUserDataSource.shared
 
+    func checkPassword(currentPw: String) -> Completable {
+        return remoteUserDataSource.checkPassword(currentPw: currentPw)
+    }
+
     func changePassword(
         accountID: String,
         phoneNumber: String,
