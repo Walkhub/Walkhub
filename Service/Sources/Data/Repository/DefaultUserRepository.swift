@@ -52,6 +52,7 @@ class DefaultUserRepository: UserRepository {
             schoolId: schoolId
         )
     }
+<<<<<<< HEAD
 
     func setHealthInformation(
         height: Double?,
@@ -63,6 +64,13 @@ class DefaultUserRepository: UserRepository {
             weight: weight ?? 0,
             sex: sex
         )
+=======
+    func setHealthInformation(height: Double?, weight: Int?, sex: Sex) -> Completable {
+        return remoteUserDataSource.setHealthInformation(height: height, weight: weight, sex: sex)
+            .do(onError: {
+                print($0)
+            })
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
     }
 
     func joinClass(
@@ -81,7 +89,12 @@ class DefaultUserRepository: UserRepository {
         return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
     }
 
+<<<<<<< HEAD
     func fetchUserHealth() -> Single<UserHealth> {
         return remoteUserDataSource.fetchUserHeaelth()
+=======
+    func checkClassCode(code: String) -> Completable {
+        return remoteUserDataSource.checkClassCode(code: code)
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
     }
 }

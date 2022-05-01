@@ -81,6 +81,11 @@ class HubViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         dateType.accept(.week)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
     }
 
     private func setDropDown() {
@@ -112,7 +117,7 @@ class HubViewController: UIViewController {
         ) { _, items, cell in
             cell.imgView.kf.setImage(with: items.logoImageUrl)
             cell.nameLabel.text = items.name
-            cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.studentsCount)"
+            cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.userCount)"
             cell.rankLabel.text = "\(items.ranking)등"
             switch items.ranking {
             case 1:

@@ -53,8 +53,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     }
 
     func setHealthInformation(
+<<<<<<< HEAD
         height: Double,
         weight: Int,
+=======
+        height: Double?,
+        weight: Int?,
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         sex: Sex
     ) -> Completable {
         return request(.setHealthInformation(
@@ -81,9 +86,15 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
             .map { _ in () }
     }
 
+<<<<<<< HEAD
     func fetchUserHeaelth() -> Single<UserHealth> {
         return request(.fetchHealthInformation)
             .map(UserHealthDTO.self)
             .map { $0.toDomain() }
+=======
+    func checkClassCode(code: String) -> Completable {
+        return request(.checkClassCode(code: code))
+            .asCompletable()
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
     }
 }

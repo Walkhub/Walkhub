@@ -3,7 +3,7 @@ import UIKit
 class SchoolRegistrationTableViewCell: UITableViewCell {
 
     let schoolLogoImageView = UIImageView().then {
-        $0.layer.cornerRadius = $0.frame.width / 2
+        $0.contentMode = .scaleToFill
     }
 
     let schoolNameLabel = UILabel().then {
@@ -12,13 +12,18 @@ class SchoolRegistrationTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
 
-        // Configure the view for the selected state
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        addSubviews()
+        makeSubviewContraints()
+        schoolLogoImageView.layer.masksToBounds = true
+        schoolLogoImageView.layer.cornerRadius = schoolLogoImageView.frame.width/2
     }
 
     required init?(coder: NSCoder) {

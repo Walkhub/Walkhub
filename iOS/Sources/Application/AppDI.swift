@@ -1,3 +1,5 @@
+// swiftlint:disable function_body_length
+
 import Foundation
 
 import Service
@@ -66,6 +68,7 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
+<<<<<<< HEAD
         self.register(EditHealthInformationViewModel.self) { resolver in
             EditHealthInformationViewModel(
                 fetchHealthInformationUseCase: resolver.resolve(FetchHealthInformationUseCase.self)!,
@@ -84,6 +87,37 @@ extension Container {
             EditNotificationViewModel(
                 notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
                 notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!
+=======
+        self.register(AgreeTermsViewModel.self) { resolver in
+            AgreeTermsViewModel(
+                signupUseCase: resolver.resolve(SignupUseCase.self)!
+            )
+        }
+        self.register(CertifyPhoneNumberViewModel.self) { resolver in
+            CertifyPhoneNumberViewModel(
+                verificationPhoneUseCase: resolver.resolve(VerificationPhoneUseCase.self)!
+            )
+        }
+        self.register(IDViewModel.self) { resolver in
+            IDViewModel(
+                checkAccountIdUseCase: resolver.resolve(CheckAccountIdUseCase.self)!
+            )
+        }
+        self.register(EnterHealthInformationViewModel.self) { resolver in
+            EnterHealthInformationViewModel(
+                setHealthInformationUseCase: resolver.resolve(SetHealthInformationUseCase.self)!
+            )
+        }
+        self.register(AuthenicationNumberViewModel.self) { resolver in
+            AuthenicationNumberViewModel(
+                checkVerificationCodeUseCase: resolver.resolve(CheckVerificationCodeUseCase.self)!,
+                verificationPhoneUseCase: resolver.resolve(VerificationPhoneUseCase.self)!
+            )
+        }
+        self.register(SchoolRegistrationViewModel.self) { resolver in
+            SchoolRegistrationViewModel(
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             )
         }
     }
@@ -108,6 +142,8 @@ extension Container {
         self.register(DetailHubViewController.self) { resolver in
             return DetailHubViewController().then {
                 $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
+                $0.rankVC = resolver.resolve(RankViewController.self)!
+                $0.informationVC = resolver.resolve(InformationViewController.self)!
             }
         }
         self.register(ActivityAnalysisViewController.self) { resolver  in
@@ -133,6 +169,7 @@ extension Container {
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
         }
+<<<<<<< HEAD
         self.register(EditHealthInofrmationViewController.self) { resolver in
             return EditHealthInofrmationViewController().then {
                 $0.viewModel = resolver.resolve(EditHealthInformationViewModel.self)!
@@ -162,6 +199,46 @@ extension Container {
         self.register(EditNotificationViewController.self) { resolver in
             return EditNotificationViewController().then {
                 $0.viewModel = resolver.resolve(EditNotificationViewModel.self)!
+=======
+        self.register(AgreeTermsViewController.self) { resolver in
+            return AgreeTermsViewController().then {
+                $0.viewModel = resolver.resolve(AgreeTermsViewModel.self)!
+            }
+        }
+        self.register(CertifyPhoneNumberViewController.self) { resolver in
+            return CertifyPhoneNumberViewController().then {
+                $0.viewModel = resolver.resolve(CertifyPhoneNumberViewModel.self)!
+                $0.authenticationNumberViewController = resolver.resolve(AuthenticationNumberViewController.self)!
+            }
+        }
+        self.register(AuthenticationNumberViewController.self) { _ in
+            return AuthenticationNumberViewController()
+        }
+        self.register(EnterHealthInformationViewController.self) { resolver in
+            return EnterHealthInformationViewController().then {
+                $0.viewModel = resolver.resolve(EnterHealthInformationViewModel.self)!
+            }
+        }
+        self.register(EnterNameViewController.self) { _ in
+            return EnterNameViewController()
+        }
+        self.register(IDViewController.self) { resolver in
+            return IDViewController().then {
+                $0.viewModel = resolver.resolve(IDViewModel.self)!
+            }
+        }
+        self.register(AuthenticationNumberViewController.self) { resolver in
+            return AuthenticationNumberViewController().then {
+                $0.viewModel = resolver.resolve(AuthenicationNumberViewModel.self)!
+            }
+        }
+        self.register(EnterPasswordViewController.self) { _ in
+            return EnterPasswordViewController()
+        }
+        self.register(SchoolRegistrationViewController.self) { resolver in
+            return SchoolRegistrationViewController().then {
+                $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             }
         }
     }

@@ -7,12 +7,21 @@ enum UserAPI {
     case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
+<<<<<<< HEAD
     case changeProfile(name: String, profileImageUrlString: String, schoolId: Int)
     case setHealthInformation(height: Double, weight: Int, sex: Sex)
     case joinClass(sectionId: Int, classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
     case fetchHealthInformation
+=======
+    case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
+    case setHealthInformation(height: Double?, weight: Int?, sex: Sex)
+    case joinClass(sectionId: Int, classCode: String, num: Int)
+    case setSchoolInformation(schoolId: Int)
+    case changeGoalWalkCount(goalWalkCount: Int)
+    case checkClassCode(code: String)
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
 }
 
 extension UserAPI: WalkhubAPI {
@@ -29,12 +38,18 @@ extension UserAPI: WalkhubAPI {
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
+<<<<<<< HEAD
         case .setHealthInformation, .fetchHealthInformation:
+=======
+        case .setHealthInformation:
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             return "/health"
         case .joinClass(let sectionId, _, _):
             return "/classes/\(sectionId)"
         case .changeGoalWalkCount:
             return "/goal"
+        case .checkClassCode:
+            return "/classes"
         default:
             return ""
         }
@@ -69,12 +84,25 @@ extension UserAPI: WalkhubAPI {
                 encoding: JSONEncoding.prettyPrinted
             )
         case .setHealthInformation(let height, let weight, let sex):
+<<<<<<< HEAD
             print(height, weight, sex.rawValue)
+=======
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             return .requestParameters(
                 parameters: [
                     "height": height,
                     "weight": weight,
                     "sex": sex.rawValue
+<<<<<<< HEAD
+=======
+                ],
+                encoding: JSONEncoding.prettyPrinted
+            )
+        case .setSchoolInformation(let schoolId):
+            return .requestParameters(
+                parameters: [
+                    "school_id": schoolId
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
@@ -93,6 +121,16 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
+<<<<<<< HEAD
+=======
+        case .checkClassCode(let code):
+            return .requestParameters(
+                parameters: [
+                    "code": code
+                ],
+                encoding: URLEncoding.queryString
+            )
+>>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
         default: return .requestPlain
         }
     }
@@ -103,6 +141,8 @@ extension UserAPI: WalkhubAPI {
             return .patch
         case .joinClass:
             return .post
+        case .checkClassCode:
+            return .head
         default:
             return .get
         }
