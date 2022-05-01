@@ -1,5 +1,6 @@
 import UIKit
 
+import Loaf
 import RxFlow
 
 class SettingFlow: Flow {
@@ -34,6 +35,8 @@ class SettingFlow: Flow {
             return navigateToSearchSchoolScene()
         case .backToSettingScene:
             return backToSettingScene()
+        case .loaf(let message, let state, let location):
+            return showLoaf(message, state: state, location: location)
         default:
             return .none
         }
@@ -98,5 +101,14 @@ class SettingFlow: Flow {
     private func backToSettingScene() -> FlowContributors {
         rootViewController.navigationController?.popViewController(animated: true)
         return .one(flowContributor: .contribute(withNext: rootViewController))
+    }
+
+    private func showLoaf(
+        _ message: String,
+        state: Loaf.State,
+        location: Loaf.Location
+    ) -> FlowContributors {
+        Loaf(message, state: state, location: location, sender: self.rootViewController).show()
+        return .none
     }
 }

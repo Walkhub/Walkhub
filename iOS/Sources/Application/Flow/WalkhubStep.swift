@@ -47,4 +47,6 @@ enum WalkhubStep: Step {
     case backEditProfileScene
     case searchSchoolIsRequired
     case backToSettingScene
+    case checkPasswordScene
+    case changePasswordScene
 }
