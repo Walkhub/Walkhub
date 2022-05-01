@@ -9,7 +9,7 @@ public class CheckPasswordUseCase {
         self.userRepositroy = userRepository
     }
 
-    public func excute(currentPw: String) ->  Completable {
+    public func excute(currentPw: String) -> Completable {
         return userRepositroy.checkPassword(currentPw: currentPw)
     }
 }

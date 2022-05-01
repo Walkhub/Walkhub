@@ -76,6 +76,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         return request(.changeGoalWalkCount(goalWalkCount: goalWalkCount))
             .map { _ in () }
     }
+
+    func fetchHealthInfo() -> Single<UserHealth> {
+        return request(.fetchHleathInfo)
+            .map(UserHealthDTO.self)
+            .map { $0.toDomain() }
+    }
+
     func checkClassCode(code: String) -> Completable {
         return request(.checkClassCode(code: code))
             .asCompletable()
