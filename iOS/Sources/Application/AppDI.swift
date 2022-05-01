@@ -68,7 +68,6 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
-<<<<<<< HEAD
         self.register(EditHealthInformationViewModel.self) { resolver in
             EditHealthInformationViewModel(
                 fetchHealthInformationUseCase: resolver.resolve(FetchHealthInformationUseCase.self)!,
@@ -87,7 +86,8 @@ extension Container {
             EditNotificationViewModel(
                 notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
                 notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!
-=======
+                )
+        }
         self.register(AgreeTermsViewModel.self) { resolver in
             AgreeTermsViewModel(
                 signupUseCase: resolver.resolve(SignupUseCase.self)!
@@ -117,7 +117,6 @@ extension Container {
         self.register(SchoolRegistrationViewModel.self) { resolver in
             SchoolRegistrationViewModel(
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             )
         }
     }
@@ -169,7 +168,6 @@ extension Container {
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
         }
-<<<<<<< HEAD
         self.register(EditHealthInofrmationViewController.self) { resolver in
             return EditHealthInofrmationViewController().then {
                 $0.viewModel = resolver.resolve(EditHealthInformationViewModel.self)!
@@ -199,7 +197,8 @@ extension Container {
         self.register(EditNotificationViewController.self) { resolver in
             return EditNotificationViewController().then {
                 $0.viewModel = resolver.resolve(EditNotificationViewModel.self)!
-=======
+            }
+        }
         self.register(AgreeTermsViewController.self) { resolver in
             return AgreeTermsViewController().then {
                 $0.viewModel = resolver.resolve(AgreeTermsViewModel.self)!
@@ -238,7 +237,6 @@ extension Container {
         self.register(SchoolRegistrationViewController.self) { resolver in
             return SchoolRegistrationViewController().then {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
             }
         }
     }

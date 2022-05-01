@@ -151,7 +151,6 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
-<<<<<<< HEAD
         self.register(FetchHealthInformationUseCase.self) { resolver in
             return FetchHealthInformationUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
@@ -165,11 +164,6 @@ public extension Container {
         self.register(EditProfileUseCase.self) { resolver in
             return EditProfileUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
-            )
-        }
-        self.register(SearchSchoolUseCase.self) { resolver in
-            return SearchSchoolUseCase(
-                schoolRespository: resolver.resolve(SchoolRepository.self)!
             )
         }
         self.register(PostImageUseCase.self) { resolver in
@@ -187,7 +181,6 @@ public extension Container {
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
-=======
         self.register(CheckVerificationCodeUseCase.self) { resolver in
             return CheckVerificationCodeUseCase(
                 authRepository: resolver.resolve(AuthRepository.self)!
@@ -203,6 +196,5 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
->>>>>>> 9bacb28d8314fbfdc663b5be5d065399bcbd3933
     }
 }
