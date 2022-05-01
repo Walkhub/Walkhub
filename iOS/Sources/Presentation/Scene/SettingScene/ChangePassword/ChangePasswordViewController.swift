@@ -40,6 +40,7 @@ class ChangePasswordViewController: UIViewController {
         self.title = "비밀번호 변경"
         navigationController?.navigationBar.setBackButtonToArrow()
         setButton()
+        bind()
     }
     override func viewDidLayoutSubviews() {
         addSubivews()
@@ -64,6 +65,14 @@ class ChangePasswordViewController: UIViewController {
         let pred = NSPredicate(format: "SELF MATCHES %@", strRegEx)
 
         return pred.evaluate(with: str)
+    }
+    private func bind() {
+        let input = ChangePasswordViewModel.Input(
+            currentPassword: currentPassword,
+            newPasseord: newPasswordTxtField.rx.text.orEmpty.asDriver(),
+            changeButtonDidTap: changeButton.rx.tap.asDriver()
+        )
+        _ = viewModel.transform(input)
     }
 }
 
