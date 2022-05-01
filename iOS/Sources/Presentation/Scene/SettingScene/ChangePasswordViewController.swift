@@ -8,6 +8,7 @@ import RxCocoa
 class ChangePasswordViewController: UIViewController {
     var currentPassword = String()
 
+    private var disposeBag = DisposeBag()
     private let newPasswordLabel = UILabel().then {
         $0.text = "새 비밀번호"
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
@@ -36,10 +37,32 @@ class ChangePasswordViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "비밀번호 변경"
+        navigationController?.navigationBar.setBackButtonToArrow()
+        setButton()
     }
     override func viewDidLayoutSubviews() {
         addSubivews()
         makeSubviewConstraints()
+    }
+
+    private func setButton() {
+        newPasswordTxtField.rx.text.orEmpty
+            .map { self.isVaildTest(str: $0) }
+            .bind(to: changeButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+
+        newPasswordTxtField.rx.text.orEmpty
+            .map { self.isVaildTest(str: $0) }
+            .bind(to: infoLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+    }
+    private func isVaildTest(str: String?) -> Bool {
+        guard str != nil else { return false }
+
+        let strRegEx = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+=-]).{8,30}"
+        let pred = NSPredicate(format: "SELF MATCHES %@", strRegEx)
+
+        return pred.evaluate(with: str)
     }
 }
 

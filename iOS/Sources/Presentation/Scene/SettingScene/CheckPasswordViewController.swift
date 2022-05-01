@@ -32,7 +32,7 @@ class CheckPasswordViewController: UIViewController {
         setButton()
         bind()
         self.title = "비밀번호 변경"
-        navigationController?.navigationBar.setBackButtonToX()
+        navigationController?.navigationBar.setBackButtonToArrow()
     }
     override func viewDidLayoutSubviews() {
         addSubviews()
