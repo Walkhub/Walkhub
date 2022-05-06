@@ -35,6 +35,10 @@ class SettingFlow: Flow {
             return navigateToSearchSchoolScene()
         case .backToSettingScene:
             return backToSettingScene()
+        case .checkPasswordScene:
+            return navigateToCheckScene()
+        case .changePasswordScene(let password):
+            return navigateToChangePasswordScene(password: password)
         case .loaf(let message, let state, let location):
             return showLoaf(message, state: state, location: location)
         default:
@@ -100,7 +104,32 @@ class SettingFlow: Flow {
 
     private func backToSettingScene() -> FlowContributors {
         rootViewController.navigationController?.popViewController(animated: true)
-        return .one(flowContributor: .contribute(withNext: rootViewController))
+        return .none
+    }
+
+    private func navigateToCheckScene() -> FlowContributors {
+        let checkPasswordViewController = container.resolve(CheckPasswordViewController.self)!
+        rootViewController.navigationController?.pushViewController(
+            checkPasswordViewController,
+            animated: true
+        )
+        return .one(flowContributor: .contribute(
+            withNextPresentable: checkPasswordViewController,
+            withNextStepper: checkPasswordViewController.viewModel
+            ))
+    }
+
+    private func navigateToChangePasswordScene(password: String) -> FlowContributors {
+        let changePasswordViewController = container.resolve(ChangePasswordViewController.self)!
+        changePasswordViewController.currentPassword = password
+        rootViewController.navigationController?.pushViewController(
+            changePasswordViewController,
+            animated: true
+        )
+        return .one(flowContributor: .contribute(
+            withNextPresentable: changePasswordViewController,
+            withNextStepper: changePasswordViewController.viewModel
+            ))
     }
 
     private func showLoaf(
