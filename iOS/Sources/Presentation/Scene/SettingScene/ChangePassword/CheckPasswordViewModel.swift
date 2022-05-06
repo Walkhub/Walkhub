@@ -18,17 +18,23 @@ class CheckPasswordViewModel: ViewModelType, Stepper {
 
     struct Input {
         let password: Driver<String>
+        let contineButtonDidTap: Driver<Void>
     }
 
     struct Output {
     }
 
     func transform(_ input: Input) -> Output {
-        input.password.asObservable()
+        input.contineButtonDidTap.asObservable()
+            .withLatestFrom(input.password)
             .flatMap {
                 self.checkPasswordUseCase.excute(currentPw: $0)
-                    .andThen(Single.just(WalkhubStep.changePasswordScene))
-                    .catchAndReturn(WalkhubStep.loaf("비밀번호가 틀렸어요.", state: .error, location: .bottom))
+                    .andThen(Single.just(WalkhubStep.changePasswordScene(pw: $0)))
+                    .catchAndReturn(WalkhubStep.loaf(
+                        "비밀번호가 일치하지 않습니다.",
+                        state: .error,
+                        location: .bottom
+                    ))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 
