@@ -18,6 +18,9 @@ class CheckPasswordViewController: UIViewController {
     private let currentPasswordTxtField = UITextField().then {
         $0.placeholder = "현재 비밀번호를 입력해주세요."
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
+        $0.layer.cornerRadius = 12
         $0.addLeftPadding()
     }
     private let continueButton = UIButton(type: .system).then {
@@ -32,6 +35,7 @@ class CheckPasswordViewController: UIViewController {
         super.viewDidLoad()
         setButton()
         bind()
+        view.backgroundColor = .white
         self.title = "비밀번호 변경"
         navigationController?.navigationBar.setBackButtonToArrow()
     }
@@ -47,7 +51,9 @@ class CheckPasswordViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     private func bind() {
-        let input = CheckPasswordViewModel.Input(password: currentPasswordTxtField.rx.text.orEmpty.asDriver())
+        let input = CheckPasswordViewModel.Input(
+            password: currentPasswordTxtField.rx.text.orEmpty.asDriver(),
+            contineButtonDidTap: continueButton.rx.tap.asDriver())
 
         _ = viewModel.transform(input)
     }
