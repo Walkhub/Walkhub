@@ -14,6 +14,7 @@ enum UserAPI {
     case changeGoalWalkCount(goalWalkCount: Int)
     case fetchHleathInfo
     case checkClassCode(code: String)
+    case fetchAccountInfo
 }
 
 extension UserAPI: WalkhubAPI {
@@ -40,6 +41,8 @@ extension UserAPI: WalkhubAPI {
             return "/goal"
         case .checkClassCode:
             return "/classes"
+        case .fetchAccountInfo:
+            return "/auth/info"
         default:
             return ""
         }
@@ -117,7 +120,7 @@ extension UserAPI: WalkhubAPI {
         switch self {
         case .changeProfile, .changePassword, .setHealthInformation:
             return .patch
-        case .joinClass:
+        case .joinClass, .checkPassword:
             return .post
         case .checkClassCode:
             return .head

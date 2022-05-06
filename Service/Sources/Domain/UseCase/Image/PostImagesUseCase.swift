@@ -10,7 +10,7 @@ public class PostImageUseCase {
         self.imageRepository = imageRepository
     }
 
-    public func excute(images: [Data]) -> Single<[URL]> {
-        return imageRepository.postImages(images: images)
+    public func excute(images: [Data]) -> Observable<[String]> {
+        return imageRepository.postImages(images: images).map { $0.map { $0.absoluteString } }
     }
 }

@@ -9,6 +9,10 @@ class DefaultUserRepository: UserRepository {
 
     func checkPassword(currentPw: String) -> Completable {
         return remoteUserDataSource.checkPassword(currentPw: currentPw)
+            .do(onError: {
+                print($0
+                )
+            })
     }
 
     func changePassword(
@@ -81,5 +85,10 @@ class DefaultUserRepository: UserRepository {
 
     func checkClassCode(code: String) -> Completable {
         return remoteUserDataSource.checkClassCode(code: code)
+    }
+
+    func fetchAccountInfo() -> Observable<AccountInfo> {
+        return remoteUserDataSource.fetchAccountInfo()
+            .asObservable()
     }
 }

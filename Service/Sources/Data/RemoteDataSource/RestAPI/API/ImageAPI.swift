@@ -29,7 +29,7 @@ extension ImageAPI: WalkhubAPI {
                     provider: .data(index),
                     name: "images",
                     fileName: "image.jpg",
-                    mimeType: "image/jpg"
+                    mimeType: "image/png"
                 ))
             }
             return .uploadMultipart(multiformData)

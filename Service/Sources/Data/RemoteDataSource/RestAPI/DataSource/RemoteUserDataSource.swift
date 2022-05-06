@@ -87,4 +87,10 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         return request(.checkClassCode(code: code))
             .asCompletable()
     }
+
+    func fetchAccountInfo() -> Single<AccountInfo> {
+        return request(.fetchAccountInfo)
+            .map(AccountInfoDTO.self)
+            .map { $0.toDomain() }
+    }
 }

@@ -3,5 +3,5 @@ import Foundation
 import RxSwift
 
 protocol ImageRepository {
-    func postImages(images: [Data]) -> Single<[URL]>
+    func postImages(images: [Data]) -> Observable<[URL]>
 }

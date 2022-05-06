@@ -13,4 +13,5 @@ protocol UserRepository {
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void>
     func fetchUserHealth() -> Single<UserHealth>
     func checkClassCode(code: String) -> Completable
+    func fetchAccountInfo() -> Observable<AccountInfo>
 }
