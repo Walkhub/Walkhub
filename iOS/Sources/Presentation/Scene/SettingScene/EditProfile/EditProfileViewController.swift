@@ -14,7 +14,7 @@ class EditProfileViewController: UIViewController {
     private let imagePickerView = UIImagePickerController()
     private let searchSchoolViewController = SearchSchoolViewController()
     private var disposeBag = DisposeBag()
-    private let profileName = PublishRelay<String>()
+    private var profile = String()
 
     private let alertBackView = UIView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
@@ -85,9 +85,9 @@ class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         imagePickerView.delegate = self
-        nameTextField.delegate = self
         setBtn()
         bind()
+        setTextField()
     }
 
     override func viewDidLayoutSubviews() {
@@ -112,7 +112,7 @@ class EditProfileViewController: UIViewController {
     }
 
     private func setBtn() {
-        editProfileImageBtn.rx.tap.subscribe(onNext: {
+        editProfileImageBtn.rx.tap.subscribe(onNext: { _ in
             self.openPhotoLibrary()
         }).disposed(by: disposeBag)
 
@@ -121,13 +121,19 @@ class EditProfileViewController: UIViewController {
             self.nameTextField.becomeFirstResponder()
         }).disposed(by: disposeBag)
     }
+    private func setTextField() {
+        nameTextField.rx.text.orEmpty
+            .map { $0 != "" || $0 != self.profile }
+            .bind(to: editBtn.rx.isEnabled)
+            .disposed(by: disposeBag)
+    }
 
     private func bind() {
 
         let input = SettingProfileViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
             profileImage: image.asDriver(onErrorJustReturn: []),
-            name: profileName.asDriver(onErrorJustReturn: ""),
+            name: nameTextField.rx.text.orEmpty.asDriver(),
             buttonDidTap: editBtn.rx.tap.asDriver(),
             searchSchoolButton: editSchoolInformationBtn.rx.tap.asDriver(),
             search: searchSchoolViewController.searchBar.rx.text.orEmpty.asDriver(),
@@ -138,7 +144,7 @@ class EditProfileViewController: UIViewController {
 
         output.profile.asObservable()
             .subscribe(onNext: {
-                self.profileName.accept($0.name)
+                self.profile = $0.name
                 self.nameTextField.text = $0.name
                 self.profileImgView.kf.setImage(with: $0.profileImageUrl)
                 self.schoolLabel.text = $0.school
@@ -254,7 +260,7 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
 
     func imagePickerController(
         _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
     ) {
         if let profileImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             profileImgView.image = profileImage
@@ -264,13 +270,5 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
         editBtn.isEnabled = true
 
         imagePickerView.dismiss(animated: true, completion: nil)
-    }
-}
-
-extension EditProfileViewController: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.isEnabled = false
-        editBtn.isEnabled = true
-        profileName.accept(textField.text ?? "")
     }
 }
