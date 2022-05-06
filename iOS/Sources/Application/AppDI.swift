@@ -119,6 +119,21 @@ extension Container {
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
+        self.register(CheckPasswordViewModel.self) { resolver in
+            CheckPasswordViewModel(
+                checkPasswordUseCase: resolver.resolve(CheckPasswordUseCase.self)!
+            )
+        }
+        self.register(ChangePasswordViewModel.self) { resolver in
+            ChangePasswordViewModel(
+                changePasswordUseCase: resolver.resolve(ChangePasswordUseCase.self)!
+            )
+        }
+        self.register(AccountInformationViewModel.self) { resolver in
+            AccountInformationViewModel(
+                fetchAccountInfoUseCase: resolver.resolve(FetchAccountInfoUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -237,6 +252,16 @@ extension Container {
         self.register(SchoolRegistrationViewController.self) { resolver in
             return SchoolRegistrationViewController().then {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
+            }
+        }
+        self.register(CheckPasswordViewController.self) { resolver in
+            return CheckPasswordViewController().then {
+                $0.viewModel = resolver.resolve(CheckPasswordViewModel.self)!
+            }
+        }
+        self.register(ChangePasswordViewController.self) { resolver in
+            return ChangePasswordViewController().then {
+                $0.viewModel = resolver.resolve(ChangePasswordViewModel.self)!
             }
         }
     }

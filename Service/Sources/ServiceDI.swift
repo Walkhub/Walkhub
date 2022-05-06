@@ -196,5 +196,19 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(CheckPasswordUseCase.self) { resolver in
+            return CheckPasswordUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!)
+        }
+        self.register(ChangePasswordUseCase.self) { resolver in
+            return ChangePasswordUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(FetchAccountInfoUseCase.self) { resolver in
+            return FetchAccountInfoUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }
