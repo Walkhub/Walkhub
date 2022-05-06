@@ -89,6 +89,7 @@ class SettingViewController: UIViewController, Stepper {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        self.navigationController?.navigationBar.setBackButtonToArrow()
         setBtn()
     }
 
@@ -109,6 +110,11 @@ class SettingViewController: UIViewController, Stepper {
 
         editHealthInormationBtn.rx.tap
             .map { WalkhubStep.editHealthInformationIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        editLoginInformationBtn.rx.tap
+            .map { WalkhubStep.accountInformationIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
     }
