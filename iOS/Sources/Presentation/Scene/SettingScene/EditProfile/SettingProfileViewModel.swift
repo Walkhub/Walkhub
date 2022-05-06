@@ -27,6 +27,7 @@ class SettingProfileViewModel: ViewModelType, Stepper {
     private var disposeBag = DisposeBag()
     private var schoolId = Int()
     private var imageString = String()
+    private var name = String()
     var steps = PublishRelay<Step>()
 
     struct Input {
@@ -56,19 +57,25 @@ class SettingProfileViewModel: ViewModelType, Stepper {
             profile.accept($0)
             self.imageString = $0.profileImageUrl.absoluteString
             self.schoolId = $0.schoolId
+            self.name = $0.name
         }).disposed(by: disposeBag)
 
         input.profileImage.asObservable().flatMap {
             self.postImageUseCase.excute(images: $0)
         }.subscribe(onNext: { data in
-            self.imageString = (data.first?.absoluteString)!
+            print(data)
+            self.imageString = data.first!
         }).disposed(by: disposeBag)
 
+        input.name.asObservable()
+            .subscribe(onNext: {
+                self.name = $0
+            }).disposed(by: disposeBag)
+
         input.buttonDidTap.asObservable()
-            .withLatestFrom(input.name)
-            .flatMap {
-                self.editProfileUseCase.excute(
-                    name: $0,
+            .flatMap { _ in
+                return self.editProfileUseCase.excute(
+                    name: self.name,
                     profileImageUrlString: self.imageString,
                     schoolId: self.schoolId
                 ).andThen(Single.just(WalkhubStep.backToSettingScene))
@@ -79,6 +86,14 @@ class SettingProfileViewModel: ViewModelType, Stepper {
             .map { WalkhubStep.searchSchoolIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
+
+        input.search.asObservable()
+            .flatMap {
+                self.searchSchoolUseCase.excute(name: $0)
+            }.subscribe(onNext: {
+                print($0)
+                searchSchool.accept($0)
+            }).disposed(by: disposeBag)
 
         input.cellTap.asObservable()
             .map { index -> Step in
