@@ -7,6 +7,9 @@ import RxCocoa
 
 class AccountInformationViewController: UIViewController {
 
+    private let getData = PublishRelay<Void>()
+
+    private var disposeBag = DisposeBag()
     var viewModel: AccountInformationViewModel!
 
     private let line = UIView().then {
@@ -79,17 +82,31 @@ class AccountInformationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        demoData()
+        self.navigationController?.navigationBar.setBackButtonToArrow()
+        view.backgroundColor = .white
+        bind()
     }
-
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
     }
+    override func viewWillAppear(_ animated: Bool) {
+        self.getData.accept(())
+    }
 
-    private func demoData() {
-        idLabel.text = "rlarldud"
-        phoneNumberLabel.text = "010-2345-2342"
+    private func bind() {
+        let input = AccountInformationViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            changePwButtonDidTap: changePasswordBtn.rx.tap.asDriver()
+        )
+
+        let output = viewModel.transform(input)
+
+        output.accountInfo.asObservable()
+            .subscribe(onNext: {
+                self.idLabel.text = $0.id
+                self.phoneNumberLabel.text = $0.phoneNumber
+            }).disposed(by: disposeBag)
     }
 }
 
