@@ -10,6 +10,7 @@ class ChangePasswordViewController: UIViewController {
     var currentPassword = String()
 
     private var disposeBag = DisposeBag()
+
     private let newPasswordLabel = UILabel().then {
         $0.text = "새 비밀번호"
         $0.font = .notoSansFont(ofSize: 24, family: .bold)
@@ -17,6 +18,9 @@ class ChangePasswordViewController: UIViewController {
     private let newPasswordTxtField = UITextField().then {
         $0.placeholder = "비밀번호(8~30자, 특수문자 1개 이상)"
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
+        $0.layer.borderWidth = 1
+        $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
+        $0.layer.cornerRadius = 12
         $0.addLeftPadding()
     }
     private let infoLabel = UILabel().then {
@@ -26,6 +30,7 @@ class ChangePasswordViewController: UIViewController {
         """
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
         $0.textColor = .red
+        $0.numberOfLines = 2
     }
     private let changeButton = UIButton(type: .system).then {
         $0.setBackgroundColor(.colorE0E0E0, for: .disabled)
@@ -39,12 +44,16 @@ class ChangePasswordViewController: UIViewController {
         super.viewDidLoad()
         self.title = "비밀번호 변경"
         navigationController?.navigationBar.setBackButtonToArrow()
+        view.backgroundColor = .white
         setButton()
         bind()
     }
     override func viewDidLayoutSubviews() {
         addSubivews()
         makeSubviewConstraints()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        self.infoLabel.isHidden = true
     }
 
     private func setButton() {
