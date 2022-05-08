@@ -15,10 +15,18 @@ public class EditHealthInformationUseCase {
         weight: Int?,
         sex: Sex
     ) -> Completable {
-        return userRepository.setHealthInformation(
-            height: height,
-            weight: weight,
-            sex: sex
-        )
+        if weight == 0 {
+            return userRepository.setHealthInformation(
+                height: height,
+                weight: nil,
+                sex: sex
+            )
+        } else {
+            return userRepository.setHealthInformation(
+                height: height,
+                weight: weight,
+                sex: sex
+            )
+        }
     }
 }
