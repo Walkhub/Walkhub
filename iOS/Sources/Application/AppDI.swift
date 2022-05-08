@@ -74,12 +74,11 @@ extension Container {
                 editHealthInformationUseCase: resolver.resolve(EditHealthInformationUseCase.self)!
             )
         }
-        self.register(SettingProfileViewModel.self) { resolver in
-            SettingProfileViewModel(
+        self.register(EditProfileViewModel.self) { resolver in
+            EditProfileViewModel(
                 fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
-                postImageUseCase: resolver.resolve(PostImageUseCase.self)!,
-                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
+                postImageUseCase: resolver.resolve(PostImageUseCase.self)!
             )
         }
         self.register(EditNotificationViewModel.self) { resolver in
@@ -132,6 +131,11 @@ extension Container {
         self.register(AccountInformationViewModel.self) { resolver in
             AccountInformationViewModel(
                 fetchAccountInfoUseCase: resolver.resolve(FetchAccountInfoUseCase.self)!
+            )
+        }
+        self.register(SearchSchoolViewModel.self) { resolver in
+            SearchSchoolViewModel(
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
     }
@@ -195,19 +199,22 @@ extension Container {
         }
         self.register(EditProfileViewController.self) { resolver in
             return EditProfileViewController().then {
-                $0.viewModel = resolver.resolve(SettingProfileViewModel.self)!
+                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
             }
         }
         self.register(SettingViewController.self) { _ in
             return SettingViewController()
         }
-        self.register(EditProfileViewController.self) { resolver in
-            return EditProfileViewController().then {
-                $0.viewModel = resolver.resolve(SettingProfileViewModel.self)!
+        self.register(SearchSchoolViewController.self) { resolver in
+            return SearchSchoolViewController().then {
+                $0.viewModel = resolver.resolve(SearchSchoolViewModel.self)!
             }
         }
-        self.register(SearchSchoolViewController.self) { _ in
-            return SearchSchoolViewController()
+        self.register(EditProfileViewController.self) { resolver in
+            return EditProfileViewController().then {
+                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
+                $0.searchSchoolViewController = resolver.resolve(SearchSchoolViewController.self)!
+            }
         }
         self.register(EditNotificationViewController.self) { resolver in
             return EditNotificationViewController().then {
