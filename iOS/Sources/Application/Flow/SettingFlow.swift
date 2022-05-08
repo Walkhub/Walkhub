@@ -29,18 +29,20 @@ class SettingFlow: Flow {
             return navigateToEditHealthInformationScene()
         case .accountInformationIsRequired:
             return navigateToAccountInformationScene()
-        case .backEditProfileScene:
-            return navigateToBackEditProfileScene()
         case .searchSchoolIsRequired:
             return navigateToSearchSchoolScene()
-        case .backToSettingScene:
-            return backToSettingScene()
+        case .backToScene:
+            return backToScene()
         case .checkPasswordScene:
             return navigateToCheckScene()
         case .changePasswordScene(let password):
             return navigateToChangePasswordScene(password: password)
         case .loaf(let message, let state, let location):
             return showLoaf(message, state: state, location: location)
+        case .notificationIsRequired:
+            return navigateToNotificationScene()
+        case .backToAccountScene:
+            return backToAccountScene()
         default:
             return .none
         }
@@ -84,25 +86,15 @@ class SettingFlow: Flow {
     }
 
     private func navigateToSearchSchoolScene() -> FlowContributors {
-        let editProfileViewController = container.resolve(EditProfileViewController.self)!
         let searchSchoolViewController = container.resolve(SearchSchoolViewController.self)!
         rootViewController.navigationController?.pushViewController(searchSchoolViewController, animated: true)
         return .one(flowContributor: .contribute(
             withNextPresentable: searchSchoolViewController,
-            withNextStepper: editProfileViewController.viewModel
+            withNextStepper: searchSchoolViewController.viewModel
         ))
     }
 
-    private func navigateToBackEditProfileScene() -> FlowContributors {
-        let editProfileViewController = container.resolve(EditProfileViewController.self)!
-        rootViewController.navigationController?.popViewController(animated: true)
-        return .one(flowContributor: .contribute(
-            withNextPresentable: editProfileViewController,
-            withNextStepper: editProfileViewController.viewModel
-        ))
-    }
-
-    private func backToSettingScene() -> FlowContributors {
+    private func backToScene() -> FlowContributors {
         rootViewController.navigationController?.popViewController(animated: true)
         return .none
     }
@@ -132,6 +124,23 @@ class SettingFlow: Flow {
             ))
     }
 
+    private func navigateToNotificationScene() -> FlowContributors {
+        let editNotificationViewController = container.resolve(EditNotificationViewController.self)!
+        rootViewController.navigationController?.pushViewController(
+            editNotificationViewController,
+            animated: true
+        )
+        return .one(flowContributor: .contribute(
+            withNextPresentable: editNotificationViewController,
+            withNextStepper: editNotificationViewController.viewModel
+            ))
+    }
+
+    private func backToAccountScene() -> FlowContributors {
+        rootViewController.navigationController?.popViewController(animated: true)
+        rootViewController.navigationController?.popViewController(animated: true)
+        return .none
+    }
     private func showLoaf(
         _ message: String,
         state: Loaf.State,
