@@ -48,15 +48,11 @@ class EditHealthInformationViewModel: ViewModelType, Stepper {
             .flatMap {
                 self.editHealthInformationUseCase.excute(
                     height: Double($0),
-                    weight: Int(Double($1) ?? 0.0),
+                    weight: Int(Double($1) ?? 1),
                     sex: $2
-                ).andThen(Single.just(WalkhubStep.backToSettingScene))
-            }.subscribe(onNext: {
-                self.steps.accept($0)
-            }).disposed(by: disposeBag)
-
-        steps.asObservable().subscribe(onNext: { _ in
-        }).disposed(by: disposeBag)
+                ).andThen(Single.just(WalkhubStep.backToScene))
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(healthData: healthData)
     }
