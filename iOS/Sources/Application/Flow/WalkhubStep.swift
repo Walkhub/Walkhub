@@ -55,9 +55,10 @@ enum WalkhubStep: Step {
     case editProfileIsRequired
     case editHealthInformationIsRequired
     case accountInformationIsRequired
-    case backEditProfileScene
     case searchSchoolIsRequired
-    case backToSettingScene
+    case backToScene
     case checkPasswordScene
     case changePasswordScene(pw: String)
+    case notificationIsRequired
+    case backToAccountScene
 }
