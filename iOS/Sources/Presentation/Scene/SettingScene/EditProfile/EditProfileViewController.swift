@@ -4,15 +4,17 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class EditProfileViewController: UIViewController {
 
-    var viewModel: SettingProfileViewModel!
-    let getData = PublishRelay<Void>()
+    var viewModel: EditProfileViewModel!
+    var searchSchoolViewController: SearchSchoolViewController!
     let image = PublishRelay<[Data]>()
 
     private let imagePickerView = UIImagePickerController()
-    private let searchSchoolViewController = SearchSchoolViewController()
+    private let schoolId = PublishRelay<Int>()
+    private let getData = PublishRelay<Void>()
     private var disposeBag = DisposeBag()
     private var profile = String()
 
@@ -85,6 +87,7 @@ class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         imagePickerView.delegate = self
+        navigationController?.navigationBar.setBackButtonToArrow()
         setBtn()
         bind()
         setTextField()
@@ -93,11 +96,7 @@ class EditProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         addSubviews()
         makeSubviewConstraints()
-        profileImgView.layer.cornerRadius = profileImgView.frame.size.height / 2
-        profileImgView.clipsToBounds = true
-        editProfileImageBtn.layer.cornerRadius = editProfileImageBtn.frame.size.height / 2
-        editBtn.layer.cornerRadius = 12
-        editBtn.clipsToBounds = true
+        layout()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -130,14 +129,13 @@ class EditProfileViewController: UIViewController {
 
     private func bind() {
 
-        let input = SettingProfileViewModel.Input(
+        let input = EditProfileViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
             profileImage: image.asDriver(onErrorJustReturn: []),
             name: nameTextField.rx.text.orEmpty.asDriver(),
+            schoolId: schoolId.asDriver(onErrorJustReturn: 0),
             buttonDidTap: editBtn.rx.tap.asDriver(),
-            searchSchoolButton: editSchoolInformationBtn.rx.tap.asDriver(),
-            search: searchSchoolViewController.searchBar.rx.text.orEmpty.asDriver(),
-            cellTap: searchSchoolViewController.schoolTableView.rx.itemSelected.asDriver()
+            searchSchoolButton: editSchoolInformationBtn.rx.tap.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -155,18 +153,11 @@ class EditProfileViewController: UIViewController {
                 }
             }).disposed(by: disposeBag)
 
-        output.searchSchool.bind(to: searchSchoolViewController.schoolTableView.rx.items(
-            cellIdentifier: "cell",
-            cellType: SchoolListTableViewCell.self
-        )) { _, items, cell in
-            cell.logoImgView.kf.setImage(with: items.logoImageUrl)
-            cell.schoolNameLabel.text = items.name
-        }.disposed(by: disposeBag)
-
-        output.schoolInfo.asObservable()
+        searchSchoolViewController.schoolInfo.asObservable()
             .subscribe(onNext: {
                 self.schoolLabel.text = $0.name
                 self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
+                self.schoolId.accept($0.id)
             }).disposed(by: disposeBag)
     }
 }
@@ -248,6 +239,13 @@ extension EditProfileViewController {
             $0.width.equalTo(296)
             $0.height.equalTo(148)
         }
+    }
+    private func layout() {
+        profileImgView.layer.cornerRadius = profileImgView.frame.size.height / 2
+        profileImgView.clipsToBounds = true
+        editProfileImageBtn.layer.cornerRadius = editProfileImageBtn.frame.size.height / 2
+        editBtn.layer.cornerRadius = 12
+        editBtn.clipsToBounds = true
     }
 }
 
