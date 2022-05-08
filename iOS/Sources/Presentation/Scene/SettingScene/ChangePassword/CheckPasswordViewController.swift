@@ -40,8 +40,11 @@ class CheckPasswordViewController: UIViewController {
         navigationController?.navigationBar.setBackButtonToArrow()
     }
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
+        continueButton.layer.cornerRadius = 12
+        continueButton.clipsToBounds = true
     }
 
     private func setButton() {
