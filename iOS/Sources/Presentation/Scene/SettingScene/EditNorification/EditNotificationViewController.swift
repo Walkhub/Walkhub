@@ -7,6 +7,8 @@ class EditNotificationViewController: UIViewController {
 
     var viewModel: EditNotificationViewModel!
 
+    private let userDefaults = UserDefaults.standard
+
     private let line1 = UIView().then {
         $0.backgroundColor = .gray200
     }
@@ -24,7 +26,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     private let getCheerSwitches = UISwitch().then {
-        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
@@ -46,7 +47,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     private let notificationSwitches = UISwitch().then {
-        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
@@ -68,7 +68,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     private let recommendChallengeSwitches = UISwitch().then {
-        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
@@ -80,7 +79,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     private let goalChallengeSwitches = UISwitch().then {
-        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
@@ -92,13 +90,14 @@ class EditNotificationViewController: UIViewController {
     }
 
     private let endChallengeSwitches = UISwitch().then {
-        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        self.navigationController?.navigationBar.setBackButtonToArrow()
         bind()
     }
 
@@ -108,7 +107,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        let userDefaults = UserDefaults.standard
         recommendChallengeSwitches.isOn = userDefaults.bool(forKey: "challenge")
         goalChallengeSwitches.isOn = userDefaults.bool(forKey: "goalChallenge")
         endChallengeSwitches.isOn = userDefaults.bool(forKey: "endChallenge")
@@ -117,7 +115,6 @@ class EditNotificationViewController: UIViewController {
     }
 
     override func viewDidDisappear(_ animated: Bool) {
-        let userDefaults = UserDefaults.standard
         userDefaults.set(recommendChallengeSwitches.isOn, forKey: "challenge")
         userDefaults.set(goalChallengeSwitches.isOn, forKey: "goalChallenge")
         userDefaults.set(endChallengeSwitches.isOn, forKey: "endChallenge")
@@ -138,6 +135,7 @@ class EditNotificationViewController: UIViewController {
     }
 }
 
+// MARK: Layout
 extension EditNotificationViewController {
 
     private func addSubviews() {
