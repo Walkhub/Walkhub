@@ -11,6 +11,6 @@ public class NotificationOffUseCase {
     }
 
     public func excute(type: NotificationType) -> Completable {
-        return notificationRepository.notificationOff(type: type)
+        return notificationRepository.notificationOff(userId: 0, type: type)
     }
 }
