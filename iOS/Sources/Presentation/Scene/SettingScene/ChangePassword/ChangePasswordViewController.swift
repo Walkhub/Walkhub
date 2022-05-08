@@ -49,8 +49,11 @@ class ChangePasswordViewController: UIViewController {
         bind()
     }
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         addSubivews()
         makeSubviewConstraints()
+        changeButton.layer.cornerRadius = 12
+        changeButton.clipsToBounds = true
     }
     override func viewWillAppear(_ animated: Bool) {
         self.infoLabel.isHidden = true
