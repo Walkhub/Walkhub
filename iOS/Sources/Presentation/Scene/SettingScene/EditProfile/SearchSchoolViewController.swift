@@ -4,8 +4,11 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class SearchSchoolViewController: UIViewController {
+    var viewModel: SearchSchoolViewModel!
+    var schoolInfo = PublishRelay<SearchSchool>()
 
     private var disposeBag = DisposeBag()
 
@@ -20,6 +23,7 @@ class SearchSchoolViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        bind()
     }
 
     override func viewDidLayoutSubviews() {
@@ -33,8 +37,29 @@ class SearchSchoolViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationItem.hidesBackButton = true
         self.navigationItem.titleView = searchBar
         self.searchBar.searchTextField.becomeFirstResponder()
     }
 
+    private func bind() {
+        let input = SearchSchoolViewModel.Input(
+            search: searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            cellSelected: schoolTableView.rx.itemSelected.asDriver()
+        )
+        let output = viewModel.transform(input)
+
+        output.searchSchool.bind(to: schoolTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: SchoolListTableViewCell.self
+        )) { _, item, cell in
+            cell.logoImgView.kf.setImage(with: item.logoImageUrl)
+            cell.schoolNameLabel.text = item.name
+        }.disposed(by: disposeBag)
+
+        output.schoolInfo.asObservable()
+            .subscribe(onNext: {
+                self.schoolInfo.accept($0)
+            }).disposed(by: disposeBag)
+    }
 }
