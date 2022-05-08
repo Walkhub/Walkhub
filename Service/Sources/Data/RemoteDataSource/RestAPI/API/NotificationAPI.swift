@@ -5,8 +5,8 @@ import Moya
 enum NotificationAPI {
     case fetchNotificationList
     case toggleIsRead(notificationId: Int)
-    case notificationOn(type: NotificationType)
-    case notificationOff(type: NotificationType)
+    case notificationOn(userId: Int, type: NotificationType)
+    case notificationOff(userId: Int, type: NotificationType)
 }
 
 extension NotificationAPI: WalkhubAPI {
@@ -41,16 +41,20 @@ extension NotificationAPI: WalkhubAPI {
 
     var task: Task {
         switch self {
-        case .notificationOn(let type):
+        case .notificationOn(let userId, let type):
             return .requestParameters(
                 parameters: [
+                    "users": [
+                        "user_id": userId
+                    ],
                     "type": type.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .notificationOff(let type):
+        case .notificationOff(let userId, let type):
             return .requestParameters(
                 parameters: [
+                    "user_id": userId,
                     "type": type.rawValue
                 ],
                 encoding: JSONEncoding.prettyPrinted
