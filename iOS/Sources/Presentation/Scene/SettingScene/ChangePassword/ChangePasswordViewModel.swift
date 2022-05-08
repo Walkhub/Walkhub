@@ -31,9 +31,14 @@ class ChangePasswordViewModel: ViewModelType, Stepper {
                 self.changePasswordUseCase.excute(
                     password: input.currentPassword,
                     newPassword: $0
-                )
-            }.subscribe(onNext: { _ in
-            }).disposed(by: disposeBag)
+                ).andThen(Single.just(WalkhubStep.backToAccountScene))
+                    .catchAndReturn(WalkhubStep.loaf(
+                        "비밀번호 변경에 성공하셨습니다.",
+                        state: .success,
+                        location: .bottom
+                    ))
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output()
     }
