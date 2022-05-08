@@ -181,6 +181,11 @@ class EditHealthInofrmationViewController: UIViewController {
 
 extension EditHealthInofrmationViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == heightTextField {
+            self.height.accept(heightTextField.text ?? "")
+        } else {
+            self.weight.accept(weightTextField.text ?? "")
+        }
         doneBtn.isEnabled = true
     }
 }
