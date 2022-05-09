@@ -68,6 +68,11 @@ extension Container {
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
         }
+        self.register(MeasurementCompleteViewModel.self) { resolver in
+            MeasurementCompleteViewModel(
+                fetchExercisesListUseCase: resolver.resolve(FetchExercisesListUseCase.self)!
+                )
+        }
         self.register(AgreeTermsViewModel.self) { resolver in
             AgreeTermsViewModel(
                 signupUseCase: resolver.resolve(SignupUseCase.self)!
