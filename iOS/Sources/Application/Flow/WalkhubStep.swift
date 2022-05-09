@@ -36,6 +36,7 @@ enum WalkhubStep: Step {
     case homeIsRequired
     case activityAnalysisIsRequired
     case recordMeasurementIsRequired
+    case notificationIsRequired
 
     // Hub
     case hubIsRequired
