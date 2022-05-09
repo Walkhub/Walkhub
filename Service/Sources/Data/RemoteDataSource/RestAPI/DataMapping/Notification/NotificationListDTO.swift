@@ -10,7 +10,7 @@ struct NotificationListDTO: Decodable {
 
 // MARK: - Mappings to Domain
 extension NotificationListDTO {
-    func toDomain() -> [Notification] {
+    func toDomain() -> [NotificationData] {
         return list.map { $0.toDomain() }
     }
 }
