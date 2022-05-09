@@ -14,8 +14,10 @@ class EditProfileViewController: UIViewController {
     private let imagePickerView = UIImagePickerController()
     private let schoolId = PublishRelay<Int>()
     private let getData = PublishRelay<Void>()
+    private let editProfile = PublishRelay<Void>()
     private var disposeBag = DisposeBag()
     private var profile = String()
+    private var changeSchool = false
 
     private let searchBar = UISearchController().then {
         $0.searchBar.placeholder = "학교 이름 검색하기"
@@ -114,6 +116,7 @@ class EditProfileViewController: UIViewController {
         alert.isHidden = true
         editBtn.isEnabled = false
         schoolTableView.isHidden = true
+        changeSchool = false
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -139,6 +142,29 @@ class EditProfileViewController: UIViewController {
                     }).disposed(by: self.disposeBag)
                 self.schoolTableView.isHidden = false
             }).disposed(by: disposeBag)
+
+        alert.cancelBtn.rx.tap.asObservable()
+            .subscribe(onNext: {
+                self.alert.isHidden = true
+                self.alertBackView.isHidden = true
+            }).disposed(by: disposeBag)
+
+        alert.okBtn.rx.tap.asObservable()
+            .subscribe(onNext: {
+                self.alert.isHidden = true
+                self.alertBackView.isHidden = true
+                self.editProfile.accept(())
+            }).disposed(by: disposeBag)
+
+        editBtn.rx.tap.asObservable()
+            .subscribe(onNext: {
+                if self.changeSchool {
+                    self.alert.isHidden = false
+                    self.alertBackView.isHidden = false
+                } else {
+                    self.editProfile.accept(())
+                }
+            }).disposed(by: disposeBag)
     }
     private func setTextField() {
         nameTextField.rx.text.orEmpty
@@ -154,7 +180,7 @@ class EditProfileViewController: UIViewController {
             profileImage: image.asDriver(onErrorJustReturn: []),
             name: nameTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId.asDriver(onErrorJustReturn: 0),
-            buttonDidTap: editBtn.rx.tap.asDriver(),
+            buttonDidTap: editProfile.asDriver(onErrorJustReturn: ()),
             search: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             cellDidSelected: schoolTableView.rx.itemSelected.asDriver()
         )
@@ -189,6 +215,7 @@ class EditProfileViewController: UIViewController {
                 self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
                 self.editBtn.isEnabled = true
                 self.navigationItem.searchController = nil
+                self.changeSchool = true
             }).disposed(by: disposeBag)
     }
 }
