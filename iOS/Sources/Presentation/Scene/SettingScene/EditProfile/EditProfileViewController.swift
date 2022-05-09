@@ -9,7 +9,6 @@ import Service
 class EditProfileViewController: UIViewController {
 
     var viewModel: EditProfileViewModel!
-    var searchSchoolViewController: SearchSchoolViewController!
     let image = PublishRelay<[Data]>()
 
     private let imagePickerView = UIImagePickerController()
@@ -18,18 +17,27 @@ class EditProfileViewController: UIViewController {
     private var disposeBag = DisposeBag()
     private var profile = String()
 
+    private let searchBar = UISearchController().then {
+        $0.searchBar.placeholder = "학교 이름 검색하기"
+        $0.searchBar.showsCancelButton = false
+    }
+
+    private let schoolTableView = UITableView().then {
+        $0.register(SchoolListTableViewCell.self, forCellReuseIdentifier: "cell")
+    }
+
     private let alertBackView = UIView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
     }
 
-    let alert = CustomAlert().then {
+    private let alert = CustomAlert().then {
         $0.setup(
             title: "학교 변경 시 기존 소속 중인 반에서\n자동 탈퇴됩니다.",
             cancel: "안하기",
             ok: "변경하기")
     }
 
-    let profileImgView = UIImageView().then {
+    private let profileImgView = UIImageView().then {
         $0.contentMode = .scaleToFill
         $0.backgroundColor = .colorE0E0E0
     }
@@ -46,7 +54,7 @@ class EditProfileViewController: UIViewController {
         $0.layer.borderColor = UIColor.colorBDBDBD.cgColor
     }
 
-    let nameTextField = UITextField().then {
+    private let nameTextField = UITextField().then {
         $0.isEnabled = false
         $0.font = .notoSansFont(ofSize: 14, family: .regular)
     }
@@ -62,21 +70,21 @@ class EditProfileViewController: UIViewController {
         $0.layer.borderWidth = 1
     }
 
-    let schoolLabel = UILabel().then {
+    private let schoolLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
-    let gradeClassLabel = UILabel().then {
+    private let gradeClassLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray800
     }
 
-    let editSchoolInformationBtn = UIButton(type: .system).then {
+    private let editSchoolInformationBtn = UIButton(type: .system).then {
         $0.tintColor = .black
         $0.setImage(.init(named: "editImg"), for: .normal)
     }
 
-    let editBtn = UIButton(type: .system).then {
+    private let editBtn = UIButton(type: .system).then {
         $0.setBackgroundColor(.colorE0E0E0, for: .disabled)
         $0.setTitle("수정 완료", for: .normal)
         $0.setTitleColor(.white, for: .normal)
@@ -87,6 +95,7 @@ class EditProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         imagePickerView.delegate = self
+        searchBar.searchBar.delegate = self
         navigationController?.navigationBar.setBackButtonToArrow()
         setBtn()
         bind()
@@ -104,6 +113,7 @@ class EditProfileViewController: UIViewController {
         alertBackView.isHidden = true
         alert.isHidden = true
         editBtn.isEnabled = false
+        schoolTableView.isHidden = true
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -119,6 +129,16 @@ class EditProfileViewController: UIViewController {
             self.nameTextField.isEnabled = true
             self.nameTextField.becomeFirstResponder()
         }).disposed(by: disposeBag)
+
+        editSchoolInformationBtn.rx.tap
+            .subscribe(onNext: {
+                self.navigationItem.searchController = self.searchBar
+                Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
+                    .subscribe(onNext: {_ in
+                        self.searchBar.searchBar.searchTextField.becomeFirstResponder()
+                    }).disposed(by: self.disposeBag)
+                self.schoolTableView.isHidden = false
+            }).disposed(by: disposeBag)
     }
     private func setTextField() {
         nameTextField.rx.text.orEmpty
@@ -135,7 +155,8 @@ class EditProfileViewController: UIViewController {
             name: nameTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId.asDriver(onErrorJustReturn: 0),
             buttonDidTap: editBtn.rx.tap.asDriver(),
-            searchSchoolButton: editSchoolInformationBtn.rx.tap.asDriver()
+            search: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            cellDidSelected: schoolTableView.rx.itemSelected.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -153,11 +174,21 @@ class EditProfileViewController: UIViewController {
                 }
             }).disposed(by: disposeBag)
 
-        searchSchoolViewController.schoolInfo.asObservable()
+        output.searchSchool.bind(to: schoolTableView.rx.items(
+            cellIdentifier: "cell",
+            cellType: SchoolListTableViewCell.self
+        )) { _, item, cell in
+            cell.logoImgView.kf.setImage(with: item.logoImageUrl)
+            cell.schoolNameLabel.text = item.name
+        }.disposed(by: disposeBag)
+
+        output.schoolInfo.asObservable()
             .subscribe(onNext: {
+                self.schoolTableView.isHidden = true
                 self.schoolLabel.text = $0.name
                 self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
-                self.schoolId.accept($0.id)
+                self.editBtn.isEnabled = true
+                self.navigationItem.searchController = nil
             }).disposed(by: disposeBag)
     }
 }
@@ -166,7 +197,7 @@ class EditProfileViewController: UIViewController {
 extension EditProfileViewController {
     private func addSubviews() {
         [profileImgView, editProfileImageBtn, nameView,
-         schoolInformationView, editBtn, alertBackView, alert]
+         schoolInformationView, editBtn, alertBackView, alert, schoolTableView]
             .forEach { view.addSubview($0) }
 
         [nameTextField, editNameBtn].forEach { nameView.addSubview($0) }
@@ -176,6 +207,10 @@ extension EditProfileViewController {
     }
 
     private func makeSubviewConstraints() {
+        schoolTableView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
         profileImgView.snp.makeConstraints {
             $0.top.equalToSuperview().inset(100)
             $0.centerX.equalToSuperview()
@@ -268,5 +303,13 @@ extension EditProfileViewController: UIImagePickerControllerDelegate, UINavigati
         editBtn.isEnabled = true
 
         imagePickerView.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension EditProfileViewController: UISearchBarDelegate {
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.navigationItem.searchController = nil
+        self.view.endEditing(true)
+        schoolTableView.isHidden = true
     }
 }
