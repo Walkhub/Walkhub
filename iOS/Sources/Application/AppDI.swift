@@ -99,6 +99,11 @@ extension Container {
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
+        self.register(NotificationListViewModel.self) { resolver in
+            NotificationListViewModel(
+                fetchNotificationListUseCase: resolver.resolve(FetchNotificationListUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -186,6 +191,11 @@ extension Container {
         self.register(SchoolRegistrationViewController.self) { resolver in
             return SchoolRegistrationViewController().then {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
+            }
+        }
+        self.register(NotificationListViewController.self) { resolver in
+            return NotificationListViewController().then {
+                $0.viewModel = resolver.resolve(NotificationListViewModel.self)!
             }
         }
     }
