@@ -136,7 +136,7 @@ class EditProfileViewController: UIViewController {
         editSchoolInformationBtn.rx.tap
             .subscribe(onNext: {
                 self.navigationItem.searchController = self.searchBar
-                Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
+                Observable<Int>.interval(.milliseconds(0), scheduler: MainScheduler.instance)
                     .subscribe(onNext: {_ in
                         self.searchBar.searchBar.searchTextField.becomeFirstResponder()
                     }).disposed(by: self.disposeBag)
