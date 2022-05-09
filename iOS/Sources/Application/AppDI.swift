@@ -78,7 +78,8 @@ extension Container {
             EditProfileViewModel(
                 fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
-                postImageUseCase: resolver.resolve(PostImageUseCase.self)!
+                postImageUseCase: resolver.resolve(PostImageUseCase.self)!,
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
         self.register(EditNotificationViewModel.self) { resolver in
@@ -131,11 +132,6 @@ extension Container {
         self.register(AccountInformationViewModel.self) { resolver in
             AccountInformationViewModel(
                 fetchAccountInfoUseCase: resolver.resolve(FetchAccountInfoUseCase.self)!
-            )
-        }
-        self.register(SearchSchoolViewModel.self) { resolver in
-            SearchSchoolViewModel(
-                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
     }
@@ -197,23 +193,12 @@ extension Container {
                 $0.viewModel = resolver.resolve(AccountInformationViewModel.self)!
             }
         }
-        self.register(EditProfileViewController.self) { resolver in
-            return EditProfileViewController().then {
-                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
-            }
-        }
         self.register(SettingViewController.self) { _ in
             return SettingViewController()
         }
-        self.register(SearchSchoolViewController.self) { resolver in
-            return SearchSchoolViewController().then {
-                $0.viewModel = resolver.resolve(SearchSchoolViewModel.self)!
-            }
-        }
         self.register(EditProfileViewController.self) { resolver in
             return EditProfileViewController().then {
                 $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
-                $0.searchSchoolViewController = resolver.resolve(SearchSchoolViewController.self)!
             }
         }
         self.register(EditNotificationViewController.self) { resolver in
