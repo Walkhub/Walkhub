@@ -2,6 +2,7 @@ import UIKit
 
 import Loaf
 import RxFlow
+import Service
 
 class SettingFlow: Flow {
 
@@ -29,8 +30,6 @@ class SettingFlow: Flow {
             return navigateToEditHealthInformationScene()
         case .accountInformationIsRequired:
             return navigateToAccountInformationScene()
-        case .searchSchoolIsRequired:
-            return navigateToSearchSchoolScene()
         case .backToScene:
             return backToScene()
         case .checkPasswordScene:
@@ -82,15 +81,6 @@ class SettingFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: accountInformationViewController,
             withNextStepper: accountInformationViewController.viewModel
-        ))
-    }
-
-    private func navigateToSearchSchoolScene() -> FlowContributors {
-        let searchSchoolViewController = container.resolve(SearchSchoolViewController.self)!
-        rootViewController.navigationController?.pushViewController(searchSchoolViewController, animated: true)
-        return .one(flowContributor: .contribute(
-            withNextPresentable: searchSchoolViewController,
-            withNextStepper: searchSchoolViewController.viewModel
         ))
     }
 
