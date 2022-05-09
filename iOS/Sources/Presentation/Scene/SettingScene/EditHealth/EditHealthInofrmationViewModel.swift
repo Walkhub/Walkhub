@@ -48,7 +48,7 @@ class EditHealthInformationViewModel: ViewModelType, Stepper {
             .flatMap {
                 self.editHealthInformationUseCase.excute(
                     height: Double($0),
-                    weight: Int(Double($1) ?? 1),
+                    weight: Int(Double($1) ?? 0),
                     sex: $2
                 ).andThen(Single.just(WalkhubStep.backToScene))
             }.bind(to: steps)
