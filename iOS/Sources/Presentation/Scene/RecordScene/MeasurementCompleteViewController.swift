@@ -1,7 +1,19 @@
 import UIKit
-import CarPlay
+
+import SnapKit
+import Then
+import RxSwift
+import RxCocoa
+import Service
 
 class MeasurementCompleteViewController: UIViewController {
+
+    var viewModel: MeasurementCompleteViewModel!
+    private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Void>()
+
+    private var selectedFirstNum = 0
+    private var selectedSecondNum = 0
 
     private let saveRecordImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
@@ -54,6 +66,7 @@ class MeasurementCompleteViewController: UIViewController {
         navigationItem.title = "기록저장"
         self.navigationController?.navigationBar.tintColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        bindViewModel()
     }
 
     private func setNavigation() {
@@ -78,6 +91,13 @@ class MeasurementCompleteViewController: UIViewController {
         calorieLabel.text = "711kcal"
         distanceLabel.text = "6km"
         speedLabel.text = "0.9m/s"
+    }
+
+    private func bindViewModel() {
+        let input = MeasurementCompleteViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
     }
 }
 

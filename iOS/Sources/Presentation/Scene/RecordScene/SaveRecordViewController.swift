@@ -1,6 +1,19 @@
 import UIKit
 
+import SnapKit
+import Then
+import RxSwift
+import RxCocoa
+import Service
+
 class SaveRecordViewController: UIViewController {
+
+    var viewModel: MeasurementCompleteViewModel!
+    private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Void>()
+
+    private var selectedFirstNum = 0
+    private var selectedSecondNum = 0
 
     private let saveRecordImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
@@ -121,6 +134,7 @@ class SaveRecordViewController: UIViewController {
         navigationItem.title = "기록저장"
         self.navigationController?.navigationBar.tintColor = .white
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        bindViewModel()
     }
 
     private func setNavigation() {
@@ -142,6 +156,13 @@ class SaveRecordViewController: UIViewController {
         speedRecordLabel.text = "0.9"
         hoursRecordLabel.text = "1"
         minutesRecordLabel.text = "23"
+    }
+    
+    private func bindViewModel() {
+        let input = MeasurementCompleteViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()))
+
+        let output = viewModel.transform(input)
     }
 }
 
