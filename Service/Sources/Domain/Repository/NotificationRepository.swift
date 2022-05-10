@@ -7,4 +7,5 @@ protocol NotificationRepository {
     func editReadWhether(notificationId: Int) -> Single<Void>
     func notificationOn(userId: Int, type: NotificationType) -> Completable
     func notificationOff(userId: Int, type: NotificationType) -> Completable
+    func fetchNotificationStatus() -> Single<NotificationStatus>
 }
