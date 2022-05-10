@@ -45,7 +45,7 @@ extension NotificationAPI: WalkhubAPI {
         case .notificationOn(let userId, let type):
             return .requestParameters(
                 parameters: [
-                    "users": [
+                    "user_id_list": [
                         userId
                     ],
                     "type": type.rawValue
@@ -55,7 +55,7 @@ extension NotificationAPI: WalkhubAPI {
         case .notificationOff(let userId, let type):
             return .requestParameters(
                 parameters: [
-                    "users": [
+                    "user_id_list": [
                         userId
                     ],
                     "type": type.rawValue
