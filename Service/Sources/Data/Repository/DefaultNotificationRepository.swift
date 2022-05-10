@@ -26,4 +26,8 @@ class DefaultNotificationRepository: NotificationRepository {
     func notificationOff(userId: Int, type: NotificationType) -> Completable {
         return remoteNotificationDataSource.notificationOff(userId: userId, type: type)
     }
+
+    func fetchNotificationStatus() -> Single<NotificationStatus> {
+        return remoteNotificationDataSource.fetchNotificaitonStatus()
+    }
 }
