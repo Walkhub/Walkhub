@@ -19,13 +19,21 @@ class RestApiRemoteDataSource<API: WalkhubAPI> {
                     self.requestWithAccessToken(api)
                         .subscribe(
                             onSuccess: { single(.success($0)) },
-                            onFailure: { single(.failure($0)) })
+                            onFailure: {
+                                print("----\(api)----")
+                                print($0)
+                                single(.failure($0))
+                            })
                 )
             } else {
                 disposabels.append(
                     self.defaultRequest(api).subscribe(
                         onSuccess: { single(.success($0)) },
-                        onFailure: { single(.failure($0)) })
+                        onFailure: {
+                            print("----\(api)----")
+                            print($0)
+                            single(.failure($0))
+                         })
                 )
             }
             return Disposables.create(disposabels)
