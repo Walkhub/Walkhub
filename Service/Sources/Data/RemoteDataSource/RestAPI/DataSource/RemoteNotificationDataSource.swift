@@ -29,4 +29,10 @@ final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAP
         return request(.notificationOff(userId: userId, type: type))
             .asCompletable()
     }
+
+    func fetchNotificaitonStatus() -> Single<NotificationStatus> {
+        return request(.fetchNotificationStatus)
+            .map(NotificationStatusDTO.self)
+            .map { $0.toDomain() }
+    }
 }
