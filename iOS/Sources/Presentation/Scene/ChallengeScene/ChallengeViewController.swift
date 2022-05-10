@@ -66,6 +66,7 @@ class ChallengeViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
 }
+
 extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
