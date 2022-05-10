@@ -84,6 +84,7 @@ extension Container {
         }
         self.register(EditNotificationViewModel.self) { resolver in
             EditNotificationViewModel(
+                fetchNotificationStatusUseCase: resolver.resolve(FetchNotificationStatusUseCase.self)!,
                 notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
                 notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!
                 )
