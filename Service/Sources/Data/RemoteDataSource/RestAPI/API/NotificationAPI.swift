@@ -7,6 +7,7 @@ enum NotificationAPI {
     case toggleIsRead(notificationId: Int)
     case notificationOn(userId: Int, type: NotificationType)
     case notificationOff(userId: Int, type: NotificationType)
+    case fetchNotificationStatus
 }
 
 extension NotificationAPI: WalkhubAPI {
@@ -28,7 +29,7 @@ extension NotificationAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .fetchNotificationList:
+        case .fetchNotificationList, .fetchNotificationStatus:
             return .get
         default:
             return .patch
