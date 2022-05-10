@@ -210,5 +210,10 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(FetchNotificationListUseCase.self) { resolver in
+            return FetchNotificationListUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
     }
 }
