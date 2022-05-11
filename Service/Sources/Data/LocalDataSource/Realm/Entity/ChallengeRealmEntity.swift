@@ -8,6 +8,7 @@ class ChallengeRealmEntity: Object {
 
     @Persisted var id: Int = 0
     @Persisted var name: String = ""
+    @Persisted var imageUrlString: String = ""
     @Persisted var startAt: String = ""
     @Persisted var endAt: String = ""
     @Persisted var goal: Int = 0
@@ -26,6 +27,7 @@ extension ChallengeRealmEntity {
     func setup(challenge: Challenge, isJoined: Bool) {
         self.id = challenge.id
         self.name = challenge.name
+        self.imageUrlString = challenge.imageUrl.absoluteString
         self.startAt = challenge.start.toDateString()
         self.endAt = challenge.end.toDateString()
         self.goal = challenge.goal
@@ -52,6 +54,7 @@ extension ChallengeRealmEntity {
         return .init(
             id: self.id,
             name: self.name,
+            imageUrl: URL(string: imageUrlString)!,
             start: self.startAt.toDate(),
             end: self.endAt.toDate(),
             goal: self.goal,
