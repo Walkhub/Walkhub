@@ -5,6 +5,7 @@ struct ChallengeDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case id
         case name
+        case imageUrlString = "image_url"
         case start = "start_at"
         case end = "end_at"
         case goal
@@ -17,6 +18,7 @@ struct ChallengeDTO: Decodable {
     }
     let id: Int
     let name: String
+    let imageUrlString: String
     let start: String
     let end: String
     let goal: Int
@@ -34,6 +36,7 @@ extension ChallengeDTO {
         return .init(
             id: id,
             name: name,
+            imageUrl: URL(string: imageUrlString)!,
             start: start.toDate(),
             end: end.toDate(),
             goal: goal,
