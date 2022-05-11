@@ -37,8 +37,7 @@ extension ChallengesAPI: WalkhubAPI {
         switch self {
         case .joinChallenges:
             return .post
-        case .fetchChallengesList, .fetchChallengeDetail, .fetchParticipantsChallengesList,
-                .fetchJoinedChallenges, .fetchEndChallengeList:
+        default:
             return .get
         }
     }
