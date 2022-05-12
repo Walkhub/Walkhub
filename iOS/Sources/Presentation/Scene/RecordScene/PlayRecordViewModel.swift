@@ -29,7 +29,7 @@ class PlayRecordViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
-        let endExercise: Driver<Void>
+        let endButtonDidTap: Driver<Void>
     }
 
     struct Output {
@@ -61,10 +61,10 @@ class PlayRecordViewModel: ViewModelType, Stepper {
             recordExercise.accept($0)
         }).disposed(by: disposeBag)
 
-        input.endExercise.asObservable().flatMap {
-            self.endExerciseUseCase.excute()
-        }.subscribe(onNext: { _ in
-        }).disposed(by: disposeBag)
+        input.endButtonDidTap.asObservable()
+            .map { WalkhubStep.snapShotIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             exerciseAnalysis: exerciseAnalysis,
