@@ -27,6 +27,10 @@ class RecordFlow: Flow {
             return navigateToRecordMeasurementScreen()
         case .playRecordIsRequired:
             return navigateToPlayRecordScreen()
+        case .snapShotIsRequired:
+            return navigateToProofShotScene()
+        case .measurementCompleteIsRequired(let image):
+            return navigateToMeasurementScene(image: image)
         default:
             return .none
         }
@@ -65,4 +69,21 @@ class RecordFlow: Flow {
         ))
     }
 
+    private func navigateToProofShotScene() -> FlowContributors {
+        let snapShotViewController = container.resolve(ProofShotViewController.self)!
+        self.rootViewController.navigationController?.pushViewController(snapShotViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNext: snapShotViewController
+        ))
+    }
+
+    private func navigateToMeasurementScene(image: UIImage) -> FlowContributors {
+        let measurementCompleteViewController = container.resolve(MeasurementCompleteViewController.self)!
+        measurementCompleteViewController.image = image
+        self.rootViewController.navigationController?.pushViewController(measurementCompleteViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: measurementCompleteViewController,
+            withNextStepper: measurementCompleteViewController.viewModel
+        ))
+    }
 }
