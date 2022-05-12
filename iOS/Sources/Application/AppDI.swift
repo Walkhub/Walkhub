@@ -193,5 +193,8 @@ extension Container {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
             }
         }
+        self.register(ProofShotViewController.self) { _ in
+            return ProofShotViewController()
+        }
     }
 }
