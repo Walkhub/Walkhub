@@ -2,6 +2,7 @@ import Foundation
 
 import Loaf
 import RxFlow
+import UIKit
 
 enum WalkhubStep: Step {
 
@@ -49,4 +50,6 @@ enum WalkhubStep: Step {
     // Record
     case playRecordIsRequired
     case timerIsRequired
+    case snapShotIsRequired
+    case measurementCompleteIsRequired(image: UIImage)
 }
