@@ -224,7 +224,7 @@ class PlayRecordViewController: UIViewController {
     }
     private func bindViewModel() {
         let input = PlayRecordViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()),
-                                              endExercise: endExercise.asDriver(onErrorJustReturn: ()))
+                                              endButtonDidTap: resetBtn.rx.tap.asDriver())
 
         let output = viewModel.transform(input)
 

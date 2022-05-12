@@ -1,6 +1,16 @@
 import UIKit
 
-class ProofShotViewController: UIViewController {
+import SnapKit
+import Then
+import RxSwift
+import RxCocoa
+import RxFlow
+
+class ProofShotViewController: UIViewController, Stepper {
+
+    var steps = PublishRelay<Step>()
+    var image = UIImage()
+    private var disposeBag = DisposeBag()
 
     private let camera = UIImagePickerController().then {
         $0.sourceType = .camera
@@ -15,13 +25,13 @@ class ProofShotViewController: UIViewController {
         super.viewDidLoad()
         camera.delegate = self
         present(camera, animated: true, completion: nil)
-        // Do any additional setup after loading the view.
     }
 }
 extension ProofShotViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
             myImageView.image = image
+            self.image = image
         }
         picker.dismiss(animated: true, completion: nil)
     }

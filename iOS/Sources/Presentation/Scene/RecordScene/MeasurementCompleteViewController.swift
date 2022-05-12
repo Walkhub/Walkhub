@@ -9,6 +9,7 @@ import Service
 class MeasurementCompleteViewController: UIViewController {
 
     var viewModel: MeasurementCompleteViewModel!
+    var image = UIImage()
     private var disposeBag = DisposeBag()
     private let getData = PublishRelay<Void>()
 
