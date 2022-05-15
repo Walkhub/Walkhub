@@ -18,13 +18,12 @@ class HubViewController: UIViewController {
         $0.searchBar.placeholder = "학교 검색"
         $0.searchBar.layer.cornerRadius = 8
         $0.navigationItem.hidesSearchBarWhenScrolling = false
-        $0.hidesNavigationBarDuringPresentation = false
         $0.automaticallyShowsCancelButton = false
     }
 
     private let searchTableView = UITableView().then {
         $0.backgroundColor = .white
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "searchCell")
+        $0.register(SchoolRegistrationTableViewCell.self, forCellReuseIdentifier: "searchCell")
     }
 
     private let mySchoolLabel = UILabel().then {
@@ -56,32 +55,35 @@ class HubViewController: UIViewController {
     }
 
     private let dropDownBtn = DropDownButton().then {
-        $0.setTitle("이번주\t", for: .normal)
+        $0.setTitle("최근 일주일", for: .normal)
         $0.arr = ["최근 일주일", "최근 한 달"]
     }
 
     private let rankTableView = UITableView().then {
         $0.backgroundColor = .white
         $0.separatorStyle = .none
-        $0.register(RankTableViewCell.self, forCellReuseIdentifier: "schoolRankCell")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
-        setNavigation()
-        bindViewModel()
+        searchController.searchBar.searchTextField.delegate = self
+        bind()
         setDropDown()
     }
 
     override func viewDidLayoutSubviews() {
+        setNavigation()
         addSubviews()
         makeSubviewContraints()
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        setNavigation()
         dateType.accept(.week)
+        dropDownBtn.setTitle("쵝근 일주일", for: .normal)
         self.tabBarController?.tabBar.isHidden = false
+        self.searchTableView.isHidden = true
     }
 
     private func setDropDown() {
@@ -97,7 +99,7 @@ class HubViewController: UIViewController {
         }
     }
 
-    private func bindViewModel() {
+    private func bind() {
         let input = HubViewModel.Input(
             dateType: dateType.asDriver(onErrorJustReturn: .day),
             name: searchController.searchBar.searchTextField.rx.text.orEmpty.asDriver()
@@ -128,41 +130,44 @@ class HubViewController: UIViewController {
         output.mySchoolRank.asObservable().subscribe(onNext: {
             self.schoolImgView.kf.setImage(with: $0.logoImageUrl)
             self.schoolName.text = $0.name
-            self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
+            if $0.grade == 0 || $0.classNum == 0 {
+                self.gradeClassLabel.text = "현재 소속중인 반이 없어요."
+            } else {
+                self.gradeClassLabel.text = "\($0.grade)학년 \($0.classNum)반"
+            }
         }).disposed(by: disposeBag)
 
-        output.searchSchoolRankList.bind(to: searchTableView.rx.items(
+        output.searchSchoolList.bind(to: searchTableView.rx.items(
             cellIdentifier: "searchCell",
-            cellType: RankTableViewCell.self
-        )) { _, items, cell in
-            cell.imgView.kf.setImage(with: items.logoImageUrl)
-            cell.nameLabel.text = items.name
-            cell.rankLabel.text = "\(items.ranking)등"
-            cell.stepLabel.text = "총 \(items.walkCount) 걸음"
-            switch items.ranking {
-            case 1:
-                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
-            case 2:
-                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
-            case 3:
-                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
-            default:
-                cell.badgeImgView.image = UIImage()
-            }
-        }.disposed(by: disposeBag)
+            cellType: SchoolRegistrationTableViewCell.self)) { _, items, cell in
+                cell.schoolLogoImageView.kf.setImage(with: items.logoImageUrl)
+                cell.schoolNameLabel.text = items.name
+            }.disposed(by: disposeBag)
     }
 }
 
-extension HubViewController {
+extension HubViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.searchTableView.isHidden = false
+    }
 
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        self.searchTableView.isHidden = true
+    }
+}
+
+// MARK: Navigation
+extension HubViewController {
     private func setNavigation() {
         navigationItem.searchController = searchController
-        let titleLabel = UILabel()
-        titleLabel.textColor = .black
-        titleLabel.text = "허브"
-        titleLabel.font = .notoSansFont(ofSize: 20, family: .medium)
-        titleLabel.textAlignment = .left
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        let titleLabel = UILabel().then {
+            $0.textColor = .black
+            $0.text = "허브"
+            $0.font = .notoSansFont(ofSize: 20, family: .medium)
+            $0.textAlignment = .left
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+
        self.navigationItem.titleView = titleLabel
        guard let containerView = self.navigationItem.titleView?.superview else { return }
 
