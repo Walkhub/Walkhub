@@ -9,10 +9,10 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
 
     private override init() { }
 
-    func fetchSchoolRank(dateType: DateType) -> Single<MySchool> {
-        return request(.fetchSchoolRank(dateType: dateType))
+    func fetchSchoolRank() -> Single<MySchool> {
+        return request(.fetchSchoolRank)
             .map(MySchoolRankDTO.self)
-            .map { $0.mySchoolRank.toDomain() }
+            .map { $0.toDomain() }
     }
 
     func searchSchool(name: String?, dateType: DateType) -> Single<[School]> {

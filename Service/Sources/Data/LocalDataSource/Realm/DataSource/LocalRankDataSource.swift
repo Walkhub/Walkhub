@@ -15,7 +15,7 @@ final class LocalRankDataSource {
         dateType: DateType
     ) -> Single<UserRank> {
         return Single.zip(
-            fetchMyRank(scope: scope, dateType: dateType),
+            fetchMyRank(),
             fetchUserRankList(scope: scope, dateType: dateType)
         ) { self.generateUserRank(isJoinedClass: false, myRank: $0, list: $1) }
     }
@@ -42,19 +42,15 @@ final class LocalRankDataSource {
 // MARK: School Rank
 extension LocalRankDataSource {
 
-    func fetchMySchoolRank(dateType: DateType) -> Single<MySchool> {
+    func fetchMySchoolRank() -> Single<MySchool> {
         return realmTask.fetchObjects(
-            for: MySchoolRankRealmEntity.self,
-               filter: QueryFilter.string(
-                query: "dateType = '\(dateType.rawValue)'"
-               )
+            for: MySchoolRankRealmEntity.self
         ).map { $0.first!.toDomain() }
     }
 
-    func storeMySchoolRank(school: MySchool, dateType: DateType) {
+    func storeMySchoolRank(school: MySchool) {
         let mySchoolRank = mySchoolToSchoolRankRealmEntity(
-            school: school,
-            dateType: dateType
+            school: school
         )
         realmTask.set(mySchoolRank)
     }
@@ -95,13 +91,11 @@ extension LocalRankDataSource {
     }
 
     private func mySchoolToSchoolRankRealmEntity(
-        school: MySchool,
-        dateType: DateType
+        school: MySchool
     ) -> MySchoolRankRealmEntity {
         let mySchoolRankRealmEntity = MySchoolRankRealmEntity()
         mySchoolRankRealmEntity.setup(
-            school: school,
-            dateType: dateType
+            school: school
         )
         return mySchoolRankRealmEntity
     }
@@ -111,14 +105,11 @@ extension LocalRankDataSource {
 // MARK: User Rank
 extension LocalRankDataSource {
 
-    private func fetchMyRank(
-        scope: GroupScope,
-        dateType: DateType
-    ) -> Single<PersonRankRealmEntity> {
+    private func fetchMyRank() -> Single<PersonRankRealmEntity> {
         return realmTask.fetchObjects(
             for: PersonRankRealmEntity.self,
                filter: QueryFilter.string(
-                query: "scope = '\(scope.rawValue)' AND dateType = '\(dateType.rawValue)' AND isMyRank = true"
+                query: "isMyRank = true"
                )
         ).map { $0.first! }
     }

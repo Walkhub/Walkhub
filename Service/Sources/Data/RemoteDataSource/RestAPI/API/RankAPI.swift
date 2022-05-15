@@ -3,7 +3,7 @@ import Foundation
 import Moya
 
 enum RankAPI {
-    case fetchSchoolRank(dateType: DateType)
+    case fetchSchoolRank
     case searchSchoolRank(name: String?, dateType: DateType)
     case fetchUserSchoolRank(scope: GroupScope, dateType: DateType)
     case fetchUserRank(schoolId: Int, dateType: DateType)
@@ -37,13 +37,6 @@ extension RankAPI: WalkhubAPI {
 
     var task: Task {
         switch self {
-        case .fetchSchoolRank(let dateType):
-            return .requestParameters(
-                parameters: [
-                    "schoolDateType": dateType.rawValue
-                ],
-                encoding: URLEncoding.queryString
-            )
         case .searchSchoolRank(let name, let dateType):
             return .requestParameters(
                 parameters: [
@@ -74,6 +67,8 @@ extension RankAPI: WalkhubAPI {
                     "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
+        default:
+            return .requestPlain
         }
     }
 
