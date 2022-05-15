@@ -9,13 +9,16 @@ class HubViewModel: ViewModelType, Stepper {
 
     private let fetchSchoolUseCase: FetchSchoolRankUseCase
     private let searchSchoolRankUseCase: SearchSchoolRankUseCase
+    private let searchSchoolUseCase: SearchSchoolUseCase
 
     init(
         fetchSchoolUseCase: FetchSchoolRankUseCase,
-        searchSchoolRankUseCase: SearchSchoolRankUseCase
+        searchSchoolRankUseCase: SearchSchoolRankUseCase,
+        searchSchoolUseCase: SearchSchoolUseCase
     ) {
         self.fetchSchoolUseCase = fetchSchoolUseCase
         self.searchSchoolRankUseCase = searchSchoolRankUseCase
+        self.searchSchoolUseCase = searchSchoolUseCase
     }
 
     private var disposeBag = DisposeBag()
@@ -29,44 +32,42 @@ class HubViewModel: ViewModelType, Stepper {
     struct Output {
         let mySchoolRank: PublishRelay<MySchool>
         let schoolRank: PublishRelay<[School]>
-        let searchSchoolRankList: PublishRelay<[School]>
+        let searchSchoolList: PublishRelay<[SearchSchool]>
     }
 
     func transform(_ input: Input) -> Output {
         let mySchoolRank = PublishRelay<MySchool>()
         let schoolRank = PublishRelay<[School]>()
-        let searchSchoolRankList = PublishRelay<[School]>()
+        let searchSchoolList = PublishRelay<[SearchSchool]>()
         let info = Driver.combineLatest(input.name, input.dateType)
 
         input.dateType.asObservable()
-            .withLatestFrom(input.dateType)
-            .flatMap {
-            self.fetchSchoolUseCase.excute(dateType: $0)
-        }.subscribe(onNext: {
-            mySchoolRank.accept($0)
-        }).disposed(by: disposeBag)
+            .flatMap { _ in
+                self.fetchSchoolUseCase.excute()
+            }.subscribe(onNext: {
+                print($0)
+                mySchoolRank.accept($0)
+            }).disposed(by: disposeBag)
 
         input.dateType.asObservable()
-            .withLatestFrom(input.dateType)
             .flatMap {
                 self.searchSchoolRankUseCase.excute(name: nil, dateType: $0)
             }.subscribe(onNext: {
+                print($0)
                 schoolRank.accept($0)
             }).disposed(by: disposeBag)
 
         input.name.asObservable()
-            .withLatestFrom(info)
-            .debounce(.milliseconds(200), scheduler: MainScheduler.asyncInstance)
             .flatMap {
-            self.searchSchoolRankUseCase.excute(name: $0, dateType: $1)
-        }.subscribe(onNext: {
-            searchSchoolRankList.accept($0)
-        }).disposed(by: disposeBag)
+                self.searchSchoolUseCase.excute(name: $0)
+            }.subscribe(onNext: {
+                searchSchoolList.accept($0)
+            }).disposed(by: disposeBag)
 
         return Output(
             mySchoolRank: mySchoolRank,
             schoolRank: schoolRank,
-            searchSchoolRankList: searchSchoolRankList
+            searchSchoolList: searchSchoolList
         )
     }
 }
