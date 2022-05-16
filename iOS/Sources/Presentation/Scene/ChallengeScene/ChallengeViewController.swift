@@ -4,6 +4,7 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Kingfisher
 import Service
 
 class ChallengeViewController: UIViewController {
@@ -12,6 +13,7 @@ class ChallengeViewController: UIViewController {
     private var disposeBag = DisposeBag()
 
     private let getData = PublishRelay<Void>()
+    private let moveDetailChallenge = PublishRelay<Void>()
     private var challengeList = [Challenge]()
     private var joinedChallengeList = [JoinedChallenge]()
 
@@ -49,7 +51,8 @@ class ChallengeViewController: UIViewController {
 
     private func bindViewModel() {
         let input = ChallengeViewModel.Input(
-            getData: getData.asDriver(onErrorJustReturn: ())
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            moveDetailedChallenge: moveDetailChallenge.asDriver(onErrorJustReturn: ())
         )
 
         let output = viewModel.transform(input)
@@ -73,7 +76,11 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return challengeList.count
+        if section == 0 {
+            return joinedChallengeList.count
+        } else {
+            return challengeList.count
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -84,7 +91,7 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
             ) as? ParticipatingChallengeTableViewCell
             cell?.challengeTitleLabel.text = joinedChallengeList[indexPath.row].name
             cell?.organizerLable.text = joinedChallengeList[indexPath.row].writer.name
-            cell?.dateLabel.text = "\(joinedChallengeList[indexPath.row].start) ~ \(joinedChallengeList[indexPath.row].end)"
+            cell?.dateLabel.text = "\(joinedChallengeList[indexPath.row].start.challengeToString()) ~ \(joinedChallengeList[indexPath.row].end.challengeToString())"
             cell?.schoolLogoImageView.kf.setImage(with: joinedChallengeList[indexPath.row].writer.profileImageUrl)
             if (joinedChallengeList[indexPath.row].goalType.rawValue == "DISTANCE") {
                 cell?.presentStepCountLabel.text = "현재 \(joinedChallengeList[indexPath.row].goal)km"
@@ -106,7 +113,20 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
             cell?.challengeTitleLabel.text = challengeList[indexPath.row].name
             cell?.organizerLable.text = challengeList[indexPath.row].writer.name
             cell?.schoolLogoImageView.kf.setImage(with: challengeList[indexPath.row].writer.profileImageUrl)
-            cell?.dateLabel.text = "\(challengeList[indexPath.row].start) ~ \(challengeList[indexPath.row].end)"
+            switch challengeList[indexPath.row].participantList.count {
+            case 0:
+                print("아무것도 없음.")
+            case 1:
+                cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
+            case 2:
+                cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
+                cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[1].profileImageUrl)
+            default:
+                cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
+                cell?.secondProfileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[1].profileImageUrl)
+                cell?.thirdProfileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[2].profileImageUrl)
+            }
+            cell?.dateLabel.text = "\(challengeList[indexPath.row].start.challengeToString()) ~ \(challengeList[indexPath.row].end.challengeToString())"
             if challengeList[indexPath.row].goalScope.rawValue == "DAY" {
                 if challengeList[indexPath.row].goalType.rawValue == "DISTANCE" {
                     cell?.targetDistanceLabel.text = "하루 한 번 \(challengeList[indexPath.row].goal)km 달성"
@@ -133,3 +153,6 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 }
+// didSeleceted에 저거 넣어주면 됨 ㅋ
+//moveDetailedChallenge: moveDetailChallenge.asDriver(onErrorJustReturn: ())
+
