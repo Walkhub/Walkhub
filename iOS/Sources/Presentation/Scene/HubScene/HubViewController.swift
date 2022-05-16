@@ -17,8 +17,8 @@ class HubViewController: UIViewController {
     private let searchController = UISearchController(searchResultsController: nil).then {
         $0.searchBar.placeholder = "학교 검색"
         $0.searchBar.layer.cornerRadius = 8
+        $0.searchBar.showsCancelButton = false
         $0.navigationItem.hidesSearchBarWhenScrolling = false
-        $0.automaticallyShowsCancelButton = false
     }
 
     private let searchTableView = UITableView().then {
@@ -49,13 +49,16 @@ class HubViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
     }
 
+    private let mySchoolButton = UIButton(type: .system).then {
+        $0.backgroundColor = .clear
+    }
+
     private let top100Label = UILabel().then {
         $0.text = "걸음수 Top 100"
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
 
     private let dropDownBtn = DropDownButton().then {
-        $0.setTitle("최근 일주일", for: .normal)
         $0.arr = ["최근 일주일", "최근 한 달"]
     }
 
@@ -72,18 +75,27 @@ class HubViewController: UIViewController {
         setDropDown()
     }
 
-    override func viewDidLayoutSubviews() {
-        setNavigation()
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
         addSubviews()
         makeSubviewContraints()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        setNavigation()
+        super.viewWillAppear(animated)
+        self.setNavigation()
         dateType.accept(.week)
-        dropDownBtn.setTitle("쵝근 일주일", for: .normal)
+        dropDownBtn.setTitle("최근 일주일    ", for: .normal)
         self.tabBarController?.tabBar.isHidden = false
         self.searchTableView.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        self.searchController.searchBar.searchTextField.endEditing(true)
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 
     private func setDropDown() {
@@ -102,7 +114,10 @@ class HubViewController: UIViewController {
     private func bind() {
         let input = HubViewModel.Input(
             dateType: dateType.asDriver(onErrorJustReturn: .day),
-            name: searchController.searchBar.searchTextField.rx.text.orEmpty.asDriver()
+            name: searchController.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            mySchoolViewDidTap: mySchoolButton.rx.tap.asDriver(),
+            rankCellDidSelected: rankTableView.rx.itemSelected.asDriver(),
+            searchCelDidSelected: searchTableView.rx.itemSelected.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -156,45 +171,31 @@ extension HubViewController: UITextFieldDelegate {
     }
 }
 
-// MARK: Navigation
+// MARK: - SetNavigation
 extension HubViewController {
-    private func setNavigation() {
-        navigationItem.searchController = searchController
+    func setNavigation() {
         let titleLabel = UILabel().then {
-            $0.textColor = .black
             $0.text = "허브"
+            $0.textColor = .black
             $0.font = .notoSansFont(ofSize: 20, family: .medium)
-            $0.textAlignment = .left
-            $0.translatesAutoresizingMaskIntoConstraints = false
         }
-
-       self.navigationItem.titleView = titleLabel
-       guard let containerView = self.navigationItem.titleView?.superview else { return }
-
-        let leftBarItemWidth = self.navigationItem.leftBarButtonItems?.reduce(0, { $0 + $1.width })
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            titleLabel.leftAnchor.constraint(equalTo: containerView.leftAnchor,
-                                            constant: (leftBarItemWidth ?? 0) + 16),
-            titleLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor)
-               ])
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
+        self.navigationItem.searchController = searchController
     }
 }
-
 // MARK: - Layout
 extension HubViewController {
     private func addSubviews() {
         [mySchoolLabel, mySchoolView, top100Label, dropDownBtn, rankTableView, searchTableView]
             .forEach { view.addSubview($0) }
 
-        [schoolImgView, schoolName, gradeClassLabel]
+        [schoolImgView, schoolName, gradeClassLabel, mySchoolButton]
             .forEach { mySchoolView.addSubview($0) }
     }
 
     private func makeSubviewContraints() {
         mySchoolLabel.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaInsets).offset(140)
+            $0.top.equalTo(view.snp.topMargin).offset(10)
             $0.leading.equalToSuperview().inset(16)
         }
 
@@ -220,6 +221,10 @@ extension HubViewController {
             $0.leading.equalTo(schoolImgView.snp.trailing).offset(16)
         }
 
+        mySchoolButton.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+
         top100Label.snp.makeConstraints {
             $0.top.equalTo(mySchoolView.snp.bottom).offset(16)
             $0.leading.equalToSuperview().inset(16)
@@ -239,7 +244,8 @@ extension HubViewController {
         }
 
         searchTableView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(view.safeAreaInsets)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
 }

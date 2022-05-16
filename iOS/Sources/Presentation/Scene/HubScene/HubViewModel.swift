@@ -22,31 +22,34 @@ class HubViewModel: ViewModelType, Stepper {
     }
 
     private var disposeBag = DisposeBag()
+    private var mySchoolId: Int = .init()
     var steps = PublishRelay<Step>()
 
     struct Input {
         let dateType: Driver<DateType>
         let name: Driver<String>
+        let mySchoolViewDidTap: Driver<Void>
+        let rankCellDidSelected: Driver<IndexPath>
+        let searchCelDidSelected: Driver<IndexPath>
     }
 
     struct Output {
         let mySchoolRank: PublishRelay<MySchool>
-        let schoolRank: PublishRelay<[School]>
-        let searchSchoolList: PublishRelay<[SearchSchool]>
+        let schoolRank: BehaviorRelay<[School]>
+        let searchSchoolList: BehaviorRelay<[SearchSchool]>
     }
 
     func transform(_ input: Input) -> Output {
         let mySchoolRank = PublishRelay<MySchool>()
-        let schoolRank = PublishRelay<[School]>()
-        let searchSchoolList = PublishRelay<[SearchSchool]>()
-        let info = Driver.combineLatest(input.name, input.dateType)
+        let schoolRank = BehaviorRelay<[School]>(value: [])
+        let searchSchoolList = BehaviorRelay<[SearchSchool]>(value: [])
 
         input.dateType.asObservable()
             .flatMap { _ in
                 self.fetchSchoolUseCase.excute()
             }.subscribe(onNext: {
-                print($0)
                 mySchoolRank.accept($0)
+                self.mySchoolId = $0.id
             }).disposed(by: disposeBag)
 
         input.dateType.asObservable()
@@ -63,6 +66,29 @@ class HubViewModel: ViewModelType, Stepper {
             }.subscribe(onNext: {
                 searchSchoolList.accept($0)
             }).disposed(by: disposeBag)
+
+        input.mySchoolViewDidTap.asObservable()
+            .map { WalkhubStep.detailHubIsRequired(self.mySchoolId) }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
+
+        input.rankCellDidSelected.asObservable()
+            .map { index -> Int in
+                let value = schoolRank.value
+                return value[index.row].schoolId
+            }.map {
+                WalkhubStep.detailHubIsRequired($0)
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
+
+        input.searchCelDidSelected.asObservable()
+            .map { index -> Int in
+                let value = searchSchoolList.value
+                return value[index.row].id
+            }.map {
+                WalkhubStep.detailHubIsRequired($0)
+            }.bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             mySchoolRank: mySchoolRank,
