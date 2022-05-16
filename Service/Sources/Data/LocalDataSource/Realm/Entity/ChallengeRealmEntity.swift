@@ -59,7 +59,7 @@ extension ChallengeRealmEntity {
             end: self.endAt.toDate(),
             goal: self.goal,
             goalScope: ChallengeGoalScope(rawValue: self.goalScope)!,
-            goalType: ExerciseGoalType(rawValue: self.goalType)!,
+            goalType: ExerciseGoalType(rawValue: self.goalType) ?? .distance,
             award: self.award,
             writer: (self.writer?.toDomain())!,
             participantCount: self.participantCount,
