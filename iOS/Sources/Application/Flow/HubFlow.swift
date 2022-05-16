@@ -18,6 +18,8 @@ class HubFlow: Flow {
         switch step {
         case .hubIsRequired:
             return navigateToHubScreen()
+        case .detailHubIsRequired(let schoolId):
+            return navigateToDetailHubScene(schoolId)
         default:
             return .none
         }
@@ -32,4 +34,13 @@ class HubFlow: Flow {
         ))
     }
 
+    private func navigateToDetailHubScene(_ schoolId: Int) -> FlowContributors {
+        let detailHubViewController = container.resolve(DetailHubViewController.self)!
+        detailHubViewController.schoolId = schoolId
+        self.rootViewController.pushViewController(detailHubViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: detailHubViewController,
+            withNextStepper: detailHubViewController.viewModel
+        ))
+    }
 }
