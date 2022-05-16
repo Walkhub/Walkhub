@@ -18,6 +18,8 @@ class ChallengeFlow: Flow {
         switch step {
         case .challengeIsRequired:
             return navigateToChallengeScreen()
+        case .detailedChallengeIsRequired:
+            return navigateToDetailedChallengeScene()
         default:
             return .none
         }
@@ -32,4 +34,12 @@ class ChallengeFlow: Flow {
         ))
     }
 
+    private func navigateToDetailedChallengeScene() -> FlowContributors {
+        let challengeDetailViewController = conatinor.resolve(DetailedChallengeViewController.self)!
+        self.rootViewController.pushViewController(challengeDetailViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: challengeDetailViewController,
+            withNextStepper: challengeDetailViewController.viewModel
+        ))
+    }
 }
