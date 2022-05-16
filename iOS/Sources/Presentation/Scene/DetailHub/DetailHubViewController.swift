@@ -7,7 +7,7 @@ import RxCocoa
 
 class DetailHubViewController: TabmanViewController {
 
-    internal let schoolId = PublishRelay<Int>()
+    var schoolId = Int()
 
     private var viewController = [UIViewController]()
 
@@ -89,7 +89,7 @@ class DetailHubViewController: TabmanViewController {
     private func bindViewModel() {
         let input = DetailHubViewModel.Input(
             name: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
-            schoolId: schoolId.asDriver(onErrorJustReturn: 0),
+            schoolId: schoolId,
             dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day),
             switchOn: rankVC.scope.asDriver(onErrorJustReturn: .school),
             isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true),
