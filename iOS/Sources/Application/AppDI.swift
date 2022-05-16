@@ -131,6 +131,12 @@ extension Container {
                 $0.informationVC = resolver.resolve(InformationViewController.self)!
             }
         }
+        self.register(RankViewController.self) { _ in
+            return RankViewController()
+        }
+        self.register(InformationViewController.self) { _ in
+            return InformationViewController()
+        }
         self.register(ActivityAnalysisViewController.self) { resolver  in
             return ActivityAnalysisViewController().then {
                 $0.viewModel = resolver.resolve(ActivityAnalysisViewModel.self)!
