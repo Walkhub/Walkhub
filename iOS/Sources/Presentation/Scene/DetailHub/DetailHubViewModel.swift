@@ -42,6 +42,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
         let userList: PublishRelay<[RankedUser]>
         let defaultUserList: PublishRelay<[RankedUser]>
         let schoolDetails: PublishRelay<SchoolDetails>
+        let isJoinedClass: PublishRelay<Bool>
     }
 
     func transform(_ input: Input) -> Output {
@@ -50,6 +51,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
         let userList = PublishRelay<[RankedUser]>()
         let defaultUserList = PublishRelay<[RankedUser]>()
         let schoolDetails = PublishRelay<SchoolDetails>()
+        let isJoinedClass = PublishRelay<Bool>()
 
         let info = Driver.combineLatest(input.name, input.dateType)
         let mySchoolType = Driver.combineLatest(input.switchOn, input.dateType)
@@ -63,11 +65,10 @@ class DetailHubViewModel: ViewModelType, Stepper {
 
         input.switchOn.asObservable().withLatestFrom(mySchoolType).flatMap {
             self.fetchUserSchoolRankUseCase.excute(scope: $0, dateType: $1)
-        }.subscribe(onNext: { data, walkCount in
-            print(data)
-            print(walkCount)
+        }.subscribe(onNext: {data, walkCount in
             myRank.accept((data.myRank, walkCount))
             userList.accept(data.rankList)
+            isJoinedClass.accept(data.isJoinedClass)
         }).disposed(by: disposeBag)
 
         input.isMySchool.asObservable().subscribe(onNext: {
@@ -75,16 +76,14 @@ class DetailHubViewModel: ViewModelType, Stepper {
                 input.dateType.asObservable().withLatestFrom(mySchoolType).flatMap {
                     self.fetchUserSchoolRankUseCase.excute(scope: $0, dateType: $1)
                 }.subscribe(onNext: { data, walkCount in
-                    print(data)
-                    print(walkCount)
                     myRank.accept((data.myRank, walkCount))
                     userList.accept(data.rankList)
+                    isJoinedClass.accept(data.isJoinedClass)
                 }).disposed(by: self.disposeBag)
             } else {
                 input.dateType.asObservable().withLatestFrom(input.dateType).flatMap {
                     self.fetchUserRankUseCase.excute(schoolId: input.schoolId, dateType: $0)
                 }.subscribe(onNext: {
-                    print($0)
                     defaultUserList.accept($0)
                 }).disposed(by: self.disposeBag)
             }
@@ -101,7 +100,8 @@ class DetailHubViewModel: ViewModelType, Stepper {
             myRank: myRank,
             userList: userList,
             defaultUserList: defaultUserList,
-            schoolDetails: schoolDetails
+            schoolDetails: schoolDetails,
+            isJoinedClass: isJoinedClass
         )
     }
 }

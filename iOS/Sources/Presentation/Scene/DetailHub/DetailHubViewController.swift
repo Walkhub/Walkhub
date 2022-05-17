@@ -8,6 +8,7 @@ import RxCocoa
 class DetailHubViewController: TabmanViewController {
 
     var schoolId = Int()
+    var schoolName = String()
 
     private var viewController = [UIViewController]()
 
@@ -118,25 +119,40 @@ class DetailHubViewController: TabmanViewController {
         }.disposed(by: disposeBag)
 
         output.myRank.asObservable().subscribe(onNext: {
+            print("rank")
             self.rankVC.myRank.accept($0)
         }).disposed(by: disposeBag)
 
         output.userList.asObservable().subscribe(onNext: {
+            print("userList")
             self.rankVC.userList.accept($0)
         }).disposed(by: disposeBag)
 
         output.defaultUserList.asObservable().subscribe(onNext: {
+            print("defaultUserList")
             self.rankVC.defaultUserList.accept($0)
         }).disposed(by: disposeBag)
 
         output.schoolDetails.asObservable().subscribe(onNext: {
+            print("schoolDetails")
             self.informationVC.schoolDetials.accept($0)
         }).disposed(by: disposeBag)
+
+        output.isJoinedClass.asObservable()
+            .subscribe(onNext: {
+                if !$0 {
+                    self.rankVC.joinClassBtn.isHidden = false
+                } else {
+                    self.rankVC.joinClassBtn.isHidden = true
+                }
+            }).disposed(by: disposeBag)
     }
 }
 
 extension DetailHubViewController: UISearchBarDelegate {
     private func setNavigation() {
+        self.title = schoolName
+        self.navigationController?.navigationBar.setBackButtonToArrow()
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.barTintColor = .gray50
