@@ -40,7 +40,7 @@ enum WalkhubStep: Step {
 
     // Hub
     case hubIsRequired
-    case detailHubIsRequired(_ schoolId: Int)
+    case detailHubIsRequired(_ schoolId: Int, _ schoolName: String)
 
     // Challenge
     case challengeIsRequired
