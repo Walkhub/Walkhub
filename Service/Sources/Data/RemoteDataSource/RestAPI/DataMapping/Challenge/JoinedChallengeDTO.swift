@@ -21,7 +21,7 @@ struct JoinedChallengeDTO: Decodable {
     let goal: Int
     let goalScope: String
     let goalType: String
-    let totalValue: Int
+    let totalValue: Int?
     let writer: WriterDTO
 }
 
@@ -31,12 +31,12 @@ extension JoinedChallengeDTO {
             id: id,
             name: name,
             imageUrl: URL(string: imageUrlString)!,
-            start: start.toDateWithTime(),
-            end: end.toDateWithTime(),
+            start: start.toDate(),
+            end: end.toDate(),
             goal: goal,
             goalScope: ChallengeGoalScope(rawValue: goalScope) ?? .all,
             goalType: ExerciseGoalType(rawValue: goalType) ?? .distance,
-            totalValue: totalValue,
+            totalValue: totalValue ?? 0,
             writer: writer.toDomain()
         )
     }
