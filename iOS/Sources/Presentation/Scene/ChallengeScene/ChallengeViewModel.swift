@@ -24,6 +24,7 @@ class ChallengeViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
+        let moveDetailedChallenge: Driver<Void>
     }
 
     struct Output {
@@ -44,8 +45,14 @@ class ChallengeViewModel: ViewModelType, Stepper {
         input.getData.asObservable().flatMap {
             self.fetchChallengesListUseCase.excute()
         }.subscribe(onNext: {
+            print($0)
             challengeList.accept($0)
         }).disposed(by: disposeBag)
+
+        input.moveDetailedChallenge.asObservable()
+            .map { WalkhubStep.challengeIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             joinedChallengeList: joinedChallengeList,
