@@ -54,6 +54,11 @@ class ParticipatingChallengeTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    override func layoutSubviews() {
+        schoolLogoImageView.layer.cornerRadius = schoolLogoImageView.frame.width / 2
+        schoolLogoImageView.layer.masksToBounds = true
+    }
+
 }
 
 extension ParticipatingChallengeTableViewCell {
