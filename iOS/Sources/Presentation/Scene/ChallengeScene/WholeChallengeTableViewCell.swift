@@ -3,7 +3,7 @@ import UIKit
 class WholeChallengeTableViewCell: UITableViewCell {
 
     let challengeView = UIView().then {
-        $0.backgroundColor = .gray600
+        $0.backgroundColor = .white
     }
 
     let challengeTitleLabel = UILabel().then {
@@ -22,7 +22,7 @@ class WholeChallengeTableViewCell: UITableViewCell {
     }
 
     let schoolLogoImageView = UIImageView().then {
-        $0.tintColor = .gray800
+        $0.backgroundColor = .gray800
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
@@ -89,8 +89,9 @@ class WholeChallengeTableViewCell: UITableViewCell {
 extension WholeChallengeTableViewCell {
 
     private func addSubviews() {
-        [challengeView,
-         challengeTitleLabel,
+        self.addSubview(challengeView)
+
+        [challengeTitleLabel,
          organizerLable,
          dateLabel,
          schoolLogoImageView,
@@ -99,7 +100,7 @@ extension WholeChallengeTableViewCell {
          targetDistanceLabel,
          purposeLabel,
          participantsLabel,
-         stackView].forEach { self.addSubview($0) }
+         stackView].forEach { challengeView.addSubview($0) }
 
         [thirdProfileImageView,
             secondProfileImageView,
@@ -113,8 +114,13 @@ extension WholeChallengeTableViewCell {
             $0.leading.trailing.equalToSuperview().inset(11)
             $0.bottom.equalToSuperview().inset(11)
         }
+        schoolLogoImageView.snp.makeConstraints {
+            $0.height.width.equalTo(40)
+            $0.top.equalToSuperview().offset(18)
+            $0.leading.equalToSuperview().inset(16)
+        }
         challengeTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(challengeView.snp.top).offset(11)
+            $0.top.equalToSuperview().offset(11)
             $0.height.equalTo(24)
             $0.leading.equalTo(schoolLogoImageView.snp.trailing).offset(16)
         }
@@ -122,11 +128,6 @@ extension WholeChallengeTableViewCell {
             $0.top.equalTo(challengeTitleLabel.snp.bottom).offset(1)
             $0.height.equalTo(17)
             $0.leading.equalTo(schoolLogoImageView.snp.trailing).offset(16)
-        }
-        schoolLogoImageView.snp.makeConstraints {
-            $0.height.width.equalTo(40)
-            $0.top.equalTo(challengeView.snp.top).offset(18)
-            $0.leading.equalTo(challengeView.snp.leading).inset(16)
         }
         dateLabel.snp.makeConstraints {
             $0.top.equalTo(challengeTitleLabel.snp.bottom).offset(1)
@@ -145,7 +146,7 @@ extension WholeChallengeTableViewCell {
         }
         pointImageView.snp.makeConstraints {
             $0.top.equalTo(schoolLogoImageView.snp.bottom).offset(20)
-            $0.leading.equalTo(challengeView.snp.leading).offset(16)
+            $0.leading.equalToSuperview().offset(16)
             $0.height.width.equalTo(4)
         }
         dotImageView.snp.makeConstraints {
@@ -159,11 +160,11 @@ extension WholeChallengeTableViewCell {
             $0.leading.equalTo(thirdProfileImageView.snp.trailing).offset(8)
         }
         stackView.snp.makeConstraints {
-            $0.top.equalTo(participantsLabel.snp.bottom).offset(9)
+            $0.top.equalTo(targetDistanceLabel.snp.bottom).offset(9)
             $0.width.equalTo(40)
             $0.height.equalTo(20)
-            $0.leading.equalTo(challengeView.snp.leading).offset(16)
-            $0.bottom.equalTo(challengeView.snp.bottom).offset(5)
+            $0.leading.equalToSuperview().inset(16)
+//            $0.bottom.equalToSuperview().inset(5)
         }
         profileImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
