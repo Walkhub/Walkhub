@@ -19,6 +19,7 @@ class ChallengeViewController: UIViewController {
 
     private let challengeTableView = UITableView(frame: .zero, style: .insetGrouped).then {
         $0.backgroundColor = .gray50
+        $0.rowHeight = 134.0
         $0.register(ParticipatingChallengeTableViewCell.self, forCellReuseIdentifier: "participatingChallengeCell")
         $0.register(WholeChallengeTableViewCell.self, forCellReuseIdentifier: "wholeChallengeCell")
     }
