@@ -54,7 +54,6 @@ class MeasurementCompleteViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 20, family: .medium)
         $0.textColor = .white
     }
-
     private let completeBtn = UIBarButtonItem().then {
         $0.title = "완료"
         $0.tintColor = .white

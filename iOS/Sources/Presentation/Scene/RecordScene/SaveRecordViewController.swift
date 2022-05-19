@@ -157,7 +157,7 @@ class SaveRecordViewController: UIViewController {
         hoursRecordLabel.text = "1"
         minutesRecordLabel.text = "23"
     }
-    
+
     private func bindViewModel() {
         let input = MeasurementCompleteViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()))
