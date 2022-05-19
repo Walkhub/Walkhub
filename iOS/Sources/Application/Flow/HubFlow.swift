@@ -35,7 +35,7 @@ class HubFlow: Flow {
     }
 
     private func navigateToDetailHubScene(
-        _ schoolId: Int,
+        _ schoolId: Int?,
         _ schoolName: String
     ) -> FlowContributors {
         let detailHubViewController = container.resolve(DetailHubViewController.self)!
