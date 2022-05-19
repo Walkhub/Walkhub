@@ -8,19 +8,19 @@ import RxFlow
 class DetailHubViewModel: ViewModelType, Stepper {
 
     private let searchUserUseCase: SearchUserUseCase
-    private let fetchUserSchoolRankUseCase: FetchUserSchoolRankUseCase
-    private let fetchUserRankUseCase: FetchUserRankUseCase
+    private let fetchAnotherSchoolUserRankUseCase: FetchAnotherSchoolUserRankUseCase
+    private let fetchMySchoolUserRankUseCase: FetchMySchoolUserRankUseCase
     private let fetchSchoolDetailsUseCase: FetchSchoolDetailsUseCase
 
     init(
         searchUserUseCase: SearchUserUseCase,
-        fetchUserSchoolRankUseCase: FetchUserSchoolRankUseCase,
-        fetchUserRankUseCase: FetchUserRankUseCase,
+        fetchAnotherSchoolUserRankUseCase: FetchAnotherSchoolUserRankUseCase,
+        fetchMySchoolUserRankUseCase: FetchMySchoolUserRankUseCase,
         fetchSchoolDetailsUseCase: FetchSchoolDetailsUseCase
     ) {
         self.searchUserUseCase = searchUserUseCase
-        self.fetchUserSchoolRankUseCase = fetchUserSchoolRankUseCase
-        self.fetchUserRankUseCase = fetchUserRankUseCase
+        self.fetchAnotherSchoolUserRankUseCase = fetchAnotherSchoolUserRankUseCase
+        self.fetchMySchoolUserRankUseCase = fetchMySchoolUserRankUseCase
         self.fetchSchoolDetailsUseCase = fetchSchoolDetailsUseCase
     }
 
@@ -29,13 +29,11 @@ class DetailHubViewModel: ViewModelType, Stepper {
 
     struct Input {
         let name: Driver<String>
-        let schoolId: Int
+        let schoolId: Int?
         let dateType: Driver<DateType>
         let switchOn: Driver<GroupScope>
-        let isMySchool: Driver<Bool>
-        let getDetails: Driver<Void>
+        let getRankData: Driver<Void>
     }
-
     struct Output {
         let searchUserList: PublishRelay<[User]>
         let myRank: PublishRelay<(RankedUser, Int?)>
@@ -57,24 +55,27 @@ class DetailHubViewModel: ViewModelType, Stepper {
         let mySchoolType = Driver.combineLatest(input.switchOn, input.dateType)
 
         input.name.asObservable().withLatestFrom(info).flatMap { name, type in
-            self.searchUserUseCase.excute(schoolId: input.schoolId, name: name, dateType: type)
+            self.searchUserUseCase.excute(
+                name: name,
+                dateType: type,
+                schoolId: input.schoolId!
+            )
         }.subscribe(onNext: {
-            print($0)
             searchUserList.accept($0)
         }).disposed(by: disposeBag)
 
         input.switchOn.asObservable().withLatestFrom(mySchoolType).flatMap {
-            self.fetchUserSchoolRankUseCase.excute(scope: $0, dateType: $1)
+            self.fetchMySchoolUserRankUseCase.excute(scope: $0, dateType: $1)
         }.subscribe(onNext: {data, walkCount in
             myRank.accept((data.myRank, walkCount))
             userList.accept(data.rankList)
             isJoinedClass.accept(data.isJoinedClass)
         }).disposed(by: disposeBag)
 
-        input.isMySchool.asObservable().subscribe(onNext: {
-            if $0 {
+        input.getRankData.asObservable().subscribe(onNext: {_ in
+            if input.schoolId == nil {
                 input.dateType.asObservable().withLatestFrom(mySchoolType).flatMap {
-                    self.fetchUserSchoolRankUseCase.excute(scope: $0, dateType: $1)
+                    self.fetchMySchoolUserRankUseCase.excute(scope: $0, dateType: $1)
                 }.subscribe(onNext: { data, walkCount in
                     myRank.accept((data.myRank, walkCount))
                     userList.accept(data.rankList)
@@ -82,17 +83,11 @@ class DetailHubViewModel: ViewModelType, Stepper {
                 }).disposed(by: self.disposeBag)
             } else {
                 input.dateType.asObservable().withLatestFrom(input.dateType).flatMap {
-                    self.fetchUserRankUseCase.excute(schoolId: input.schoolId, dateType: $0)
+                    self.fetchAnotherSchoolUserRankUseCase.excute(schoolId: input.schoolId!, dateType: $0)
                 }.subscribe(onNext: {
                     defaultUserList.accept($0)
                 }).disposed(by: self.disposeBag)
             }
-        }).disposed(by: disposeBag)
-
-        input.getDetails.asObservable().flatMap {
-            self.fetchSchoolDetailsUseCase.excute(schoolId: input.schoolId)
-        }.subscribe(onNext: {
-            schoolDetails.accept($0)
         }).disposed(by: disposeBag)
 
         return Output(
