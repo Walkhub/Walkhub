@@ -35,8 +35,8 @@ extension Container {
         self.register(DetailHubViewModel.self) { resolver in
             DetailHubViewModel(
                 searchUserUseCase: resolver.resolve(SearchUserUseCase.self)!,
-                fetchUserSchoolRankUseCase: resolver.resolve(FetchUserSchoolRankUseCase.self)!,
-                fetchUserRankUseCase: resolver.resolve(FetchUserRankUseCase.self)!,
+                fetchAnotherSchoolUserRankUseCase: resolver.resolve(FetchAnotherSchoolUserRankUseCase.self)!,
+                fetchMySchoolUserRankUseCase: resolver.resolve(FetchMySchoolUserRankUseCase.self)!,
                 fetchSchoolDetailsUseCase: resolver.resolve(FetchSchoolDetailsUseCase.self)!
             )
         }
