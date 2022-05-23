@@ -25,25 +25,29 @@ final class RemoteRankDataSource: RestApiRemoteDataSource<RankAPI> {
         scope: GroupScope,
         dateType: DateType
     ) -> Single<UserRank> {
-        return request(.fetchUserSchoolRank(scope: scope, dateType: dateType))
+        return request(.fetchMySchoolUserRank(scope: scope, dateType: dateType))
             .map(UserRankDTO.self)
             .map { $0.toDomain() }
+            .do(onError: {
+                print($0)
+            })
     }
 
     func fetchUserRank(
         schoolId: Int,
         dateType: DateType
     ) -> Single<[RankedUser]> {
-        return request(.fetchUserRank(schoolId: schoolId, dateType: dateType))
+        return request(.fetchAnotherSchoolUserRank(schoolId: schoolId, dateType: dateType))
             .map(DefaultSchoolUserRankListDTO.self)
             .map { $0.toDomain() }
     }
 
     func searchUser(
         name: String,
-        dateType: DateType
+        dateType: DateType,
+        schoolId: Int
     ) -> Single<[User]> {
-        return request(.searchUser(name: name, dateType: dateType))
+        return request(.searchUser(name: name, dateType: dateType, schoolId: schoolId))
             .map(UserListDTO.self)
             .map { $0.toDomain() }
     }
