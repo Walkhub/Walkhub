@@ -33,7 +33,6 @@ class HubViewController: UIViewController {
 
     private let mySchoolView = UIView().then {
         $0.backgroundColor = .white
-        $0.layer.cornerRadius = 12
     }
 
     private let schoolImgView = UIImageView().then {
@@ -77,6 +76,8 @@ class HubViewController: UIViewController {
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        schoolImgView.layer.cornerRadius = schoolImgView.frame.height / 2
+        schoolImgView.clipsToBounds = true
         addSubviews()
         makeSubviewContraints()
     }
@@ -85,7 +86,7 @@ class HubViewController: UIViewController {
         super.viewWillAppear(animated)
         self.setNavigation()
         dateType.accept(.week)
-        dropDownBtn.setTitle("최근 일주일    ", for: .normal)
+        dropDownBtn.setTitle("최근 일주일", for: .normal)
         self.tabBarController?.tabBar.isHidden = false
         self.searchTableView.isHidden = true
     }
@@ -96,11 +97,12 @@ class HubViewController: UIViewController {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+        searchController.searchBar.searchTextField.endEditing(true)
     }
 
     private func setDropDown() {
         dropDownBtn.dropDown.selectionAction = { row, item in
-            self.dropDownBtn.setTitle(" \(item)\t", for: .normal)
+            self.dropDownBtn.setTitle(" \(item)", for: .normal)
             self.dropDownBtn.dropDown.clearSelection()
             switch row {
             case 0:
