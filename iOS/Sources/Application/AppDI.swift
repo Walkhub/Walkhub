@@ -105,6 +105,22 @@ extension Container {
                 fetchNotificationListUseCase: resolver.resolve(FetchNotificationListUseCase.self)!
             )
         }
+        self.register(InformationViewModel.self) { resolver in
+            InformationViewModel(
+                fetchSchoolDetailsUseCase: resolver.resolve(FetchSchoolDetailsUseCase.self)!,
+                fetchNoticeUseCase: resolver.resolve(FetchNoticeUseCase.self)!
+            )
+        }
+        self.register(RankViewModel.self) { resolver in
+            RankViewModel(
+                fetchMySchoolUserRankUseCase: resolver.resolve(FetchMySchoolUserRankUseCase.self)!
+            )
+        }
+        self.register(AnotherSchoolRankViewModel.self) { resolver in
+            AnotherSchoolRankViewModel(
+                fetchAnotherSchoolUserRankUseCase: resolver.resolve(FetchAnotherSchoolUserRankUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -129,13 +145,23 @@ extension Container {
                 $0.viewModel = resolver.resolve(DetailHubViewModel.self)!
                 $0.rankVC = resolver.resolve(RankViewController.self)!
                 $0.informationVC = resolver.resolve(InformationViewController.self)!
+                $0.anotherSchoolRankVC = resolver.resolve(AnotherSchoolRankViewController.self)!
             }
         }
-        self.register(RankViewController.self) { _ in
-            return RankViewController()
+        self.register(RankViewController.self) { resolver in
+            return RankViewController().then {
+                $0.viewModel = resolver.resolve(RankViewModel.self)!
+            }
         }
-        self.register(InformationViewController.self) { _ in
-            return InformationViewController()
+        self.register(InformationViewController.self) { resolver in
+            return InformationViewController().then {
+                $0.viewModel = resolver.resolve(InformationViewModel.self)!
+            }
+        }
+        self.register(AnotherSchoolRankViewController.self) { resolver in
+            return AnotherSchoolRankViewController().then {
+                $0.viewModel = resolver.resolve(AnotherSchoolRankViewModel.self)!
+            }
         }
         self.register(ActivityAnalysisViewController.self) { resolver  in
             return ActivityAnalysisViewController().then {
@@ -203,6 +229,11 @@ extension Container {
         self.register(NotificationListViewController.self) { resolver in
             return NotificationListViewController().then {
                 $0.viewModel = resolver.resolve(NotificationListViewModel.self)!
+            }
+        }
+        self.register(AnotherSchoolRankViewController.self) { resolver in
+            return AnotherSchoolRankViewController().then {
+                $0.viewModel = resolver.resolve(AnotherSchoolRankViewModel.self)!
             }
         }
     }
