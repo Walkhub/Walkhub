@@ -91,13 +91,13 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-        self.register(FetchUserRankUseCase.self) { resolver in
-            return FetchUserRankUseCase(
+        self.register(FetchMySchoolUserRankUseCase.self) { resolver in
+            return FetchMySchoolUserRankUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-        self.register(FetchUserSchoolRankUseCase.self) { resolver in
-            return FetchUserSchoolRankUseCase(
+        self.register(FetchAnotherSchoolUserRankUseCase.self) { resolver in
+            return FetchAnotherSchoolUserRankUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
@@ -164,6 +164,11 @@ public extension Container {
         self.register(SetHealthInformationUseCase.self) { resolver in
             return SetHealthInformationUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(FetchNoticeUseCase.self) { resolver in
+            return FetchNoticeUseCase(
+                noticeRepository: resolver.resolve(NoticeRepository.self)!
             )
         }
     }
