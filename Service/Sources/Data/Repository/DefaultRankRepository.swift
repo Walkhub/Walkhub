@@ -20,7 +20,7 @@ class DefaultRankRepository: RankRepository {
             .asObservable()
     }
 
-    func fetchUserSchoolRank(
+    func fetchMySchoolUserRank(
         scope: GroupScope,
         dateType: DateType
     ) -> Observable<UserRank> {
@@ -31,27 +31,25 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[RankedUser]> {
+    func fetchAnotherSchoolUserRank(
+        schoolId: Int,
+        dateType: DateType
+    ) -> Observable<[RankedUser]> {
         return remoteRankDataSource.fetchUserRank(
             schoolId: schoolId,
             dateType: dateType
-        )
+        ).asObservable()
     }
 
     func searchUser(
         name: String,
-        dateType: DateType
-    ) -> Single<[User]> {
+        dateType: DateType,
+        schoolId: Int
+    ) -> Observable<[User]> {
         return remoteRankDataSource.searchUser(
             name: name,
-            dateType: dateType)
-    }
-
-    func searchUser(schoolId: Int, name: String, dateType: DateType) -> Single<[User]> {
-        return searchUser(
-            schoolId: schoolId,
-            name: name,
-            dateType: dateType
-        )
+            dateType: dateType,
+            schoolId: schoolId)
+        .asObservable()
     }
 }
