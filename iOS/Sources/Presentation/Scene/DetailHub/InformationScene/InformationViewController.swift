@@ -9,7 +9,6 @@ import Service
 class InformationViewController: UIViewController {
 
     var viewModel: InformationViewModel!
-    var detailHubViewController: DetailHubViewController!
     var schoolId = Int()
 
     private let getData = PublishRelay<Void>()
@@ -22,6 +21,7 @@ class InformationViewController: UIViewController {
     }
     private let noticeTableView = UITableView().then {
         $0.register(SchoolNoticeTableViewCell.self, forCellReuseIdentifier: "noticeCell")
+        $0.separatorStyle = .none
     }
 
     // MARK: - Life Cycle
@@ -36,13 +36,15 @@ class InformationViewController: UIViewController {
         addSubviews()
         makeSubviewConstraints()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        self.schoolId = detailHubViewController.schoolId!
+    override func viewDidAppear(_ animated: Bool) {
+        print("\(schoolId) 인포메이션")
+        getData.accept(())
     }
 
     // MARK: - TableView
     private func setTableView() {
         noticeTableView.tableHeaderView = headerView
+        noticeTableView.rowHeight = 60
     }
 
     // MARK: - Bind
