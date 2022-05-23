@@ -5,9 +5,9 @@ import Moya
 enum RankAPI {
     case fetchSchoolRank
     case searchSchoolRank(name: String?, dateType: DateType)
-    case fetchUserSchoolRank(scope: GroupScope, dateType: DateType)
-    case fetchUserRank(schoolId: Int, dateType: DateType)
-    case searchUser(name: String, dateType: DateType)
+    case fetchMySchoolUserRank(scope: GroupScope, dateType: DateType)
+    case fetchAnotherSchoolUserRank(schoolId: Int, dateType: DateType)
+    case searchUser(name: String, dateType: DateType, schoolId: Int)
 }
 
 extension RankAPI: WalkhubAPI {
@@ -22,12 +22,12 @@ extension RankAPI: WalkhubAPI {
             return "/schools"
         case .searchSchoolRank:
             return "/schools/search"
-        case .fetchUserSchoolRank:
+        case .fetchMySchoolUserRank:
             return "/users/my-school"
-        case .fetchUserRank(let schoolId, _):
+        case .fetchAnotherSchoolUserRank(let schoolId, _):
             return "/users/\(schoolId)"
-        case .searchUser:
-            return "/users/search"
+        case .searchUser(_, _, let schoolId):
+            return "/users/search/\(schoolId)"
         }
     }
 
@@ -46,21 +46,21 @@ extension RankAPI: WalkhubAPI {
                     "schoolDateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
-        case .fetchUserSchoolRank(let scope, let dateType):
+        case .fetchMySchoolUserRank(let scope, let dateType):
             return .requestParameters(
                 parameters: [
                     "scope": scope.rawValue,
                     "dateType": dateType.rawValue
                 ], encoding: URLEncoding.queryString
             )
-        case .fetchUserRank(_, let dateType):
+        case .fetchAnotherSchoolUserRank(_, let dateType):
             return .requestParameters(
                 parameters: [
                     "dateType": dateType.rawValue
                 ],
                 encoding: URLEncoding.queryString
             )
-        case .searchUser(let name, let dateType):
+        case .searchUser(let name, let dateType, _):
             return .requestParameters(
                 parameters: [
                     "name": name,
