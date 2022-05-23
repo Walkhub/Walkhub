@@ -7,6 +7,7 @@ import RxCocoa
 
 class DetailHubViewController: TabmanViewController {
 
+    var isMySchool = Bool()
     var schoolId = Int()
     var schoolName = String()
 
@@ -14,15 +15,16 @@ class DetailHubViewController: TabmanViewController {
 
     var rankVC: RankViewController!
     var informationVC: InformationViewController!
+    var anotherSchoolRankVC: AnotherSchoolRankViewController!
     var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
 
+    // MARK: - UI
     private let searchTableView = UITableView().then {
         $0.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.4)
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "searchCell")
     }
-
     private let searchBtn = UIBarButtonItem(
         image: .init(systemName: "magnifyingglass"),
         style: .plain,
@@ -30,28 +32,38 @@ class DetailHubViewController: TabmanViewController {
         action: nil).then {
             $0.tintColor = .black
         }
-
-    private let searchBar = UISearchController().then {
-        $0.searchBar.setImage(UIImage(), for: .search, state: .normal)
-        $0.searchBar.backgroundColor = .clear
-        $0.searchBar.searchTextField.textAlignment = .left
-        $0.searchBar.searchTextField.placeholder = "이름으로 검색하기"
-        $0.searchBar.setValue("취소", forKey: "cancelButtonText")
+    private let cancelButton = UIBarButtonItem(
+        title: "취소",
+        style: .plain,
+        target: DetailHubViewController.self,
+        action: nil).then {
+            $0.tintColor = .black
+        }
+    private let searchBar = UISearchBar().then {
+        $0.setImage(UIImage(), for: .search, state: .normal)
+        $0.backgroundColor = .clear
+        $0.searchTextField.textAlignment = .left
+        $0.searchTextField.placeholder = "이름으로 검색하기"
+        $0.setValue("취소", forKey: "cancelButtonText")
     }
 
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        searchBar.searchTextField.delegate = self
+        setButton()
+        rankVC.schoolId = self.schoolId
+        informationVC.schoolId = self.schoolId
+        anotherSchoolRankVC.schoolId = self.schoolId
         addViewController()
         setTopTabbar()
-        bindViewModel()
+        bind()
     }
-
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
         searchTableView.isHidden = true
         setNavigation()
     }
-
     override func viewDidLayoutSubviews() {
         view.addSubview(searchTableView)
 
@@ -61,10 +73,14 @@ class DetailHubViewController: TabmanViewController {
         }
     }
 
+    // MARK: - Tabman
     func addViewController() {
-        [rankVC, informationVC].forEach { viewController.append($0) }
+        if isMySchool {
+            [rankVC, informationVC].forEach { viewController.append($0) }
+        } else {
+            [anotherSchoolRankVC, informationVC].forEach { viewController.append($0) }
+        }
     }
-
     func setTopTabbar() {
         self.dataSource = self
 
@@ -87,56 +103,30 @@ class DetailHubViewController: TabmanViewController {
         addBar(bar, dataSource: self, at: .top)
     }
 
-    private func bindViewModel() {
+    // MARK: - Button
+    private func setButton() {
+        searchBtn.rx.tap.subscribe(onNext: {
+            self.navigationItem.titleView = self.searchBar
+            Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
+                .subscribe(onNext: { _ in
+                    self.searchBar.searchTextField.becomeFirstResponder()
+                }).disposed(by: self.disposeBag)
+            self.searchTableView.isHidden = false
+        }).disposed(by: disposeBag)
+
+        cancelButton.rx.tap.subscribe(onNext: {
+            self.searchBar.searchTextField.endEditing(true)
+        }).disposed(by: disposeBag)
+    }
+
+    // MARK: - Bind
+    private func bind() {
         let input = DetailHubViewModel.Input(
-            name: searchBar.searchBar.searchTextField.rx.text.orEmpty.asDriver(),
+            name: searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId,
-            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day),
-            switchOn: rankVC.scope.asDriver(onErrorJustReturn: .school),
-            isMySchool: rankVC.isMySchool.asDriver(onErrorJustReturn: true),
-            getDetails: informationVC.getDetails.asDriver(onErrorJustReturn: ())
-        )
+            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day)
+            )
         let output = viewModel.transform(input)
-
-        output.userList.bind(to: searchTableView.rx.items(
-            cellIdentifier: "searchCell",
-            cellType: RankTableViewCell.self)
-        ) { _, item, cell in
-            cell.imgView.kf.setImage(with: item.profileImageUrl)
-            cell.nameLabel.text = item.name
-            cell.stepLabel.text = "\(item.walkCount) 걸음"
-            cell.rankLabel.text = "\(item.ranking) 등"
-            switch item.ranking {
-            case 1:
-                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
-            case 2:
-                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
-            case 3:
-                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
-            default:
-                cell.badgeImgView.image = UIImage()
-            }
-        }.disposed(by: disposeBag)
-
-        output.myRank.asObservable().subscribe(onNext: {
-            print("rank")
-            self.rankVC.myRank.accept($0)
-        }).disposed(by: disposeBag)
-
-        output.userList.asObservable().subscribe(onNext: {
-            print("userList")
-            self.rankVC.userList.accept($0)
-        }).disposed(by: disposeBag)
-
-        output.defaultUserList.asObservable().subscribe(onNext: {
-            print("defaultUserList")
-            self.rankVC.defaultUserList.accept($0)
-        }).disposed(by: disposeBag)
-
-        output.schoolDetails.asObservable().subscribe(onNext: {
-            print("schoolDetails")
-            self.informationVC.schoolDetials.accept($0)
-        }).disposed(by: disposeBag)
 
         output.isJoinedClass.asObservable()
             .subscribe(onNext: {
@@ -149,35 +139,35 @@ class DetailHubViewController: TabmanViewController {
     }
 }
 
-extension DetailHubViewController: UISearchBarDelegate {
+// MARK: - Navigation
+extension DetailHubViewController {
     private func setNavigation() {
         self.title = schoolName
         self.navigationController?.navigationBar.setBackButtonToArrow()
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.barTintColor = .gray50
-        searchBar.searchBar.delegate = self
-
-        searchBtn.rx.tap.subscribe(onNext: {
-            self.navigationItem.searchController = self.searchBar
-            Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
-                .subscribe(onNext: { _ in
-                    self.searchBar.searchBar.searchTextField.becomeFirstResponder()
-                }).disposed(by: self.disposeBag)
-            self.searchTableView.isHidden = false
-        }).disposed(by: disposeBag)
 
         navigationItem.rightBarButtonItem = searchBtn
         navigationController?.navigationBar.tintColor = .black
     }
-
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        navigationItem.searchController = nil
-        self.searchTableView.isHidden = true
-    }
-
 }
 
+// MARK: - TextField Delegate
+extension DetailHubViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.navigationItem.rightBarButtonItem = cancelButton
+        self.navigationItem.setHidesBackButton(true, animated: false)
+    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        searchTableView.isHidden = true
+        navigationItem.titleView = nil
+        self.navigationItem.rightBarButtonItem = searchBtn
+        self.navigationItem.setHidesBackButton(false, animated: false)
+    }
+}
+
+// MARK: - Tabman & Pageboy
 extension DetailHubViewController: PageboyViewControllerDataSource, TMBarDataSource {
 
     func barItem(for bar: TMBar, at index: Int) -> TMBarItemable {
