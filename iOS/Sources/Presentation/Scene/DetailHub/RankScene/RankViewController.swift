@@ -8,16 +8,14 @@ import Service
 
 class RankViewController: UIViewController {
 
+    var viewModel: RankViewModel!
+    var schoolId = Int()
+
     private var disposeBag = DisposeBag()
-
-    internal let scope = PublishRelay<GroupScope>()
+    internal let groupScope = PublishRelay<GroupScope>()
     internal let dateType = PublishRelay<DateType>()
-    internal let myRank = PublishRelay<(RankedUser, Int?)>()
-    internal let userList = PublishRelay<[RankedUser]>()
-    internal let defaultUserList = PublishRelay<[RankedUser]>()
-    internal let getData = PublishRelay<Void>()
 
-    // MARK: - Layout
+    // MARK: - UI
     internal let mySchoolHeaderView = RankHeaderView().then {
         $0.layer.frame.size.height = 180
     }
@@ -65,7 +63,7 @@ class RankViewController: UIViewController {
         $0.titleLabel?.font = .notoSansFont(ofSize: 16, family: .regular)
     }
 
-    // MARK: - Lifr Cycle
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .gray50
@@ -81,8 +79,7 @@ class RankViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         dateType.accept(.day)
-        scope.accept(.class)
-        setTableView()
+        groupScope.accept(.class)
     }
 
     // MARK: DropDown & Switch
@@ -99,30 +96,25 @@ class RankViewController: UIViewController {
                 self.dateType.accept(.month)
             }
         }
-        anotherSchoolHeaderView.dropDownBtn.dropDown.selectionAction = { row, item in
-            self.mySchoolHeaderView.dropDownBtn.setTitle(" \(item)\t", for: .normal)
-            self.mySchoolHeaderView.dropDownBtn.dropDown.clearSelection()
-            switch row {
-            case 0:
-                self.dateType.accept(.day)
-            case 1:
-                self.dateType.accept(.week)
-            default:
-                self.dateType.accept(.month)
-            }
-        }
         mySchoolHeaderView.switches.rx.isOn.subscribe(onNext: {
             if $0 {
-                self.scope.accept(.class)
+                self.groupScope.accept(.class)
             } else {
-                self.scope.accept(.school)
+                self.groupScope.accept(.school)
             }
         }).disposed(by: disposeBag)
     }
 
     // MARK: - Bind
     private func bind() {
-        myRank.asObservable().subscribe(onNext: { rank, num in
+        let input = RankViewModel.Input(
+            schoolId: schoolId,
+            dateType: dateType.asDriver(onErrorJustReturn: .day),
+            groupScope: groupScope.asDriver(onErrorJustReturn: .class)
+        )
+        let output = viewModel.transform(input)
+
+        output.myRank.asObservable().subscribe(onNext: { rank, num in
             print("!!!!")
             self.mySchoolHeaderView.imgView.kf.setImage(with: rank.profileImageUrl)
             self.mySchoolHeaderView.nameLabel.text = rank.name
@@ -157,7 +149,7 @@ class RankViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
 
-        userList.bind(to: rankTableView.rx.items(
+        output.userRankList.bind(to: rankTableView.rx.items(
             cellIdentifier: "rankCell",
             cellType: RankTableViewCell.self)
         ) { _, items, cell in
@@ -177,6 +169,12 @@ class RankViewController: UIViewController {
                 cell.badgeImgView.image = UIImage()
             }
         }.disposed(by: disposeBag)
+
+        output.isJoined
+            .asObservable()
+            .subscribe(onNext: {
+                self.joinClassBtn.isHidden = $0
+            }).disposed(by: disposeBag)
     }
 }
 
