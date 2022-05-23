@@ -2,27 +2,21 @@ import Foundation
 
 struct NotificationStatusDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case notice = "is_notice"
-        case challenge = "is_challenge"
-        case challengeSuccess = "is_challenge_success"
-        case challengeExpiration = "is_challenge_expiration"
-        case cheering = "is_cheering"
+        case topicId = "topic_id"
+        case title
+        case isSubscribe = "is_subscribe"
     }
-    let notice: Bool
-    let challenge: Bool
-    let challengeSuccess: Bool
-    let challengeExpiration: Bool
-    let cheering: Bool
+    let topicId: Int
+    let title: String
+    let isSubscribe: Bool
 }
 
 extension NotificationStatusDTO {
     func toDomain() -> NotificationStatus {
         return .init(
-            notice: notice,
-            challenge: challenge,
-            challengeSuccess: challengeSuccess,
-            challengeExpiration: challengeExpiration,
-            cheering: cheering
+            topicId: topicId,
+            title: NotificationType(rawValue: title)!,
+            isSubscribe: isSubscribe
         )
     }
 }

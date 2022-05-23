@@ -27,7 +27,7 @@ class DefaultNotificationRepository: NotificationRepository {
         return remoteNotificationDataSource.notificationOff(userId: userId, type: type)
     }
 
-    func fetchNotificationStatus() -> Single<NotificationStatus> {
+    func fetchNotificationStatus() -> Observable<[NotificationStatus]> {
         return remoteNotificationDataSource.fetchNotificaitonStatus()
     }
 }

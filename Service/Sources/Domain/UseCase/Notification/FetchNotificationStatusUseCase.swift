@@ -9,7 +9,7 @@ public class FetchNotificationStatusUseCase {
         self.notificationRepository = notificationRepository
     }
 
-    public func excute() -> Single<NotificationStatus> {
+    public func excute() -> Observable<[NotificationStatus]> {
         return notificationRepository.fetchNotificationStatus()
     }
 }

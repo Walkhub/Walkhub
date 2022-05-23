@@ -124,12 +124,7 @@ class EditNotificationViewController: UIViewController {
         let output = viewModel.transform(input)
 
         output.notificationStatus.asObservable()
-            .subscribe(onNext: {
-                self.notificationSwitches.isOn = $0.notice
-                self.recommendChallengeSwitches.isOn = $0.challenge
-                self.goalChallengeSwitches.isOn = $0.challengeSuccess
-                self.endChallengeSwitches.isOn = $0.challengeExpiration
-                self.getCheerSwitches.isOn = $0.cheering
+            .subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
     }
 }

@@ -34,11 +34,11 @@ class EditNotificationViewModel: ViewModelType, Stepper {
     }
 
     struct Output {
-        let notificationStatus: PublishRelay<NotificationStatus>
+        let notificationStatus: PublishRelay<[NotificationStatus]>
     }
 
     func transform(_ input: Input) -> Output {
-        let notificationStatus = PublishRelay<NotificationStatus>()
+        let notificationStatus = PublishRelay<[NotificationStatus]>()
 
         input.getData.asObservable()
             .flatMap {
