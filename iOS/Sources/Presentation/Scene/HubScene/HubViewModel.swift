@@ -23,6 +23,7 @@ class HubViewModel: ViewModelType, Stepper {
 
     private var disposeBag = DisposeBag()
     private var mySchoolId: Int = .init()
+    private var schoolName: String = .init()
     var steps = PublishRelay<Step>()
 
     struct Input {
@@ -50,13 +51,13 @@ class HubViewModel: ViewModelType, Stepper {
             }.subscribe(onNext: {
                 mySchoolRank.accept($0)
                 self.mySchoolId = $0.id
+                self.schoolName = $0.name
             }).disposed(by: disposeBag)
 
         input.dateType.asObservable()
             .flatMap {
                 self.searchSchoolRankUseCase.excute(name: nil, dateType: $0)
             }.subscribe(onNext: {
-                print($0)
                 schoolRank.accept($0)
             }).disposed(by: disposeBag)
 
@@ -68,25 +69,31 @@ class HubViewModel: ViewModelType, Stepper {
             }).disposed(by: disposeBag)
 
         input.mySchoolViewDidTap.asObservable()
-            .map { WalkhubStep.detailHubIsRequired(self.mySchoolId) }
+            .map { WalkhubStep.detailHubIsRequired(
+                self.mySchoolId,
+                self.schoolName,
+                true
+            ) }
             .bind(to: steps)
             .disposed(by: disposeBag)
 
         input.rankCellDidSelected.asObservable()
-            .map { index -> Int in
+            .map { index -> (Int, String) in
                 let value = schoolRank.value
-                return value[index.row].schoolId
-            }.map {
-                WalkhubStep.detailHubIsRequired($0)
+                return (value[index.row].schoolId, value[index.row].name)
+            }.flatMap { data -> Single<Step> in
+                let isMySchool = data.0 == self.mySchoolId
+                return Single.just(WalkhubStep.detailHubIsRequired(data.0, data.1, isMySchool))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 
         input.searchCelDidSelected.asObservable()
-            .map { index -> Int in
+            .map { index -> (Int, String) in
                 let value = searchSchoolList.value
-                return value[index.row].id
-            }.map {
-                WalkhubStep.detailHubIsRequired($0)
+                return (value[index.row].id, value[index.row].name)
+            }.flatMap { data -> Single<Step> in
+                let isMyschool = data.0 == self.mySchoolId
+                return Single.just(WalkhubStep.detailHubIsRequired(data.0, data.1, isMyschool))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 
