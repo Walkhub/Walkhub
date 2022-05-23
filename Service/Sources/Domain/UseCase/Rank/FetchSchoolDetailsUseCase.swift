@@ -10,7 +10,7 @@ public class FetchSchoolDetailsUseCase {
         self.schoolRepository = schoolRepository
     }
 
-    public func excute(schoolId: Int) -> Single<SchoolDetails> {
+    public func excute(schoolId: Int) -> Observable<SchoolDetails> {
         return self.schoolRepository.fetchSchoolDetails(schoolId: schoolId)
     }
 }
