@@ -10,6 +10,10 @@ class DetailedChallengeViewModel: ViewModelType, Stepper {
     private let fetchChallengeDetailUseCase: FetchChallengeDetailUseCase
     private let joinChallengeUseCase: JoinChallengesUseCase
 
+    private var disposeBag = DisposeBag()
+
+    var steps = PublishRelay<Step>()
+
     init (
         fetchChallengeDetailUseCase: FetchChallengeDetailUseCase,
         joinChallengeUseCase: JoinChallengesUseCase
@@ -18,12 +22,8 @@ class DetailedChallengeViewModel: ViewModelType, Stepper {
         self.joinChallengeUseCase = joinChallengeUseCase
     }
 
-    private var disposeBag = DisposeBag()
-
-    var steps = PublishRelay<Step>()
-
     struct Input {
-        let challengeId: Driver<Int>
+        let getData: Driver<Int>
         let joinButtonDidTap: Driver<Void>
     }
 
@@ -34,16 +34,18 @@ class DetailedChallengeViewModel: ViewModelType, Stepper {
     func transform(_ input: Input) -> Output {
         let detailChallenge = PublishRelay<ChallengeDetail>()
 
-        input.challengeId.asObservable().flatMap { id in
-            self.fetchChallengeDetailUseCase.excute(challengeId: id)
-        }.subscribe(onNext: {
-            detailChallenge.accept($0)
-        }).disposed(by: disposeBag)
+        input.getData
+            .asObservable()
+            .flatMap {
+                self.fetchChallengeDetailUseCase.excute(challengeId: $0)
+            }.subscribe(onNext: {
+                detailChallenge.accept($0)
+            }).disposed(by: disposeBag)
 
         input.joinButtonDidTap.asObservable()
-            .withLatestFrom(input.challengeId)
-            .flatMap { id in
-                self.joinChallengeUseCase.excute(challengeId: id)
+            .withLatestFrom(input.getData)
+            .flatMap {
+                self.joinChallengeUseCase.excute(challengeId: $0)
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
 
