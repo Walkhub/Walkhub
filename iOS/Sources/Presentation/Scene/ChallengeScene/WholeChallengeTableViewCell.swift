@@ -4,7 +4,13 @@ class WholeChallengeTableViewCell: UITableViewCell {
 
     let challengeView = UIView().then {
         $0.backgroundColor = .white
+        $0.layer.cornerRadius = 5
     }
+
+//    let challengeBtn = UIButton(type: .system).then {
+//        $0.backgroundColor = .clear
+//        $0.layer.cornerRadius = 5
+//    }
 
     let challengeTitleLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
@@ -100,7 +106,8 @@ extension WholeChallengeTableViewCell {
          targetDistanceLabel,
          purposeLabel,
          participantsLabel,
-         stackView].forEach { challengeView.addSubview($0) }
+         stackView
+        ].forEach { challengeView.addSubview($0) }
 
         [thirdProfileImageView,
             secondProfileImageView,
@@ -114,6 +121,12 @@ extension WholeChallengeTableViewCell {
             $0.leading.trailing.equalToSuperview().inset(11)
             $0.bottom.equalToSuperview().inset(11)
         }
+//        challengeBtn.snp.makeConstraints {
+//            $0.top.equalToSuperview()
+//            $0.height.equalTo(140)
+//            $0.leading.trailing.equalToSuperview().inset(11)
+//            $0.bottom.equalToSuperview().inset(11)
+//        }
         schoolLogoImageView.snp.makeConstraints {
             $0.height.width.equalTo(40)
             $0.top.equalToSuperview().offset(18)
