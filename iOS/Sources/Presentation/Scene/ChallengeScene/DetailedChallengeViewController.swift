@@ -7,10 +7,11 @@ import RxCocoa
 
 class DetailedChallengeViewController: UIViewController {
 
+    var challengeId = Int()
     var viewModel: DetailedChallengeViewModel!
 
-    private let challengeId = PublishRelay<Int>()
     private var disposeBag = DisposeBag()
+    private let getData = PublishRelay<Int>()
 
     private let challengeScrollView = UIScrollView().then {
         $0.backgroundColor = .white
@@ -25,7 +26,7 @@ class DetailedChallengeViewController: UIViewController {
     }
 
     private let challengeImageView = UIImageView().then {
-        $0.image = .init(systemName: "photo.artframe")
+//        $0.image = .init(systemName: "photo.artframe")
         $0.tintColor = .gray800
     }
 
@@ -50,7 +51,7 @@ class DetailedChallengeViewController: UIViewController {
     }
 
     private let organizerImageView = UIImageView().then {
-        $0.image = .init(systemName: "circle.fill")
+//        $0.image = .init(systemName: "circle.fill")
         $0.tintColor = .gray800
         $0.layer.cornerRadius = $0.frame.width / 2
     }
@@ -101,7 +102,7 @@ class DetailedChallengeViewController: UIViewController {
         $0.trackTintColor = .gray200
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 5
-        $0.progress = 0.5
+//        $0.progress = 0.5
     }
 
     private let currentPercentageLabel = UILabel().then {
@@ -120,20 +121,20 @@ class DetailedChallengeViewController: UIViewController {
     }
 
     private let profileImageView = UIImageView().then {
-        $0.tintColor = .gray800
-        $0.image = .init(systemName: "circle.fill")
+//        $0.tintColor = .gray800
+//        $0.image = .init(systemName: "circle.fill")
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
     private let secondProfileImageView = UIImageView().then {
-        $0.tintColor = .gray600
-        $0.image = .init(systemName: "circle.fill")
+//        $0.tintColor = .gray600
+//        $0.image = .init(systemName: "circle.fill")
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
     private let thirdProfileImageView = UIImageView().then {
-        $0.tintColor = .gray400
-        $0.image = .init(systemName: "circle.fill")
+//        $0.tintColor = .gray400
+//        $0.image = .init(systemName: "circle.fill")
         $0.layer.cornerRadius = $0.frame.width / 2
     }
 
@@ -160,7 +161,7 @@ class DetailedChallengeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        demoData()
+        bindViewModel()
     }
 
     override func viewDidLayoutSubviews() {
@@ -171,49 +172,25 @@ class DetailedChallengeViewController: UIViewController {
         peopleCountView.layer.cornerRadius = peopleCountView.frame.width / 2
     }
 
-    func demoData() {
-        challengeTitleLabel.text = "2학년 체육 수행평가"
-        schoolLabel.text = "대덕소프트웨어마이스터고등학교"
-        organizerLable.text = "서무성"
-        dateLabel.text = "2022/03/02 ~ 2022/03/31"
-        challengePeriod.text = "챌린지 기간"
-        challengeGoal.text = "챌린지 목표"
-        challengeRewards.text = "챌린지 보상"
-        targetDistanceLabel.text = "기간 내 20km 달성"
-        purposeLabel.text = "체육 수행평가 성적"
-        currentProgressLabel.text = "현재 진행도"
-        presentLabel.text = "0km"
-        currentPercentageLabel.text = "0%"
-        currentDistanceLabel.text = "20km"
-        challengeTextView.text = """
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-대덕소프트웨어마이스터고등학교 2학년 체육 수행평가입니다. 평가 계획 공지사항에 올려놓았으니 알아서 찾아보세요.
-"""
-        participantsLabel.text = "최민준,김수완,수준호 외 21명 참여 중입니다."
-        peopleCountLabel.text = "+21"
-    }
-
     override func viewWillAppear(_ animated: Bool) {
+        getData.accept(challengeId)
+        tabBarController?.tabBar.isHidden = true
         challengeTextView.isEditable = false
         challengeTextView.isScrollEnabled = false
     }
 
     private func bindViewModel() {
         let input = DetailedChallengeViewModel.Input(
-            challengeId: challengeId.asDriver(onErrorJustReturn: 0),
-            joinButtonDidTap: participateBtn.rx.tap.asDriver())
+            getData: getData.asDriver(onErrorJustReturn: 0),
+            joinButtonDidTap: participateBtn.rx.tap.asDriver()
+        )
 
         let output = viewModel.transform(input)
 
         output.detailChallenge.asObservable()
             .subscribe(onNext: {
                 self.challengeTitleLabel.text = $0.name
+                print($0.name)
                 self.organizerLable.text = $0.name
                 self.dateLabel.text = "\($0.start.challengeToString()) ~ \($0.end.challengeToString())"
                 if ($0.goalType == "DISTANCE") {
