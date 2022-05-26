@@ -49,14 +49,14 @@ class ParticipatingChallengeTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        addSubviews()
-        makeSubviewConstraints()
         // Configure the view for the selected state
     }
 
     override func layoutSubviews() {
         schoolLogoImageView.layer.cornerRadius = schoolLogoImageView.frame.width / 2
         schoolLogoImageView.layer.masksToBounds = true
+        addSubviews()
+        makeSubviewConstraints()
     }
 
 }
