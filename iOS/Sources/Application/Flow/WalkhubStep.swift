@@ -42,7 +42,7 @@ enum WalkhubStep: Step {
 
     // Challenge
     case challengeIsRequired
-    case detailedChallengeIsRequired
+    case detailedChallengeIsRequired(id: Int)
 
     // Profile
     case profileIsRequired
