@@ -11,7 +11,7 @@ class InformationViewController: UIViewController {
     var viewModel: InformationViewModel!
     var schoolId = Int()
 
-    private let getData = PublishRelay<Void>()
+    private let id = PublishRelay<Int>()
     private var disposeBag = DisposeBag()
 
     // MARK: UI
@@ -37,8 +37,7 @@ class InformationViewController: UIViewController {
         makeSubviewConstraints()
     }
     override func viewDidAppear(_ animated: Bool) {
-        print("\(schoolId) 인포메이션")
-        getData.accept(())
+        id.accept(schoolId)
     }
 
     // MARK: - TableView
@@ -50,16 +49,16 @@ class InformationViewController: UIViewController {
     // MARK: - Bind
     private func bind() {
         let input = InformationViewModel.Input(
-            getData: getData.asDriver(onErrorJustReturn: ()),
-            schoolId: schoolId
+            schoolId: id.asDriver(onErrorJustReturn: 0)
         )
         let output = viewModel.transform(input)
 
         output.schoolDetails.asObservable()
             .subscribe(onNext: {
+                print("!!!")
                 self.headerView.lastWeekTotalWalkCountAndUserCountLabel.text = "\($0.week.totalWalkCount.toString()) 걸음 \($0.week.totalUserCount)명"
                 self.headerView.lastWeekDateLabel.text = $0.week.date.toString(dateFormat: "yyyy년 M월")
-                switch $0.week.ranking  {
+                switch $0.week.ranking {
                 case 1:
                     self.headerView.lastWeekBadgeImageView.image = .init(named: "GoldBadgeImg")
                 case 2:
