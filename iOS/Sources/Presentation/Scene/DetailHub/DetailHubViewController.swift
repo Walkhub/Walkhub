@@ -60,11 +60,13 @@ class DetailHubViewController: TabmanViewController {
         bind()
     }
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
         searchTableView.isHidden = true
         setNavigation()
     }
     override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         view.addSubview(searchTableView)
 
         searchTableView.snp.makeConstraints {
@@ -127,15 +129,6 @@ class DetailHubViewController: TabmanViewController {
             dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day)
             )
         let output = viewModel.transform(input)
-
-        output.isJoinedClass.asObservable()
-            .subscribe(onNext: {
-                if !$0 {
-                    self.rankVC.joinClassBtn.isHidden = false
-                } else {
-                    self.rankVC.joinClassBtn.isHidden = true
-                }
-            }).disposed(by: disposeBag)
     }
 }
 
