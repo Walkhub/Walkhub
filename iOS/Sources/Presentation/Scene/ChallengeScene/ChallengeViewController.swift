@@ -16,15 +16,16 @@ class ChallengeViewController: UIViewController {
     private let moveDetailChallenge = PublishRelay<Void>()
     private var challengeList = [Challenge]()
     private var joinedChallengeList = [JoinedChallenge]()
+    private let moveDetailedChallenge = PublishRelay<Void>()
 
     private let challengeTableView = UITableView(frame: .zero, style: .insetGrouped).then {
         $0.backgroundColor = .gray50
         $0.rowHeight = 134.0
+        $0.separatorStyle = .none
+        $0.delaysContentTouches = false
         $0.register(ParticipatingChallengeTableViewCell.self, forCellReuseIdentifier: "participatingChallengeCell")
         $0.register(WholeChallengeTableViewCell.self, forCellReuseIdentifier: "wholeChallengeCell")
     }
-
-    private let emptyView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,11 +34,10 @@ class ChallengeViewController: UIViewController {
         setNavigation()
         bindViewModel()
     }
-
     override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = true
         getData.accept(())
     }
-
     override func viewDidLayoutSubviews() {
         self.view.addSubview(challengeTableView)
 
@@ -53,7 +53,7 @@ class ChallengeViewController: UIViewController {
     private func bindViewModel() {
         let input = ChallengeViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()),
-            moveDetailedChallenge: moveDetailChallenge.asDriver(onErrorJustReturn: ())
+            cellDidSelect: challengeTableView.rx.itemSelected.asDriver()
         )
 
         let output = viewModel.transform(input)
@@ -66,6 +66,7 @@ class ChallengeViewController: UIViewController {
         output.joinedChallengeList.asObservable()
             .subscribe(onNext: {
                 print($0)
+                self.challengeTableView.reloadData()
                 self.joinedChallengeList = $0
             }).disposed(by: disposeBag)
     }
@@ -90,6 +91,7 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
                 withIdentifier: "participatingChallengeCell",
                 for: indexPath
             ) as? ParticipatingChallengeTableViewCell
+            cell?.selectionStyle = .none
             cell?.challengeTitleLabel.text = joinedChallengeList[indexPath.row].name
             cell?.organizerLable.text = joinedChallengeList[indexPath.row].writer.name
             cell?.dateLabel.text = "\(joinedChallengeList[indexPath.row].start.challengeToString()) ~ \(joinedChallengeList[indexPath.row].end.challengeToString())"
@@ -146,14 +148,18 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-
         if section == 0 {
             return "참여 중인 챌린지"
         } else {
             return "전체 챌린지"
         }
     }
-}
-// didSeleceted에 저거 넣어주면 됨 ㅋ
-//moveDetailedChallenge: moveDetailChallenge.asDriver(onErrorJustReturn: ())
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            moveDetailedChallenge.accept(())
+        } else {
+            moveDetailedChallenge.accept(())
+        }
+    }
+}
