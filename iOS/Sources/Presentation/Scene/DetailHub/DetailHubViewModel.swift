@@ -32,16 +32,10 @@ class DetailHubViewModel: ViewModelType, Stepper {
     }
     struct Output {
         let searchUserList: PublishRelay<[User]>
-        let defaultUserList: PublishRelay<[RankedUser]>
-        let schoolDetails: PublishRelay<SchoolDetails>
-        let isJoinedClass: PublishRelay<Bool>
     }
 
     func transform(_ input: Input) -> Output {
         let searchUserList = PublishRelay<[User]>()
-        let defaultUserList = PublishRelay<[RankedUser]>()
-        let schoolDetails = PublishRelay<SchoolDetails>()
-        let isJoinedClass = PublishRelay<Bool>()
 
         let info = Driver.combineLatest(input.name, input.dateType)
 
@@ -56,10 +50,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
         }).disposed(by: disposeBag)
 
         return Output(
-            searchUserList: searchUserList,
-            defaultUserList: defaultUserList,
-            schoolDetails: schoolDetails,
-            isJoinedClass: isJoinedClass
+            searchUserList: searchUserList
         )
     }
 }
