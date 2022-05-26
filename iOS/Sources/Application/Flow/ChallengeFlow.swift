@@ -18,8 +18,8 @@ class ChallengeFlow: Flow {
         switch step {
         case .challengeIsRequired:
             return navigateToChallengeScreen()
-        case .detailedChallengeIsRequired:
-            return navigateToDetailedChallengeScene()
+        case .detailedChallengeIsRequired(let id):
+            return navigateToDetailedChallengeScene(challengeId: id)
         default:
             return .none
         }
@@ -34,9 +34,10 @@ class ChallengeFlow: Flow {
         ))
     }
 
-    private func navigateToDetailedChallengeScene() -> FlowContributors {
+    private func navigateToDetailedChallengeScene(challengeId: Int) -> FlowContributors {
         let challengeDetailViewController = conatinor.resolve(DetailedChallengeViewController.self)!
         self.rootViewController.pushViewController(challengeDetailViewController, animated: true)
+        challengeDetailViewController.challengeId = challengeId
         return .one(flowContributor: .contribute(
             withNextPresentable: challengeDetailViewController,
             withNextStepper: challengeDetailViewController.viewModel
