@@ -24,17 +24,17 @@ class ChallengeViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
-        let moveDetailedChallenge: Driver<Void>
+        let cellDidSelect: Driver<IndexPath>
     }
 
     struct Output {
         let joinedChallengeList: PublishRelay<[JoinedChallenge]>
-        let challengList: PublishRelay<[Challenge]>
+        let challengList: BehaviorRelay<[Challenge]>
     }
 
     func transform(_ input: Input) -> Output {
         let joinedChallengeList = PublishRelay<[JoinedChallenge]>()
-        let challengeList = PublishRelay<[Challenge]>()
+        let challengeList = BehaviorRelay<[Challenge]>(value: [])
 
         input.getData.asObservable().flatMap {
             self.fetchJoinedChallengesUseCase.excute()
@@ -49,9 +49,12 @@ class ChallengeViewModel: ViewModelType, Stepper {
             challengeList.accept($0)
         }).disposed(by: disposeBag)
 
-        input.moveDetailedChallenge.asObservable()
-            .map { WalkhubStep.challengeIsRequired }
-            .bind(to: steps)
+        input.cellDidSelect
+            .asObservable()
+            .flatMap { index -> Single<Step> in
+                let value = challengeList.value
+                return Single.just(WalkhubStep.detailedChallengeIsRequired(id: value[index.row].id))
+            }.bind(to: steps)
             .disposed(by: disposeBag)
 
         return Output(
