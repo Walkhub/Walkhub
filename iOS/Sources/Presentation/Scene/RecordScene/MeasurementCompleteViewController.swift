@@ -59,40 +59,27 @@ class MeasurementCompleteViewController: UIViewController {
         $0.tintColor = .white
     }
 
+    // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        demoData()
         setNavigation()
         navigationItem.title = "기록저장"
-        self.navigationController?.navigationBar.tintColor = .white
-        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         bindViewModel()
     }
-
-    private func setNavigation() {
-        navigationItem.rightBarButtonItem = completeBtn
-    }
-
     override func viewDidLayoutSubviews() {
         addsubViews()
         makeSubviewConstraints()
     }
-
-    private func demoData() {
-        saveRecordImageView.backgroundColor = .gray
-        saveRecordImageView.image = .init(systemName: "clock.fill")
-        stepCountImgView.image = .init(systemName: "clock.fill")
-        calorieImgView.image = .init(systemName: "clock.fill")
-        distanceImgView.image = .init(systemName: "clock.fill")
-        speedImgView.image = .init(systemName: "clock.fill")
-        timeImgView.image = .init(systemName: "clock.fill")
-        stepCountLabel.text = "18920"
-        timeLabel.text = "1h23m"
-        calorieLabel.text = "711kcal"
-        distanceLabel.text = "6km"
-        speedLabel.text = "0.9m/s"
+    override func viewWillAppear(_ animated: Bool) {
+        saveRecordImageView.image = image
+        getData.accept(())
     }
 
+    private func setNavigation() {
+        navigationItem.rightBarButtonItem = completeBtn
+        self.navigationController?.navigationBar.tintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+    }
     private func bindViewModel() {
         let input = MeasurementCompleteViewModel.Input(
             getData: getData.asDriver(onErrorJustReturn: ()))

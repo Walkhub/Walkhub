@@ -7,10 +7,10 @@ import RxCocoa
 import RxFlow
 
 class ProofShotViewController: UIViewController, Stepper {
-
     var steps = PublishRelay<Step>()
     var image = UIImage()
     private var disposeBag = DisposeBag()
+    private let takePicture = PublishRelay<UIImage>()
 
     private let camera = UIImagePickerController().then {
         $0.sourceType = .camera
@@ -23,8 +23,20 @@ class ProofShotViewController: UIViewController, Stepper {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         camera.delegate = self
         present(camera, animated: true, completion: nil)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+
+    private func bind() {
+        takePicture.asObservable()
+            .debounce(.milliseconds(1), scheduler: MainScheduler.asyncInstance)
+            .map { WalkhubStep.measurementCompleteIsRequired(image: $0) }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
     }
 }
 extension ProofShotViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -32,6 +44,7 @@ extension ProofShotViewController: UIImagePickerControllerDelegate, UINavigation
         if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
             myImageView.image = image
             self.image = image
+            takePicture.accept(image)
         }
         picker.dismiss(animated: true, completion: nil)
     }
