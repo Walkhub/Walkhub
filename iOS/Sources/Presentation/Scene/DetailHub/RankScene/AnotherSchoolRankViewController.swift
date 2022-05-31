@@ -20,6 +20,8 @@ class AnotherSchoolRankViewController: UIViewController {
     }
     private let rankTableView = UITableView().then {
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.separatorStyle = .none
+        $0.allowsSelection = false
     }
     private let footerView = RankCommentFooterView().then {
         $0.layer.frame.size.height = 40
@@ -28,16 +30,17 @@ class AnotherSchoolRankViewController: UIViewController {
     // MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setTableView()
         setDropdown()
         bind()
     }
-    override func viewDidLayoutSubviews() {
+    override func viewWillLayoutSubviews() {
         super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
     }
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         print("\(schoolId) 어나더 랭킹")
         dateType.accept(.day)
     }
@@ -62,16 +65,7 @@ class AnotherSchoolRankViewController: UIViewController {
                 cell.nameLabel.text = items.name
                 cell.rankLabel.text = "\(items.ranking)등"
                 cell.stepLabel.text = "\(items.walkCount) 걸음"
-                switch items.ranking {
-                case 1:
-                    cell.badgeImgView.image = .init(named: "GoldBadgeImg")
-                case 2:
-                    cell.badgeImgView.image = .init(named: "SilverBadgeImg")
-                case 3:
-                    cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
-                default:
-                    cell.badgeImgView.image = UIImage()
-                }
+                self.setRanking(items.ranking, cell.badgeImgView)
             }.disposed(by: disposeBag)
     }
 }

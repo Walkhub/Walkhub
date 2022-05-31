@@ -58,29 +58,11 @@ class InformationViewController: UIViewController {
                 print("!!!")
                 self.headerView.lastWeekTotalWalkCountAndUserCountLabel.text = "\($0.week.totalWalkCount.toString()) 걸음 \($0.week.totalUserCount)명"
                 self.headerView.lastWeekDateLabel.text = $0.week.date.toString(dateFormat: "yyyy년 M월")
-                switch $0.week.ranking {
-                case 1:
-                    self.headerView.lastWeekBadgeImageView.image = .init(named: "GoldBadgeImg")
-                case 2:
-                    self.headerView.lastWeekBadgeImageView.image = .init(named: "SilveBadgeImg")
-                case 3:
-                    self.headerView.lastWeekBadgeImageView.image = .init(named: "BronzeBadgeImg")
-                default:
-                    return
-                }
+                self.setRanking($0.week.ranking, self.headerView.lastWeekBadgeImageView)
                 self.headerView.lastWeekWalkCountRankingLabel.text = "\($0.week.ranking)등"
                 self.headerView.lastMonthToalWalkCountAndUserCountLabel.text = "\($0.month.totalWalkCount.toString()) 걸음 \($0.month.totalUserCount)명"
                 self.headerView.lastMonthDateLabel.text = $0.month.date.toString(dateFormat: "yyyy년 M월")
-                switch $0.month.ranking  {
-                case 1:
-                    self.headerView.lastMonthBadgeImageView.image = .init(named: "GoldBadgeImg")
-                case 2:
-                    self.headerView.lastMonthBadgeImageView.image = .init(named: "SilveBadgeImg")
-                case 3:
-                    self.headerView.lastMonthBadgeImageView.image = .init(named: "BronzeBadgeImg")
-                default:
-                    return
-                }
+                self.setRanking($0.month.ranking, self.headerView.lastMonthBadgeImageView)
                 self.headerView.lastMonthWalkCountRankingLabel.text = "\($0.month.ranking)등"
             }).disposed(by: disposeBag)
 

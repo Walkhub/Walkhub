@@ -129,6 +129,16 @@ class DetailHubViewController: TabmanViewController {
             dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day)
             )
         let output = viewModel.transform(input)
+
+        output.searchUserList.bind(to: searchTableView.rx.items(
+            cellIdentifier: "searchCell", cellType: RankTableViewCell.self
+        )) { _, item, cell in
+            cell.imgView.kf.setImage(with: item.profileImageUrl)
+            cell.nameLabel.text = item.name
+            cell.rankLabel.text = "\(item.ranking)등"
+            self.setRanking(item.ranking, cell.badgeImgView)
+            cell.stepLabel.text = "\(item.walkCount)걸음"
+        }.disposed(by: disposeBag)
     }
 }
 
@@ -142,7 +152,6 @@ extension DetailHubViewController {
         self.navigationController?.navigationBar.barTintColor = .gray50
 
         navigationItem.rightBarButtonItem = searchBtn
-        navigationController?.navigationBar.tintColor = .black
     }
 }
 

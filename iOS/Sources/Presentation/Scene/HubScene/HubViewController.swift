@@ -132,16 +132,7 @@ class HubViewController: UIViewController {
             cell.nameLabel.text = items.name
             cell.stepLabel.text = "총 \(items.walkCount) 걸음/\(items.userCount)"
             cell.rankLabel.text = "\(items.ranking)등"
-            switch items.ranking {
-            case 1:
-                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
-            case 2:
-                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
-            case 3:
-                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
-            default:
-                cell.badgeImgView.image = UIImage()
-            }
+            self.setRanking(items.ranking, cell.badgeImgView)
         }.disposed(by: disposeBag)
 
         output.mySchoolRank.asObservable().subscribe(onNext: {
