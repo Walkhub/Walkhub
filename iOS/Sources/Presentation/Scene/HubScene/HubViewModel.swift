@@ -61,7 +61,9 @@ class HubViewModel: ViewModelType, Stepper {
                 schoolRank.accept($0)
             }).disposed(by: disposeBag)
 
-        input.name.asObservable()
+        input.name
+            .asObservable()
+            .debounce(.milliseconds(200), scheduler: MainScheduler.asyncInstance)
             .flatMap {
                 self.searchSchoolUseCase.excute(name: $0)
             }.subscribe(onNext: {
