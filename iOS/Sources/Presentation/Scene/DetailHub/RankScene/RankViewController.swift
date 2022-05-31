@@ -16,47 +16,44 @@ class RankViewController: UIViewController {
     internal let dateType = PublishRelay<DateType>()
 
     // MARK: - UI
-    internal let mySchoolHeaderView = RankHeaderView().then {
+    private let mySchoolHeaderView = RankHeaderView().then {
         $0.layer.frame.size.height = 180
     }
-    internal let anotherSchoolHeaderView = AnotherSchoolRankHeaderView().then {
-        $0.layer.frame.size.height = 48
-    }
-    internal let footerView = RankCommentFooterView().then {
+    private let footerView = RankCommentFooterView().then {
         $0.layer.frame.size.height = 40
     }
-    internal let myViewBackground = UIView().then {
+    private let myViewBackground = UIView().then {
         $0.backgroundColor = .gray50
     }
-    internal let myView = UIView().then {
+    private let myView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 12
     }
-    internal let imgView = UIImageView().then {
+    private let imgView = UIImageView().then {
         $0.layer.cornerRadius = $0.frame.height / 2
         $0.contentMode = .scaleToFill
     }
-    internal let badgeImgView = UIImageView().then {
+    private let badgeImgView = UIImageView().then {
         $0.layer.cornerRadius = $0.frame.width / 2
         $0.contentMode = .scaleToFill
     }
-    internal let nameLabel = UILabel().then {
+    private let nameLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
-    internal let stepCountLabel = UILabel().then {
+    private let stepCountLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray800
     }
-    internal let rankLabel = UILabel().then {
+    private let rankLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
     }
-    internal let rankTableView = UITableView().then {
+    private let rankTableView = UITableView().then {
         $0.backgroundColor = .gray50
         $0.separatorStyle = .none
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
-        $0.register(CheerupTableViewCell.self, forCellReuseIdentifier: "cheerCell")
     }
-    internal let joinClassBtn = UIButton(type: .system).then {
+    private let joinClassBtn = UIButton(type: .system).then {
+        $0.setBackgroundColor(.primary400, for: .normal)
         $0.setTitle("반 등록하고 랭킹 확인하기", for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.layer.cornerRadius = 12
@@ -69,17 +66,16 @@ class RankViewController: UIViewController {
         view.backgroundColor = .gray50
         setTableView()
         bind()
-    }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
         addSubviews()
         makeSubviewConstraints()
         setDropDownAndSwitch()
     }
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
         dateType.accept(.day)
         groupScope.accept(.class)
+    }
+    override func viewDidLayoutSubviews() {
+        joinClassBtn.clipsToBounds = true
     }
 
     // MARK: DropDown & Switch
@@ -96,7 +92,8 @@ class RankViewController: UIViewController {
                 self.dateType.accept(.month)
             }
         }
-        mySchoolHeaderView.switches.rx.isOn.subscribe(onNext: {
+        mySchoolHeaderView.switches.rx.isOn
+            .subscribe(onNext: {
             if $0 {
                 self.groupScope.accept(.class)
             } else {
@@ -115,7 +112,6 @@ class RankViewController: UIViewController {
         let output = viewModel.transform(input)
 
         output.myRank.asObservable().subscribe(onNext: { rank, num in
-            print("!!!!")
             self.mySchoolHeaderView.imgView.kf.setImage(with: rank.profileImageUrl)
             self.mySchoolHeaderView.nameLabel.text = rank.name
             self.mySchoolHeaderView.stepCountLabel.text = "\(rank.walkCount) 걸음"
@@ -123,11 +119,7 @@ class RankViewController: UIViewController {
             if rank.ranking != 1 {
                 self.mySchoolHeaderView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
                 self.mySchoolHeaderView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
-                self.mySchoolHeaderView.progressBar.progress = Float(rank.walkCount / num! )
-            } else {
-                self.mySchoolHeaderView.nextLevelLabel.text = "최고 등수를 달성했어요!"
-                self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
-                self.mySchoolHeaderView.progressBar.progress = 1
+                self.mySchoolHeaderView.progressBar.progress = Float(rank.walkCount / (num ?? 1))
             }
             self.imgView.kf.setImage(with: rank.profileImageUrl)
             self.nameLabel.text = rank.name
@@ -137,6 +129,9 @@ class RankViewController: UIViewController {
             case 1:
                 self.mySchoolHeaderView.badgeImgView.image = .init(named: "GoldBadgeImg")
                 self.badgeImgView.image = .init(named: "GoldBadgeImg")
+                self.mySchoolHeaderView.nextLevelLabel.text = "최고 등수를 달성했어요!"
+                self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
+                self.mySchoolHeaderView.progressBar.progress = 1
             case 2:
                 self.mySchoolHeaderView.badgeImgView.image = .init(named: "SilverBadgeImg")
                 self.badgeImgView.image = .init(named: "SilverBadgeImg")
@@ -158,16 +153,7 @@ class RankViewController: UIViewController {
             cell.nameLabel.text = items.name
             cell.rankLabel.text = "\(items.ranking)등"
             cell.stepLabel.text = "\(items.walkCount) 걸음"
-            switch items.ranking {
-            case 1:
-                cell.badgeImgView.image = .init(named: "GoldBadgeImg")
-            case 2:
-                cell.badgeImgView.image = .init(named: "SilverBadgeImg")
-            case 3:
-                cell.badgeImgView.image = .init(named: "BronzeBadgeImg")
-            default:
-                cell.badgeImgView.image = UIImage()
-            }
+            self.setRanking(items.ranking, cell.badgeImgView)
         }.disposed(by: disposeBag)
 
         output.isJoined
@@ -240,6 +226,7 @@ extension RankViewController {
                 self.myViewBackground.isHidden = $0
             }).disposed(by: disposeBag)
 
+        rankTableView.tableHeaderView = mySchoolHeaderView
         rankTableView.tableFooterView = footerView
     }
 }
