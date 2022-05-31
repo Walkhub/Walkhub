@@ -56,7 +56,7 @@ class ChallengeViewModel: ViewModelType, Stepper {
                 return Single.just(WalkhubStep.detailedChallengeIsRequired(id: value[index.row].id))
             }.bind(to: steps)
             .disposed(by: disposeBag)
-
+        
         return Output(
             joinedChallengeList: joinedChallengeList,
             challengList: challengeList
