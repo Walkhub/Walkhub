@@ -10,7 +10,7 @@ class DefaultSchoolRepository: SchoolRepository {
             .asObservable()
     }
 
-    func fetchSchoolDetails(schoolId: Int) -> Observable<SchoolDetails> {
+    func fetchSchoolDetails(schoolId: Int) -> Single<SchoolDetails> {
         return remoteSchoolsDataSource.fetchSchoolDetails(schoolId: schoolId)
     }
 }
