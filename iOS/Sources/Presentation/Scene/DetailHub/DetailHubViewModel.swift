@@ -28,7 +28,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
     struct Input {
         let name: Driver<String>
         let schoolId: Int
-        let dateType: Driver<DateType>
+        let dateType: BehaviorRelay<DateType>
     }
     struct Output {
         let searchUserList: PublishRelay<[User]>
@@ -37,7 +37,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
     func transform(_ input: Input) -> Output {
         let searchUserList = PublishRelay<[User]>()
 
-        let info = Driver.combineLatest(input.name, input.dateType)
+        let info = Driver.combineLatest(input.name, input.dateType.asDriver())
 
         input.name
             .asObservable()
