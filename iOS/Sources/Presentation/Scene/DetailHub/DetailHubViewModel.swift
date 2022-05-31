@@ -39,15 +39,18 @@ class DetailHubViewModel: ViewModelType, Stepper {
 
         let info = Driver.combineLatest(input.name, input.dateType)
 
-        input.name.asObservable().withLatestFrom(info).flatMap { name, type in
-            self.searchUserUseCase.excute(
-                name: name,
-                dateType: type,
-                schoolId: input.schoolId
-            )
-        }.subscribe(onNext: {
-            searchUserList.accept($0)
-        }).disposed(by: disposeBag)
+        input.name
+            .asObservable()
+            .debounce(.milliseconds(200), scheduler: MainScheduler.asyncInstance)
+            .withLatestFrom(info).flatMap { name, type -> Observable<[User]> in
+                return self.searchUserUseCase.excute(
+                    name: name,
+                    dateType: type,
+                    schoolId: input.schoolId
+                )
+            }.subscribe(onNext: {
+                searchUserList.accept($0)
+            }).disposed(by: disposeBag)
 
         return Output(
             searchUserList: searchUserList
