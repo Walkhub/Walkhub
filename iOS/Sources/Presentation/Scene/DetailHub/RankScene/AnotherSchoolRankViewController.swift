@@ -12,7 +12,7 @@ class AnotherSchoolRankViewController: UIViewController {
     var schoolId = Int()
 
     private var disposeBag = DisposeBag()
-    private let dateType = PublishRelay<DateType>()
+    internal let dateType = PublishRelay<DateType>()
 
     // MARK: - UI
     private let anotherSchoolHeaderView = AnotherSchoolRankHeaderView().then {
