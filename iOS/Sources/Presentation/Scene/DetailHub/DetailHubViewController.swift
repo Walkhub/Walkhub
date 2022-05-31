@@ -107,12 +107,9 @@ class DetailHubViewController: TabmanViewController {
 
     // MARK: - Button
     private func setButton() {
-        searchBtn.rx.tap.subscribe(onNext: {
+        searchBtn.rx.tap.subscribe(on: MainScheduler.asyncInstance).subscribe(onNext: {
             self.navigationItem.titleView = self.searchBar
-            Observable<Int>.interval(.seconds(0), scheduler: MainScheduler.instance)
-                .subscribe(onNext: { _ in
-                    self.searchBar.searchTextField.becomeFirstResponder()
-                }).disposed(by: self.disposeBag)
+            self.searchBar.searchTextField.becomeFirstResponder()
             self.searchTableView.isHidden = false
         }).disposed(by: disposeBag)
 
@@ -126,7 +123,7 @@ class DetailHubViewController: TabmanViewController {
         let input = DetailHubViewModel.Input(
             name: searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId,
-            dateType: rankVC.dateType.asDriver(onErrorJustReturn: .day)
+            dateType: rankVC.dateType
             )
         let output = viewModel.transform(input)
 
@@ -150,6 +147,7 @@ extension DetailHubViewController {
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.barTintColor = .gray50
+        self.navigationController?.navigationBar.backgroundColor = .systemBackground
 
         navigationItem.rightBarButtonItem = searchBtn
     }
@@ -159,13 +157,13 @@ extension DetailHubViewController {
 extension DetailHubViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.navigationItem.rightBarButtonItem = cancelButton
-        self.navigationItem.setHidesBackButton(true, animated: false)
+        self.navigationItem.setHidesBackButton(true, animated: true)
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
         searchTableView.isHidden = true
         navigationItem.titleView = nil
         self.navigationItem.rightBarButtonItem = searchBtn
-        self.navigationItem.setHidesBackButton(false, animated: false)
+        self.navigationItem.setHidesBackButton(false, animated: true)
     }
 }
 
