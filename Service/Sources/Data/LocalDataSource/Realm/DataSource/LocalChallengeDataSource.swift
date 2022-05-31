@@ -26,17 +26,16 @@ final class LocalChallengeDataSource {
         realm.set(challengeEntityList)
     }
 
-    func fetchJoinedChallengeList() -> Single<[Challenge]> {
+    func fetchJoinedChallengeList() -> Single<[JoinedChallenge]> {
         return realm.fetchObjects(
-            for: ChallengeRealmEntity.self,
-               filter: QueryFilter.string(query: "isJoined = true")
+            for: JoinedChallengeRealmEntity.self
         ).map { $0.map { $0.toDomain() } }
     }
 
-    func storeJoinedChallengeList(challengeList: [Challenge]) {
+    func storeJoinedChallengeList(challengeList: [JoinedChallenge]) {
         let challengeEntityList = challengeList.map { challenge in
-            return ChallengeRealmEntity().then {
-                $0.setup(challenge: challenge, isJoined: true)
+            return JoinedChallengeRealmEntity().then {
+                $0.setup(list: challenge)
             }
         }
         realm.set(challengeEntityList)

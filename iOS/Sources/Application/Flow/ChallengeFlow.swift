@@ -4,6 +4,8 @@ import RxFlow
 
 class ChallengeFlow: Flow {
 
+    private let conatinor = AppDelegate.continer
+
     var root: Presentable {
         return rootViewController
     }
@@ -16,13 +18,29 @@ class ChallengeFlow: Flow {
         switch step {
         case .challengeIsRequired:
             return navigateToChallengeScreen()
+        case .detailedChallengeIsRequired(let id):
+            return navigateToDetailedChallengeScene(challengeId: id)
         default:
             return .none
         }
     }
 
     private func navigateToChallengeScreen() -> FlowContributors {
-        return .none
+        let challengeViewController = conatinor.resolve(ChallengeViewController.self)!
+        self.rootViewController.pushViewController(challengeViewController, animated: false)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: challengeViewController,
+            withNextStepper: challengeViewController.viewModel
+        ))
     }
 
+    private func navigateToDetailedChallengeScene(challengeId: Int) -> FlowContributors {
+        let challengeDetailViewController = conatinor.resolve(DetailedChallengeViewController.self)!
+        self.rootViewController.pushViewController(challengeDetailViewController, animated: true)
+        challengeDetailViewController.challengeId = challengeId
+        return .one(flowContributor: .contribute(
+            withNextPresentable: challengeDetailViewController,
+            withNextStepper: challengeDetailViewController.viewModel
+        ))
+    }
 }

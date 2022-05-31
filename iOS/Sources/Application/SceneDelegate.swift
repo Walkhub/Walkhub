@@ -18,6 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScence
         window?.backgroundColor = .systemBackground
 
+//        window?.rootViewController = UINavigationController(rootViewController: DetailedChallengeViewController().then {
+//            $0.viewModel = AppDelegate.continer.resolve(DetailedChallengeViewModel.self)!
+//        })
+//        self.window?.makeKeyAndVisible()
         let appFlow = AppFlow()
         self.coordinator.coordinate(flow: appFlow, with: AppStepper())
         Flows.use(appFlow, when: .created) { [weak self] root in

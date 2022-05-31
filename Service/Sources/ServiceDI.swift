@@ -21,6 +21,7 @@ public extension Container {
         self.register(RankRepository.self) { _ in DefaultRankRepository() }
         self.register(SchoolRepository.self) { _ in DefaultSchoolRepository() }
         self.register(UserRepository.self) { _ in DefaultUserRepository() }
+        self.register(ChallengeRepository.self) { _ in DefaultChallengeRepository() }
     }
 
     private func registerUseCases() {
@@ -111,6 +112,21 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
+        self.register(FetchChallengesListUseCase.self) { resolver in
+            return FetchChallengesListUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchJoinedChallengesUseCase.self) { resolver in
+            return FetchJoinedChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(JoinChallengesUseCase.self) { resolver in
+            return JoinChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+                )
+            }
         self.register(FetchWeekStepCountChartsUseCase.self) { resolver in
             return FetchWeekStepCountChartsUseCase(
                 exerisesRepository: resolver.resolve(ExercisesRepository.self)!
@@ -150,6 +166,26 @@ public extension Container {
             return FetchMyPageUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
             )
+        }
+        self.register(FetchJoinedChallengesUseCase.self) { resolver in
+            return FetchJoinedChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchChallengesListUseCase.self) { resolver in
+            return FetchChallengesListUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(JoinChallengesUseCase.self) { resolver in
+            return JoinChallengesUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+            )
+        }
+        self.register(FetchChallengeDetailUseCase.self) { resolver in
+            return FetchChallengeDetailUseCase(
+                challengeRepository: resolver.resolve(ChallengeRepository.self)!
+                )
         }
         self.register(CheckVerificationCodeUseCase.self) { resolver in
             return CheckVerificationCodeUseCase(

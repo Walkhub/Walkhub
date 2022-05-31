@@ -1,6 +1,5 @@
 import Foundation
 
-struct ChallengeParticipantList: Equatable {
-    let count: Int
-    let list: [ChallengeParticipant]
+public struct ChallengeParticipantList: Equatable {
+    public let list: [ChallengeParticipant]
 }

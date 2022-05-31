@@ -18,16 +18,18 @@ extension ChallengesAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
-        case .fetchChallengeDetail(let challengeId), .joinChallenges(let challengeId):
+        case .joinChallenges(let challengeId):
             return "/\(challengeId)"
         case .fetchChallengesList:
-            return "/lists"
+            return "/app/lists"
         case .fetchParticipantsChallengesList(let challengeId):
             return "/\(challengeId)/participants/students"
         case .fetchJoinedChallenges:
             return "/participated"
         case .fetchEndChallengeList:
             return "/docs/template"
+        case .fetchChallengeDetail(let challengeId):
+            return "/app/\(challengeId)"
         }
     }
 
@@ -35,8 +37,7 @@ extension ChallengesAPI: WalkhubAPI {
         switch self {
         case .joinChallenges:
             return .post
-        case .fetchChallengesList, .fetchChallengeDetail, .fetchParticipantsChallengesList,
-                .fetchJoinedChallenges, .fetchEndChallengeList:
+        default:
             return .get
         }
     }

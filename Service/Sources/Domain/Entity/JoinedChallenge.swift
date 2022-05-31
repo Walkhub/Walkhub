@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Challenge: Equatable {
+public struct JoinedChallenge: Equatable {
     public let id: Int
     public let name: String
     public let imageUrl: URL
@@ -9,8 +9,6 @@ public struct Challenge: Equatable {
     public let goal: Int
     public let goalScope: ChallengeGoalScope
     public let goalType: ExerciseGoalType
-    public let award: String
+    public let totalValue: Int
     public let writer: Writer
-    public let participantCount: Int
-    public let participantList: [ChallengeParticipant]
 }

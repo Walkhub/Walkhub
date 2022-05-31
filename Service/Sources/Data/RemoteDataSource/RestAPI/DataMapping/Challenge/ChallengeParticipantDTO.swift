@@ -1,13 +1,13 @@
 import Foundation
 
 // MARK: - Data Transfer Object
-struct ChallengeParticipantDTO: Codable {
+struct ChallengeParticipantDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case id = "user_id"
+        case userId = "user_id"
         case name
         case profileImageUrlString = "profile_image_url"
     }
-    let id: Int
+    let userId: Int
     let name: String
     let profileImageUrlString: String
 }
@@ -16,7 +16,7 @@ struct ChallengeParticipantDTO: Codable {
 extension ChallengeParticipantDTO {
     func toDomain() -> ChallengeParticipant {
         return .init(
-            id: id,
+            id: userId,
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!
         )

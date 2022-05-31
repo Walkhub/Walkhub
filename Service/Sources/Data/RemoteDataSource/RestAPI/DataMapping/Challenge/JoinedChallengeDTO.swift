@@ -1,7 +1,6 @@
 import Foundation
 
-// MARK: - Data Transfer Object
-struct ChallengeDTO: Decodable {
+struct JoinedChallengeDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -11,10 +10,8 @@ struct ChallengeDTO: Decodable {
         case goal
         case goalScope = "goal_scope"
         case goalType = "goal_type"
-        case award
+        case totalValue = "total_value"
         case writer
-        case participantCount = "participant_count"
-        case participantList = "participant_list"
     }
     let id: Int
     let name: String
@@ -24,15 +21,12 @@ struct ChallengeDTO: Decodable {
     let goal: Int
     let goalScope: String
     let goalType: String
-    let award: String
+    let totalValue: Int?
     let writer: WriterDTO
-    let participantCount: Int
-    let participantList: [ChallengeParticipantDTO]
 }
 
-// MARK: - Mappings to Domain
-extension ChallengeDTO {
-    func toDomain() -> Challenge {
+extension JoinedChallengeDTO {
+    func toDoman() -> JoinedChallenge {
         return .init(
             id: id,
             name: name,
@@ -40,12 +34,10 @@ extension ChallengeDTO {
             start: start.toDate(),
             end: end.toDate(),
             goal: goal,
-            goalScope: ChallengeGoalScope(rawValue: goalScope)!,
-            goalType: ExerciseGoalType(rawValue: goalType)!,
-            award: award,
-            writer: writer.toDomain(),
-            participantCount: participantCount,
-            participantList: participantList.map { $0.toDomain() }
+            goalScope: ChallengeGoalScope(rawValue: goalScope) ?? .all,
+            goalType: ExerciseGoalType(rawValue: goalType) ?? .distance,
+            totalValue: totalValue ?? 0,
+            writer: writer.toDomain()
         )
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 // MARK: - Data Transfer Object
 struct WriterDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case id
+        case id = "user_id"
         case name
         case profileImageUrlString = "profile_image_url"
     }
