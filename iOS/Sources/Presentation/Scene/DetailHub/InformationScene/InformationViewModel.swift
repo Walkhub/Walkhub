@@ -22,8 +22,7 @@ class InformationViewModel: ViewModelType, Stepper {
     private var disposeBag = DisposeBag()
 
     struct Input {
-        let getData: Driver<Void>
-        let schoolId: Int
+        let schoolId: Driver<Int>
     }
     struct Output {
         let schoolDetails: PublishRelay<SchoolDetails>
@@ -34,17 +33,17 @@ class InformationViewModel: ViewModelType, Stepper {
         let schoolDetails = PublishRelay<SchoolDetails>()
         let noticeList = PublishRelay<[Notice]>()
 
-        input.getData
+        input.schoolId
             .asObservable()
             .flatMap {
-                self.fetchSchoolDetailsUseCase.excute(schoolId: input.schoolId)
+                self.fetchSchoolDetailsUseCase.excute(schoolId: $0)
             }.subscribe(onNext: {
                 schoolDetails.accept($0)
             }).disposed(by: disposeBag)
 
-        input.getData
+        input.schoolId
             .asObservable()
-            .flatMap {
+            .flatMap { _ in
                 self.fetchNoticeUseCase.excute()
             }.subscribe(onNext: {
                 noticeList.accept($0)
