@@ -28,8 +28,10 @@ class AnotherSchoolRankViewModel: ViewModelType {
         input.dateType
             .asObservable()
             .flatMap { dateType -> Observable<[RankedUser]> in
-                print("뷰모델입니다. 뷰\(input.schoold)")
-                return self.fetchAnotherSchoolUserRankUseCase.excute(schoolId: input.schoold, dateType: dateType)
+                return self.fetchAnotherSchoolUserRankUseCase.excute(
+                    schoolId: input.schoold,
+                    dateType: dateType
+                )
             }.subscribe(onNext: {
                 userRankList.accept($0)
             }).disposed(by: disposeBag)
