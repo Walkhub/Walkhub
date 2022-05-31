@@ -13,7 +13,7 @@ class RankViewController: UIViewController {
 
     private var disposeBag = DisposeBag()
     internal let groupScope = PublishRelay<GroupScope>()
-    internal let dateType = PublishRelay<DateType>()
+    internal let dateType = BehaviorRelay<DateType>(value: .day)
 
     // MARK: - UI
     private let mySchoolHeaderView = RankHeaderView().then {
@@ -94,12 +94,12 @@ class RankViewController: UIViewController {
         }
         mySchoolHeaderView.switches.rx.isOn
             .subscribe(onNext: {
-            if $0 {
-                self.groupScope.accept(.class)
-            } else {
-                self.groupScope.accept(.school)
-            }
-        }).disposed(by: disposeBag)
+                if $0 {
+                    self.groupScope.accept(.class)
+                } else {
+                    self.groupScope.accept(.school)
+                }
+            }).disposed(by: disposeBag)
     }
 
     // MARK: - Bind
