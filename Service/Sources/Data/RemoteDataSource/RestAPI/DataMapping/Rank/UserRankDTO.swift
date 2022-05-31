@@ -5,7 +5,7 @@ struct UserRankDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
         case isJoinedClass = "is_joined_class"
         case myRank = "my_ranking"
-        case rankList = "ranking_list"
+        case rankList = "rank_list"
     }
     let isJoinedClass: Bool
     let myRank: RankedUserDTO

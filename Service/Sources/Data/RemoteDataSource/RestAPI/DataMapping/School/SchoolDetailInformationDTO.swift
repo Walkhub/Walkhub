@@ -7,19 +7,19 @@ struct SchoolDetailInformationDTO: Decodable {
         case totalUserCount = "total_user_count"
         case ranking
     }
-    let totalWalkCount: Int
-    let date: String
-    let totalUserCount: Int
-    let ranking: Int
+    let totalWalkCount: Int?
+    let date: String?
+    let totalUserCount: Int?
+    let ranking: Int?
 }
 
 extension SchoolDetailInformationDTO {
     func toDomain() -> SchoolDetailInformtaion {
         return .init(
-            totalWalkCount: totalWalkCount,
-            date: date.toDate(),
-            totalUserCount: totalUserCount,
-            ranking: ranking
+            totalWalkCount: totalWalkCount ?? 0,
+            date: date?.toDate() ?? Date(),
+            totalUserCount: totalUserCount ?? 0,
+            ranking: ranking ?? 0
         )
     }
 }
