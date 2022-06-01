@@ -20,6 +20,12 @@ class HubFlow: Flow {
             return navigateToHubScreen()
         case .detailHubIsRequired(let schoolId, let schoolName, let isMySchool):
             return navigateToDetailHubScene(schoolId, schoolName, isMySchool)
+        case .joinClassIsRequired(let classCode):
+            return navigateToJoinClassScene(classCode)
+        case .enterClassCodeIsRequired:
+            return navigateToEnterClassCodeScene()
+        case .backToDetailHubIsScene:
+            return backToDetailHubScene()
         default:
             return .none
         }
@@ -48,5 +54,30 @@ class HubFlow: Flow {
             withNextPresentable: detailHubViewController,
             withNextStepper: detailHubViewController.viewModel
         ))
+    }
+
+    private func navigateToJoinClassScene(_ classCode: String) -> FlowContributors {
+        let joinClassViewController = container.resolve(JoinClassViewController.self)!
+        self.rootViewController.pushViewController(joinClassViewController, animated: true)
+        joinClassViewController.classCode = classCode
+        return .one(flowContributor: .contribute(
+            withNextPresentable: joinClassViewController,
+            withNextStepper: joinClassViewController.viewModel
+        ))
+    }
+
+    private func navigateToEnterClassCodeScene() -> FlowContributors {
+        let enterClassCodeViewController = container.resolve(EnterClassCodeViewController.self)!
+        self.rootViewController.pushViewController(enterClassCodeViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: enterClassCodeViewController,
+            withNextStepper: enterClassCodeViewController.viewModel
+        ))
+    }
+
+    private func backToDetailHubScene() -> FlowContributors {
+        self.rootViewController.popViewController(animated: true)
+        self.rootViewController.popViewController(animated: true)
+        return .none
     }
 }
