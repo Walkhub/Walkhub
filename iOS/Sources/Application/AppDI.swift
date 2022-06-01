@@ -121,6 +121,16 @@ extension Container {
                 fetchAnotherSchoolUserRankUseCase: resolver.resolve(FetchAnotherSchoolUserRankUseCase.self)!
             )
         }
+        self.register(JoinClassViewModel.self) { resolver in
+            JoinClassViewModel(
+                joinClassUseCase: resolver.resolve(JoinClassUseCase.self)!
+            )
+        }
+        self.register(EnterClassCodeViewModel.self) { resolver in
+            EnterClassCodeViewModel(
+                checkClassCodeUseCase: resolver.resolve(CheckClassCodeUseCase.self)!
+            )
+        }
     }
 
     private func registerViewController() {
@@ -234,6 +244,16 @@ extension Container {
         self.register(AnotherSchoolRankViewController.self) { resolver in
             return AnotherSchoolRankViewController().then {
                 $0.viewModel = resolver.resolve(AnotherSchoolRankViewModel.self)!
+            }
+        }
+        self.register(JoinClassViewController.self) { resolver in
+            return JoinClassViewController().then {
+                $0.viewModel = resolver.resolve(JoinClassViewModel.self)!
+            }
+        }
+        self.register(EnterClassCodeViewController.self) { resolver in
+            return EnterClassCodeViewController().then {
+                $0.viewModel = resolver.resolve(EnterClassCodeViewModel.self)!
             }
         }
     }
