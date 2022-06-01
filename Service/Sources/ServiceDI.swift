@@ -171,5 +171,15 @@ public extension Container {
                 noticeRepository: resolver.resolve(NoticeRepository.self)!
             )
         }
+        self.register(JoinClassUseCase.self) { resolver in
+            return JoinClassUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(CheckClassCodeUseCase.self) { resolver in
+            return CheckClassCodeUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
     }
 }
