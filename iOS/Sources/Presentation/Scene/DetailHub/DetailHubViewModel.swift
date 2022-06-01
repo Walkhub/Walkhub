@@ -29,6 +29,7 @@ class DetailHubViewModel: ViewModelType, Stepper {
         let name: Driver<String>
         let schoolId: Int
         let dateType: BehaviorRelay<DateType>
+        let moveJoinClass: Driver<Void>
     }
     struct Output {
         let searchUserList: PublishRelay<[User]>
@@ -51,6 +52,12 @@ class DetailHubViewModel: ViewModelType, Stepper {
             }.subscribe(onNext: {
                 searchUserList.accept($0)
             }).disposed(by: disposeBag)
+
+        input.moveJoinClass
+            .asObservable()
+            .map { WalkhubStep.enterClassCodeIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(
             searchUserList: searchUserList
