@@ -4,6 +4,7 @@ import Pageboy
 import Tabman
 import RxSwift
 import RxCocoa
+import Service
 
 class DetailHubViewController: TabmanViewController {
 
@@ -19,6 +20,7 @@ class DetailHubViewController: TabmanViewController {
     var viewModel: DetailHubViewModel!
 
     private var disposeBag = DisposeBag()
+    private let dateType = BehaviorRelay<DateType>(value: .day)
 
     // MARK: - UI
     private let searchTableView = UITableView().then {
@@ -79,8 +81,16 @@ class DetailHubViewController: TabmanViewController {
     func addViewController() {
         if isMySchool {
             [rankVC, informationVC].forEach { viewController.append($0) }
+            rankVC.dateType
+                .subscribe(onNext: {
+                    self.dateType.accept($0)
+                }).disposed(by: disposeBag)
         } else {
             [anotherSchoolRankVC, informationVC].forEach { viewController.append($0) }
+            anotherSchoolRankVC.dateType
+                .subscribe(onNext: {
+                    self.dateType.accept($0)
+                }).disposed(by: disposeBag)
         }
     }
     func setTopTabbar() {
@@ -123,7 +133,8 @@ class DetailHubViewController: TabmanViewController {
         let input = DetailHubViewModel.Input(
             name: searchBar.searchTextField.rx.text.orEmpty.asDriver(),
             schoolId: schoolId,
-            dateType: rankVC.dateType
+            dateType: dateType,
+            moveJoinClass: rankVC.joinClassBtn.rx.tap.asDriver()
             )
         let output = viewModel.transform(input)
 
