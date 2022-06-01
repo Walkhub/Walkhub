@@ -52,7 +52,7 @@ class RankViewController: UIViewController {
         $0.separatorStyle = .none
         $0.register(RankTableViewCell.self, forCellReuseIdentifier: "rankCell")
     }
-    private let joinClassBtn = UIButton(type: .system).then {
+    internal let joinClassBtn = UIButton(type: .system).then {
         $0.setBackgroundColor(.primary400, for: .normal)
         $0.setTitle("반 등록하고 랭킹 확인하기", for: .normal)
         $0.setTitleColor(.white, for: .normal)
@@ -113,35 +113,44 @@ class RankViewController: UIViewController {
 
         output.myRank.asObservable().subscribe(onNext: { rank, num in
             self.mySchoolHeaderView.imgView.kf.setImage(with: rank.profileImageUrl)
-            self.mySchoolHeaderView.nameLabel.text = rank.name
-            self.mySchoolHeaderView.stepCountLabel.text = "\(rank.walkCount) 걸음"
-            self.mySchoolHeaderView.rankLabel.text = "\(rank.ranking)등"
-            if rank.ranking != 1 {
-                self.mySchoolHeaderView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
-                self.mySchoolHeaderView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
-                self.mySchoolHeaderView.progressBar.progress = Float(rank.walkCount / (num ?? 1))
-            }
-            self.imgView.kf.setImage(with: rank.profileImageUrl)
-            self.nameLabel.text = rank.name
-            self.stepCountLabel.text = "\(rank.walkCount) 걸음"
-            self.rankLabel.text = "\(rank.ranking)등"
-            switch rank.ranking {
-            case 1:
-                self.mySchoolHeaderView.badgeImgView.image = .init(named: "GoldBadgeImg")
-                self.badgeImgView.image = .init(named: "GoldBadgeImg")
-                self.mySchoolHeaderView.nextLevelLabel.text = "최고 등수를 달성했어요!"
-                self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
-                self.mySchoolHeaderView.progressBar.progress = 1
-            case 2:
-                self.mySchoolHeaderView.badgeImgView.image = .init(named: "SilverBadgeImg")
-                self.badgeImgView.image = .init(named: "SilverBadgeImg")
-            case 3:
-                self.mySchoolHeaderView.badgeImgView.image = .init(named: "BronzeBadgeImg")
-                self.badgeImgView.image = .init(named: "BronzeBadgeImg")
-            default:
-                self.mySchoolHeaderView.badgeImgView.image = UIImage()
-                self.badgeImgView.image = UIImage()
-            }
+            self.mySchoolHeaderView.nameLabel.text = rank.name + "(나)"
+            output.isJoined.subscribe(onNext: {
+                if $0 {
+                    if rank.ranking != 1 {
+                        self.mySchoolHeaderView.nextLevelLabel.text = "다음 등수까지 \(num ?? 0 - rank.walkCount) 걸음"
+                        self.mySchoolHeaderView.goalStepCountLabel.text = "\(num ?? 0) 걸음"
+                        self.mySchoolHeaderView.progressBar.progress = Float(rank.walkCount / (num ?? 1))
+                        self.stepCountLabel.text = "\(rank.walkCount) 걸음"
+                        self.rankLabel.text = "\(rank.ranking)등"
+                        self.mySchoolHeaderView.rankLabel.text = "\(rank.ranking)등"
+                        self.mySchoolHeaderView.stepCountLabel.text = "\(rank.walkCount) 걸음"
+                    }
+                    switch rank.ranking {
+                    case 1:
+                        self.mySchoolHeaderView.badgeImgView.image = .init(named: "GoldBadgeImg")
+                        self.badgeImgView.image = .init(named: "GoldBadgeImg")
+                        self.mySchoolHeaderView.nextLevelLabel.text = "최고 등수를 달성했어요!"
+                        self.mySchoolHeaderView.goalStepCountLabel.text = "\(rank.walkCount) 걸음"
+                        self.mySchoolHeaderView.progressBar.progress = 1
+                    case 2:
+                        self.mySchoolHeaderView.badgeImgView.image = .init(named: "SilverBadgeImg")
+                        self.badgeImgView.image = .init(named: "SilverBadgeImg")
+                    case 3:
+                        self.mySchoolHeaderView.badgeImgView.image = .init(named: "BronzeBadgeImg")
+                        self.badgeImgView.image = .init(named: "BronzeBadgeImg")
+                    default:
+                        self.mySchoolHeaderView.badgeImgView.image = UIImage()
+                        self.badgeImgView.image = UIImage()
+                    }
+                } else {
+                    self.mySchoolHeaderView.stepCountLabel.text = "???"
+                    self.mySchoolHeaderView.nextLevelLabel.text = "???"
+                    self.mySchoolHeaderView.goalStepCountLabel.text = "???"
+                    self.mySchoolHeaderView.rankLabel.text = "???"
+                    self.stepCountLabel.text = "???"
+                    self.rankLabel.text = "???"
+                }
+            }).disposed(by: self.disposeBag)
         }).disposed(by: disposeBag)
 
         output.userRankList.bind(to: rankTableView.rx.items(
