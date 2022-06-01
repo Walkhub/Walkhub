@@ -18,7 +18,8 @@ let project = Project.dynamicFramework(
         .DropDown,
         .Tabman,
         .Loaf,
-        .Kingfisher
+        .Kingfisher,
+        .DPOTPView
     ],
     dependencies: [
         .SPM.RxSwift,
@@ -37,6 +38,7 @@ let project = Project.dynamicFramework(
         .SPM.DropDown,
         .SPM.Tabman,
         .SPM.Loaf,
-        .SPM.Kingfisher
+        .SPM.Kingfisher,
+        .SPM.DPOTPView
     ]
 )

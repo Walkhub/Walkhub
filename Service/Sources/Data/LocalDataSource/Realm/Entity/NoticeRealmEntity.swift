@@ -5,7 +5,7 @@ import Then
 
 class NoticeRealmEntity: Object {
 
-    @Persisted var id: Int = 0
+    @Persisted(primaryKey: true) var id: Int = 0
     @Persisted var title: String = ""
     @Persisted var content: String = ""
     @Persisted var createdAt: String = ""

@@ -36,9 +36,14 @@ enum WalkhubStep: Step {
     case homeIsRequired
     case activityAnalysisIsRequired
     case recordMeasurementIsRequired
+    case notificationIsRequired
 
     // Hub
     case hubIsRequired
+    case detailHubIsRequired(_ schoolId: Int, _ schoolName: String, _ isMySchool: Bool)
+    case enterClassCodeIsRequired
+    case joinClassIsRequired(_ classCode: String)
+    case backToDetailHubIsScene
 
     // Challenge
     case challengeIsRequired
@@ -49,4 +54,6 @@ enum WalkhubStep: Step {
     // Record
     case playRecordIsRequired
     case timerIsRequired
+
+    case none
 }

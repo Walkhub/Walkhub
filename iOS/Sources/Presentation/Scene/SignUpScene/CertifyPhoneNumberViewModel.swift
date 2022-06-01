@@ -42,7 +42,11 @@ class CertifyPhoneNumberViewModel: ViewModelType, Stepper {
                     .andThen(Single.just(WalkhubStep.authenticationNumberIsRequired(
                         name: input.name,
                         phoneNumber: self.phoneNumber
-                    )))
+                    ))).catchAndReturn(
+                        WalkhubStep.loaf("전화번호가 중복됩니다.",
+                                         state: .error,
+                                         location: .top
+                                        ))
             }.bind(to: steps)
             .disposed(by: disposeBag)
 

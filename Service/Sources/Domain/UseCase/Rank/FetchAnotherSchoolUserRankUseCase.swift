@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class FetchUserRankUseCase {
+public class FetchAnotherSchoolUserRankUseCase {
 
     private let rankRepository: RankRepository
 
@@ -13,8 +13,8 @@ public class FetchUserRankUseCase {
     public func excute(
         schoolId: Int,
         dateType: DateType
-    ) -> Single<[RankedUser]> {
-        return rankRepository.fetchUserRank(
+    ) -> Observable<[RankedUser]> {
+        return rankRepository.fetchAnotherSchoolUserRank(
             schoolId: schoolId,
             dateType: dateType
         )

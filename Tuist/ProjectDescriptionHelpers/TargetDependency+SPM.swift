@@ -22,6 +22,7 @@ public extension TargetDependency.SPM {
     static let Tabman = TargetDependency.package(product: "Tabman")
     static let Loaf = TargetDependency.package(product: "Loaf")
     static let Kingfisher = TargetDependency.package(product: "Kingfisher")
+    static let DPOTPView = TargetDependency.package(product: "DPOTPView")
 }
 
 public extension Package {
@@ -85,5 +86,10 @@ public extension Package {
     )
     static let Kingfisher = Package.remote(
         url: "https://github.com/onevcat/Kingfisher",
-        requirement: .upToNextMajor(from: "7.2.0"))
+        requirement: .upToNextMajor(from: "7.2.0")
+    )
+    static let DPOTPView = Package.remote(
+        url: "https://github.com/Datt1994/DPOTPView.git",
+        requirement: .upToNextMajor(from: "1.5.12")
+    )
 }

@@ -13,7 +13,7 @@ public class SearchSchoolRankUseCase {
     public func excute(
         name: String?,
         dateType: DateType
-    ) -> Single<[School]> {
+    ) -> Observable<[School]> {
         return rankRepository.searchSchool(
             name: name,
             dateType: dateType

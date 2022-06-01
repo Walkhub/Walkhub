@@ -33,7 +33,7 @@ class RankPreviewTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
-    internal func setup(userList: PublishRelay<[RankedUser]>) {
+    internal func bind(to userList: PublishRelay<[RankedUser]>) {
         userList.bind(
             to: rankTableView.rx.items(
             cellIdentifier: "rankCell",
