@@ -20,6 +20,13 @@ extension NoticeAPI: WalkhubAPI {
         return .get
     }
 
+    var task: Task {
+        return .requestParameters(
+            parameters: [
+                "scope": GroupScope.school.rawValue
+            ], encoding: URLEncoding.queryString
+        )
+    }
     var jwtTokenType: JWTTokenType? {
         return .accessToken
     }

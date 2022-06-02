@@ -10,7 +10,7 @@ public class FetchNotificationListUseCase {
         self.notificationRepository = notificationRepository
     }
 
-    public func excute() -> Observable<[Notification]> {
+    public func excute() -> Observable<[NotificationData]> {
         notificationRepository.fetchNotificationList()
     }
 

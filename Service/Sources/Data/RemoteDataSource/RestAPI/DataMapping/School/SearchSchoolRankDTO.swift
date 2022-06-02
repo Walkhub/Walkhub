@@ -22,7 +22,7 @@ extension SearchSchoolRankDTO {
         return .init(
             schoolId: id,
             name: name,
-            ranking: ranking,
+            ranking: ranking ?? 0,
             logoImageUrl: URL(string: logoImageUrlString)!,
             walkCount: walkCount,
             userCount: userCount

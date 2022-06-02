@@ -29,7 +29,8 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
         name: String,
         phoneNumber: String,
         authCode: String,
-        schoolId: Int
+        schoolId: Int,
+        deviceToken: String
     ) -> Single<UserSinginResponseDTO> {
         return request(.signup(
             id: id,
@@ -37,7 +38,8 @@ final class RemoteAuthDataSource: RestApiRemoteDataSource<AuthAPI> {
             name: name,
             phoneNumber: phoneNumber,
             authCode: authCode,
-            schoolId: schoolId
+            schoolId: schoolId,
+            deviceToken: deviceToken
         )).map(UserSinginResponseDTO.self)
     }
 

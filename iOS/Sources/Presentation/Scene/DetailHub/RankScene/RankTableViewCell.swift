@@ -6,7 +6,7 @@ import Then
 class RankTableViewCell: UITableViewCell {
 
     let imgView = UIImageView().then {
-        $0.layer.cornerRadius = $0.frame.width / 2
+        $0.contentMode = .scaleToFill
     }
 
     let nameLabel = UILabel().then {
@@ -18,7 +18,9 @@ class RankTableViewCell: UITableViewCell {
         $0.textColor = .gray800
     }
 
-    let badgeImgView = UIImageView()
+    let badgeImgView = UIImageView().then {
+        $0.contentMode = .scaleToFill
+    }
 
     let rankLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
@@ -28,20 +30,21 @@ class RankTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .white
         addSubviews()
         makeSubviewContraints()
     }
-
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    override func layoutSubviews() {
+        imgView.layer.cornerRadius = imgView.frame.width / 2
+        imgView.clipsToBounds = true
     }
 }
 
@@ -74,8 +77,8 @@ extension RankTableViewCell {
         badgeImgView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalTo(rankLabel.snp.leading).offset(-11)
-            $0.height.equalTo(26)
-            $0.width.equalTo(14)
+            $0.height.equalTo(20)
+            $0.width.equalTo(20)
         }
 
         rankLabel.snp.makeConstraints {

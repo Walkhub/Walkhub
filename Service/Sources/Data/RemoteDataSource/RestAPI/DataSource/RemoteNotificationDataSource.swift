@@ -9,7 +9,7 @@ final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAP
 
     private override init() { }
 
-    func fetchNotificationList() -> Single<[Notification]> {
+    func fetchNotificationList() -> Single<[NotificationData]> {
         return request(.fetchNotificationList)
             .map(NotificationListDTO.self)
             .map { $0.toDomain() }

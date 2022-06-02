@@ -91,13 +91,13 @@ public extension Container {
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-        self.register(FetchUserRankUseCase.self) { resolver in
-            return FetchUserRankUseCase(
+        self.register(FetchMySchoolUserRankUseCase.self) { resolver in
+            return FetchMySchoolUserRankUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
-        self.register(FetchUserSchoolRankUseCase.self) { resolver in
-            return FetchUserSchoolRankUseCase(
+        self.register(FetchAnotherSchoolUserRankUseCase.self) { resolver in
+            return FetchAnotherSchoolUserRankUseCase(
                 rankRepository: resolver.resolve(RankRepository.self)!
             )
         }
@@ -196,6 +196,7 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+<<<<<<< HEAD
         self.register(CheckPasswordUseCase.self) { resolver in
             return CheckPasswordUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!)
@@ -213,6 +214,21 @@ public extension Container {
         self.register(FetchNotificationListUseCase.self) { resolver in
             return FetchNotificationListUseCase(
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
+=======
+        self.register(FetchNoticeUseCase.self) { resolver in
+            return FetchNoticeUseCase(
+                noticeRepository: resolver.resolve(NoticeRepository.self)!
+            )
+        }
+        self.register(JoinClassUseCase.self) { resolver in
+            return JoinClassUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(CheckClassCodeUseCase.self) { resolver in
+            return CheckClassCodeUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+>>>>>>> ff0db01b3db379d9c73b7b18b0e6b29b58ed9f34
             )
         }
     }

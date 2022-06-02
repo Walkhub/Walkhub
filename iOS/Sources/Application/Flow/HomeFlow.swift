@@ -58,4 +58,12 @@ class HomeFlow: Flow {
         ))
     }
 
+    private func navigateToNotificationListScene() -> FlowContributors {
+        let notificationListViewController = container.resolve(NotificationListViewController.self)!
+        self.rootViewController.pushViewController(notificationListViewController, animated: true)
+        return .one(flowContributor: .contribute(
+            withNextPresentable: notificationListViewController,
+            withNextStepper: notificationListViewController.viewModel
+            ))
+    }
 }

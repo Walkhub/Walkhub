@@ -17,7 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScence)
         window?.windowScene = windowScence
         window?.backgroundColor = .systemBackground
-
         let appFlow = AppFlow()
         self.coordinator.coordinate(flow: appFlow, with: AppStepper())
         Flows.use(appFlow, when: .created) { [weak self] root in

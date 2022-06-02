@@ -64,12 +64,10 @@ class DefaultUserRepository: UserRepository {
         )
     }
     func joinClass(
-        sectionId schoolId: Int,
         classCode grade: String,
         num classNum: Int
-    ) -> Single<Void> {
+    ) -> Completable  {
         return remoteUserDataSource.joinClass(
-            sectionId: schoolId,
             classCode: grade,
             num: classNum
         )

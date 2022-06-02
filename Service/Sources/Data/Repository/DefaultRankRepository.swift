@@ -7,19 +7,20 @@ class DefaultRankRepository: RankRepository {
     private let remoteRankDataSource = RemoteRankDataSource.shared
     private let localRankDataSource = LocalRankDataSource.shared
 
-    func fetchSchoolRank(dateType: DateType) -> Observable<MySchool> {
+    func fetchSchoolRank() -> Observable<MySchool> {
         return OfflineCacheUtil<MySchool>()
-            .localData { self.localRankDataSource.fetchMySchoolRank(dateType: dateType) }
-            .remoteData { self.remoteRankDataSource.fetchSchoolRank(dateType: dateType) }
-            .doOnNeedRefresh { self.localRankDataSource.storeMySchoolRank(school: $0, dateType: dateType)}
+            .localData { self.localRankDataSource.fetchMySchoolRank() }
+            .remoteData { self.remoteRankDataSource.fetchSchoolRank() }
+            .doOnNeedRefresh { self.localRankDataSource.storeMySchoolRank(school: $0)}
             .createObservable()
     }
 
-    func searchSchool(name: String?, dateType: DateType) -> Single<[School]> {
+    func searchSchool(name: String?, dateType: DateType) -> Observable<[School]> {
         return remoteRankDataSource.searchSchool(name: name, dateType: dateType)
+            .asObservable()
     }
 
-    func fetchUserSchoolRank(
+    func fetchMySchoolUserRank(
         scope: GroupScope,
         dateType: DateType
     ) -> Observable<UserRank> {
@@ -30,27 +31,25 @@ class DefaultRankRepository: RankRepository {
             .createObservable()
     }
 
-    func fetchUserRank(schoolId: Int, dateType: DateType) -> Single<[RankedUser]> {
+    func fetchAnotherSchoolUserRank(
+        schoolId: Int,
+        dateType: DateType
+    ) -> Observable<[RankedUser]> {
         return remoteRankDataSource.fetchUserRank(
             schoolId: schoolId,
             dateType: dateType
-        )
+        ).asObservable()
     }
 
     func searchUser(
         name: String,
-        dateType: DateType
-    ) -> Single<[User]> {
+        dateType: DateType,
+        schoolId: Int
+    ) -> Observable<[User]> {
         return remoteRankDataSource.searchUser(
             name: name,
-            dateType: dateType)
-    }
-
-    func searchUser(schoolId: Int, name: String, dateType: DateType) -> Single<[User]> {
-        return searchUser(
-            schoolId: schoolId,
-            name: name,
-            dateType: dateType
-        )
+            dateType: dateType,
+            schoolId: schoolId)
+        .asObservable()
     }
 }

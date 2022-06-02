@@ -11,14 +11,14 @@ public class SearchUserUseCase {
     }
 
     public func excute(
-        schoolId: Int,
         name: String,
-        dateType: DateType
-    ) -> Single<[User]> {
+        dateType: DateType,
+        schoolId: Int
+    ) -> Observable<[User]> {
         return rankRepository.searchUser(
-            schoolId: schoolId,
             name: name,
-            dateType: dateType
+            dateType: dateType,
+            schoolId: schoolId
         )
     }
 }

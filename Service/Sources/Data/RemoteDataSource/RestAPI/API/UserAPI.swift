@@ -9,7 +9,7 @@ enum UserAPI {
     case fetchMyProfile
     case changeProfile(name: String, profileImageUrlString: String, schoolId: Int)
     case setHealthInformation(height: Double?, weight: Int?, sex: Sex)
-    case joinClass(sectionId: Int, classCode: String, num: Int)
+    case joinClass(classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
     case fetchHleathInfo
@@ -33,13 +33,11 @@ extension UserAPI: WalkhubAPI {
             return "/\(userID)"
         case .setHealthInformation, .fetchHleathInfo:
             return "/health"
-        case .joinClass(let sectionId, _, _):
-            return "/classes/\(sectionId)"
         case .setSchoolInformation:
             return "/school"
         case .changeGoalWalkCount:
             return "/goal"
-        case .checkClassCode:
+        case .joinClass, .checkClassCode:
             return "/classes"
         case .fetchAccountInfo:
             return "/auth/info"
@@ -90,7 +88,7 @@ extension UserAPI: WalkhubAPI {
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .joinClass(_, let classCode, let num):
+        case .joinClass(let classCode, let num):
             return .requestParameters(
                 parameters: [
                     "class_code": classCode,

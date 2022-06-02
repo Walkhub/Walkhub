@@ -34,8 +34,8 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         setNavigation()
         bindViewModel()
-        mainTableView.delegate = self
-        mainTableView.dataSource = self
+        mainTableView.rx.setDelegate(self).disposed(by: disposeBag)
+        mainTableView.rx.setDataSource(self).disposed(by: disposeBag)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -67,7 +67,7 @@ class HomeViewController: UIViewController {
 
         let output = viewModel.transform(input)
 
-        rankTableViewCell.setup(userList: output.rankList)
+        rankTableViewCell.bind(to: output.rankList)
 
         healthInfoTableViewCell.setup(
             dailyExercisesData: output.mainData,

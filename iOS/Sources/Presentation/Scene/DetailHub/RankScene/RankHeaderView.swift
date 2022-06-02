@@ -7,7 +7,7 @@ class RankHeaderView: UIView {
     }
 
     let switches = UISwitch().then {
-        $0.isOn = false
+        $0.isOn = true
         $0.onTintColor = .primary400
         $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
@@ -69,6 +69,10 @@ class RankHeaderView: UIView {
         super.init(frame: frame)
         addSubviews()
         makeSubviewConstraints()
+    }
+    override func layoutSubviews() {
+        imgView.layer.cornerRadius = imgView.frame.width / 2
+        imgView.clipsToBounds = true
     }
 
     required init?(coder: NSCoder) {
