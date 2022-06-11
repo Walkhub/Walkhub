@@ -196,7 +196,6 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
-<<<<<<< HEAD
         self.register(CheckPasswordUseCase.self) { resolver in
             return CheckPasswordUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!)
@@ -214,7 +213,8 @@ public extension Container {
         self.register(FetchNotificationListUseCase.self) { resolver in
             return FetchNotificationListUseCase(
                 notificationRepository: resolver.resolve(NotificationRepository.self)!
-=======
+                )
+        }
         self.register(FetchNoticeUseCase.self) { resolver in
             return FetchNoticeUseCase(
                 noticeRepository: resolver.resolve(NoticeRepository.self)!
@@ -228,7 +228,21 @@ public extension Container {
         self.register(CheckClassCodeUseCase.self) { resolver in
             return CheckClassCodeUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
->>>>>>> ff0db01b3db379d9c73b7b18b0e6b29b58ed9f34
+            )
+        }
+        self.register(NotificationOnUseCase.self) { resolver in
+            return NotificationOnUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(NotificationOffUseCase.self) { resolver in
+            return NotificationOffUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(FetchNotificationStatusUseCase.self) { resolver in
+            return FetchNotificationStatusUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
     }
