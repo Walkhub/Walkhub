@@ -10,17 +10,21 @@ class EditNotificationViewModel: ViewModelType, Stepper {
     private let fetchNotificationStatusUseCase: FetchNotificationStatusUseCase
     private let notificationOnUseCase: NotificationOnUseCase
     private let notificationOffUseCase: NotificationOffUseCase
+    private let fetchProfileUseCase: FetchProfileUseCase
 
     init(
         fetchNotificationStatusUseCase: FetchNotificationStatusUseCase,
         notificationOnUseCase: NotificationOnUseCase,
-        notificationOffUseCase: NotificationOffUseCase
+        notificationOffUseCase: NotificationOffUseCase,
+        fetchProfileUseCase: FetchProfileUseCase
     ) {
         self.fetchNotificationStatusUseCase = fetchNotificationStatusUseCase
         self.notificationOnUseCase = notificationOnUseCase
         self.notificationOffUseCase = notificationOffUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
     }
 
+    private var userId: Int = Int()
     private var disposeBag = DisposeBag()
     var steps = PublishRelay<Step>()
 
@@ -50,19 +54,26 @@ class EditNotificationViewModel: ViewModelType, Stepper {
         input.challengeNotification.asObservable()
             .flatMap { switchOn -> Completable in
                 if switchOn {
-                    return self.notificationOnUseCase.excute(type: .challenge)
+                    return self.notificationOnUseCase.excute(type: .challenge, userId: self.userId)
                 } else {
-                    return self.notificationOffUseCase.excute(type: .challenge)
+                    return self.notificationOffUseCase.excute(type: .challenge, userId: self.userId)
                 }
             }.subscribe(onNext: { _ in
+            }).disposed(by: disposeBag)
+
+        input.getData.asObservable()
+            .flatMap {
+                self.fetchProfileUseCase.excute()
+            }.subscribe(onNext: {
+                self.userId = $0.userID
             }).disposed(by: disposeBag)
 
         input.notification.asObservable()
             .flatMap { switchOn -> Completable in
                 if switchOn {
-                    return self.notificationOnUseCase.excute(type: .notice)
+                    return self.notificationOnUseCase.excute(type: .notice, userId: self.userId)
                 } else {
-                    return self.notificationOffUseCase.excute(type: .notice)
+                    return self.notificationOffUseCase.excute(type: .notice, userId: self.userId)
                 }
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
@@ -70,9 +81,9 @@ class EditNotificationViewModel: ViewModelType, Stepper {
         input.cheeringNotification.asObservable()
             .flatMap { switchOn -> Completable in
                 if switchOn {
-                    return self.notificationOnUseCase.excute(type: .cheering)
+                    return self.notificationOnUseCase.excute(type: .cheering, userId: self.userId)
                 } else {
-                    return self.notificationOffUseCase.excute(type: .cheering)
+                    return self.notificationOffUseCase.excute(type: .cheering, userId: self.userId)
                 }
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
@@ -80,9 +91,9 @@ class EditNotificationViewModel: ViewModelType, Stepper {
         input.challengeSuccess.asObservable()
             .flatMap { switchOn -> Completable in
                 if switchOn {
-                    return self.notificationOnUseCase.excute(type: .challengeSuccess)
+                    return self.notificationOnUseCase.excute(type: .challengeSuccess, userId: self.userId)
                 } else {
-                    return self.notificationOffUseCase.excute(type: .challengeSuccess)
+                    return self.notificationOffUseCase.excute(type: .challengeSuccess, userId: self.userId)
                 }
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
@@ -90,9 +101,9 @@ class EditNotificationViewModel: ViewModelType, Stepper {
         input.challegeExpiration.asObservable()
             .flatMap { switchOn -> Completable in
                 if switchOn {
-                    return self.notificationOnUseCase.excute(type: .challengeExpiration)
+                    return self.notificationOnUseCase.excute(type: .challengeExpiration, userId: self.userId)
                 } else {
-                    return self.notificationOffUseCase.excute(type: .challengeExpiration)
+                    return self.notificationOffUseCase.excute(type: .challengeExpiration, userId: self.userId)
                 }
             }.subscribe(onNext: { _ in
             }).disposed(by: disposeBag)
