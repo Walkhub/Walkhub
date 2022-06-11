@@ -38,7 +38,7 @@ class SettingFlow: Flow {
             return navigateToChangePasswordScene(password: password)
         case .loaf(let message, let state, let location):
             return showLoaf(message, state: state, location: location)
-        case .notificationIsRequired:
+        case .setNotificationIsRequired:
             return navigateToNotificationScene()
         case .backToAccountScene:
             return backToAccountScene()

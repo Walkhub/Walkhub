@@ -55,7 +55,6 @@ enum WalkhubStep: Step {
     case playRecordIsRequired
     case timerIsRequired
 
-<<<<<<< HEAD
     // Setting
     case settingIsRequired
     case editProfileIsRequired
@@ -65,9 +64,7 @@ enum WalkhubStep: Step {
     case backToScene
     case checkPasswordScene
     case changePasswordScene(pw: String)
-    case notificationIsRequired
+    case setNotificationIsRequired
     case backToAccountScene
-=======
     case none
->>>>>>> ff0db01b3db379d9c73b7b18b0e6b29b58ed9f34
 }
