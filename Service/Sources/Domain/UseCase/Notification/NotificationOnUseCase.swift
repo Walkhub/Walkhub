@@ -10,7 +10,7 @@ public class NotificationOnUseCase {
         self.notificationRepository = notificationRepository
     }
 
-    public func excute(type: NotificationType) -> Completable {
-        return notificationRepository.notificationOff(userId: 0, type: type)
+    public func excute(type: NotificationType, userId: Int) -> Completable {
+        return notificationRepository.notificationOff(userId: userId, type: type)
     }
 }
