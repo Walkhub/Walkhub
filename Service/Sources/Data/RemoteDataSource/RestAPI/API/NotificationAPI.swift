@@ -22,6 +22,8 @@ extension NotificationAPI: WalkhubAPI {
             return "/\(notificationId)"
         case .notificationOn:
             return "/on"
+        case .fetchNotificationStatus:
+            return "/status"
         default:
             return ""
         }
