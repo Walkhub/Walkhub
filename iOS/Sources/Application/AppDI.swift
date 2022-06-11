@@ -87,7 +87,8 @@ extension Container {
             EditNotificationViewModel(
                 fetchNotificationStatusUseCase: resolver.resolve(FetchNotificationStatusUseCase.self)!,
                 notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
-                notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!
+                notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!,
+                fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!
                 )
         }
         self.register(AgreeTermsViewModel.self) { resolver in
@@ -121,7 +122,6 @@ extension Container {
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
         }
-<<<<<<< HEAD
         self.register(CheckPasswordViewModel.self) { resolver in
             CheckPasswordViewModel(
                 checkPasswordUseCase: resolver.resolve(CheckPasswordUseCase.self)!
@@ -135,7 +135,8 @@ extension Container {
         self.register(AccountInformationViewModel.self) { resolver in
             AccountInformationViewModel(
                 fetchAccountInfoUseCase: resolver.resolve(FetchAccountInfoUseCase.self)!
-=======
+                )
+        }
         self.register(NotificationListViewModel.self) { resolver in
             NotificationListViewModel(
                 fetchNotificationListUseCase: resolver.resolve(FetchNotificationListUseCase.self)!
@@ -165,7 +166,6 @@ extension Container {
         self.register(EnterClassCodeViewModel.self) { resolver in
             EnterClassCodeViewModel(
                 checkClassCodeUseCase: resolver.resolve(CheckClassCodeUseCase.self)!
->>>>>>> ff0db01b3db379d9c73b7b18b0e6b29b58ed9f34
             )
         }
     }
@@ -296,7 +296,6 @@ extension Container {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
             }
         }
-<<<<<<< HEAD
         self.register(CheckPasswordViewController.self) { resolver in
             return CheckPasswordViewController().then {
                 $0.viewModel = resolver.resolve(CheckPasswordViewModel.self)!
@@ -305,7 +304,8 @@ extension Container {
         self.register(ChangePasswordViewController.self) { resolver in
             return ChangePasswordViewController().then {
                 $0.viewModel = resolver.resolve(ChangePasswordViewModel.self)!
-=======
+            }
+        }
         self.register(NotificationListViewController.self) { resolver in
             return NotificationListViewController().then {
                 $0.viewModel = resolver.resolve(NotificationListViewModel.self)!
@@ -324,7 +324,6 @@ extension Container {
         self.register(EnterClassCodeViewController.self) { resolver in
             return EnterClassCodeViewController().then {
                 $0.viewModel = resolver.resolve(EnterClassCodeViewModel.self)!
->>>>>>> ff0db01b3db379d9c73b7b18b0e6b29b58ed9f34
             }
         }
     }
