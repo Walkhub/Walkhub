@@ -3,7 +3,6 @@ import Foundation
 import RxSwift
 
 class DefaultUserRepository: UserRepository {
-
     private let remoteUserDataSource = RemoteUserDataSource.shared
     private let localUserDataSource = LocalUserDataSource.shared
 
@@ -66,7 +65,7 @@ class DefaultUserRepository: UserRepository {
     func joinClass(
         classCode grade: String,
         num classNum: Int
-    ) -> Completable  {
+    ) -> Completable {
         return remoteUserDataSource.joinClass(
             classCode: grade,
             num: classNum
