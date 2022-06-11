@@ -4,6 +4,7 @@ import SnapKit
 import Then
 import RxSwift
 import RxCocoa
+import Service
 
 class EditNotificationViewController: UIViewController {
 
@@ -124,7 +125,21 @@ class EditNotificationViewController: UIViewController {
         let output = viewModel.transform(input)
 
         output.notificationStatus.asObservable()
-            .subscribe(onNext: { _ in
+            .subscribe(onNext: {
+                $0.forEach {
+                    switch $0.title {
+                    case .notice:
+                        self.notificationSwitches.isOn = $0.isSubscribe
+                    case .challenge:
+                        self.recommendChallengeSwitches.isOn = $0.isSubscribe
+                    case .challengeSuccess:
+                        self.goalChallengeSwitches.isOn = $0.isSubscribe
+                    case .challengeExpiration:
+                        self.endChallengeSwitches.isOn = $0.isSubscribe
+                    default:
+                        self.getCheerSwitches.isOn = $0.isSubscribe
+                    }
+                }
             }).disposed(by: disposeBag)
     }
 }
