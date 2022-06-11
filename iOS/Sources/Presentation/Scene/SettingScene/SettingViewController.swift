@@ -119,7 +119,7 @@ class SettingViewController: UIViewController, Stepper {
             .disposed(by: disposeBag)
 
         editNotificationBtn.rx.tap
-            .map { WalkhubStep.notificationIsRequired }
+            .map { WalkhubStep.setNotificationIsRequired }
             .bind(to: steps)
             .disposed(by: disposeBag)
     }
