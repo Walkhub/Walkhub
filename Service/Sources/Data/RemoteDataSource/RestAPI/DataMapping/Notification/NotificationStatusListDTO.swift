@@ -2,7 +2,7 @@ import Foundation
 
 public struct NotificationStatusListDTO: Decodable {
     private enum CodingKeys: String, CodingKey {
-        case list = "topic_whether_list"
+        case list = "status_response_list"
     }
     let list: [NotificationStatusDTO]
 }
