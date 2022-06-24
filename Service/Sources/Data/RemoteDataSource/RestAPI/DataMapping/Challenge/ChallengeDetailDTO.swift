@@ -14,6 +14,7 @@ struct ChallengeDetailDTO: Decodable {
         case start = "start_at"
         case end = "end_at"
         case successStandard = "success_standard"
+        case totalValue = "total_value"
         case count = "participant_count"
         case isMine = "is_mine"
         case isParticipated = "is_participated"
@@ -31,6 +32,7 @@ struct ChallengeDetailDTO: Decodable {
     let start: String
     let end: String
     let successStandard: Int
+    let totalValue: Int
     let count: Int
     let isMine: Bool
     let isParticipated: Bool
@@ -44,7 +46,7 @@ extension ChallengeDetailDTO {
         return .init(
             name: self.name,
             content: self.content,
-            userScope: self.userScope,
+            userScope: userScope,
             goal: self.goal,
             goalScope: self.goalScope,
             goalType: self.goalType,
@@ -57,7 +59,28 @@ extension ChallengeDetailDTO {
             isMine: self.isMine,
             isParticipated: self.isParticipated,
             participantList: self.participantList.map { $0.toDomain() },
-            writer: self.writer.toDomain()
-        )
+            writer: self.writer.toDomain(),
+            profileImageUrl: URL(string: self.writer.profileImageUrlString)!,
+            totalValue: self.totalValue)
     }
 }
+
+//return .init(
+//            name: self.name,
+//            content: self.content,
+//            userScope: self.userScope,
+//            goal: self.goal,
+//            goalScope: self.goalScope,
+//            goalType: self.goalType,
+//            award: self.award,
+//            imageUrl: URL(string: self.imageUrlString)!,
+//            start: self.start.toDate(),
+//            end: self.end.toDate(),
+//            successStandard: self.successStandard,
+//            totalValue: self.totalValue,
+//            count: self.count,
+//            isMine: self.isMine,
+//            isParticipated: self.isParticipated,
+//            participantList: self.participantList.map { $0.toDomain() },
+//            writer: self.writer.toDomain()
+//        )
