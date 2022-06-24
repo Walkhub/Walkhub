@@ -17,4 +17,6 @@ public struct ChallengeDetail: Equatable {
     public let isParticipated: Bool
     public let participantList: [ChallengeParticipant]
     public let writer: Writer
+    public let profileImageUrl: URL
+    public let totalValue: Int
 }
