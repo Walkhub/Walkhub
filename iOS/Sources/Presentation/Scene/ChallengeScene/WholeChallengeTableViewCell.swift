@@ -7,11 +7,6 @@ class WholeChallengeTableViewCell: UITableViewCell {
         $0.layer.cornerRadius = 5
     }
 
-//    let challengeBtn = UIButton(type: .system).then {
-//        $0.backgroundColor = .clear
-//        $0.layer.cornerRadius = 5
-//    }
-
     let challengeTitleLabel = UILabel().then {
         $0.font = .notoSansFont(ofSize: 16, family: .medium)
         $0.textColor = .gray900
@@ -89,6 +84,12 @@ class WholeChallengeTableViewCell: UITableViewCell {
         makeSubviewConstraints()
         schoolLogoImageView.layer.cornerRadius = schoolLogoImageView.frame.width / 2
         schoolLogoImageView.layer.masksToBounds = true
+        profileImageView.clipsToBounds = true
+        secondProfileImageView.clipsToBounds = true
+        thirdProfileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
+        secondProfileImageView.layer.cornerRadius = secondProfileImageView.frame.width / 2
+        thirdProfileImageView.layer.cornerRadius = thirdProfileImageView.frame.width / 2
     }
 }
 
@@ -109,9 +110,9 @@ extension WholeChallengeTableViewCell {
          stackView
         ].forEach { challengeView.addSubview($0) }
 
-        [thirdProfileImageView,
+        [profileImageView,
             secondProfileImageView,
-            profileImageView].forEach { stackView.addSubview($0) }
+            thirdProfileImageView].forEach { stackView.addSubview($0) }
     }
 
     private func makeSubviewConstraints() {
@@ -121,12 +122,6 @@ extension WholeChallengeTableViewCell {
             $0.leading.trailing.equalToSuperview().inset(11)
             $0.bottom.equalToSuperview().inset(11)
         }
-//        challengeBtn.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.height.equalTo(140)
-//            $0.leading.trailing.equalToSuperview().inset(11)
-//            $0.bottom.equalToSuperview().inset(11)
-//        }
         schoolLogoImageView.snp.makeConstraints {
             $0.height.width.equalTo(40)
             $0.top.equalToSuperview().offset(18)
@@ -179,21 +174,21 @@ extension WholeChallengeTableViewCell {
             $0.leading.equalToSuperview().inset(16)
 //            $0.bottom.equalToSuperview().inset(5)
         }
-        profileImageView.snp.makeConstraints {
+        thirdProfileImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview()
+            $0.leading.equalTo(secondProfileImageView.snp.trailing).offset(-4)
             $0.height.width.equalTo(20)
             $0.bottom.equalToSuperview()
         }
         secondProfileImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().inset(10)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(-4)
             $0.height.width.equalTo(20)
             $0.bottom.equalToSuperview()
         }
-        thirdProfileImageView.snp.makeConstraints {
+        profileImageView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.leading.equalToSuperview().inset(20)
+            $0.leading.equalToSuperview()
             $0.height.width.equalTo(20)
             $0.bottom.equalToSuperview()
         }
