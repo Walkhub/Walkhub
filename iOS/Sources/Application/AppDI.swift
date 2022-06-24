@@ -42,6 +42,11 @@ extension Container {
                 fetchChallengeDetailUseCase: resolver.resolve(FetchChallengeDetailUseCase.self)!,
                 joinChallengeUseCase: resolver.resolve(JoinChallengesUseCase.self)!)
                 }
+        self.register(ParticipatingViewModel.self) { resolver in
+            ParticipatingViewModel(
+                fetchChallengeDetailUseCase: resolver.resolve(FetchChallengeDetailUseCase.self)!
+            )
+        }
         self.register(DetailHubViewModel.self) { resolver in
             DetailHubViewModel(
                 searchUserUseCase: resolver.resolve(SearchUserUseCase.self)!,
