@@ -27,7 +27,8 @@ enum WalkhubStep: Step {
     case enterIdRequired(name: String, phoneNumber: String, authCode: String)
     case passwordIsRequired(name: String, phoneNumber: String, authCode: String, id: String)
     case setSchoolIsRequired(name: String, phoneNumber: String, authCode: String, id: String, password: String)
-    case agreeIsRequired(name: String, phoneNumber: String, authCode: String, id: String, password: String, schoolId: Int)
+    case agreeIsRequired(name: String, phoneNumber: String,
+                         authCode: String, id: String, password: String, schoolId: Int)
     case enterHealthInfoIsRequired
     case personalInfoPolicyIsRequired
     case serviceUseTermsIsRequired
@@ -43,6 +44,7 @@ enum WalkhubStep: Step {
     // Challenge
     case challengeIsRequired
     case detailedChallengeIsRequired(id: Int)
+    case participatingIsRequired(id: Int)
 
     // Profile
     case profileIsRequired

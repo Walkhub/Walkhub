@@ -17,6 +17,7 @@ class SignupFlow: Flow {
         self.rootViewController = container.resolve(EnterNameViewController.self)!
     }
 
+    // swiftlint:disable cyclomatic_complexity
     func navigate(to step: Step) -> FlowContributors {
         guard let step = step as? WalkhubStep else { return .none }
 
