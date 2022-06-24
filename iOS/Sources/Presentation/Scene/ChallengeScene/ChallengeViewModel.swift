@@ -39,6 +39,7 @@ class ChallengeViewModel: ViewModelType, Stepper {
         input.getData.asObservable().flatMap {
             self.fetchJoinedChallengesUseCase.excute()
         }.subscribe(onNext: {
+            print($0)
             joinedChallengeList.accept($0)
         }).disposed(by: disposeBag)
 
@@ -56,7 +57,6 @@ class ChallengeViewModel: ViewModelType, Stepper {
                 return Single.just(WalkhubStep.detailedChallengeIsRequired(id: value[index.row].id))
             }.bind(to: steps)
             .disposed(by: disposeBag)
-        
         return Output(
             joinedChallengeList: joinedChallengeList,
             challengList: challengeList
