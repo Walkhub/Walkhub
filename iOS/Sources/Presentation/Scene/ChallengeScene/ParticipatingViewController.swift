@@ -6,10 +6,10 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 
-class DetailedChallengeViewController: UIViewController {
+class ParticipatingViewController: UIViewController {
 
     var challengeId = Int()
-    var viewModel: DetailedChallengeViewModel!
+    var viewModel: ParticipatingViewModel!
 
     private var disposeBag = DisposeBag()
     private let getData = PublishRelay<Int>()
@@ -97,12 +97,6 @@ class DetailedChallengeViewController: UIViewController {
         $0.font = .notoSansFont(ofSize: 12, family: .regular)
         $0.textColor = .gray700
     }
-    private let participateBtn = UIButton(type: .system).then {
-        $0.setTitle("참여하기", for: .normal)
-        $0.setTitleColor(.white, for: .normal)
-        $0.backgroundColor = .primary400
-        $0.layer.cornerRadius = 10
-    }
     private let calendarIcon = UIImageView().then {
         $0.image = .init(named: "calendarImg")
     }
@@ -148,9 +142,8 @@ class DetailedChallengeViewController: UIViewController {
     // MARK: - Bind
     // swiftlint:disable function_body_length
     private func bindViewModel() {
-        let input = DetailedChallengeViewModel.Input(
-            getData: getData.asDriver(onErrorJustReturn: 0),
-            joinButtonDidTap: participateBtn.rx.tap.asDriver()
+        let input = ParticipatingViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: 0)
         )
         let output = viewModel.transform(input)
 
@@ -213,10 +206,10 @@ class DetailedChallengeViewController: UIViewController {
 }
 
 // MARK: - Layout
-extension DetailedChallengeViewController {
+extension ParticipatingViewController {
 
     private func addSubviews() {
-        [challengeScrollView, participateView, participateBtn, stackView, peopleCountView]
+        [challengeScrollView, participateView, stackView, peopleCountView]
             .forEach { view.addSubview($0) }
         [thirdProfileImageView, secondProfileImageView, profileImageView]
             .forEach { stackView.addSubview($0) }
@@ -339,19 +332,13 @@ extension DetailedChallengeViewController {
             $0.height.equalTo(70)
         }
 
-        participateBtn.snp.makeConstraints {
-            $0.centerY.equalTo(participateView)
-            $0.trailing.equalToSuperview().inset(16)
-            $0.height.equalTo(40)
-            $0.width.equalTo(164)
-        }
-
         stackView.snp.makeConstraints {
             $0.centerY.equalTo(participateView)
             $0.leading.equalToSuperview().inset(16)
             $0.height.equalTo(40)
             $0.width.equalTo(164)
         }
+
         profileImageView.snp.makeConstraints {
             $0.centerY.equalTo(stackView)
             $0.trailing.equalTo(peopleCountView.snp.leading).offset(15)

@@ -119,15 +119,25 @@ extension ChallengeViewController: UITableViewDataSource, UITableViewDelegate {
             switch challengeList[indexPath.row].participantList.count {
             case 0:
                 print("아무것도 없음.")
+                cell?.profileImageView.isHidden = true
+                cell?.secondProfileImageView.isHidden = true
+                cell?.thirdProfileImageView.isHidden = true
+                cell?.participantsLabel.isHidden = true
             case 1:
                 cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
+                cell?.secondProfileImageView.isHidden = true
+                cell?.thirdProfileImageView.isHidden = true
+                cell?.participantsLabel.text = "+0"
             case 2:
                 cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
-                cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[1].profileImageUrl)
+                cell?.secondProfileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[1].profileImageUrl)
+                cell?.thirdProfileImageView.isHidden = true
+                cell?.participantsLabel.text = "+0"
             default:
                 cell?.profileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[0].profileImageUrl)
                 cell?.secondProfileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[1].profileImageUrl)
                 cell?.thirdProfileImageView.kf.setImage(with: challengeList[indexPath.row].participantList[2].profileImageUrl)
+                cell?.participantsLabel.text = "+\(challengeList[indexPath.row].participantList.count - 3)"
             }
             cell?.dateLabel.text = "\(challengeList[indexPath.row].start.challengeToString()) ~ \(challengeList[indexPath.row].end.challengeToString())"
             if challengeList[indexPath.row].goalScope.rawValue == "DAY" {
