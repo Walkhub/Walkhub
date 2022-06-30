@@ -2,7 +2,7 @@ import Foundation
 
 import RxSwift
 
-public class FetchUserSchoolRankUseCase {
+public class FetchMySchoolUserRankUseCase {
     private let rankRepository: RankRepository
 
     init(rankRepository: RankRepository) {
@@ -13,7 +13,7 @@ public class FetchUserSchoolRankUseCase {
         scope: GroupScope,
         dateType: DateType
     ) -> Observable<(UserRank, Int?)> {
-        return rankRepository.fetchUserSchoolRank(
+        return rankRepository.fetchMySchoolUserRank(
             scope: scope,
             dateType: dateType
         ).map { data in

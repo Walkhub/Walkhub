@@ -10,12 +10,12 @@ final class LocalNotificationDataSource {
 
     private init() { }
 
-    func fetchNotificationList() -> Single<[Notification]> {
+    func fetchNotificationList() -> Single<[NotificationData]> {
         return realmTask.fetchObjects(for: NotificationRealmEntity.self)
             .map { $0.map { $0.toDomain() } }
     }
 
-    func storeNotificationList(notificationList: [Notification]) {
+    func storeNotificationList(notificationList: [NotificationData]) {
         let notificationRealmEntityList = notificationList.map { notification in
             return NotificationRealmEntity().then {
                 $0.setup(notification: notification)

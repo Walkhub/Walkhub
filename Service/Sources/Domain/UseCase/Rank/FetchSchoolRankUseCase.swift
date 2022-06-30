@@ -10,8 +10,8 @@ public class FetchSchoolRankUseCase {
         self.rankRepository = rankRepository
     }
 
-    public func excute(dateType: DateType) -> Observable<MySchool> {
-        rankRepository.fetchSchoolRank(dateType: dateType)
+    public func excute() -> Observable<MySchool> {
+        rankRepository.fetchSchoolRank()
     }
 
 }

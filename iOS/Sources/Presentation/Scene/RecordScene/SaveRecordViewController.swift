@@ -115,16 +115,12 @@ class SaveRecordViewController: UIViewController {
         $0.text = "m"
     }
 
-    private let lineLabel = UILabel().then {
-        $0.text = "|"
-        $0.font = .notoSansFont(ofSize: 28, family: .regular)
-        $0.textColor = .gray300
+    private let betweenLine = UIView().then {
+        $0.backgroundColor = .gray200
     }
 
-    private let bottomLineLabel = UILabel().then {
-        $0.text = "|"
-        $0.font = .notoSansFont(ofSize: 28, family: .regular)
-        $0.textColor = .gray300
+    private let bottomBetweenLine = UIView().then {
+        $0.backgroundColor = .gray200
     }
 
     override func viewDidLoad() {
@@ -179,11 +175,11 @@ extension SaveRecordViewController {
          calorieLabel,
          speedLabel,
          timeLabel,
-         lineLabel,
+         betweenLine,
          stepRecordLabel,
          calorieRecordLabel,
          kcalLabel,
-         bottomLineLabel,
+         bottomBetweenLine,
          speedRecordLabel,
          meterPerSecondLabel,
          hoursRecordLabel,
@@ -253,8 +249,10 @@ extension SaveRecordViewController {
             $0.leading.equalToSuperview().inset(69)
         }
 
-        lineLabel.snp.makeConstraints {
+        betweenLine.snp.makeConstraints {
             $0.top.equalTo(recordProgressView.snp.bottom).offset(50)
+            $0.height.equalTo(28)
+            $0.width.equalTo(1)
             $0.centerX.equalToSuperview()
         }
 
@@ -278,8 +276,10 @@ extension SaveRecordViewController {
             $0.leading.equalTo(speedRecordLabel.snp.trailing).offset(4)
         }
 
-        bottomLineLabel.snp.makeConstraints {
-            $0.top.equalTo(lineLabel.snp.bottom).offset(50)
+        bottomBetweenLine.snp.makeConstraints {
+            $0.top.equalTo(betweenLine.snp.bottom).offset(50)
+            $0.height.equalTo(28)
+            $0.width.equalTo(1)
             $0.centerX.equalToSuperview()
         }
 

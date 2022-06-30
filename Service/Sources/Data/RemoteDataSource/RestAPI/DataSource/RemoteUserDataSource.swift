@@ -60,15 +60,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     }
 
     func joinClass(
-        sectionId: Int,
         classCode: String,
         num: Int
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.joinClass(
-            sectionId: sectionId,
             classCode: classCode,
             num: num
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func setSchoolInformation(schoolId: Int) -> Single<Void> {

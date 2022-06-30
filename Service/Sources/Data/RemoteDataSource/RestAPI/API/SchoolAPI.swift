@@ -44,7 +44,7 @@ extension SchoolAPI: WalkhubAPI {
     }
 
     var jwtTokenType: JWTTokenType? {
-        return JWTTokenType.none
+        return JWTTokenType.accessToken
     }
 
 }
