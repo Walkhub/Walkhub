@@ -38,7 +38,7 @@ public extension Package {
     )
     static let Realm = Package.remote(
         url: "https://github.com/realm/realm-cocoa.git",
-        requirement: .upToNextMajor(from: "10.25.0")
+        requirement: .upToNextMajor(from: "10.28.0")
     )
     static let Moya = Package.remote(
         url: "https://github.com/Moya/Moya.git",

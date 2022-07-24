@@ -151,7 +151,7 @@ class RecordMeasurementViewController: UIViewController {
 }
 
 // MARK: - Layout
-// swiftlint:disable function_body_length
+// swiftlint:disable superfluous_disable_command
 extension RecordMeasurementViewController {
     private func addSubviews() {
         [recordLabel, triangle,

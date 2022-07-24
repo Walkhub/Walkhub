@@ -146,9 +146,39 @@ public extension Container {
                 exerciseRepository: resolver.resolve(ExercisesRepository.self)!
             )
         }
-        self.register(FetchMyPageUseCase.self) { resolver in
-            return FetchMyPageUseCase(
+        self.register(FetchProfileUseCase.self) { resolver in
+            return FetchProfileUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(FetchHealthInformationUseCase.self) { resolver in
+            return FetchHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(EditHealthInformationUseCase.self) { resolver in
+            return EditHealthInformationUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(EditProfileUseCase.self) { resolver in
+            return EditProfileUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(PostImageUseCase.self) { resolver in
+            return PostImageUseCase(
+                imageRepository: resolver.resolve(ImageRepository.self)!
+            )
+        }
+        self.register(NotificationOnUseCase.self) { resolver in
+            return NotificationOnUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(NotificationOffUseCase.self) { resolver in
+            return NotificationOffUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
         self.register(CheckVerificationCodeUseCase.self) { resolver in
@@ -166,6 +196,25 @@ public extension Container {
                 userRepository: resolver.resolve(UserRepository.self)!
             )
         }
+        self.register(CheckPasswordUseCase.self) { resolver in
+            return CheckPasswordUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!)
+        }
+        self.register(ChangePasswordUseCase.self) { resolver in
+            return ChangePasswordUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(FetchAccountInfoUseCase.self) { resolver in
+            return FetchAccountInfoUseCase(
+                userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(FetchNotificationListUseCase.self) { resolver in
+            return FetchNotificationListUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+                )
+        }
         self.register(FetchNoticeUseCase.self) { resolver in
             return FetchNoticeUseCase(
                 noticeRepository: resolver.resolve(NoticeRepository.self)!
@@ -179,6 +228,21 @@ public extension Container {
         self.register(CheckClassCodeUseCase.self) { resolver in
             return CheckClassCodeUseCase(
                 userRepository: resolver.resolve(UserRepository.self)!
+            )
+        }
+        self.register(NotificationOnUseCase.self) { resolver in
+            return NotificationOnUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(NotificationOffUseCase.self) { resolver in
+            return NotificationOffUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
+            )
+        }
+        self.register(FetchNotificationStatusUseCase.self) { resolver in
+            return FetchNotificationStatusUseCase(
+                notificationRepository: resolver.resolve(NotificationRepository.self)!
             )
         }
     }

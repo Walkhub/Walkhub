@@ -37,7 +37,7 @@ enum ApiDomain: String {
     case users
     case exercises
     case notices
-    case notification
+    case notifications
     case ranks
     case challenges
     case images

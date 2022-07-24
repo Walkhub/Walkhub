@@ -19,4 +19,15 @@ class DefaultNotificationRepository: NotificationRepository {
         return remoteNotificationDataSource.editReadWhether(notificationId: notificationId)
     }
 
+    func notificationOn(userId: Int, type: NotificationType) -> Completable {
+        return remoteNotificationDataSource.notificationOn(userId: userId, type: type)
+    }
+
+    func notificationOff(userId: Int, type: NotificationType) -> Completable {
+        return remoteNotificationDataSource.notificationOff(userId: userId, type: type)
+    }
+
+    func fetchNotificationStatus() -> Observable<[NotificationStatus]> {
+        return remoteNotificationDataSource.fetchNotificaitonStatus()
+    }
 }

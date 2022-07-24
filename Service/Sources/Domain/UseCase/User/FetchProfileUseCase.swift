@@ -2,7 +2,8 @@ import Foundation
 
 import RxSwift
 
-public class FetchMyPageUseCase {
+public class FetchProfileUseCase {
+
     private let userRepository: UserRepository
 
     init(userRepository: UserRepository) {

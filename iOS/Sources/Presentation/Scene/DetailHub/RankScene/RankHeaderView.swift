@@ -9,7 +9,7 @@ class RankHeaderView: UIView {
     let switches = UISwitch().then {
         $0.isOn = true
         $0.onTintColor = .primary400
-        $0.transform = CGAffineTransform(scaleX: 0.9, y: 0.8)
+        $0.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     }
 
     let classLabel = UILabel().then {

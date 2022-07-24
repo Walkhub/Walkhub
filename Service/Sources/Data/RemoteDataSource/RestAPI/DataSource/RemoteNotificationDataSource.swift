@@ -20,4 +20,20 @@ final class RemoteNotificationDataSource: RestApiRemoteDataSource<NotificationAP
             .map { _ in () }
     }
 
+    func notificationOn(userId: Int, type: NotificationType) -> Completable {
+        return request(.notificationOn(userId: userId, type: type))
+            .asCompletable()
+    }
+
+    func notificationOff(userId: Int, type: NotificationType) -> Completable {
+        return request(.notificationOff(userId: userId, type: type))
+            .asCompletable()
+    }
+
+    func fetchNotificaitonStatus() -> Observable<[NotificationStatus]> {
+        return request(.fetchNotificationStatus)
+            .map(NotificationStatusListDTO.self)
+            .map { $0.toDomain() }
+            .asObservable()
+    }
 }

@@ -7,11 +7,11 @@ import RxFlow
 
 class MyPageViewModel: ViewModelType, Stepper {
 
-    private let fetchMyPageUseCase: FetchMyPageUseCase
+    private let fetchMyPageUseCase: FetchProfileUseCase
     private let fetchDailyExerciseUseCase: FetchLiveDailyExerciseRecordUseCase
 
     init(
-        fetchMyPageUseCase: FetchMyPageUseCase,
+        fetchMyPageUseCase: FetchProfileUseCase,
         fetchDailyExerciseUseCase: FetchLiveDailyExerciseRecordUseCase
     ) {
         self.fetchMyPageUseCase = fetchMyPageUseCase
@@ -23,6 +23,7 @@ class MyPageViewModel: ViewModelType, Stepper {
 
     struct Input {
         let getData: Driver<Void>
+        let gearButtonDidTap: Driver<Void>
     }
 
     struct Output {
@@ -45,6 +46,11 @@ class MyPageViewModel: ViewModelType, Stepper {
         }.subscribe(onNext: {
             dailyExercise.accept($0)
         }).disposed(by: disposeBag)
+
+        input.gearButtonDidTap.asObservable()
+            .map { WalkhubStep.settingIsRequired }
+            .bind(to: steps)
+            .disposed(by: disposeBag)
 
         return Output(myProfile: myProfile, dailyExercise: dailyExercise)
     }

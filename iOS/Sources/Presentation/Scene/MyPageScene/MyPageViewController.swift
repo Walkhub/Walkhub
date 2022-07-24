@@ -143,10 +143,14 @@ class MyPageViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         getData.accept(())
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     private func bindViewModel() {
-        let input = MyPageViewModel.Input(getData: getData.asDriver(onErrorJustReturn: ()))
+        let input = MyPageViewModel.Input(
+            getData: getData.asDriver(onErrorJustReturn: ()),
+            gearButtonDidTap: gearBtn.rx.tap.asDriver()
+        )
 
         let output = viewModel.transform(input)
 

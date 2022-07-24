@@ -3,20 +3,23 @@ import Foundation
 import RxSwift
 
 class DefaultUserRepository: UserRepository {
-
     private let remoteUserDataSource = RemoteUserDataSource.shared
     private let localUserDataSource = LocalUserDataSource.shared
 
+    func checkPassword(currentPw: String) -> Completable {
+        return remoteUserDataSource.checkPassword(currentPw: currentPw)
+            .do(onError: {
+                print($0
+                )
+            })
+    }
+
     func changePassword(
-        accountID: String,
-        phoneNumber: String,
-        authCode: String,
+        password: String,
         newPassword: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return remoteUserDataSource.changePassword(
-            accountID: accountID,
-            phoneNumber: phoneNumber,
-            authCode: authCode,
+            password: password,
             newPassword: newPassword
         )
     }
@@ -40,40 +43,49 @@ class DefaultUserRepository: UserRepository {
     func changeProfile(
         name: String,
         profileImageUrlString: String,
-        sex: Sex
-    ) -> Single<Void> {
+        schoolId: Int
+    ) -> Completable {
         return remoteUserDataSource.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
+            schoolId: schoolId
+        )
+    }
+    func setHealthInformation(
+        height: Double?,
+        weight: Int?,
+        sex: Sex
+    ) -> Completable {
+        return remoteUserDataSource.setHealthInformation(
+            height: height ?? 0.0,
+            weight: weight ?? 0,
             sex: sex
         )
     }
-    func setHealthInformation(height: Double?, weight: Int?, sex: Sex) -> Completable {
-        return remoteUserDataSource.setHealthInformation(height: height, weight: weight, sex: sex)
-            .do(onError: {
-                print($0)
-            })
-    }
-
     func joinClass(
         classCode grade: String,
         num classNum: Int
-    ) -> Completable  {
+    ) -> Completable {
         return remoteUserDataSource.joinClass(
             classCode: grade,
             num: classNum
         )
     }
 
-    func setSchoolInformation(schoolId: Int) -> Single<Void> {
-        return remoteUserDataSource.setSchoolInformation(schoolId: schoolId)
-    }
-
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
         return remoteUserDataSource.changeGoalWalkCount(goalWalkCount: goalWalkCount)
     }
 
+    func fetchUserHealth() -> Single<UserHealth> {
+        return remoteUserDataSource.fetchHealthInfo()
+    }
+
     func checkClassCode(code: String) -> Completable {
         return remoteUserDataSource.checkClassCode(code: code)
+    }
+
+    func fetchAccountInfo() -> Observable<AccountInfo> {
+        return remoteUserDataSource.fetchAccountInfo()
+            .asObservable()
     }
 }

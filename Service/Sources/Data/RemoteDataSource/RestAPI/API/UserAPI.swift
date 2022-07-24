@@ -3,15 +3,18 @@ import Foundation
 import Moya
 
 enum UserAPI {
-    case changePassword(accountID: String, phoneNumber: String, authCode: String, newPassword: String)
+    case checkPassword(currentPw: String)
+    case changePassword(password: String, newPassword: String)
     case fetchProfile(userID: Int)
     case fetchMyProfile
-    case changeProfile(name: String, profileImageUrlString: String, sex: Sex)
+    case changeProfile(name: String, profileImageUrlString: String, schoolId: Int)
     case setHealthInformation(height: Double?, weight: Int?, sex: Sex)
     case joinClass(classCode: String, num: Int)
     case setSchoolInformation(schoolId: Int)
     case changeGoalWalkCount(goalWalkCount: Int)
+    case fetchHleathInfo
     case checkClassCode(code: String)
+    case fetchAccountInfo
 }
 
 extension UserAPI: WalkhubAPI {
@@ -22,11 +25,13 @@ extension UserAPI: WalkhubAPI {
 
     var urlPath: String {
         switch self {
+        case .checkPassword:
+            return "/verification-password"
         case .changePassword:
             return "/password"
         case .fetchProfile(let userID):
             return "/\(userID)"
-        case .setHealthInformation:
+        case .setHealthInformation, .fetchHleathInfo:
             return "/health"
         case .setSchoolInformation:
             return "/school"
@@ -34,6 +39,8 @@ extension UserAPI: WalkhubAPI {
             return "/goal"
         case .joinClass, .checkClassCode:
             return "/classes"
+        case .fetchAccountInfo:
+            return "/auth/info"
         default:
             return ""
         }
@@ -41,22 +48,27 @@ extension UserAPI: WalkhubAPI {
 
     var task: Task {
         switch self {
-        case .changePassword(let accountID, let phoneNumber, let authCode, let newPassword):
+        case .checkPassword(let currentPw):
             return .requestParameters(
                 parameters: [
-                    "account_id": accountID,
-                    "phone_number": phoneNumber,
-                    "auth_code": authCode,
+                    "password": currentPw
+                ],
+                encoding: JSONEncoding.default
+            )
+        case .changePassword(let password, let newPassword):
+            return .requestParameters(
+                parameters: [
+                    "password": password,
                     "new_password": newPassword
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
-        case .changeProfile(let name, let profileImageUrlString, let sex):
+        case .changeProfile(let name, let profileImageUrlString, let schoolId):
             return .requestParameters(
                 parameters: [
                     "name": name,
                     "profile_image_url": profileImageUrlString,
-                    "sex": sex.rawValue
+                    "school_id": schoolId
                 ],
                 encoding: JSONEncoding.prettyPrinted
             )
@@ -104,9 +116,9 @@ extension UserAPI: WalkhubAPI {
 
     var method: Moya.Method {
         switch self {
-        case .changeProfile, .changePassword, .setSchoolInformation, .setHealthInformation:
+        case .changeProfile, .changePassword, .setHealthInformation:
             return .patch
-        case .joinClass:
+        case .joinClass, .checkPassword:
             return .post
         case .checkClassCode:
             return .head
@@ -131,11 +143,6 @@ extension UserAPI: WalkhubAPI {
                 404: .undefinededClass,
                 409: .alreadyJoinedClass
             ]
-        case .setSchoolInformation:
-            return [
-                401: .unauthorization,
-                404: .undefinededSchool
-            ]
         default:
             return [
                 401: .unauthorization
@@ -143,3 +150,4 @@ extension UserAPI: WalkhubAPI {
         }
     }
 }
+// 356 1436 2315 13

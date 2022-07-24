@@ -16,6 +16,8 @@ class ProfileFlow: Flow {
         guard let step = step as? WalkhubStep else { return .none }
 
         switch step {
+        case .settingIsRequired:
+            return navigateToSettingScreen()
         case .profileIsRequired:
             return navigateToProfileScreen()
         default:
@@ -29,6 +31,19 @@ class ProfileFlow: Flow {
         return .one(flowContributor: .contribute(
             withNextPresentable: profileViewController,
             withNextStepper: profileViewController.viewModel
+        ))
+    }
+
+    private func navigateToSettingScreen() -> FlowContributors {
+        let settingFlow = SettingFlow()
+
+        Flows.use(settingFlow, when: .created) { [weak self] root in
+            self?.rootViewController.pushViewController(root, animated: true)
+        }
+
+        return .one(flowContributor: .contribute(
+            withNextPresentable: settingFlow,
+            withNextStepper: OneStepper(withSingleStep: WalkhubStep.settingIsRequired)
         ))
     }
 }

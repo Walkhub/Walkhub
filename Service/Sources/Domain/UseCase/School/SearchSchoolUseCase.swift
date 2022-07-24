@@ -11,6 +11,6 @@ public class SearchSchoolUseCase {
     }
 
     public func excute(name: String) -> Observable<[SearchSchool]> {
-        self.schoolRepository.searchSchool(name: name)
+        return schoolRepository.searchSchool(name: name)
     }
 }

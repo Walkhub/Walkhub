@@ -8,6 +8,7 @@ class UserProfileRealmEntity: Object {
     @Persisted var name: String = ""
     @Persisted var profileImageUrlString: String = ""
     @Persisted var school: String = ""
+    @Persisted var schoolId: Int = 0
     @Persisted var schoolImageUrlString: String = ""
     @Persisted var grade: Int?
     @Persisted var classNum: Int?
@@ -24,6 +25,7 @@ extension UserProfileRealmEntity {
         self.name = profile.name
         self.profileImageUrlString = profile.profileImageUrl.absoluteString
         self.school = profile.school
+        self.schoolId = profile.schoolId
         self.schoolImageUrlString = profile.schoolImageUrl.absoluteString
         self.grade = profile.grade
         self.classNum = profile.classNum
@@ -45,6 +47,7 @@ extension UserProfileRealmEntity {
             name: name,
             profileImageUrl: URL(string: profileImageUrlString)!,
             school: school,
+            schoolId: schoolId,
             schoolImageUrl: URL(string: schoolImageUrlString)!,
             grade: grade ?? 0,
             classNum: classNum ?? 0,

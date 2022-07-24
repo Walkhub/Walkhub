@@ -5,34 +5,68 @@ import Moya
 enum NotificationAPI {
     case fetchNotificationList
     case toggleIsRead(notificationId: Int)
+    case notificationOn(userId: Int, type: NotificationType)
+    case notificationOff(userId: Int, type: NotificationType)
+    case fetchNotificationStatus
 }
 
 extension NotificationAPI: WalkhubAPI {
 
     var domain: ApiDomain {
-        .notification
+        .notifications
     }
 
     var urlPath: String {
         switch self {
-        case .fetchNotificationList:
-            return "/"
         case .toggleIsRead(let notificationId):
             return "/\(notificationId)"
+        case .notificationOn:
+            return "/on"
+        case .fetchNotificationStatus:
+            return "/status"
+        default:
+            return ""
         }
     }
 
     var method: Moya.Method {
         switch self {
-        case .fetchNotificationList:
+        case .fetchNotificationList, .fetchNotificationStatus:
             return .get
-        case .toggleIsRead:
+        default:
             return .patch
         }
     }
 
     var jwtTokenType: JWTTokenType? {
         return .accessToken
+    }
+
+    var task: Task {
+        switch self {
+        case .notificationOn(let userId, let type):
+            return .requestParameters(
+                parameters: [
+                    "user_id_list": [
+                        userId
+                    ],
+                    "type": type.rawValue
+                ],
+                encoding: JSONEncoding.prettyPrinted
+            )
+        case .notificationOff(let userId, let type):
+            return .requestParameters(
+                parameters: [
+                    "user_id_list": [
+                        userId
+                    ],
+                    "type": type.rawValue
+                ],
+                encoding: JSONEncoding.prettyPrinted
+            )
+        default:
+            return .requestPlain
+        }
     }
 
     var errorMapper: [Int: WalkhubError]? {

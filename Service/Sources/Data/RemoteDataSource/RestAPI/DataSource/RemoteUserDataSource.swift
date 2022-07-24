@@ -9,18 +9,19 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
 
     private override init() { }
 
+    func checkPassword(currentPw: String) -> Completable {
+        return request(.checkPassword(currentPw: currentPw))
+            .asCompletable()
+    }
+
     func changePassword(
-        accountID: String,
-        phoneNumber: String,
-        authCode: String,
+        password: String,
         newPassword: String
-    ) -> Single<Void> {
+    ) -> Completable {
         return request(.changePassword(
-            accountID: accountID,
-            phoneNumber: phoneNumber,
-            authCode: authCode,
+            password: password,
             newPassword: newPassword
-        )).map { _ in () }
+        )).asCompletable()
     }
 
     func fetchProfile(userID: Int) -> Single<UserProfile> {
@@ -38,13 +39,13 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
     func changeProfile(
         name: String,
         profileImageUrlString: String,
-        sex: Sex
-    ) -> Single<Void> {
+        schoolId: Int
+    ) -> Completable {
         return request(.changeProfile(
             name: name,
             profileImageUrlString: profileImageUrlString,
-            sex: sex
-        )).map { _ in () }
+            schoolId: schoolId
+        )).asCompletable()
     }
 
     func setHealthInformation(
@@ -69,18 +70,25 @@ final class RemoteUserDataSource: RestApiRemoteDataSource<UserAPI> {
         )).asCompletable()
     }
 
-    func setSchoolInformation(schoolId: Int) -> Single<Void> {
-        return request(.setSchoolInformation(schoolId: schoolId))
-            .map { _ in () }
-    }
-
     func changeGoalWalkCount(goalWalkCount: Int) -> Single<Void> {
         return request(.changeGoalWalkCount(goalWalkCount: goalWalkCount))
             .map { _ in () }
     }
 
+    func fetchHealthInfo() -> Single<UserHealth> {
+        return request(.fetchHleathInfo)
+            .map(UserHealthDTO.self)
+            .map { $0.toDomain() }
+    }
+
     func checkClassCode(code: String) -> Completable {
         return request(.checkClassCode(code: code))
             .asCompletable()
+    }
+
+    func fetchAccountInfo() -> Single<AccountInfo> {
+        return request(.fetchAccountInfo)
+            .map(AccountInfoDTO.self)
+            .map { $0.toDomain() }
     }
 }

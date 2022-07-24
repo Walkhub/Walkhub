@@ -51,7 +51,7 @@ extension Container {
         }
         self.register(MyPageViewModel.self) { resolver in
             MyPageViewModel(
-                fetchMyPageUseCase: resolver.resolve(FetchMyPageUseCase.self)!,
+                fetchMyPageUseCase: resolver.resolve(FetchProfileUseCase.self)!,
                 fetchDailyExerciseUseCase: resolver.resolve(FetchLiveDailyExerciseRecordUseCase.self)!
             )
         }
@@ -68,6 +68,28 @@ extension Container {
                 fetchExercisesListUseCase: resolver.resolve(FetchExercisesListUseCase.self)!,
                 startExerciseUseCase: resolver.resolve(StartExerciseUseCase.self)!
             )
+        }
+        self.register(EditHealthInformationViewModel.self) { resolver in
+            EditHealthInformationViewModel(
+                fetchHealthInformationUseCase: resolver.resolve(FetchHealthInformationUseCase.self)!,
+                editHealthInformationUseCase: resolver.resolve(EditHealthInformationUseCase.self)!
+            )
+        }
+        self.register(EditProfileViewModel.self) { resolver in
+            EditProfileViewModel(
+                fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!,
+                editProfileUseCase: resolver.resolve(EditProfileUseCase.self)!,
+                postImageUseCase: resolver.resolve(PostImageUseCase.self)!,
+                searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
+            )
+        }
+        self.register(EditNotificationViewModel.self) { resolver in
+            EditNotificationViewModel(
+                fetchNotificationStatusUseCase: resolver.resolve(FetchNotificationStatusUseCase.self)!,
+                notificationOnUseCase: resolver.resolve(NotificationOnUseCase.self)!,
+                notificationOffUseCase: resolver.resolve(NotificationOffUseCase.self)!,
+                fetchProfileUseCase: resolver.resolve(FetchProfileUseCase.self)!
+                )
         }
         self.register(AgreeTermsViewModel.self) { resolver in
             AgreeTermsViewModel(
@@ -99,6 +121,21 @@ extension Container {
             SchoolRegistrationViewModel(
                 searchSchoolUseCase: resolver.resolve(SearchSchoolUseCase.self)!
             )
+        }
+        self.register(CheckPasswordViewModel.self) { resolver in
+            CheckPasswordViewModel(
+                checkPasswordUseCase: resolver.resolve(CheckPasswordUseCase.self)!
+            )
+        }
+        self.register(ChangePasswordViewModel.self) { resolver in
+            ChangePasswordViewModel(
+                changePasswordUseCase: resolver.resolve(ChangePasswordUseCase.self)!
+            )
+        }
+        self.register(AccountInformationViewModel.self) { resolver in
+            AccountInformationViewModel(
+                fetchAccountInfoUseCase: resolver.resolve(FetchAccountInfoUseCase.self)!
+                )
         }
         self.register(NotificationListViewModel.self) { resolver in
             NotificationListViewModel(
@@ -196,6 +233,29 @@ extension Container {
         self.register(TimerViewController.self) { _ in
             return TimerViewController()
         }
+        self.register(EditHealthInofrmationViewController.self) { resolver in
+            return EditHealthInofrmationViewController().then {
+                $0.viewModel = resolver.resolve(EditHealthInformationViewModel.self)!
+            }
+        }
+        self.register(AccountInformationViewController.self) { resolver in
+            return AccountInformationViewController().then {
+                $0.viewModel = resolver.resolve(AccountInformationViewModel.self)!
+            }
+        }
+        self.register(SettingViewController.self) { _ in
+            return SettingViewController()
+        }
+        self.register(EditProfileViewController.self) { resolver in
+            return EditProfileViewController().then {
+                $0.viewModel = resolver.resolve(EditProfileViewModel.self)!
+            }
+        }
+        self.register(EditNotificationViewController.self) { resolver in
+            return EditNotificationViewController().then {
+                $0.viewModel = resolver.resolve(EditNotificationViewModel.self)!
+            }
+        }
         self.register(AgreeTermsViewController.self) { resolver in
             return AgreeTermsViewController().then {
                 $0.viewModel = resolver.resolve(AgreeTermsViewModel.self)!
@@ -234,6 +294,16 @@ extension Container {
         self.register(SchoolRegistrationViewController.self) { resolver in
             return SchoolRegistrationViewController().then {
                 $0.viewModel = resolver.resolve(SchoolRegistrationViewModel.self)!
+            }
+        }
+        self.register(CheckPasswordViewController.self) { resolver in
+            return CheckPasswordViewController().then {
+                $0.viewModel = resolver.resolve(CheckPasswordViewModel.self)!
+            }
+        }
+        self.register(ChangePasswordViewController.self) { resolver in
+            return ChangePasswordViewController().then {
+                $0.viewModel = resolver.resolve(ChangePasswordViewModel.self)!
             }
         }
         self.register(NotificationListViewController.self) { resolver in
